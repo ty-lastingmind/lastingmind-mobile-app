@@ -14,7 +14,7 @@ export default defineConfig([
     'ios',
     'android',
     '.expo',
-    'tailwind.config.ts',
+    'tailwind.config.js',
     'package-lock.json',
     'metro.config.js',
     'babel.config.js',

@@ -1,18 +1,14 @@
-import { SafeAreaView, Text } from 'react-native'
+import { SafeAreaView } from 'react-native'
+
+import { useColorScheme } from '~/hooks/use-color-scheme'
+import { Button } from '~/modules/ui/button'
 
 export function SignUpScreen() {
+  const { toggleColorScheme, colorScheme } = useColorScheme()
+
   return (
     <SafeAreaView>
-      <Text
-        style={{
-          fontSize: 20,
-          textAlign: 'center',
-          marginTop: 100,
-          color: 'white',
-        }}
-      >
-        Hello
-      </Text>
+      <Button onPress={toggleColorScheme}>toggle color scheme {colorScheme}</Button>
     </SafeAreaView>
   )
 }

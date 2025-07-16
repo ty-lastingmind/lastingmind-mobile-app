@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* SIZES */
+    --h1: 38px;
+    --h2: 32px;
+    --h3: 28px;
+    --h4: 24px;
+    --h5: 20px;
+    --h6: 18px;
+    --body-1: 16px;
+    --body-2: 14px;
+    --label-1: 16px;
+    --label-2: 14px;
+    --caption-1: 12px;
+    --caption-2: 10px;
+    --overline-1: 10px;
+    --overline-2: 8px;
+
+    /* COLORS */
+    --brand: rgba(74, 108, 250, 1);
+    --black: rgba(0, 0, 0, 1);
+    --white: rgba(255, 255, 255, 1);
+
+    /* COMPONENTS */
+    --screen-bg-primary: var(--white);
+
+    --button-primary-bg: var(--brand);
+    --button-primary-text: var(--white);
+  }
+
+  .dark {
+    --screen-bg-primary: var(--black);
+  }
+}
