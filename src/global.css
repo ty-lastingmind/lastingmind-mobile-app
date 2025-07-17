@@ -20,19 +20,48 @@
     --overline-1: 10px;
     --overline-2: 8px;
 
+    --button-sm-text-size: var(--caption-1);
+    --button-md-text-size: var(--body-1);
+    --button-lg-text-size: var(--h6);
+
     /* COLORS */
     --brand: rgba(74, 108, 250, 1);
     --black: rgba(0, 0, 0, 1);
     --white: rgba(255, 255, 255, 1);
 
     /* COMPONENTS */
+
+    /* SCREEN */
     --screen-bg-primary: var(--white);
 
+    /* BUTTON */
     --button-primary-bg: var(--brand);
     --button-primary-text: var(--white);
+
+    --button-secondary-bg: rgba(74, 108, 250, 0.1);
+    --button-secondary-text: var(--brand);
+
+    --button-outlined-bg: transparent;
+    --button-outlined-text: var(--brand);
+    --button-outlined-border: var(--brand);
+
+    /* TYPOGRAPHY */
+    --typography-primary: var(--black);
+    --typography-secondary: var(--black);
+    --typography-tertiary: var(--black);
   }
 
   .dark {
+    /* SCREEN */
     --screen-bg-primary: var(--black);
+
+    /* BUTTON */
+    --button-secondary-bg: rgba(74, 108, 250, 0.2);
+    --button-outlined-bg: transparent;
+
+    /* TYPOGRAPHY */
+    --typography-primary: var(--white);
+    --typography-secondary: var(--white);
+    --typography-tertiary: var(--white);
   }
 }
