@@ -1,8 +1,8 @@
 import { SafeAreaView, ScrollView } from 'react-native'
 
-import { BadgeShowcase } from '~/modules/developer/screen/parts/badge-showcase'
-import { ButtonShowcase } from '~/modules/developer/screen/parts/button-showcase'
-import { TypographyShowcase } from '~/modules/developer/screen/parts/typography-showcase'
+import { BadgeShowcase } from '~/modules/developer/screens/developer-screen/parts/badge-showcase'
+import { ButtonShowcase } from '~/modules/developer/screens/developer-screen/parts/button-showcase'
+import { TypographyShowcase } from '~/modules/developer/screens/developer-screen/parts/typography-showcase'
 import { Typography } from '~/modules/ui/typography'
 
 export function DeveloperScreen() {
