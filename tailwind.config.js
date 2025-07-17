@@ -21,6 +21,9 @@ module.exports = {
       'button-sm': 'var(--button-sm-text-size)',
       'button-md': 'var(--button-md-text-size)',
       'button-lg': 'var(--button-lg-text-size)',
+      'badge-sm': 'var(--badge-sm-text-size)',
+      'badge-md': 'var(--badge-md-text-size)',
+      'badge-lg': 'var(--badge-lg-text-size)',
     },
     colors: {
       'screen-bg-primary': 'var(--screen-bg-primary)',
@@ -34,6 +37,16 @@ module.exports = {
       'button-outlined-bg': 'var(--button-outlined-bg)',
       'button-outlined-text': 'var(--button-outlined-text)',
       'button-outlined-border': 'var(--button-outlined-border)',
+
+      'badge-primary-bg': 'var(--badge-primary-bg)',
+      'badge-primary-text': 'var(--badge-primary-text)',
+
+      'badge-secondary-bg': 'var(--badge-secondary-bg)',
+      'badge-secondary-text': 'var(--badge-secondary-text)',
+
+      'badge-outlined-bg': 'var(--badge-outlined-bg)',
+      'badge-outlined-text': 'var(--badge-outlined-text)',
+      'badge-outlined-border': 'var(--badge-outlined-border)',
 
       'typography-primary': 'var(--typography-primary)',
       'typography-secondary': 'var(--typography-secondary)',

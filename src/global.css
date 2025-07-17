@@ -24,6 +24,10 @@
     --button-md-text-size: var(--body-1);
     --button-lg-text-size: var(--h6);
 
+    --badge-sm-text-size: var(--caption-2);
+    --badge-md-text-size: var(--caption-1);
+    --badge-lg-text-size: var(--body-2);
+
     /* COLORS */
     --brand: rgba(74, 108, 250, 1);
     --black: rgba(0, 0, 0, 1);
@@ -45,6 +49,17 @@
     --button-outlined-text: var(--brand);
     --button-outlined-border: var(--brand);
 
+    /* BADGE */
+    --badge-primary-bg: var(--brand);
+    --badge-primary-text: var(--white);
+
+    --badge-secondary-bg: rgba(74, 108, 250, 0.1);
+    --badge-secondary-text: var(--brand);
+
+    --badge-outlined-bg: transparent;
+    --badge-outlined-text: var(--brand);
+    --badge-outlined-border: var(--brand);
+
     /* TYPOGRAPHY */
     --typography-primary: var(--black);
     --typography-secondary: var(--black);
@@ -58,6 +73,10 @@
     /* BUTTON */
     --button-secondary-bg: rgba(74, 108, 250, 0.2);
     --button-outlined-bg: transparent;
+
+    /* BADGE */
+    --badge-secondary-bg: rgba(74, 108, 250, 0.2);
+    --badge-outlined-bg: transparent;
 
     /* TYPOGRAPHY */
     --typography-primary: var(--white);
