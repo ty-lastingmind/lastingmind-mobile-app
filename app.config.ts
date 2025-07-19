@@ -9,8 +9,11 @@ declare const process: {
     EXPO_PUBLIC_APP_ENV: Environment
     EXPO_PUBLIC_APP_VERSION: string
     EXPO_PUBLIC_BUILD_NUMBER: string
+    GOOGLE_WEB_CLIENT_ID: string
   }
 }
+
+const googleWebClientId = process.env.GOOGLE_WEB_CLIENT_ID
 
 // Your project defaults
 const config = {
@@ -19,8 +22,6 @@ const config = {
   expoProjectOwner: undefined,
   appScheme: 'lasting-mind',
 }
-
-const environment = process.env.EXPO_PUBLIC_APP_ENV || 'dev'
 
 // your custom fonts
 const fonts = [
@@ -42,7 +43,7 @@ const getEnvironmentInfo = (): {
 
   return {
     name: appName,
-    appIdentifier: `${appIdentifier}.${environment}`,
+    appIdentifier: appIdentifier,
     icon: `./assets/icon.png`,
   }
 }
@@ -50,7 +51,17 @@ const getEnvironmentInfo = (): {
 const { name, appIdentifier, icon } = getEnvironmentInfo()
 
 const plugins: ExpoConfig['plugins'] = [
-  ['expo-build-properties'],
+  '@react-native-google-signin/google-signin',
+  '@react-native-firebase/app',
+  '@react-native-firebase/auth',
+  [
+    'expo-build-properties',
+    {
+      ios: {
+        useFrameworks: 'static',
+      },
+    },
+  ],
   ['expo-font', { fonts }],
   ['expo-asset', { assets }],
   ['expo-router'],
@@ -84,6 +95,7 @@ const expoConfig: ExpoConfig = {
   },
   assetBundlePatterns: ['**/*'],
   ios: {
+    googleServicesFile: './assets/firebase/GoogleService-Info.plist',
     supportsTablet: false,
     bundleIdentifier: appIdentifier,
     config: {
@@ -97,6 +109,7 @@ const expoConfig: ExpoConfig = {
     bundler: 'metro',
   },
   android: {
+    googleServicesFile: './assets/firebase/google-services.json',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#FFFFFF',
@@ -116,6 +129,7 @@ const expoConfig: ExpoConfig = {
     eas: {
       projectId: config.expoProjectId,
     },
+    googleWebClientId,
   },
   experiments: {
     tsconfigPaths: true,
