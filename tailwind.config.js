@@ -69,6 +69,16 @@ module.exports = {
       'typography-primary': 'var(--typography-primary)',
       'typography-secondary': 'var(--typography-secondary)',
       'typography-tertiary': 'var(--typography-tertiary)',
+
+      'separator-bg': 'var(--separator-bg)',
+
+      'input-border--focus': 'var(--input-border--focus)',
+      'input-border--error': 'var(--input-border--error)',
+      'input-border': 'var(--input-border)',
+      'input-text': 'var(--input-text)',
+      'input-label': 'var(--input-label)',
+      'input-placeholder': 'var(--input-placeholder)',
+      'input-placeholder--error': 'var(--input-placeholder--error)',
     },
   },
   plugins: [],

@@ -85,6 +85,18 @@
     --typography-primary: var(--black);
     --typography-secondary: var(--black);
     --typography-tertiary: var(--black);
+
+    /* SEPARATOR */
+    --separator-bg: rgba(255, 255, 255, 0.1);
+
+    /* INPUT */
+    --input-border: rgba(0, 0, 0, 0.3);
+    --input-border--error: rgba(239, 68, 68, 1);
+    --input-border--focus: rgba(0, 0, 0, 1);
+    --input-text: var(--black);
+    --input-label: var(--black);
+    --input-placeholder: var(--black);
+    --input-placeholder--error: var(--error);
   }
 
   .dark {
@@ -108,5 +120,17 @@
     --typography-primary: var(--white);
     --typography-secondary: var(--white);
     --typography-tertiary: var(--white);
+
+    /* SEPARATOR */
+    --separator-bg: rgba(255, 255, 255, 0.2);
+
+    /* INPUT */
+    --input-border: rgba(255, 255, 255, 0.3);
+    --input-border--focus: rgba(255, 255, 255, 1);
+    --input-border--error: rgba(239, 68, 68, 1);
+    --input-text: var(--white);
+    --input-label: var(--white);
+    --input-placeholder: var(--white);
+    --input-placeholder--error: var(--error);
   }
 }
