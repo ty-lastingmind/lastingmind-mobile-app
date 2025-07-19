@@ -1,3 +1,4 @@
+import { Link } from 'expo-router'
 import { SafeAreaView } from 'react-native'
 
 import { useColorScheme } from '~/hooks/use-color-scheme'
@@ -9,6 +10,9 @@ export function SignUpScreen() {
   return (
     <SafeAreaView>
       <Button onPress={toggleColorScheme}>toggle color scheme {colorScheme}</Button>
+      <Link asChild href="/developer-screen">
+        <Button>Developer Screen</Button>
+      </Link>
     </SafeAreaView>
   )
 }

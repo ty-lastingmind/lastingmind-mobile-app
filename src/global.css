@@ -20,19 +20,117 @@
     --overline-1: 10px;
     --overline-2: 8px;
 
+    --button-sm-text-size: var(--caption-1);
+    --button-md-text-size: var(--body-1);
+    --button-lg-text-size: var(--h6);
+
+    --badge-sm-text-size: var(--caption-2);
+    --badge-md-text-size: var(--caption-1);
+    --badge-lg-text-size: var(--body-2);
+
+    --icon-xs-size: 12px;
+    --icon-sm-size: 16px;
+    --icon-md-size: 20px;
+    --icon-lg-size: 24px;
+    --icon-xl-size: 32px;
+    --icon-2xl-size: 40px;
+    --icon-3xl-size: 48px;
+    --icon-4xl-size: 64px;
+
     /* COLORS */
     --brand: rgba(74, 108, 250, 1);
     --black: rgba(0, 0, 0, 1);
     --white: rgba(255, 255, 255, 1);
+    --error: rgba(239, 68, 68, 1);
 
     /* COMPONENTS */
+
+    /* SCREEN */
     --screen-bg-primary: var(--white);
 
+    /* BUTTON */
     --button-primary-bg: var(--brand);
     --button-primary-text: var(--white);
+
+    --button-secondary-bg: rgba(74, 108, 250, 0.1);
+    --button-secondary-text: var(--brand);
+
+    --button-outlined-bg: transparent;
+    --button-outlined-text: var(--brand);
+    --button-outlined-border: var(--brand);
+
+    /* BADGE */
+    --badge-primary-bg: var(--brand);
+    --badge-primary-text: var(--white);
+
+    --badge-secondary-bg: rgba(74, 108, 250, 0.1);
+    --badge-secondary-text: var(--brand);
+
+    --badge-outlined-bg: transparent;
+    --badge-outlined-text: var(--brand);
+    --badge-outlined-border: var(--brand);
+
+    /* ICON */
+    --icon-white: var(--white);
+    --icon-primary: var(--black);
+    --icon-secondary: rgba(0, 0, 0, 0.7);
+    --icon-tertiary: rgba(0, 0, 0, 0.5);
+    --icon-brand: var(--brand);
+    --icon-red: rgba(239, 68, 68, 1);
+    --icon-green: rgba(34, 197, 94, 1);
+    --icon-blue: rgba(59, 130, 246, 1);
+    --icon-error: rgba(239, 68, 68, 1);
+
+    /* TYPOGRAPHY */
+    --typography-primary: var(--black);
+    --typography-secondary: var(--black);
+    --typography-tertiary: var(--black);
+
+    /* SEPARATOR */
+    --separator-bg: rgba(255, 255, 255, 0.1);
+
+    /* INPUT */
+    --input-border: rgba(0, 0, 0, 0.3);
+    --input-border--error: rgba(239, 68, 68, 1);
+    --input-border--focus: rgba(0, 0, 0, 1);
+    --input-text: var(--black);
+    --input-label: var(--black);
+    --input-placeholder: var(--black);
+    --input-placeholder--error: var(--error);
   }
 
   .dark {
+    /* SCREEN */
     --screen-bg-primary: var(--black);
+
+    /* BUTTON */
+    --button-secondary-bg: rgba(74, 108, 250, 0.2);
+    --button-outlined-bg: transparent;
+
+    /* BADGE */
+    --badge-secondary-bg: rgba(74, 108, 250, 0.2);
+    --badge-outlined-bg: transparent;
+
+    /* ICON */
+    --icon-primary: var(--white);
+    --icon-secondary: rgba(255, 255, 255, 0.7);
+    --icon-tertiary: rgba(255, 255, 255, 0.5);
+
+    /* TYPOGRAPHY */
+    --typography-primary: var(--white);
+    --typography-secondary: var(--white);
+    --typography-tertiary: var(--white);
+
+    /* SEPARATOR */
+    --separator-bg: rgba(255, 255, 255, 0.2);
+
+    /* INPUT */
+    --input-border: rgba(255, 255, 255, 0.3);
+    --input-border--focus: rgba(255, 255, 255, 1);
+    --input-border--error: rgba(239, 68, 68, 1);
+    --input-text: var(--white);
+    --input-label: var(--white);
+    --input-placeholder: var(--white);
+    --input-placeholder--error: var(--error);
   }
 }
