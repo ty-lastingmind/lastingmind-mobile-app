@@ -3,6 +3,7 @@ import { cva } from 'class-variance-authority'
 import { PropsWithChildren, useMemo } from 'react'
 import { Text, TextProps } from 'react-native'
 
+import { font } from '~/constants/fonts'
 import { cn } from '~/utils/cn'
 
 const variants = cva(undefined, {
@@ -39,13 +40,16 @@ const variants = cva(undefined, {
 })
 
 type TypographyVariants = VariantProps<typeof variants>
-interface TypographyProps extends PropsWithChildren<TextProps>, TypographyVariants {}
+interface TypographyProps extends PropsWithChildren<TextProps>, TypographyVariants {
+  brand?: boolean
+}
 
 export function Typography({
   level = 'body-1',
   weight = 'normal',
   color = 'primary',
   className,
+  brand = false,
   ...props
 }: TypographyProps) {
   const textClassName = useMemo(() => {
@@ -53,5 +57,13 @@ export function Typography({
     return cn(variantsClassName, className)
   }, [level, weight, color, className])
 
-  return <Text className={textClassName} {...props} />
+  return (
+    <Text
+      style={{
+        fontFamily: brand ? font.family.InriaSerif.Bold : undefined,
+      }}
+      className={textClassName}
+      {...props}
+    />
+  )
 }

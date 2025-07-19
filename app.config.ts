@@ -23,10 +23,14 @@ const config = {
 const environment = process.env.EXPO_PUBLIC_APP_ENV || 'dev'
 
 // your custom fonts
-const fonts = ['./assets/fonts/Domine-Bold.ttf']
+const fonts = [
+  './assets/fonts/InriaSerif-Bold.ttf',
+  './assets/fonts/InriaSerif-Light.ttf',
+  './assets/fonts/InriaSerif-Regular.ttf',
+]
 
 // prefetched/embedded assets, can be referenced as source='strv_logo' https://docs.expo.dev/versions/latest/sdk/asset/#configurable-properties
-const assets = ['./assets/images/strv_logo.png']
+const assets = [] as const
 
 const getEnvironmentInfo = (): {
   name: ExpoConfig['name']
@@ -39,7 +43,7 @@ const getEnvironmentInfo = (): {
   return {
     name: appName,
     appIdentifier: `${appIdentifier}.${environment}`,
-    icon: `./assets/icon-${environment}.png`,
+    icon: `./assets/icon.png`,
   }
 }
 
