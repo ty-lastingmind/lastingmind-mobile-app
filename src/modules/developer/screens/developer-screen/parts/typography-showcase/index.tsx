@@ -24,6 +24,12 @@ export function TypographyShowcase() {
         <Typography level="overline-1">OVERLINE 1</Typography>
         <Typography level="overline-2">OVERLINE 2</Typography>
       </View>
+      <View>
+        <Typography level="h3">Typography brand</Typography>
+        <Typography level="h1" brand>
+          Typography brand
+        </Typography>
+      </View>
 
       <View className="flex gap-2">
         <Typography level="h3">Typography weights</Typography>
