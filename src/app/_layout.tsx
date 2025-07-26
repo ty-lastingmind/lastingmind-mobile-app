@@ -35,6 +35,13 @@ function App() {
           backgroundColor: colors['screen-bg-primary'],
         },
       }}
-    />
+    >
+      <Stack.Screen
+        name="(protected)"
+        options={{
+          animation: 'fade',
+        }}
+      />
+    </Stack>
   )
 }
