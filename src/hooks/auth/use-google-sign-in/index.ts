@@ -1,4 +1,5 @@
-import { default as firebaseAuth, type FirebaseAuthTypes } from '@react-native-firebase/auth'
+import type { FirebaseAuthTypes } from '@react-native-firebase/auth'
+import { GoogleAuthProvider, signInWithCredential } from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { useMutation } from '@tanstack/react-query'
 import Constants from 'expo-constants'
@@ -34,10 +35,10 @@ export function useGoogleSignIn() {
       }
 
       // Create a Google credential with the token
-      const googleCredential = firebaseAuth.GoogleAuthProvider.credential(idToken)
+      const googleCredential = GoogleAuthProvider.credential(idToken)
 
       // Sign-in the user with the credential
-      const credentials = await auth.signInWithCredential(googleCredential)
+      const credentials = await signInWithCredential(auth, googleCredential)
 
       return credentials
     },

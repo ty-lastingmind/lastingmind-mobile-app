@@ -40,7 +40,7 @@ const variants = cva(undefined, {
 })
 
 type TypographyVariants = VariantProps<typeof variants>
-interface TypographyProps extends PropsWithChildren<TextProps>, TypographyVariants {
+export interface TypographyProps extends PropsWithChildren<TextProps>, TypographyVariants {
   brand?: boolean
 }
 

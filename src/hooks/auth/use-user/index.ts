@@ -1,4 +1,4 @@
-import { FirebaseAuthTypes } from '@react-native-firebase/auth'
+import { FirebaseAuthTypes, onAuthStateChanged } from '@react-native-firebase/auth'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 
 import { auth } from '~/libs/firebase'
@@ -8,7 +8,7 @@ export const getUseUserQueryOptions = () =>
     queryKey: ['user'],
     queryFn: async () => {
       return await new Promise<FirebaseAuthTypes.User | null>((resolve) => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
           if (user) {
             resolve(user)
           }

@@ -3,7 +3,6 @@ import json from '@eslint/json'
 import markdown from '@eslint/markdown'
 import tanstackQueryPlugin from '@tanstack/eslint-plugin-query'
 import { defineConfig, globalIgnores } from 'eslint/config'
-import pluginImport from 'eslint-plugin-import'
 import pluginReact from 'eslint-plugin-react'
 import { configs as pluginReactHooksConfigs } from 'eslint-plugin-react-hooks'
 import globals from 'globals'
@@ -44,43 +43,5 @@ export default defineConfig([
     plugins: { markdown },
     language: 'markdown/commonmark',
     extends: ['markdown/recommended'],
-  },
-  pluginImport.flatConfigs.recommended,
-  {
-    settings: {
-      'import/parsers': {
-        '@typescript-eslint/parser': ['.ts', '.tsx'],
-      },
-      'import/resolver': {
-        typescript: {
-          project: 'tsconfig.json',
-        },
-      },
-    },
-  },
-  {
-    files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-    rules: {
-      '@tanstack/query/exhaustive-deps': 'warn',
-      'import/order': [
-        'error',
-        {
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
-          groups: [['builtin', 'external'], 'internal', 'sibling', 'index'],
-          'newlines-between': 'always',
-          pathGroups: [
-            {
-              // This should be added both to @linters and @strv/code-quality-tools
-              pattern: '~/**',
-              group: 'internal',
-            },
-          ],
-        },
-      ],
-      'react/jsx-curly-brace-presence': 'warn',
-    },
   },
 ])
