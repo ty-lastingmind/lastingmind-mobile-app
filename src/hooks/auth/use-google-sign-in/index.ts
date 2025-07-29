@@ -4,7 +4,7 @@ import { Alert } from 'react-native'
 
 import { getUseUserQueryOptions } from '~/hooks/auth/use-user'
 import { queryClient } from '~/libs/query-client'
-import { Auth } from '~/services/auth'
+import { Auth } from '~/services'
 
 export function useGoogleSignIn() {
   return useMutation<FirebaseAuthTypes.UserCredential, FirebaseAuthTypes.NativeFirebaseAuthError>({

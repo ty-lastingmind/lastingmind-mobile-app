@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { Alert } from 'react-native'
 import { queryClient } from '~/libs/query-client'
-import { Auth } from '~/services/auth'
+import { Auth } from '~/services'
 
 import { getUseUserQueryOptions } from '../use-user'
 

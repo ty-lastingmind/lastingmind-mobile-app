@@ -54,6 +54,7 @@ const plugins: ExpoConfig['plugins'] = [
   '@react-native-google-signin/google-signin',
   '@react-native-firebase/app',
   '@react-native-firebase/auth',
+  '@react-native-firebase/messaging',
   [
     'expo-build-properties',
     {
@@ -103,6 +104,10 @@ const expoConfig: ExpoConfig = {
     },
     infoPlist: {
       LSApplicationQueriesSchemes: ['itms-apps'],
+      UIBackgroundModes: ['remote-notification', 'fetch'],
+    },
+    entitlements: {
+      'aps-environment': 'production',
     },
   },
   web: {
