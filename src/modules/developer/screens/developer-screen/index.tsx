@@ -5,11 +5,19 @@ import { BadgeShowcase } from '~/modules/developer/screens/developer-screen/part
 import { ButtonShowcase } from '~/modules/developer/screens/developer-screen/parts/button-showcase'
 import { IconShowcase } from '~/modules/developer/screens/developer-screen/parts/icon-showcase'
 import { InputShowcase } from '~/modules/developer/screens/developer-screen/parts/input-showcase'
+import { NotificationsShowcase } from '~/modules/developer/screens/developer-screen/parts/notifications-showcase'
 import { TypographyShowcase } from '~/modules/developer/screens/developer-screen/parts/typography-showcase'
 import { Separator } from '~/modules/ui/separator'
 import { Typography } from '~/modules/ui/typography'
 
-const showCaseComponents = [ButtonShowcase, BadgeShowcase, IconShowcase, InputShowcase, TypographyShowcase]
+const showCaseComponents = [
+  NotificationsShowcase,
+  ButtonShowcase,
+  BadgeShowcase,
+  IconShowcase,
+  InputShowcase,
+  TypographyShowcase,
+]
 
 export function DeveloperScreen() {
   return (
