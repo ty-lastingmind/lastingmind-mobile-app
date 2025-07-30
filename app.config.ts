@@ -18,9 +18,9 @@ const googleWebClientId = process.env.GOOGLE_WEB_CLIENT_ID
 // Your project defaults
 const config = {
   appIdentifierBase: undefined,
-  expoProjectId: undefined,
+  expoProjectId: '0c9c842a-a741-40f5-8ac6-941a00b4814b',
   expoProjectOwner: undefined,
-  appScheme: 'lasting-mind',
+  appScheme: 'lastingmind-mobile-app',
 }
 
 // your custom fonts
