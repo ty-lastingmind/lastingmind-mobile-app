@@ -21,7 +21,7 @@
     --overline-2: 8px;
 
     --button-sm-text-size: var(--caption-1);
-    --button-md-text-size: var(--body-1);
+    --button-md-text-size: 20px;
     --button-lg-text-size: var(--h6);
 
     --badge-sm-text-size: var(--caption-2);
@@ -37,11 +37,31 @@
     --icon-3xl-size: 48px;
     --icon-4xl-size: 64px;
 
+    --input-text-size: 15px;
+
+    --radius-md: 1rem;
+    --height-md: 52px;
+
     /* COLORS */
     --brand: rgba(74, 108, 250, 1);
     --black: rgba(0, 0, 0, 1);
     --white: rgba(255, 255, 255, 1);
     --error: rgba(239, 68, 68, 1);
+
+    /* FIGMA COLORS */
+    --accent: rgba(22, 0, 110, 1);
+    --red: rgba(255, 0, 0, 1);
+    --label-primary: rgba(255, 255, 255, 1);
+    --label-secondary: rgba(60, 60, 67, 0.6);
+    --label-accent: rgba(22, 0, 110, 1);
+    --fill-accent: rgba(52, 46, 125, 1);
+    --background-vibrant-primary: rgba(0, 0, 0, 1);
+    --background-primary: rgba(255, 255, 255, 1);
+    --background-secondary: rgba(242, 242, 247, 1);
+    --background-tertiary: rgba(239, 239, 239, 1);
+    --miscellaneous: rgba(255, 255, 255, 1);
+    --miscellaneous-topic-stroke: rgba(195, 195, 195, 1);
+    --miscellaneous-component: rgba(138, 56, 245, 1);
 
     /* COMPONENTS */
 
@@ -49,15 +69,16 @@
     --screen-bg-primary: var(--white);
 
     /* BUTTON */
-    --button-primary-bg: var(--brand);
-    --button-primary-text: var(--white);
+    --button-primary-bg: var(--fill-accent);
+    --button-primary-text: var(--label-primary);
+    --button-primary-border: var(--accent);
 
     --button-secondary-bg: rgba(74, 108, 250, 0.1);
     --button-secondary-text: var(--brand);
 
     --button-outlined-bg: transparent;
-    --button-outlined-text: var(--brand);
-    --button-outlined-border: var(--brand);
+    --button-outlined-text: var(--label-accent);
+    --button-outlined-border: var(--accent);
 
     /* BADGE */
     --badge-primary-bg: var(--brand);
@@ -90,16 +111,31 @@
     --separator-bg: rgba(255, 255, 255, 0.1);
 
     /* INPUT */
-    --input-border: rgba(0, 0, 0, 0.3);
+    --input-border: var(--accent);
     --input-border--error: rgba(239, 68, 68, 1);
     --input-border--focus: rgba(0, 0, 0, 1);
     --input-text: var(--black);
     --input-label: var(--black);
-    --input-placeholder: var(--black);
+    --input-placeholder: var(--label-secondary);
     --input-placeholder--error: var(--error);
   }
 
   .dark {
+    /* FIGMA COLORS */
+    --accent: rgba(52, 46, 125, 1);
+    --red: rgba(255, 0, 0, 1);
+    --label-primary: rgba(255, 255, 255, 1);
+    --label-secondary: rgba(255, 255, 255, 0.6);
+    --label-accent: rgba(255, 255, 255, 1);
+    --fill-accent: rgba(52, 46, 125, 1);
+    --background-vibrant-primary: rgba(0, 0, 0, 0.75);
+    --background-primary: rgba(0, 0, 0, 1);
+    --background-secondary: rgba(0, 0, 0, 1);
+    --background-tertiary: rgba(34, 34, 34, 1);
+    --miscellaneous: rgba(255, 255, 255, 1);
+    --miscellaneous-topic-stroke: rgba(68, 68, 68, 1);
+    --miscellaneous-component: rgba(138, 56, 245, 1);
+
     /* SCREEN */
     --screen-bg-primary: var(--black);
 
@@ -123,14 +159,5 @@
 
     /* SEPARATOR */
     --separator-bg: rgba(255, 255, 255, 0.2);
-
-    /* INPUT */
-    --input-border: rgba(255, 255, 255, 0.2);
-    --input-border--focus: rgba(255, 255, 255, 1);
-    --input-border--error: rgba(239, 68, 68, 1);
-    --input-text: var(--white);
-    --input-label: var(--white);
-    --input-placeholder: rgba(255, 255, 255, 0.2);
-    --input-placeholder--error: var(--error);
   }
 }

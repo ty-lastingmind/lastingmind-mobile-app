@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { z } from 'zod'
 
 import { Button } from '~/modules/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '~/modules/ui/form'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
 
 interface EmailPasswordFormProps {
@@ -33,7 +33,6 @@ export function EmailPasswordForm({ onSubmit, isLoading, buttonLabel }: EmailPas
           name="email"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>E-mail</FormLabel>
               <FormControl>
                 <Input
                   isError={Boolean(fieldState.error?.message)}
@@ -52,7 +51,6 @@ export function EmailPasswordForm({ onSubmit, isLoading, buttonLabel }: EmailPas
           name="password"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input
                   secureTextEntry

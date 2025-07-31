@@ -1,7 +1,6 @@
 import { Redirect, Stack } from 'expo-router'
 
 import useUser from '~/hooks/auth/use-user'
-import { Typography } from '~/modules/ui/typography'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
 export default function AuthLayout() {
@@ -9,7 +8,7 @@ export default function AuthLayout() {
   const userQuery = useUser()
 
   if (userQuery.isLoading) {
-    return <Typography>Loading...</Typography>
+    return null
   }
 
   if (userQuery.data) {

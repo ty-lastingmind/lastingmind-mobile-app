@@ -13,7 +13,7 @@ export function GoogleButton({ label }: GoogleButtonProps) {
   }
 
   return (
-    <Button onPress={handleGoogleSignIn} variant="secondary">
+    <Button onPress={handleGoogleSignIn} variant="outlined">
       {label}
     </Button>
   )

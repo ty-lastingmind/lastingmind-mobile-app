@@ -33,19 +33,19 @@ export const Input = forwardRef<TextInput, InputProps>(function Input({ onFocus,
   const className = useMemo(() => {
     return {
       textInputClassName: cn(
-        'min-h-input-height border-b border-input-border px-3 py-2 flex flex-row items-center justify-between',
-        isFocused.value && 'border-input-border--focus',
+        'min-h-input-height border-2 rounded-md border-input-border px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
+        // isFocused.value && 'border-input-border--focus',
         isError && 'border-input-border--error'
       ),
       placeholderClassName: cn('text-input-placeholder', isError && 'text-input-placeholder--error'),
     }
-  }, [isError, isFocused.value])
+  }, [isError])
 
   return (
     <View className={className.textInputClassName}>
       <TextInput
         placeholderClassName={className.placeholderClassName}
-        className="flex-1 text-input-text"
+        className="flex-1 text-input-text text-input-text-size"
         onBlur={handleBlur}
         onFocus={handleFocus}
         ref={ref}

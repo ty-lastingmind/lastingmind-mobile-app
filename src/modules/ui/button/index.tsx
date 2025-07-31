@@ -4,16 +4,16 @@ import { forwardRef, PropsWithChildren, useMemo } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 
 const variants = {
-  button: cva('rounded-full flex flex-row items-center gap-2 justify-center', {
+  button: cva('rounded-md flex flex-row items-center gap-2 justify-center', {
     variants: {
       variant: {
-        primary: 'bg-button-primary-bg',
+        primary: 'bg-button-primary-bg border-2 border-button-primary-border',
         secondary: 'bg-button-secondary-bg',
-        outlined: 'bg-button-outlined-bg border border-button-outlined-border',
+        outlined: 'bg-button-outlined-bg border-2 border-button-outlined-border',
       },
       size: {
         sm: 'px-3 py-2',
-        md: 'px-4 py-3',
+        md: 'min-h-md px-4 py-3',
         lg: 'px-5 py-4',
       },
     },

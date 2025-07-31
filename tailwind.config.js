@@ -3,6 +3,12 @@ module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
   theme: {
+    borderRadius: {
+      'md': 'var(--radius-md)'
+    },
+    minHeight: {
+      md: 'var(--height-md)'
+    },
     fontSize: {
       h1: 'var(--h1)',
       h2: 'var(--h2)',
@@ -18,12 +24,15 @@ module.exports = {
       'caption-2': 'var(--caption-2)',
       'overline-1': 'var(--overline-1)',
       'overline-2': 'var(--overline-2)',
+
       'button-sm': 'var(--button-sm-text-size)',
       'button-md': 'var(--button-md-text-size)',
       'button-lg': 'var(--button-lg-text-size)',
+
       'badge-sm': 'var(--badge-sm-text-size)',
       'badge-md': 'var(--badge-md-text-size)',
       'badge-lg': 'var(--badge-lg-text-size)',
+
       'icon-xs': 'var(--icon-xs-size)',
       'icon-sm': 'var(--icon-sm-size)',
       'icon-md': 'var(--icon-md-size)',
@@ -32,12 +41,15 @@ module.exports = {
       'icon-2xl': 'var(--icon-2xl-size)',
       'icon-3xl': 'var(--icon-3xl-size)',
       'icon-4xl': 'var(--icon-4xl-size)',
+
+      'input-text-size': 'var(--input-text-size)'
     },
     colors: {
       'screen-bg-primary': 'var(--screen-bg-primary)',
 
       'button-primary-bg': 'var(--button-primary-bg)',
       'button-primary-text': 'var(--button-primary-text)',
+      'button-primary-border': 'var(--button-primary-border)',
 
       'button-secondary-bg': 'var(--button-secondary-bg)',
       'button-secondary-text': 'var(--button-secondary-text)',
