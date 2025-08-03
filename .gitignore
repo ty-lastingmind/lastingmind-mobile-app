@@ -39,3 +39,7 @@ ios
 android
 .idea
 .env
+
+# Generated API files - these should be regenerated from OpenAPI spec
+src/services/api/generated.ts
+src/services/api/model/
