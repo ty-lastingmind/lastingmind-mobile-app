@@ -19,6 +19,7 @@ const variants = cva('', {
       '4xl': 'text-icon-4xl',
     },
     color: {
+      accent: 'text-icon-accent',
       white: 'text-icon-white',
       primary: 'text-icon-primary',
       secondary: 'text-icon-secondary',

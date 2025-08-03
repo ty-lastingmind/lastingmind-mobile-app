@@ -6,12 +6,12 @@
   :root {
     /* SIZES */
     --h1: 38px;
-    --h2: 32px;
+    --h2: 30px;
     --h3: 28px;
     --h4: 24px;
     --h5: 20px;
     --h6: 18px;
-    --body-1: 16px;
+    --body-1: 15px;
     --body-2: 14px;
     --label-1: 16px;
     --label-2: 14px;
@@ -25,7 +25,7 @@
     --button-lg-text-size: var(--h6);
 
     --badge-sm-text-size: var(--caption-2);
-    --badge-md-text-size: var(--caption-1);
+    --badge-md-text-size: 15px;
     --badge-lg-text-size: var(--body-2);
 
     --icon-xs-size: 12px;
@@ -39,6 +39,7 @@
 
     --input-text-size: 15px;
 
+    --radius-sm: 0.625rem;
     --radius-md: 1rem;
     --height-md: 52px;
 
@@ -66,7 +67,7 @@
     /* COMPONENTS */
 
     /* SCREEN */
-    --screen-bg-primary: var(--white);
+    --screen-bg-primary: var(--background-primary);
 
     /* BUTTON */
     --button-primary-bg: var(--fill-accent);
@@ -81,17 +82,19 @@
     --button-outlined-border: var(--accent);
 
     /* BADGE */
-    --badge-primary-bg: var(--brand);
+    --badge-primary-bg: var(--accent);
     --badge-primary-text: var(--white);
+    --badge-primary-border: var(--accent);
 
     --badge-secondary-bg: rgba(74, 108, 250, 0.1);
     --badge-secondary-text: var(--brand);
 
     --badge-outlined-bg: transparent;
-    --badge-outlined-text: var(--brand);
-    --badge-outlined-border: var(--brand);
+    --badge-outlined-text: var(--label-accent);
+    --badge-outlined-border: var(--miscellaneous-topic-stroke);
 
     /* ICON */
+    --icon-accent: var(--accent);
     --icon-white: var(--white);
     --icon-primary: var(--black);
     --icon-secondary: rgba(0, 0, 0, 0.7);
@@ -106,6 +109,7 @@
     --typography-primary: var(--black);
     --typography-secondary: var(--black);
     --typography-tertiary: var(--black);
+    --typography-accent: var(--accent);
 
     /* SEPARATOR */
     --separator-bg: rgba(255, 255, 255, 0.1);
@@ -114,7 +118,7 @@
     --input-border: var(--accent);
     --input-border--error: rgba(239, 68, 68, 1);
     --input-border--focus: rgba(0, 0, 0, 1);
-    --input-text: var(--black);
+    --input-text: var(--label-primary);
     --input-label: var(--black);
     --input-placeholder: var(--label-secondary);
     --input-placeholder--error: var(--error);

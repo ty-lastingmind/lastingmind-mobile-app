@@ -32,6 +32,7 @@ const variants = cva(undefined, {
       bold: 'font-bold',
     },
     color: {
+      accent: 'text-typography-accent',
       primary: 'text-typography-primary',
       secondary: 'text-typography-secondary',
       tertiary: 'text-typography-tertiary',
@@ -60,7 +61,7 @@ export function Typography({
   return (
     <Text
       style={{
-        fontFamily: brand ? font.family.InriaSerif.Bold : undefined,
+        fontFamily: brand ? font.family.InriaSerif.Light : undefined,
       }}
       className={textClassName}
       {...props}

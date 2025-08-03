@@ -12,7 +12,7 @@ export default function AuthLayout() {
   }
 
   if (userQuery.data) {
-    return <Redirect href="/dashboard" />
+    return <Redirect href="/journal" />
   }
 
   return (
