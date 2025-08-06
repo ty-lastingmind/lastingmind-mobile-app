@@ -15,14 +15,6 @@
       "autoIncrement": true
     }
   },
-  "hooks": {
-    "prebuild": [
-      {
-        "name": "Generate API Client",
-        "command": "npm run api:generate"
-      }
-    ]
-  },
   "submit": {
     "production": {
       "ios": {

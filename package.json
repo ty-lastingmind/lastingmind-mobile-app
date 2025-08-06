@@ -16,7 +16,8 @@
     "prepare": "husky",
     "api:generate": "orval --config ./orval.config.ts",
     "api:watch": "orval --config ./orval.config.ts --watch",
-    "api:clean": "rm -rf src/libs/api/generated.ts src/libs/api/model"
+    "api:clean": "rm -rf src/libs/api/generated.ts src/libs/api/model",
+    "postinstall": "npm run api:generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
