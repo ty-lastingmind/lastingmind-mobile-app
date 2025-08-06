@@ -2,10 +2,10 @@ import * as FileSystem from 'expo-file-system'
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { Alert } from 'react-native'
-import { RecorderStateIcon } from 'src/modules/journal/screens/add-journal-entry/parts/audio-recorder/parts/recorder-state-icon'
 import { useUid } from '~/hooks/auth/use-uid'
 import { useRecordingControls } from '~/modules/journal/screens/add-journal-entry/parts/audio-recorder/hooks/use-recording-controls'
 import { useUploadAudio } from '~/modules/journal/screens/add-journal-entry/parts/audio-recorder/hooks/use-upload-audio'
+import { RecorderStateIcon } from './parts/recorder-state-icon'
 
 export function AudioRecorder() {
   const uploadAudio = useUploadAudio()

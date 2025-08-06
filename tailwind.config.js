@@ -3,9 +3,11 @@ module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
   theme: {
-    borderRadius: {
-      sm: 'var(--radius-sm)',
-      md: 'var(--radius-md)',
+    extend: {
+      borderRadius: {
+        sm: 'var(--radius-sm)',
+        md: 'var(--radius-md)',
+      },
     },
     lineHeight: {
       'badge-md': 'var(--badge-md-text-size)',
