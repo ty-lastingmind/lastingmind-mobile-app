@@ -4,12 +4,11 @@ import { Typography } from '~/modules/ui/typography'
 
 interface TopicsCardProps {
   selectedTopic: string
+  topics: string[]
   onTopicChange: (topic: string) => void
 }
 
-const topics = ['Journal', 'Work', 'Personal', 'Health', 'Finance', 'Lifestyle', 'Relationships', 'Spirituality']
-
-export function TopicsCard({ onTopicChange, selectedTopic }: TopicsCardProps) {
+export function TopicsCard({ onTopicChange, topics, selectedTopic }: TopicsCardProps) {
   return (
     <View className="border-2 flex-1 relative border-accent px-4 rounded-md">
       {/*<TouchableOpacity className="absolute right-0 top-0 p-4">*/}

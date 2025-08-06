@@ -1,5 +1,6 @@
 import Axios, { AxiosRequestConfig, AxiosError } from 'axios'
 import Constants from 'expo-constants'
+import { auth } from '../firebase'
 
 export const AXIOS_INSTANCE = Axios.create({
   baseURL: Constants.expoConfig?.extra?.apiBaseUrl,
@@ -8,12 +9,12 @@ export const AXIOS_INSTANCE = Axios.create({
 
 // Add request interceptor for authentication, logging, etc.
 AXIOS_INSTANCE.interceptors.request.use(
-  (config) => {
-    // Add auth token if available
-    // const token = getAuthToken();
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+  async (config) => {
+    const token = await auth.currentUser?.getIdToken()
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
 
     console.log('API Request:', config.method?.toUpperCase(), config.url)
     return config
