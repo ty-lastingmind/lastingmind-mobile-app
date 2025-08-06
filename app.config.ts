@@ -10,10 +10,12 @@ declare const process: {
     EXPO_PUBLIC_APP_VERSION: string
     EXPO_PUBLIC_BUILD_NUMBER: string
     GOOGLE_WEB_CLIENT_ID: string
+    API_BASE_URL: string
   }
 }
 
 const googleWebClientId = process.env.GOOGLE_WEB_CLIENT_ID
+const apiBaseUrl = process.env.API_BASE_URL
 
 // Your project defaults
 const config = {
@@ -135,6 +137,7 @@ const expoConfig: ExpoConfig = {
       projectId: config.expoProjectId,
     },
     googleWebClientId,
+    apiBaseUrl,
   },
   experiments: {
     tsconfigPaths: true,

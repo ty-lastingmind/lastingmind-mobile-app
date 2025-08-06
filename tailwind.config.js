@@ -4,10 +4,14 @@ module.exports = {
   presets: [require('nativewind/preset')],
   theme: {
     borderRadius: {
-      'md': 'var(--radius-md)'
+      sm: 'var(--radius-sm)',
+      md: 'var(--radius-md)',
+    },
+    lineHeight: {
+      'badge-md': 'var(--badge-md-text-size)',
     },
     minHeight: {
-      md: 'var(--height-md)'
+      md: 'var(--height-md)',
     },
     fontSize: {
       h1: 'var(--h1)',
@@ -42,9 +46,16 @@ module.exports = {
       'icon-3xl': 'var(--icon-3xl-size)',
       'icon-4xl': 'var(--icon-4xl-size)',
 
-      'input-text-size': 'var(--input-text-size)'
+      'input-text-size': 'var(--input-text-size)',
     },
     colors: {
+      accent: 'var(--accent)',
+      'label-accent': 'var(--label-accent)',
+      'bg-vibrant-primary': 'var(--background-vibrant-primary)',
+      'bg-primary': 'var(--background-primary)',
+      'bg-secondary': 'var(--background-secondary)',
+      'bg-tertiary': 'var(--background-tertiary)',
+
       'screen-bg-primary': 'var(--screen-bg-primary)',
 
       'button-primary-bg': 'var(--button-primary-bg)',
@@ -60,6 +71,7 @@ module.exports = {
 
       'badge-primary-bg': 'var(--badge-primary-bg)',
       'badge-primary-text': 'var(--badge-primary-text)',
+      'badge-primary-border': 'var(--badge-primary-border)',
 
       'badge-secondary-bg': 'var(--badge-secondary-bg)',
       'badge-secondary-text': 'var(--badge-secondary-text)',
@@ -68,6 +80,7 @@ module.exports = {
       'badge-outlined-text': 'var(--badge-outlined-text)',
       'badge-outlined-border': 'var(--badge-outlined-border)',
 
+      'icon-accent': 'var(--icon-accent)',
       'icon-white': 'var(--icon-white)',
       'icon-primary': 'var(--icon-primary)',
       'icon-secondary': 'var(--icon-secondary)',
@@ -81,6 +94,7 @@ module.exports = {
       'typography-primary': 'var(--typography-primary)',
       'typography-secondary': 'var(--typography-secondary)',
       'typography-tertiary': 'var(--typography-tertiary)',
+      'typography-accent': 'var(--typography-accent)',
 
       'separator-bg': 'var(--separator-bg)',
 

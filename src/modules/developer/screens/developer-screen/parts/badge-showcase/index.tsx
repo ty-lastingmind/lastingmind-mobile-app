@@ -10,24 +10,18 @@ export function BadgeShowcase() {
       <View className="flex gap-2">
         <Typography level="h3">Badge variants</Typography>
         <View className="flex flex-row gap-2">
-          <Badge variant="primary">Primary</Badge>
-          <Badge variant="secondary">Secondary</Badge>
-          <Badge variant="outlined">Outlined</Badge>
+          <Badge variant="primary" label="Primary" />
+          <Badge variant="secondary" label="Secondary" />
+          <Badge variant="outlined" label="Outlined" />
         </View>
       </View>
 
       <View className="flex gap-2">
         <Typography level="h3">Badge sizes</Typography>
         <View className="flex flex-row gap-2 items-center">
-          <Badge variant="primary" size="sm">
-            Small
-          </Badge>
-          <Badge variant="primary" size="md">
-            Medium
-          </Badge>
-          <Badge variant="primary" size="lg">
-            Large
-          </Badge>
+          <Badge variant="primary" size="sm" label="Small" />
+          <Badge variant="primary" size="md" label="Medium" />
+          <Badge variant="primary" size="lg" label="Large" />
         </View>
       </View>
     </View>

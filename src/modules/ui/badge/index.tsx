@@ -1,19 +1,19 @@
-import { cva } from 'class-variance-authority'
 import type { VariantProps } from 'class-variance-authority'
-import { forwardRef, PropsWithChildren, useMemo } from 'react'
+import { cva } from 'class-variance-authority'
+import { forwardRef, useMemo } from 'react'
 import { Text, View, ViewProps } from 'react-native'
 
 const variants = {
-  badge: cva('rounded-full flex flex-row items-center justify-center', {
+  badge: cva('rounded-sm flex flex-row items-center justify-center', {
     variants: {
       variant: {
-        primary: 'bg-badge-primary-bg',
+        primary: 'border border-badge-primary-border bg-badge-primary-bg',
         secondary: 'bg-badge-secondary-bg',
         outlined: 'bg-badge-outlined-bg border border-badge-outlined-border',
       },
       size: {
         sm: 'px-2 py-1',
-        md: 'px-3 py-2',
+        md: 'px-2 py-2.5',
         lg: 'px-4 py-3',
       },
     },
@@ -27,7 +27,7 @@ const variants = {
       },
       size: {
         sm: 'text-badge-sm',
-        md: 'text-badge-md',
+        md: 'text-badge-md leading-badge-md',
         lg: 'text-badge-lg',
       },
     },
@@ -36,10 +36,12 @@ const variants = {
 
 type BadgeVariants = VariantProps<(typeof variants)['badge']>
 
-interface BadgeProps extends ViewProps, BadgeVariants {}
+interface BadgeProps extends ViewProps, BadgeVariants {
+  label: string
+}
 
-export const Badge = forwardRef<View, PropsWithChildren<BadgeProps>>(function Badge(
-  { children, variant = 'primary', size = 'md', ...props },
+export const Badge = forwardRef<View, BadgeProps>(function Badge(
+  { label, variant = 'primary', size = 'md', ...props },
   ref
 ) {
   const classNames = useMemo(() => {
@@ -54,7 +56,7 @@ export const Badge = forwardRef<View, PropsWithChildren<BadgeProps>>(function Ba
 
   return (
     <View className={classNames.badgeClassName} {...props} ref={ref}>
-      <Text className={classNames.textClassName}>{children}</Text>
+      <Text className={classNames.textClassName}>{label}</Text>
     </View>
   )
 })
