@@ -6,14 +6,31 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "NODE_ENV": "development"
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "NODE_ENV": "production"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "NODE_ENV": "production"
+      }
     }
+  },
+  "hooks": {
+    "prebuild": [
+      {
+        "name": "Generate API Client",
+        "command": "npm run api:generate"
+      }
+    ]
   },
   "submit": {
     "production": {
