@@ -1,3 +1,4 @@
+import { Link } from 'expo-router'
 import { useState } from 'react'
 import { View } from 'react-native'
 import { TopicsCard } from '~/modules/journal/screens/select-new-journal-entry-topic/parts/topics-card'
@@ -21,7 +22,9 @@ export function SelectNewJournalEntryTopicScreen() {
         selectedTopic={selectedTopic}
         onTopicChange={setSelectedTopic}
       />
-      <Button variant={selectedTopic ? 'primary' : 'outlined'}>Start</Button>
+      <Link asChild href="/journal/add-journal-entry">
+        <Button variant={selectedTopic ? 'primary' : 'outlined'}>Start</Button>
+      </Link>
     </View>
   )
 }

@@ -68,6 +68,12 @@ const plugins: ExpoConfig['plugins'] = [
   ['expo-font', { fonts }],
   ['expo-asset', { assets }],
   ['expo-router'],
+  [
+    'expo-audio',
+    {
+      microphonePermission: 'Allow $(PRODUCT_NAME) to access your microphone.',
+    },
+  ],
 ]
 
 // UPDATE VERSION
