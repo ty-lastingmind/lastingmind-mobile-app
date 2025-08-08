@@ -1,9 +1,8 @@
-import Axios, { AxiosRequestConfig, AxiosError } from 'axios'
-import Constants from 'expo-constants'
+import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { auth } from '../firebase'
 
 export const AXIOS_INSTANCE = Axios.create({
-  baseURL: Constants.expoConfig?.extra?.apiBaseUrl,
+  baseURL: 'https://mobile-backend-dot-decisive-talon-457821-g4.uc.r.appspot.com',
   timeout: 10000,
 })
 
