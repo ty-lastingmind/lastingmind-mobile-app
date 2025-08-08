@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { Link } from 'expo-router'
+import { Controller } from 'react-hook-form'
 import { View } from 'react-native'
+import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
 import { TopicsCard } from '~/modules/journal/screens/select-new-journal-entry-topic/parts/topics-card'
 import { Button } from '~/modules/ui/button'
 import { Input } from '~/modules/ui/input'
@@ -7,21 +9,50 @@ import { Typography } from '~/modules/ui/typography'
 import { usePullSuggestedTopicsUtilsPullSuggestedTopicsGet } from '~/services/api/generated'
 
 export function SelectNewJournalEntryTopicScreen() {
-  const [selectedTopic, setSelectedTopic] = useState('')
+  const form = useAddJournalEntryFormContext()
   const topics = usePullSuggestedTopicsUtilsPullSuggestedTopicsGet()
+  const selectedTopic = form.watch('topicName')
+  const customTopicName = form.watch('customTopicName')
+  const hasTopic = Boolean(selectedTopic || customTopicName)
+
+  function handleTopicChange(topic: string) {
+    if (topic === selectedTopic) {
+      form.setValue('topicName', '')
+    } else {
+      form.setValue('customTopicName', '')
+      form.setValue('topicName', topic)
+    }
+  }
 
   return (
     <View className="px-8 gap-8 pt-8 flex-1 pb-safe">
       <Typography color="accent" brand level="h5" className="text-center">
         Choose your journal topic
       </Typography>
-      <Input placeholder="Type Your Own..." />
+      <Controller
+        control={form.control}
+        name="customTopicName"
+        render={({ field }) => (
+          <Input
+            onBlur={field.onBlur}
+            onChangeText={(text) => {
+              form.setValue('topicName', '')
+              field.onChange(text)
+            }}
+            value={field.value}
+            placeholder="Type Your Own..."
+          />
+        )}
+      />
       <TopicsCard
         topics={topics.data?.suggested_topics ?? []}
         selectedTopic={selectedTopic}
-        onTopicChange={setSelectedTopic}
+        customTopicName={form.watch('customTopicName')}
+        onTopicChange={handleTopicChange}
       />
-      <Button variant={selectedTopic ? 'primary' : 'outlined'}>Start</Button>
+      <Link disabled={!hasTopic} asChild href="/journal/add-journal-entry">
+        <Button variant={hasTopic ? 'primary' : 'outlined'}>Start</Button>
+      </Link>
     </View>
   )
 }

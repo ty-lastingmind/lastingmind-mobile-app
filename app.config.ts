@@ -68,6 +68,12 @@ const plugins: ExpoConfig['plugins'] = [
   ['expo-font', { fonts }],
   ['expo-asset', { assets }],
   ['expo-router'],
+  [
+    'expo-audio',
+    {
+      microphonePermission: 'Allow $(PRODUCT_NAME) to access your microphone.',
+    },
+  ],
 ]
 
 // UPDATE VERSION
@@ -116,6 +122,7 @@ const expoConfig: ExpoConfig = {
     bundler: 'metro',
   },
   android: {
+    edgeToEdgeEnabled: true,
     googleServicesFile: './assets/firebase/google-services.json',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',

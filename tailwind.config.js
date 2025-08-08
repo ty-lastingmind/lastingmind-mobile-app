@@ -3,9 +3,11 @@ module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
   theme: {
-    borderRadius: {
-      sm: 'var(--radius-sm)',
-      md: 'var(--radius-md)',
+    extend: {
+      borderRadius: {
+        sm: 'var(--radius-sm)',
+        md: 'var(--radius-md)',
+      },
     },
     lineHeight: {
       'badge-md': 'var(--badge-md-text-size)',
@@ -49,12 +51,19 @@ module.exports = {
       'input-text-size': 'var(--input-text-size)',
     },
     colors: {
-      accent: 'var(--accent)',
+      'accent': 'var(--accent)',
+      'red': 'var(--red)',
+      'label-primary': 'var(--label-primary)',
+      'label-secondary': 'var(--label-secondary)',
       'label-accent': 'var(--label-accent)',
-      'bg-vibrant-primary': 'var(--background-vibrant-primary)',
-      'bg-primary': 'var(--background-primary)',
-      'bg-secondary': 'var(--background-secondary)',
-      'bg-tertiary': 'var(--background-tertiary)',
+      'fill-accent': 'var(--fill-accent)',
+      'bg-vibrant-primary': 'var(--bg-vibrant-primary)',
+      'bg-primary': 'var(--bg-primary)',
+      'bg-secondary': 'var(--bg-secondary)',
+      'bg-tertiary': 'var(--bg-tertiary)',
+      'miscellaneous': 'var(--miscellaneous)',
+      'miscellaneous-topic-stroke': 'var(--miscellaneous-topic-stroke)',
+      'miscellaneous-component': 'var(--miscellaneous-component)',
 
       'screen-bg-primary': 'var(--screen-bg-primary)',
 

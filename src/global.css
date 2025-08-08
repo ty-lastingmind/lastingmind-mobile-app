@@ -52,14 +52,14 @@
     /* FIGMA COLORS */
     --accent: rgba(22, 0, 110, 1);
     --red: rgba(255, 0, 0, 1);
-    --label-primary: rgba(255, 255, 255, 1);
+    --label-primary: rgba(0, 0, 0, 1);
     --label-secondary: rgba(60, 60, 67, 0.6);
     --label-accent: rgba(22, 0, 110, 1);
     --fill-accent: rgba(52, 46, 125, 1);
-    --background-vibrant-primary: rgba(0, 0, 0, 1);
-    --background-primary: rgba(255, 255, 255, 1);
-    --background-secondary: rgba(242, 242, 247, 1);
-    --background-tertiary: rgba(239, 239, 239, 1);
+    --bg-vibrant-primary: rgba(0, 0, 0, 1);
+    --bg-primary: rgba(255, 255, 255, 1);
+    --bg-secondary: rgba(242, 242, 247, 1);
+    --bg-tertiary: rgba(239, 239, 239, 1);
     --miscellaneous: rgba(255, 255, 255, 1);
     --miscellaneous-topic-stroke: rgba(195, 195, 195, 1);
     --miscellaneous-component: rgba(138, 56, 245, 1);
@@ -67,11 +67,11 @@
     /* COMPONENTS */
 
     /* SCREEN */
-    --screen-bg-primary: var(--background-primary);
+    --screen-bg-primary: var(--bg-primary);
 
     /* BUTTON */
     --button-primary-bg: var(--fill-accent);
-    --button-primary-text: var(--label-primary);
+    --button-primary-text: var(--white);
     --button-primary-border: var(--accent);
 
     --button-secondary-bg: rgba(74, 108, 250, 0.1);
@@ -97,7 +97,7 @@
     --icon-accent: var(--accent);
     --icon-white: var(--white);
     --icon-primary: var(--black);
-    --icon-secondary: rgba(0, 0, 0, 0.7);
+    --icon-secondary: var(--label-secondary);
     --icon-tertiary: rgba(0, 0, 0, 0.5);
     --icon-brand: var(--brand);
     --icon-red: rgba(239, 68, 68, 1);
@@ -107,9 +107,9 @@
 
     /* TYPOGRAPHY */
     --typography-primary: var(--black);
-    --typography-secondary: var(--black);
+    --typography-secondary: var(--label-secondary);
     --typography-tertiary: var(--black);
-    --typography-accent: var(--accent);
+    --typography-accent: var(--label-accent);
 
     /* SEPARATOR */
     --separator-bg: rgba(255, 255, 255, 0.1);
@@ -132,10 +132,10 @@
     --label-secondary: rgba(255, 255, 255, 0.6);
     --label-accent: rgba(255, 255, 255, 1);
     --fill-accent: rgba(52, 46, 125, 1);
-    --background-vibrant-primary: rgba(0, 0, 0, 0.75);
-    --background-primary: rgba(0, 0, 0, 1);
-    --background-secondary: rgba(0, 0, 0, 1);
-    --background-tertiary: rgba(34, 34, 34, 1);
+    --bg-vibrant-primary: rgba(0, 0, 0, 0.75);
+    --bg-primary: rgba(0, 0, 0, 1);
+    --bg-secondary: rgba(0, 0, 0, 1);
+    --bg-tertiary: rgba(34, 34, 34, 1);
     --miscellaneous: rgba(255, 255, 255, 1);
     --miscellaneous-topic-stroke: rgba(68, 68, 68, 1);
     --miscellaneous-component: rgba(138, 56, 245, 1);
@@ -153,7 +153,6 @@
 
     /* ICON */
     --icon-primary: var(--white);
-    --icon-secondary: rgba(255, 255, 255, 0.7);
     --icon-tertiary: rgba(255, 255, 255, 0.5);
 
     /* TYPOGRAPHY */

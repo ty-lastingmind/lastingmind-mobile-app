@@ -5,10 +5,11 @@ import { Typography } from '~/modules/ui/typography'
 interface TopicsCardProps {
   selectedTopic: string
   topics: string[]
+  customTopicName?: string
   onTopicChange: (topic: string) => void
 }
 
-export function TopicsCard({ onTopicChange, topics, selectedTopic }: TopicsCardProps) {
+export function TopicsCard({ onTopicChange, customTopicName, topics, selectedTopic }: TopicsCardProps) {
   return (
     <View className="border-2 flex-1 relative border-accent px-4 rounded-md">
       {/*<TouchableOpacity className="absolute right-0 top-0 p-4">*/}
@@ -25,7 +26,7 @@ export function TopicsCard({ onTopicChange, topics, selectedTopic }: TopicsCardP
       >
         {topics.map((topic, index) => (
           <TouchableOpacity key={index} onPress={() => onTopicChange(topic)}>
-            <Badge variant={selectedTopic === topic ? 'primary' : 'outlined'} label={topic} />
+            <Badge variant={!customTopicName && selectedTopic === topic ? 'primary' : 'outlined'} label={topic} />
           </TouchableOpacity>
         ))}
       </ScrollView>

@@ -61,7 +61,7 @@ export function Typography({
   return (
     <Text
       style={{
-        fontFamily: brand ? font.family.InriaSerif.Light : undefined,
+        fontFamily: brand ? font.family.InriaSerif.Bold : undefined,
       }}
       className={textClassName}
       {...props}

@@ -1,5 +1,5 @@
 import { Link } from 'expo-router'
-import { SafeAreaView, View } from 'react-native'
+import { View } from 'react-native'
 
 import { useSignInWithEmailAndPassword } from '~/hooks/auth/use-sign-in-with-email-and-password'
 import { EmailPasswordForm, EmailPasswordFormValues } from '~/modules/auth/parts/email-password-form'
@@ -16,23 +16,21 @@ export function SignInScreen() {
   }
 
   return (
-    <SafeAreaView>
-      <View className="gap-4 px-4">
-        <Title>Sign In</Title>
-        <EmailPasswordForm
-          buttonLabel="Sign In"
-          onSubmit={handleSignInWithEmailAndPassword}
-          isLoading={signInWithEmailAndPasswordMutation.isPending}
-        />
-        <Separator label="or" />
-        <GoogleButton label="Sign In with Google" />
-        <Typography level="caption-1" className="text-center">
-          Don&#39;t have an account?{' '}
-          <Link href="/auth/sign-up" replace>
-            Sign up
-          </Link>
-        </Typography>
-      </View>
-    </SafeAreaView>
+    <View className="gap-4 px-4 pt-safe">
+      <Title>Sign In</Title>
+      <EmailPasswordForm
+        buttonLabel="Sign In"
+        onSubmit={handleSignInWithEmailAndPassword}
+        isLoading={signInWithEmailAndPasswordMutation.isPending}
+      />
+      <Separator label="or" />
+      <GoogleButton label="Sign In with Google" />
+      <Typography level="caption-1" className="text-center">
+        Don&#39;t have an account?{' '}
+        <Link href="/auth/sign-up" replace>
+          Sign up
+        </Link>
+      </Typography>
+    </View>
   )
 }
