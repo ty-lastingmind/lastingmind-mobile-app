@@ -122,6 +122,7 @@ const expoConfig: ExpoConfig = {
     bundler: 'metro',
   },
   android: {
+    edgeToEdgeEnabled: true,
     googleServicesFile: './assets/firebase/google-services.json',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
