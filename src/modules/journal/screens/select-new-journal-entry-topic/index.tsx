@@ -53,7 +53,7 @@ export function SelectNewJournalEntryTopicScreen() {
         customTopicName={form.watch('customTopicName')}
         onTopicChange={handleTopicChange}
       />
-      <Link disabled={!hasTopic} asChild href="/journal/add-journal-entry">
+      <Link disabled={!hasTopic} asChild href="/journal/02-enter-journal-entry">
         <Button variant={hasTopic ? 'primary' : 'outlined'}>Start</Button>
       </Link>
       <Button
