@@ -1,7 +1,6 @@
-import { Link, useRouter } from 'expo-router'
+import { Link } from 'expo-router'
 import { Controller } from 'react-hook-form'
 import { View } from 'react-native'
-import useSignOut from '~/hooks/auth/use-sign-out'
 import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
 import { TopicsCard } from '~/modules/journal/screens/select-new-journal-entry-topic/parts/topics-card'
 import { Button } from '~/modules/ui/button'
@@ -10,8 +9,6 @@ import { Typography } from '~/modules/ui/typography'
 import { usePullSuggestedTopicsUtilsPullSuggestedTopicsGet } from '~/services/api/generated'
 
 export function SelectNewJournalEntryTopicScreen() {
-  const signOut = useSignOut()
-  const router = useRouter()
   const form = useAddJournalEntryFormContext()
   const topics = usePullSuggestedTopicsUtilsPullSuggestedTopicsGet()
   const selectedTopic = form.watch('topicName')
@@ -56,18 +53,6 @@ export function SelectNewJournalEntryTopicScreen() {
       <Link disabled={!hasTopic} asChild href="/journal/02-enter-journal-entry">
         <Button variant={hasTopic ? 'primary' : 'outlined'}>Start</Button>
       </Link>
-      <Button
-        onPress={() => {
-          signOut.mutate(undefined, {
-            onSuccess: () => {
-              router.replace('/auth/sign-in')
-            },
-          })
-        }}
-        variant="secondary"
-      >
-        Sign out
-      </Button>
     </View>
   )
 }

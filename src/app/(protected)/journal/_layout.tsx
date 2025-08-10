@@ -1,8 +1,7 @@
 import { Stack } from 'expo-router'
 import { FormProvider } from 'react-hook-form'
-import { font } from '~/constants/fonts'
-import { Logo } from '~/modules/components/logo'
 import { useAddJournalEntryForm } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
+import { Header } from '~/modules/journal/parts/header'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
 export default function JournalLayout() {
@@ -14,17 +13,9 @@ export default function JournalLayout() {
       <Stack
         screenOptions={{
           headerTitle: 'Journal',
-          headerShadowVisible: false,
-          headerRight: Logo,
-          headerTitleStyle: {
-            fontFamily: font.family.InriaSerif.Light,
-            fontSize: 20,
-            fontWeight: 'light',
-            color: colors['label-accent'],
-          },
-          headerStyle: {
-            backgroundColor: colors['screen-bg-primary'],
-          },
+          header: Header,
+          headerBackVisible: false,
+          animation: 'fade',
           contentStyle: {
             backgroundColor: colors['screen-bg-primary'],
           },
