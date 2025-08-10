@@ -5,13 +5,13 @@
 @layer base {
   :root {
     /* SIZES */
-    --h1: 50px;
-    --h2: 30px;
+    --h1: 50px; /* TAKEN */
+    --h2: 32px; /* TAKEN */
     --h3: 28px;
     --h4: 24px;
-    --h5: 20px;
+    --h5: 20px; /* TAKEN */
     --h6: 18px;
-    --body-1: 15px;
+    --body-1: 15px; /* TAKEN */
     --body-2: 14px;
     --label-1: 16px;
     --label-2: 14px;

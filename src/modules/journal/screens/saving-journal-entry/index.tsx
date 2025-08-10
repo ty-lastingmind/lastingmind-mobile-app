@@ -5,7 +5,7 @@ import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-j
 import { SaveResult } from '~/modules/journal/screens/saving-journal-entry/parts/save-result'
 import { Logger } from '~/services'
 import { useSubmitJournalEntryJournalSubmitJournalEntryPost } from '~/services/api/generated'
-import { SavingJournalEntry } from './parts/saving-journal-entry'
+import { TitleAndCaption } from './parts/title-and-caption'
 
 export function SavingJournalEntryScreen() {
   const submitJournalEntry = useSubmitJournalEntryJournalSubmitJournalEntryPost()
@@ -45,8 +45,8 @@ export function SavingJournalEntryScreen() {
   )
 
   if (submitJournalEntry.isPending) {
-    return <SavingJournalEntry />
+    return <TitleAndCaption title="LastingMind" caption="Saving Journal Entry..." />
   }
 
-  return <SaveResult type={'example_chat'} />
+  return <SaveResult type={'saved_answer'} />
 }
