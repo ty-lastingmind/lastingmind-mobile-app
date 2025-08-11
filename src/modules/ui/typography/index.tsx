@@ -15,6 +15,7 @@ const variants = cva(undefined, {
       h4: 'text-h4',
       h5: 'text-h5',
       h6: 'text-h6',
+      'body-lg': 'text-body-lg',
       'body-1': 'text-body-1',
       'body-2': 'text-body-2',
       'label-1': 'text-label-1',

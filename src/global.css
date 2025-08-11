@@ -11,6 +11,7 @@
     --h4: 24px;
     --h5: 20px; /* TAKEN */
     --h6: 18px;
+    --body-lg: 20px;
     --body-1: 15px; /* TAKEN */
     --body-2: 14px;
     --label-1: 16px;
@@ -58,7 +59,7 @@
     --fill-accent: rgba(52, 46, 125, 1);
     --bg-vibrant-primary: rgba(0, 0, 0, 1);
     --bg-primary: rgba(255, 255, 255, 1);
-    --bg-secondary: rgba(242, 242, 247, 1);
+    --bg-secondary: rgba(120, 120, 128, 0.16);
     --bg-tertiary: rgba(239, 239, 239, 1);
     --miscellaneous: rgba(255, 255, 255, 1);
     --miscellaneous-topic-stroke: rgba(195, 195, 195, 1);

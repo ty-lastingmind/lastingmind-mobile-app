@@ -61,7 +61,15 @@ export function SaveResult({ type }: SaveResultProps) {
     case NextPageType.percent_increase_1:
     case NextPageType.percent_increase_2:
     case NextPageType.percent_increase_3:
-      return <PercentIncrease />
+      return (
+        <PercentIncrease
+          onPress={() => {}}
+          title="Congrats!"
+          description="You hit 10 journal entries!"
+          animation="writingLotti"
+          progress={10}
+        />
+      )
     case NextPageType.saved_answer:
       return <SavedAnswer />
     default:

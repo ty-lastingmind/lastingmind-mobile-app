@@ -22,6 +22,7 @@ module.exports = {
       h4: 'var(--h4)',
       h5: 'var(--h5)',
       h6: 'var(--h6)',
+      'body-lg': 'var(--body-lg)',
       'body-1': 'var(--body-1)',
       'body-2': 'var(--body-2)',
       'label-1': 'var(--label-1)',
