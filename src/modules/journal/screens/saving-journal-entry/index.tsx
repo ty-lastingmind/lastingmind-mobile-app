@@ -48,5 +48,5 @@ export function SavingJournalEntryScreen() {
     return <TitleAndCaption title="LastingMind" caption="Saving Journal Entry..." />
   }
 
-  return <SaveResult type={'example_chat_1'} />
+  return <SaveResult type={'milestone_1'} />
 }

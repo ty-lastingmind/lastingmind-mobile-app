@@ -32,7 +32,15 @@ export function SaveResult({ type }: SaveResultProps) {
     case NextPageType.milestone_1:
     case NextPageType.milestone_2:
     case NextPageType.milestone_3:
-      return <Milestone />
+      return (
+        <Milestone
+          onPress={() => {}}
+          title="Congrats!"
+          caption="You hit 10 journal entries!"
+          animation="writingLotti"
+          text="Your LastingMind is getting so much better!"
+        />
+      )
     case NextPageType.percent_increase_1:
     case NextPageType.percent_increase_2:
     case NextPageType.percent_increase_3:
