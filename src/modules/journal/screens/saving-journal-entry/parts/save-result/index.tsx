@@ -28,7 +28,15 @@ export function SaveResult({ type }: SaveResultProps) {
     case NextPageType.first_answer_page:
       return <FirstAnswer />
     case NextPageType.level_up_page:
-      return <LevelIncrease />
+      return (
+        <LevelIncrease
+          onTryChatPress={() => {}}
+          onContinuePress={() => {}}
+          animation={'increase'}
+          title={'Level Up'}
+          topics={['Basic', 'Intermediate', 'Advanced']}
+        />
+      )
     case NextPageType.milestone_1:
     case NextPageType.milestone_2:
     case NextPageType.milestone_3:

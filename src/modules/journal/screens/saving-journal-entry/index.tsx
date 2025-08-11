@@ -48,5 +48,5 @@ export function SavingJournalEntryScreen() {
     return <TitleAndCaption title="LastingMind" caption="Saving Journal Entry..." />
   }
 
-  return <SaveResult type={'milestone_1'} />
+  return <SaveResult type={'level_up_page'} />
 }

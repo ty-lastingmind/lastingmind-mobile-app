@@ -2,6 +2,7 @@ import type { VariantProps } from 'class-variance-authority'
 import { cva } from 'class-variance-authority'
 import { forwardRef, useMemo } from 'react'
 import { Text, View, ViewProps } from 'react-native'
+import { cn } from '~/utils/cn'
 
 const variants = {
   badge: cva('rounded-sm flex flex-row items-center justify-center', {
@@ -38,25 +39,27 @@ type BadgeVariants = VariantProps<(typeof variants)['badge']>
 
 interface BadgeProps extends ViewProps, BadgeVariants {
   label: string
+  containerClassName?: string
+  textClassName?: string
 }
 
 export const Badge = forwardRef<View, BadgeProps>(function Badge(
-  { label, variant = 'primary', size = 'md', ...props },
+  { label, variant = 'primary', size = 'md', containerClassName, textClassName, ...props },
   ref
 ) {
   const classNames = useMemo(() => {
-    const badgeClassName = variants.badge({ variant, size })
-    const textClassName = variants.text({ variant, size })
+    const badgeClassNameCn = cn(variants.badge({ variant, size }), containerClassName)
+    const textClassNameCn = cn(variants.text({ variant, size }), textClassName)
 
     return {
-      badgeClassName,
-      textClassName,
+      badgeClassNameCn,
+      textClassNameCn,
     }
-  }, [variant, size])
+  }, [variant, size, containerClassName, textClassName])
 
   return (
-    <View className={classNames.badgeClassName} {...props} ref={ref}>
-      <Text className={classNames.textClassName}>{label}</Text>
+    <View className={classNames.badgeClassNameCn} {...props} ref={ref}>
+      <Text className={classNames.textClassNameCn}>{label}</Text>
     </View>
   )
 })

@@ -23,3 +23,5 @@ export const animations = {
   thumbsUp: Thumbs_Up,
   writingLotti: Writing_Lotti,
 }
+
+export type Animation = keyof typeof animations

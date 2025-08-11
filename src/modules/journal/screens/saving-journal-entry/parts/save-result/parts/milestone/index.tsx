@@ -14,7 +14,7 @@ interface MilestoneProps {
 
 export function Milestone({ title, caption, text, animation, onPress }: MilestoneProps) {
   return (
-    <View className="flex-1 pb-safe pt-8">
+    <View className="flex-1 pb-safe pt-8 px-8">
       <Typography className="text-center" brand level="h2">
         {title}
       </Typography>
@@ -29,7 +29,7 @@ export function Milestone({ title, caption, text, animation, onPress }: Mileston
           autoPlay
         />
       </View>
-      <View className="gap-16 px-8">
+      <View className="gap-16">
         <View className="gap-6">
           <Typography brand className="text-center" level="h2">
             {caption}
