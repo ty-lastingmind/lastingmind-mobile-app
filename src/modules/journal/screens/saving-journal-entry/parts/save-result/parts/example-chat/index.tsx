@@ -4,17 +4,19 @@ import { IncomingMessage } from '~/modules/components/chat/incoming-message'
 import { OutgoingMessage } from '~/modules/components/chat/outgoing-message'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
+import { cn } from '~/utils/cn'
 
 interface ExampleChatProps {
   title: string
   caption: string
   message: string
   answer: string
+  overline?: string
   avatarUrl: string
   onPress: () => void
 }
 
-export function ExampleChat({ title, caption, message, answer, avatarUrl, onPress }: ExampleChatProps) {
+export function ExampleChat({ title, caption, overline, message, answer, avatarUrl, onPress }: ExampleChatProps) {
   return (
     <View className="px-6 flex-1 pb-safe gap-8">
       <View className="gap-4">
@@ -37,7 +39,14 @@ export function ExampleChat({ title, caption, message, answer, avatarUrl, onPres
           <IncomingMessage message={answer} avatarUrl={avatarUrl} />
         </View>
       </ScrollView>
-      <View className="px-3 pb-3 pt-[10%]">
+      {overline && (
+        <View>
+          <Typography className="text-center" color="secondary" level="h5">
+            {overline}
+          </Typography>
+        </View>
+      )}
+      <View className={cn('px-3 pb-3', overline ? '' : 'pt-[10%]')}>
         <Button onPress={onPress}>Continue</Button>
       </View>
     </View>
