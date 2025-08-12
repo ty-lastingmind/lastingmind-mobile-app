@@ -5,13 +5,14 @@
 @layer base {
   :root {
     /* SIZES */
-    --h1: 38px;
-    --h2: 30px;
+    --h1: 50px; /* TAKEN */
+    --h2: 32px; /* TAKEN */
     --h3: 28px;
     --h4: 24px;
-    --h5: 20px;
+    --h5: 20px; /* TAKEN */
     --h6: 18px;
-    --body-1: 15px;
+    --body-lg: 20px;
+    --body-1: 15px; /* TAKEN */
     --body-2: 14px;
     --label-1: 16px;
     --label-2: 14px;
@@ -26,7 +27,7 @@
 
     --badge-sm-text-size: var(--caption-2);
     --badge-md-text-size: 15px;
-    --badge-lg-text-size: var(--body-2);
+    --badge-lg-text-size: 20px;
 
     --icon-xs-size: 12px;
     --icon-sm-size: 16px;
@@ -58,7 +59,7 @@
     --fill-accent: rgba(52, 46, 125, 1);
     --bg-vibrant-primary: rgba(0, 0, 0, 1);
     --bg-primary: rgba(255, 255, 255, 1);
-    --bg-secondary: rgba(242, 242, 247, 1);
+    --bg-secondary: rgba(120, 120, 128, 0.16);
     --bg-tertiary: rgba(239, 239, 239, 1);
     --miscellaneous: rgba(255, 255, 255, 1);
     --miscellaneous-topic-stroke: rgba(195, 195, 195, 1);

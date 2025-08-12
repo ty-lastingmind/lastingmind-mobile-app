@@ -25,6 +25,7 @@ export function useProceedAudio() {
 
         setStatus('transcribing')
         const transcribeResponse = await transcribeAudio.mutateAsync({
+          // todo - replace hardcoded user name and mime type
           data: { gcsUri: downloadURL, mimeType: 'audio/m4a', userFullName: 'zarif abdalimov' },
         })
 

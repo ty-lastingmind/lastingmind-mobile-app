@@ -2,6 +2,7 @@ import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { auth } from '../firebase'
 
 export const AXIOS_INSTANCE = Axios.create({
+  // todo - replace with env variable
   baseURL: 'https://mobile-backend-dot-decisive-talon-457821-g4.uc.r.appspot.com',
   timeout: 10000,
 })
@@ -9,6 +10,7 @@ export const AXIOS_INSTANCE = Axios.create({
 // Add request interceptor for authentication, logging, etc.
 AXIOS_INSTANCE.interceptors.request.use(
   async (config) => {
+    // todo - maybe move token to storage
     const token = await auth.currentUser?.getIdToken()
 
     if (token) {

@@ -15,6 +15,7 @@ export function TypographyShowcase() {
         <Typography level="h4">Heading 4</Typography>
         <Typography level="h5">Heading 5</Typography>
         <Typography level="h6">Heading 6</Typography>
+        <Typography level="body-lg">Body LG text</Typography>
         <Typography level="body-1">Body 1 text</Typography>
         <Typography level="body-2">Body 2 text</Typography>
         <Typography level="label-1">Label 1</Typography>

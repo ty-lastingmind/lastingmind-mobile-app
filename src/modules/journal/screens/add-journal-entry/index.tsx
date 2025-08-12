@@ -1,27 +1,18 @@
 import { useRouter } from 'expo-router'
 import React, { useMemo } from 'react'
 import { Controller } from 'react-hook-form'
-import { Alert, TextInput, View } from 'react-native'
+import { TextInput, View } from 'react-native'
 import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
 import { AudioRecorder } from '~/modules/journal/screens/add-journal-entry/parts/audio-recorder'
 import { AudioTracksList } from '~/modules/journal/screens/add-journal-entry/parts/audio-tracks-list'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
-import { useSubmitJournalEntryJournalSubmitJournalEntryPost } from '~/services/api/generated'
 import { formatDate } from '~/utils/date'
-import { Logger } from '~/services'
 
 export function AddJournalEntryScreen() {
   const form = useAddJournalEntryFormContext()
   const router = useRouter()
-  const submitJournalEntry = useSubmitJournalEntryJournalSubmitJournalEntryPost()
-  const { date, formattedDate } = useMemo(
-    () => ({
-      date: new Date(),
-      formattedDate: formatDate(new Date()),
-    }),
-    []
-  )
+  const formattedDate = useMemo(() => formatDate(new Date()), [])
 
   const topicName = form.getValues('topicName')
   const customTopicName = form.getValues('customTopicName')
@@ -30,33 +21,7 @@ export function AddJournalEntryScreen() {
   const hasText = Boolean(form.watch('text'))
 
   function handleSubmit() {
-    const formValues = form.getValues()
-
-    submitJournalEntry.mutate(
-      {
-        data: {
-          topic: formValues.customTopicName ?? formValues.topicName,
-          date: date.toISOString(),
-          text: formValues.text,
-          audioFiles: formValues.audioFiles,
-        },
-      },
-      {
-        onSuccess: () => {
-          router.replace('/journal/success')
-          form.reset({
-            audioFiles: [],
-            text: '',
-            customTopicName: '',
-            topicName: '',
-          })
-        },
-        onError: (e) => {
-          Alert.alert('Error', 'There was an error saving your note')
-          Logger.logError(e)
-        },
-      }
-    )
+    router.replace('/journal/03-save-journal-entry')
   }
 
   return (
@@ -82,7 +47,7 @@ export function AddJournalEntryScreen() {
                 multiline
                 placeholder="Enter Answer..."
                 scrollEnabled
-                className="text-body-1 text-typography-primary p-6"
+                className="text-body-1 text-typography-primary p-6 flex-1"
                 placeholderTextColor="text-label-secondary"
               />
             )}
@@ -98,7 +63,7 @@ export function AddJournalEntryScreen() {
         </View>
       </View>
       <View className="px-4">
-        <Button onPress={handleSubmit} variant={hasText ? 'primary' : 'outlined'}>
+        <Button disabled={!hasText} onPress={handleSubmit} variant={hasText ? 'primary' : 'outlined'}>
           Submit
         </Button>
       </View>
