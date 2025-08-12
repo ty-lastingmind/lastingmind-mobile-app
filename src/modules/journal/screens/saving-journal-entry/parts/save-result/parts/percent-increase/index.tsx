@@ -10,10 +10,20 @@ interface PercentIncreaseProps {
   animation: Animation
   progress: number
   description: string
+  nextLevel: string
+  percentToNextLevel: number
   onPress: () => void
 }
 
-export function PercentIncrease({ title, animation, progress, description, onPress }: PercentIncreaseProps) {
+export function PercentIncrease({
+  title,
+  nextLevel,
+  animation,
+  percentToNextLevel,
+  progress,
+  description,
+  onPress,
+}: PercentIncreaseProps) {
   return (
     <View className="flex-1 pb-safe gap-10">
       <Typography brand className="text-center" level="h2">
@@ -37,10 +47,10 @@ export function PercentIncrease({ title, animation, progress, description, onPre
               Level progress
             </Typography>
             <Typography level="body-lg" weight="bold" color="accent">
-              {progress}% to basic
+              {percentToNextLevel}% to {nextLevel}
             </Typography>
           </View>
-          <Progress value={50} />
+          <Progress value={progress} />
         </View>
         <Typography className="text-center" level="body-lg">
           {description}

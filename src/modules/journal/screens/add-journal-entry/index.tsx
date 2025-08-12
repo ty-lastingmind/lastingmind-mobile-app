@@ -47,7 +47,7 @@ export function AddJournalEntryScreen() {
                 multiline
                 placeholder="Enter Answer..."
                 scrollEnabled
-                className="text-body-1 text-typography-primary p-6"
+                className="text-body-1 text-typography-primary p-6 flex-1"
                 placeholderTextColor="text-label-secondary"
               />
             )}

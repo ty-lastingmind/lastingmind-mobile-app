@@ -1,78 +1,111 @@
-import { NextPageType } from '~/services/api/model'
+import { useRouter } from 'expo-router'
+import {
+  dataIsExampleChatData,
+  dataIsFirstAnswerData,
+  dataIsLevelUpData,
+  dataIsMilestoneData,
+  dataIsPercentIncreaseData,
+  dataIsSavedAnswerData,
+} from '~/modules/journal/screens/saving-journal-entry/parts/save-result/index.utils'
+import { NextPageResponseNextPageData, NextPageType } from '~/services/api/model'
 import { ExampleChat } from './parts/example-chat'
 import { LevelIncrease } from './parts/level-increase'
 import { Milestone } from './parts/milestone'
 import { PercentIncrease } from './parts/percent-increase'
 import { SavedAnswer } from './parts/saved-answer'
+import { exampleChatToData, levelToData, milestoneToData, percentIncreaseToData } from './index.static'
 
 interface SaveResultProps {
   type: NextPageType
+  data: NextPageResponseNextPageData
 }
 
-export function SaveResult({ type }: SaveResultProps) {
-  switch (type) {
-    case NextPageType.example_chat_1:
-    case NextPageType.example_chat_2:
-    case NextPageType.example_chat_3:
-      return (
-        <ExampleChat
-          title="Example Chat"
-          caption="This is an example chat"
-          message="Lorem Ipsum"
-          answer="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-          avatarUrl="https://picsum.photos/id/1/200/300"
-          onPress={() => console.log('Pressed')}
-        />
-      )
-    case NextPageType.first_answer_page:
-      return (
-        <ExampleChat
-          title="Example Chat"
-          caption="This is an example chat"
-          message="Lorem Ipsum"
-          overline="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-          answer="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-          avatarUrl="https://picsum.photos/id/1/200/300"
-          onPress={() => console.log('Pressed')}
-        />
-      )
-    case NextPageType.level_up_page:
-      return (
-        <LevelIncrease
-          onTryChatPress={() => {}}
-          onContinuePress={() => {}}
-          animation={'increase'}
-          title={'Level Up'}
-          topics={['Basic', 'Intermediate', 'Advanced']}
-        />
-      )
-    case NextPageType.milestone_1:
-    case NextPageType.milestone_2:
-    case NextPageType.milestone_3:
-      return (
-        <Milestone
-          onPress={() => {}}
-          title="Congrats!"
-          caption="You hit 10 journal entries!"
-          animation="writingLotti"
-          text="Your LastingMind is getting so much better!"
-        />
-      )
-    case NextPageType.percent_increase_1:
-    case NextPageType.percent_increase_2:
-    case NextPageType.percent_increase_3:
-      return (
-        <PercentIncrease
-          onPress={() => {}}
-          title="Congrats!"
-          description="You hit 10 journal entries!"
-          animation="writingLotti"
-          progress={10}
-        />
-      )
-    case NextPageType.saved_answer:
-      return <SavedAnswer />
-    default:
-      return null
+export function SaveResult({ data, type }: SaveResultProps) {
+  const router = useRouter()
+
+  if (dataIsLevelUpData(type, data)) {
+    const componentData = levelToData[data.level_name] ?? { title: data.level_name, animation: 'lm1Trophy' }
+
+    return (
+      <LevelIncrease
+        title={componentData.title}
+        topics={data.topics_discussed}
+        onTryChatPress={() => {
+          // todo - open chat
+        }}
+        onContinuePress={() => {
+          router.replace('/journal/01-select-topic')
+        }}
+        animation={componentData.animation}
+      />
+    )
   }
+  if (dataIsFirstAnswerData(type, data)) {
+    return (
+      <ExampleChat
+        title="Great job on your first journal entry!"
+        caption="Your answers power your LastingMind Chat!"
+        message={data.question}
+        overline="Note: Your chat may take a day to update"
+        answer={data.answer}
+        avatarUrl="" // todo - add avatar
+        onPress={() => {
+          router.replace('/journal/01-select-topic')
+        }}
+      />
+    )
+  }
+  if (dataIsMilestoneData(type, data)) {
+    const componentData = milestoneToData[type]
+
+    return (
+      <Milestone
+        title={componentData.title}
+        caption={componentData.caption(data.milestone)}
+        text="Your LastingMind is getting so much better!"
+        animation={componentData.animation}
+        onPress={() => {
+          router.replace('/journal/01-select-topic')
+        }}
+      />
+    )
+  }
+  if (dataIsPercentIncreaseData(type, data)) {
+    const componentData = percentIncreaseToData[type]
+
+    return (
+      <PercentIncrease
+        title={componentData.title}
+        animation={componentData.animation}
+        progress={100 - data.percent_to_next_stage}
+        nextLevel={data.next_stage}
+        description={`You just got ${data.percent_increase}% closer to finishing the ${data.next_stage}. Keep going to improve your LastingMind Chat!`}
+        percentToNextLevel={data.percent_to_next_stage}
+        onPress={() => {
+          router.replace('/journal/01-select-topic')
+        }}
+      />
+    )
+  }
+  if (dataIsExampleChatData(type, data)) {
+    const componentData = exampleChatToData[type]
+
+    return (
+      <ExampleChat
+        title={componentData.title}
+        caption="Check out this example conversation with your LastingMind"
+        message={data.question}
+        answer={data.answer}
+        avatarUrl="" // todo - add avatar
+        onPress={() => {
+          router.replace('/journal/01-select-topic')
+        }}
+      />
+    )
+  }
+  if (dataIsSavedAnswerData(type, data)) {
+    return <SavedAnswer title="Entry Saved!" caption="Keep adding more responses to improve your LastingMind!" />
+  }
+
+  return null
 }

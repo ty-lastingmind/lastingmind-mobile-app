@@ -48,5 +48,14 @@ export function SavingJournalEntryScreen() {
     return <TitleAndCaption title="LastingMind" caption="Saving Journal Entry..." />
   }
 
-  return <SaveResult type={'percent_increase_1'} />
+  if (!submitJournalEntry.data) {
+    return null
+  }
+
+  return (
+    <SaveResult
+      data={submitJournalEntry.data.next_page_info.next_page_data}
+      type={submitJournalEntry.data.next_page_info.next_page}
+    />
+  )
 }

@@ -2,7 +2,12 @@ import { useFocusEffect, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 import { TitleAndCaption } from '../../../title-and-caption'
 
-export function SavedAnswer() {
+interface SavedAnswerProps {
+  title: string
+  caption: string
+}
+
+export function SavedAnswer({ title, caption }: SavedAnswerProps) {
   const router = useRouter()
 
   useFocusEffect(
@@ -17,5 +22,5 @@ export function SavedAnswer() {
     }, [])
   )
 
-  return <TitleAndCaption title="Entry Saved!" caption={'Keep adding more responses to\nimprove your LastingMind!'} />
+  return <TitleAndCaption title={title} caption={caption} />
 }

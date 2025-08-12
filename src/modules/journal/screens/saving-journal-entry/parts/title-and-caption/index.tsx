@@ -8,7 +8,7 @@ interface TitleAndCaptionProps {
 
 export function TitleAndCaption({ title, caption }: TitleAndCaptionProps) {
   return (
-    <View className="flex items-center justify-center flex-1 gap-8 pb-[85%]">
+    <View className="flex items-center justify-center flex-1 gap-8 pb-[85%] px-14">
       <Typography className="text-center" brand level="h1" color="accent">
         {title}
       </Typography>
