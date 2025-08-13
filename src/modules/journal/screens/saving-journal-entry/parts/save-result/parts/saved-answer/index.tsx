@@ -13,7 +13,7 @@ export function SavedAnswer({ title, caption }: SavedAnswerProps) {
   useFocusEffect(
     useCallback(() => {
       const timeout = setTimeout(() => {
-        router.replace('/journal/01-select-topic')
+        router.replace('/questions/journal/add/01-select-topic')
       }, 3000)
 
       return () => {

@@ -1,8 +1,7 @@
 import { Stack } from 'expo-router'
-
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
-export default function ProfileLayout() {
+export default function Layout() {
   const colors = useTailwindColors()
 
   return (

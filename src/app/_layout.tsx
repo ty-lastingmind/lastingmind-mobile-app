@@ -2,6 +2,7 @@ import '~/global.css'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useInitServices } from '~/hooks/use-init-services'
 
 import { queryClient } from '~/libs/query-client'
@@ -18,7 +19,9 @@ export default function Layout() {
     <ColorSchemeProvider>
       <TailwindColorsProvider>
         <QueryClientProvider client={queryClient}>
-          <App />
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <App />
+          </GestureHandlerRootView>
         </QueryClientProvider>
       </TailwindColorsProvider>
     </ColorSchemeProvider>
@@ -34,7 +37,7 @@ function App() {
       screenOptions={{
         headerShown: false,
         contentStyle: {
-          backgroundColor: colors['screen-bg-primary'],
+          backgroundColor: colors['bg-primary'],
         },
       }}
     >

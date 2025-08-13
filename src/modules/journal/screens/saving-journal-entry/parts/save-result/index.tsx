@@ -34,7 +34,7 @@ export function SaveResult({ data, type }: SaveResultProps) {
           // todo - open chat
         }}
         onContinuePress={() => {
-          router.replace('/journal/01-select-topic')
+          router.replace('/questions/journal/add/01-select-topic')
         }}
         animation={componentData.animation}
       />
@@ -50,7 +50,7 @@ export function SaveResult({ data, type }: SaveResultProps) {
         answer={data.answer}
         avatarUrl="" // todo - add avatar
         onPress={() => {
-          router.replace('/journal/01-select-topic')
+          router.replace('/questions/journal/add/01-select-topic')
         }}
       />
     )
@@ -65,7 +65,7 @@ export function SaveResult({ data, type }: SaveResultProps) {
         text="Your LastingMind is getting so much better!"
         animation={componentData.animation}
         onPress={() => {
-          router.replace('/journal/01-select-topic')
+          router.replace('/questions/journal/add/01-select-topic')
         }}
       />
     )
@@ -82,7 +82,7 @@ export function SaveResult({ data, type }: SaveResultProps) {
         description={`You just got ${data.percent_increase}% closer to finishing the ${data.next_stage}. Keep going to improve your LastingMind Chat!`}
         percentToNextLevel={data.percent_to_next_stage}
         onPress={() => {
-          router.replace('/journal/01-select-topic')
+          router.replace('/questions/journal/add/01-select-topic')
         }}
       />
     )
@@ -98,7 +98,7 @@ export function SaveResult({ data, type }: SaveResultProps) {
         answer={data.answer}
         avatarUrl="" // todo - add avatar
         onPress={() => {
-          router.replace('/journal/01-select-topic')
+          router.replace('/questions/journal/add/01-select-topic')
         }}
       />
     )
