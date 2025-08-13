@@ -1,5 +1,6 @@
 import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { auth } from '../firebase'
+import { getIdToken } from '@react-native-firebase/auth'
 
 export const AXIOS_INSTANCE = Axios.create({
   // todo - replace with env variable
@@ -10,10 +11,9 @@ export const AXIOS_INSTANCE = Axios.create({
 // Add request interceptor for authentication, logging, etc.
 AXIOS_INSTANCE.interceptors.request.use(
   async (config) => {
-    // todo - maybe move token to storage
-    const token = await auth.currentUser?.getIdToken()
-
-    if (token) {
+    if (auth.currentUser) {
+      // todo - maybe move token to storage
+      const token = await getIdToken(auth.currentUser)
       config.headers.Authorization = `Bearer ${token}`
     }
 

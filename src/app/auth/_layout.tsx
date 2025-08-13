@@ -12,7 +12,7 @@ export default function AuthLayout() {
   }
 
   if (userQuery.data) {
-    return <Redirect href="/(protected)/journal/01-select-topic" />
+    return <Redirect href="/(protected)/(tabs)/home" />
   }
 
   return (
@@ -20,7 +20,7 @@ export default function AuthLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: {
-          backgroundColor: colors['screen-bg-primary'],
+          backgroundColor: colors['bg-primary'],
         },
       }}
     />

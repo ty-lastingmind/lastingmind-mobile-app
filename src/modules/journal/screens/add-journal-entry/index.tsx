@@ -21,7 +21,7 @@ export function AddJournalEntryScreen() {
   const hasText = Boolean(form.watch('text'))
 
   function handleSubmit() {
-    router.replace('/journal/03-save-journal-entry')
+    router.replace('/questions/journal/add/03-save-journal-entry')
   }
 
   return (

@@ -1,5 +1,6 @@
-import { Stack } from 'expo-router'
+import { Drawer } from 'expo-router/drawer'
 import { FormProvider } from 'react-hook-form'
+import { DrawerJournal } from '~/modules/drawer/parts/drawer-journal'
 import { useAddJournalEntryForm } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
 import { Header } from '~/modules/journal/parts/header'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
@@ -10,16 +11,15 @@ export default function JournalLayout() {
 
   return (
     <FormProvider {...form}>
-      <Stack
+      <Drawer
         screenOptions={{
           headerTitle: 'Journal',
           header: Header,
-          headerBackVisible: false,
-          animation: 'fade',
-          contentStyle: {
-            backgroundColor: colors['screen-bg-primary'],
+          sceneStyle: {
+            backgroundColor: colors['bg-primary'],
           },
         }}
+        drawerContent={() => <DrawerJournal />}
       />
     </FormProvider>
   )
