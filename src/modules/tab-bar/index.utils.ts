@@ -1,5 +1,5 @@
-const pathNamesToHide = ['journal']
+const pathNamesToHide = ['journal', 'interview']
 
 export function hideTabBar(pathname: string) {
-  return pathNamesToHide.includes(pathname)
+  return pathNamesToHide.some((pathNameToHide) => pathname.includes(pathNameToHide))
 }

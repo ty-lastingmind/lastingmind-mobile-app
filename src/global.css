@@ -82,6 +82,10 @@
     --button-outlined-text: var(--label-accent);
     --button-outlined-border: var(--accent);
 
+    --button-outlined-secondary-bg: transparent;
+    --button-outlined-secondary-text: var(--label-accent);
+    --button-outlined-secondary-border: var(--miscellaneous-topic-stroke);
+
     /* BADGE */
     --badge-primary-bg: var(--accent);
     --badge-primary-text: var(--white);

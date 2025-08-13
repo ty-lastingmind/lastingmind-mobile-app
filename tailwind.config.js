@@ -79,6 +79,10 @@ module.exports = {
       'button-outlined-text': 'var(--button-outlined-text)',
       'button-outlined-border': 'var(--button-outlined-border)',
 
+      'button-outlined-secondary-bg': 'var(--button-outlined-secondary-bg)',
+      'button-outlined-secondary-text': 'var(--button-outlined-secondary-text)',
+      'button-outlined-secondary-border': 'var(--button-outlined-secondary-border)',
+
       'badge-primary-bg': 'var(--badge-primary-bg)',
       'badge-primary-text': 'var(--badge-primary-text)',
       'badge-primary-border': 'var(--badge-primary-border)',
