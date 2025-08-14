@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native'
+import { AnimatedTypographyShowcase } from '~/modules/developer/screens/developer-screen/parts/animated-typography-showcase'
 import { AvatarShowcase } from '~/modules/developer/screens/developer-screen/parts/avatar-showcase'
 
 import { BadgeShowcase } from '~/modules/developer/screens/developer-screen/parts/badge-showcase'
@@ -12,6 +13,7 @@ import { TypographyShowcase } from '~/modules/developer/screens/developer-screen
 import { Badge } from '~/modules/ui/badge'
 
 const showCaseComponents = {
+  AnimatedTypographyShowcase: AnimatedTypographyShowcase,
   AvatarShowcase: AvatarShowcase,
   ProgressShowcase: ProgressShowcase,
   NotificationsShowcase: NotificationsShowcase,

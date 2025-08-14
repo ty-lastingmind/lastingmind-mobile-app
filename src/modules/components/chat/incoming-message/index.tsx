@@ -1,17 +1,18 @@
 import { View } from 'react-native'
 import { Avatar } from '~/modules/ui/avatar'
-import { Typography } from '~/modules/ui/typography'
+import { TypographyTyping } from '~/modules/ui/typography-typing'
+import { ImageSrc } from '~/types/images'
 
 interface IncomingMessageProps {
-  avatarUrl: string
+  avatarUrl: ImageSrc
   message: string
 }
 
 export function IncomingMessage({ avatarUrl, message }: IncomingMessageProps) {
   return (
-    <View className="gap-3">
+    <View className="gap-3 px-4 pt-8">
       <Avatar source={avatarUrl} />
-      <Typography level="body-1">{message}</Typography>
+      <TypographyTyping level="body-1">{message}</TypographyTyping>
     </View>
   )
 }

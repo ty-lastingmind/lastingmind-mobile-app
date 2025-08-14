@@ -1,3 +1,4 @@
+import { Link } from 'expo-router'
 import { View } from 'react-native'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { interviewDurationOptions } from '~/modules/interview/screens/select-interview-duration/index.static'
@@ -31,12 +32,9 @@ export function SelectInterviewDurationScreen() {
       <Typography level="body-1" className="text-center" color="secondary">
         Don’t worry, you will be able to stop the interview any time and resume later.
       </Typography>
-      <Button
-        variant={interviewDurationInMinutes ? 'primary' : 'outlinedSecondary'}
-        onPress={() => console.log('Start')}
-      >
-        Start
-      </Button>
+      <Link href="/questions/interview/add/03-loading-interview" asChild>
+        <Button variant={interviewDurationInMinutes ? 'primary' : 'outlinedSecondary'}>Start</Button>
+      </Link>
     </ScreenContainer>
   )
 }
