@@ -1,13 +1,15 @@
 import React, { useRef, useState } from 'react'
 import { Alert, ScrollView, View } from 'react-native'
+import { TranscriptDialog } from 'src/modules/interview/screens/chat/parts/transcript-dialog'
 import avatar from '~/../assets/images/jane-avatar.jpg'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { IncomingMessage } from '~/modules/components/chat/incoming-message'
 import { OutgoingMessage } from '~/modules/components/chat/outgoing-message'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
+import { useInterviewTimer } from '~/modules/interview/screens/chat/hooks/use-interview-timer'
 import { MessageInput } from '~/modules/interview/screens/chat/parts/message-input'
-import { TranscriptOverlay } from '~/modules/interview/screens/chat/parts/transcript-overlay'
+import { OutOfTimeDialog } from '~/modules/interview/screens/chat/parts/out-of-time-dialog'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import { Typography } from '~/modules/ui/typography'
 import { Logger } from '~/services'
@@ -19,6 +21,8 @@ export function ChatScreen() {
   const scrollRef = useRef<ScrollView>(null)
   const { form, handleNewMessage, handleUpdateMessageText } = useInterviewFormContext()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(INTERVIEW_AUDIO_FOLDER_NAME)
+  const duration = form.getValues('interviewDurationInMinutes') ?? 30 // Default to 30 minutes if not set
+  const { extendTime, isOutOfTime } = useInterviewTimer(duration)
 
   function scrollToBottom() {
     setTimeout(() => {
@@ -146,15 +150,22 @@ export function ChatScreen() {
           />
         </View>
       </View>
-      {viewMessage && viewMessage.audioUrl && (
-        <TranscriptOverlay
-          transcript={viewMessage.text}
-          audioSrc={viewMessage.audioUrl}
+      {viewMessage && (
+        <TranscriptDialog
+          message={viewMessage}
+          onClose={() => setViewMessage(null)}
           onSaveChanges={(text) => {
             handleUpdateMessageText(viewMessage.index, text)
             setViewMessage(null)
           }}
-          onClose={() => setViewMessage(null)}
+        />
+      )}
+      {isOutOfTime && (
+        <OutOfTimeDialog
+          onStopInterview={() => {
+            // TODO: Implement stop interview functionality
+          }}
+          onExtendTime={extendTime}
         />
       )}
     </>

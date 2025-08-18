@@ -77,8 +77,8 @@
     --button-primary-text: var(--white);
     --button-primary-border: var(--accent);
 
-    --button-secondary-bg: rgba(74, 108, 250, 0.1);
-    --button-secondary-text: var(--brand);
+    --button-secondary-bg: var(--bg-secondary);
+    --button-secondary-text: var(--accent);
 
     --button-outlined-bg: transparent;
     --button-outlined-text: var(--label-accent);
