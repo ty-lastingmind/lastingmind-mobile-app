@@ -1,21 +1,23 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Alert, ScrollView, View } from 'react-native'
 import avatar from '~/../assets/images/jane-avatar.jpg'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { IncomingMessage } from '~/modules/components/chat/incoming-message'
 import { OutgoingMessage } from '~/modules/components/chat/outgoing-message'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
+import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
 import { MessageInput } from '~/modules/interview/screens/chat/parts/message-input'
+import { TranscriptOverlay } from '~/modules/interview/screens/chat/parts/transcript-overlay'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import { Typography } from '~/modules/ui/typography'
 import { Logger } from '~/services'
 import { useGenerateNextQuestionInterviewGenerateNextQuestionPost } from '~/services/api/generated'
 
 export function ChatScreen() {
-  const scrollRef = useRef<ScrollView>(null)
-  const { form, handleNewMessage } = useInterviewFormContext()
-  const messages = form.watch('messages')
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost()
+  const [viewMessage, setViewMessage] = useState<InterviewMessage | null>(null)
+  const scrollRef = useRef<ScrollView>(null)
+  const { form, handleNewMessage, handleUpdateMessageText } = useInterviewFormContext()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(INTERVIEW_AUDIO_FOLDER_NAME)
 
   function scrollToBottom() {
@@ -101,40 +103,60 @@ export function ChatScreen() {
     })
   }
 
+  const messages = form.watch('messages')
+
   return (
-    <View className="flex-1 pb-safe">
-      <ScrollView
-        className="flex-1 px-4"
-        ref={scrollRef}
-        contentContainerClassName="flex flex-col"
-        onContentSizeChange={scrollToBottom}
-      >
-        {messages.map((message, index) => (
-          <React.Fragment key={`${index}-${message.text}`}>
-            {message.isIncoming ? (
-              <View className="pb-10">
-                <IncomingMessage avatarUrl={avatar} message={message.text} />
-              </View>
-            ) : (
-              <View className="pb-3 ml-auto">
-                <OutgoingMessage audioSrc={message.audioUrl} isLoading={message.isLoading} message={message.text} />
-              </View>
-            )}
-          </React.Fragment>
-        ))}
-        {generateNextQuestion.isPending && <IncomingMessage message="" avatarUrl={avatar} isLoading={true} />}
-      </ScrollView>
-      <View className="gap-1 px-8">
-        <Typography color="red">Stop interview</Typography>
-        <MessageInput
-          audioRecorder={audioRecorder}
-          disabled={generateNextQuestion.isPending}
-          onSendAudioMessage={handleSendAudioMessage}
-          onCancelRecording={recordingControls.cancelRecording}
-          onStartRecording={recordingControls.startRecording}
-          onSendTextMessage={handleSendTextMessage}
-        />
+    <>
+      <View className="flex-1 pb-safe">
+        <ScrollView
+          className="flex-1 px-4"
+          ref={scrollRef}
+          contentContainerClassName="flex flex-col"
+          onContentSizeChange={scrollToBottom}
+        >
+          {messages.map((message, index) => (
+            <React.Fragment key={`${index}-${message.text}`}>
+              {message.isIncoming ? (
+                <View className="pb-10">
+                  <IncomingMessage avatarUrl={avatar} message={message.text} />
+                </View>
+              ) : (
+                <View className="pb-3 ml-auto">
+                  <OutgoingMessage
+                    onViewTranscript={() => setViewMessage(message)}
+                    audioSrc={message.audioUrl}
+                    isLoading={message.isLoading}
+                    message={message.text}
+                  />
+                </View>
+              )}
+            </React.Fragment>
+          ))}
+          {generateNextQuestion.isPending && <IncomingMessage message="" avatarUrl={avatar} isLoading={true} />}
+        </ScrollView>
+        <View className="gap-1 px-8">
+          <Typography color="red">Stop interview</Typography>
+          <MessageInput
+            audioRecorder={audioRecorder}
+            disabled={generateNextQuestion.isPending}
+            onSendAudioMessage={handleSendAudioMessage}
+            onCancelRecording={recordingControls.cancelRecording}
+            onStartRecording={recordingControls.startRecording}
+            onSendTextMessage={handleSendTextMessage}
+          />
+        </View>
       </View>
-    </View>
+      {viewMessage && viewMessage.audioUrl && (
+        <TranscriptOverlay
+          transcript={viewMessage.text}
+          audioSrc={viewMessage.audioUrl}
+          onSaveChanges={(text) => {
+            handleUpdateMessageText(viewMessage.index, text)
+            setViewMessage(null)
+          }}
+          onClose={() => setViewMessage(null)}
+        />
+      )}
+    </>
   )
 }

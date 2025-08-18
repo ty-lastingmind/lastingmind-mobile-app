@@ -14,7 +14,7 @@ const variants = {
         outlinedSecondary: 'bg-button-outlined-secondary-bg border-2 border-button-outlined-secondary-border',
       },
       size: {
-        sm: 'px-3 py-2',
+        sm: 'min-h-sm px-4 py-1',
         md: 'min-h-md px-4 py-3',
         lg: 'px-5 py-4',
       },

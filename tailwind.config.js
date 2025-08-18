@@ -13,6 +13,7 @@ module.exports = {
       'badge-md': 'var(--badge-md-text-size)',
     },
     minHeight: {
+      sm: 'var(--height-sm)',
       md: 'var(--height-md)',
     },
     fontSize: {

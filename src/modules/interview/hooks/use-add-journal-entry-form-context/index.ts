@@ -1,26 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback } from 'react'
 import { useForm, useFormContext } from 'react-hook-form'
-import z from 'zod'
-
-export const InterviewSchema = z.object({
-  topicName: z.string(),
-  customTopicName: z.string().optional(),
-  interviewDurationInMinutes: z.number(),
-  message: z.string(),
-  responseId: z.string(),
-  messages: z.array(
-    z.object({
-      index: z.number(),
-      text: z.string(),
-      isIncoming: z.boolean(),
-      isLoading: z.boolean(),
-      audioUrl: z.string().optional(),
-    })
-  ),
-})
-
-export type InterviewFormData = z.infer<typeof InterviewSchema>
+import { InterviewSchema } from './index.schema'
+import { InterviewFormData } from './index.types'
 
 export function useInterviewFormContext() {
   const form = useFormContext<InterviewFormData>()
@@ -43,9 +25,31 @@ export function useInterviewFormContext() {
     [form]
   )
 
+  const handleUpdateMessageText = useCallback(
+    (index: number, text: string) => {
+      const messages = form.getValues('messages')
+
+      form.setValue(
+        'messages',
+        messages.map((message, i) => {
+          if (i === index) {
+            return {
+              ...message,
+              text,
+            }
+          }
+
+          return message
+        })
+      )
+    },
+    [form]
+  )
+
   return {
     form,
     handleNewMessage,
+    handleUpdateMessageText,
   }
 }
 
