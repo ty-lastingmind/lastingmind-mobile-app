@@ -103,7 +103,12 @@ export function ChatScreen() {
 
   return (
     <View className="flex-1 pb-safe">
-      <ScrollView className="flex-1 px-4" ref={scrollRef} onContentSizeChange={scrollToBottom}>
+      <ScrollView
+        className="flex-1 px-4"
+        ref={scrollRef}
+        contentContainerClassName="flex flex-col"
+        onContentSizeChange={scrollToBottom}
+      >
         {messages.map((message, index) => (
           <React.Fragment key={`${index}-${message.text}`}>
             {message.isIncoming ? (
@@ -111,8 +116,8 @@ export function ChatScreen() {
                 <IncomingMessage avatarUrl={avatar} message={message.text} />
               </View>
             ) : (
-              <View className="flex flex-row justify-end pb-3">
-                <OutgoingMessage isLoading={message.isLoading} message={message.text} />
+              <View className="pb-3 ml-auto">
+                <OutgoingMessage audioSrc={message.audioUrl} isLoading={message.isLoading} message={message.text} />
               </View>
             )}
           </React.Fragment>
