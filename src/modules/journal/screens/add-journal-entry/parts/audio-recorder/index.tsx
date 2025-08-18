@@ -1,47 +1,35 @@
-import * as FileSystem from 'expo-file-system'
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { Alert } from 'react-native'
 import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
-import { useProceedAudio } from '~/modules/journal/screens/add-journal-entry/parts/audio-recorder/hooks/use-proceed-audio'
-import { useRecordingControls } from '~/modules/journal/screens/add-journal-entry/parts/audio-recorder/hooks/use-recording-controls'
+import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import { Logger } from '~/services'
 import { RecorderStateIcon } from './parts/recorder-state-icon'
+import { JOURNAL_AUDIO_FOLDER_NAME } from '~/constants/storage'
 
 export function AudioRecorder() {
   const form = useAddJournalEntryFormContext()
-  const { proceedAudio, status } = useProceedAudio()
-  const { stopRecording, startRecording, audioRecorder } = useRecordingControls()
-
-  const cleanupRecording = useCallback(async () => {
-    const fileUri = audioRecorder.uri
-
-    if (!fileUri) {
-      return
-    }
-
-    await FileSystem.deleteAsync(fileUri, { idempotent: true })
-  }, [audioRecorder.uri])
+  const { uploader, recordingControls, audioRecorder } = useAudioMessage(JOURNAL_AUDIO_FOLDER_NAME)
 
   useFocusEffect(
     useCallback(() => {
       return async () => {
-        await cleanupRecording()
+        await recordingControls.cleanupRecording()
       }
-    }, [cleanupRecording])
+    }, [])
   )
 
   async function handleStopRecording() {
-    await stopRecording()
+    await recordingControls.stopRecording()
 
     const recordingUri = audioRecorder.uri
 
     if (!recordingUri) {
-      Alert.alert('Error', 'Failed to get recording or user not authenticated')
+      Alert.alert('Error', 'Failed to get recording')
       return
     }
 
-    proceedAudio.mutate(recordingUri, {
+    uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
       onSuccess: async (data) => {
         const audioFiles = form.getValues('audioFiles')
         const text = form.getValues('text')
@@ -49,7 +37,7 @@ export function AudioRecorder() {
         form.setValue('text', text.concat('\n\n', data.transcript))
         form.setValue('audioFiles', audioFiles.concat(data.url))
 
-        await cleanupRecording()
+        await recordingControls.cleanupRecording()
       },
       onError: (error) => {
         Logger.logError(error)
@@ -60,10 +48,10 @@ export function AudioRecorder() {
 
   return (
     <RecorderStateIcon
-      isTranscribing={status === 'transcribing'}
-      isUploading={status === 'uploading'}
+      isTranscribing={uploader.status === 'transcribing'}
+      isUploading={uploader.status === 'uploading'}
       audioRecorder={audioRecorder}
-      onRecord={startRecording}
+      onRecord={recordingControls.startRecording}
       onStopRecording={handleStopRecording}
     />
   )

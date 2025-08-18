@@ -41,7 +41,7 @@
     --input-text-size: 15px;
 
     --radius-sm: 0.625rem;
-    --radius-md: 1rem;
+    --radius-md: 26px;
     --height-md: 52px;
 
     /* COLORS */
@@ -115,12 +115,14 @@
     --typography-secondary: var(--label-secondary);
     --typography-tertiary: var(--black);
     --typography-accent: var(--label-accent);
+    --typography-red: var(--red);
 
     /* SEPARATOR */
     --separator-bg: rgba(255, 255, 255, 0.1);
 
     /* INPUT */
-    --input-border: var(--accent);
+    --input-primary-border: var(--accent);
+    --input-secondary-border: var(--miscellaneous-topic-stroke);
     --input-border--error: rgba(239, 68, 68, 1);
     --input-border--focus: rgba(0, 0, 0, 1);
     --input-text: var(--label-primary);

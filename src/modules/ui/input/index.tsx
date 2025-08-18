@@ -1,3 +1,4 @@
+import { cva, VariantProps } from 'class-variance-authority'
 import { cssInterop } from 'nativewind'
 import React, { forwardRef, useCallback, useMemo } from 'react'
 import { NativeSyntheticEvent, TextInput, TextInputFocusEventData, TextInputProps, View } from 'react-native'
@@ -7,11 +8,27 @@ import { cn } from '~/utils/cn'
 
 import { Icon } from '../icon'
 
-export interface InputProps extends TextInputProps {
+const variants = cva('', {
+  variants: {
+    color: {
+      primary: 'border-input-primary-border',
+      secondary: 'border-input-secondary-border',
+    },
+  },
+})
+
+type InputVariants = VariantProps<typeof variants>
+
+export interface InputProps extends TextInputProps, InputVariants {
   isError?: boolean
+  rightAdornment?: React.ReactNode
+  leftAdornment?: React.ReactNode
 }
 
-export const Input = forwardRef<TextInput, InputProps>(function Input({ onFocus, onBlur, isError, ...props }, ref) {
+export const Input = forwardRef<TextInput, InputProps>(function Input(
+  { onFocus, color = 'primary', onBlur, isError, rightAdornment, leftAdornment, ...props },
+  ref
+) {
   const isFocused = useBoolean(false)
 
   const handleFocus = useCallback(
@@ -33,16 +50,18 @@ export const Input = forwardRef<TextInput, InputProps>(function Input({ onFocus,
   const className = useMemo(() => {
     return {
       textInputClassName: cn(
-        'min-h-input-height border-2 rounded-md border-input-border px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
-        // isFocused.value && 'border-input-border--focus',
+        'gap-2 min-h-input-height border-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
+        // isFocused.value && 'border-input-border--focus', // todo - maybe add focus state
+        variants({ color }),
         isError && 'border-input-border--error'
       ),
       placeholderClassName: cn('text-input-placeholder', isError && 'text-input-placeholder--error'),
     }
-  }, [isError])
+  }, [color, isError])
 
   return (
     <View className={className.textInputClassName}>
+      {leftAdornment ? leftAdornment : null}
       <TextInput
         placeholderClassName={className.placeholderClassName}
         className="flex-1 text-input-text text-input-text-size"
@@ -52,6 +71,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input({ onFocus,
         {...props}
       />
       {isError ? <Icon color="error" size="md" name="alert-circle-outline" /> : null}
+      {rightAdornment ? rightAdornment : null}
     </View>
   )
 })

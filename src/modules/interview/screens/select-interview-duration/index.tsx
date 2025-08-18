@@ -8,7 +8,7 @@ import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 
 export function SelectInterviewDurationScreen() {
-  const form = useInterviewFormContext()
+  const { form } = useInterviewFormContext()
   const interviewDurationInMinutes = form.watch('interviewDurationInMinutes')
 
   function handleChangeInterviewDuration(value: number) {

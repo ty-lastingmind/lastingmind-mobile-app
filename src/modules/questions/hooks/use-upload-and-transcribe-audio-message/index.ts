@@ -1,19 +1,19 @@
 import { useMutation } from '@tanstack/react-query'
 import { useUid } from '~/hooks/auth/use-uid'
-import { useUploadAudio } from '~/modules/journal/screens/add-journal-entry/parts/audio-recorder/hooks/use-upload-audio'
 import { useTranscribeAudioUtilsTranscribeAudioPost } from '~/services/api/generated'
 import { Storage } from '~/services'
 import { useState } from 'react'
+import { useUploadAudioFile } from '../use-upload-audio-file'
 
-export function useProceedAudio() {
-  const uploadAudio = useUploadAudio()
-  const transcribeAudio = useTranscribeAudioUtilsTranscribeAudioPost()
+export function useUploadAndTranscribeAudioMessage(folderName: string) {
   const uid = useUid()
+  const uploadAudio = useUploadAudioFile(folderName)
+  const transcribeAudio = useTranscribeAudioUtilsTranscribeAudioPost()
   const [status, setStatus] = useState<'idle' | 'uploading' | 'transcribing'>('idle')
 
   return {
     status,
-    proceedAudio: useMutation({
+    uploadAndTranscribeAudioMessage: useMutation({
       mutationFn: async (recordingUri: string) => {
         if (!uid) {
           throw new Error('User not authenticated')

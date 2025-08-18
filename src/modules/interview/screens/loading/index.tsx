@@ -8,14 +8,12 @@ import { useInterviewFormContext } from '../../hooks/use-add-journal-entry-form-
 
 export function LoadingScreen() {
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost()
-  const form = useInterviewFormContext()
+  const { form, handleNewMessage } = useInterviewFormContext()
   const router = useRouter()
 
   useFocusEffect(
     useCallback(() => {
-      const topicName = form.getValues('topicName')
-      const customTopicName = form.getValues('customTopicName')
-      const duration = form.getValues('interviewDurationInMinutes')
+      const { topicName, customTopicName, responseId, interviewDurationInMinutes } = form.getValues()
 
       generateNextQuestion.mutate(
         {
@@ -23,21 +21,16 @@ export function LoadingScreen() {
             answer: 'Hi! I am ready for my interview',
             userFullName: 'zarif abdalimov', // todo - add user full name
             topic: topicName ?? customTopicName,
-            duration: duration,
+            duration: interviewDurationInMinutes,
+            responseId,
           },
         },
         {
           onSuccess: (message) => {
-            const messages = form.getValues('messages')
-
-            form.setValue(
-              'messages',
-              messages.concat({
-                text: message as string, // todo fix type
-                isIncoming: true,
-              })
+            handleNewMessage(
+              message as string, // todo fix type
+              true
             )
-
             router.replace('/questions/interview/add/04-chat')
           },
         }
