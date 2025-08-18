@@ -1,14 +1,12 @@
-import React, { useRef, useState } from 'react'
-import { Alert, ScrollView, View } from 'react-native'
+import React, { useState } from 'react'
+import { Alert, View } from 'react-native'
 import { TranscriptDialog } from 'src/modules/interview/screens/chat/parts/transcript-dialog'
-import avatar from '~/../assets/images/jane-avatar.jpg'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
-import { IncomingMessage } from '~/modules/components/chat/incoming-message'
-import { OutgoingMessage } from '~/modules/components/chat/outgoing-message'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
 import { useInterviewTimer } from '~/modules/interview/screens/chat/hooks/use-interview-timer'
 import { MessageInput } from '~/modules/interview/screens/chat/parts/message-input'
+import { MessagesList } from '~/modules/interview/screens/chat/parts/messages-list'
 import { OutOfTimeDialog } from '~/modules/interview/screens/chat/parts/out-of-time-dialog'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import { Typography } from '~/modules/ui/typography'
@@ -18,17 +16,10 @@ import { useGenerateNextQuestionInterviewGenerateNextQuestionPost } from '~/serv
 export function ChatScreen() {
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost()
   const [viewMessage, setViewMessage] = useState<InterviewMessage | null>(null)
-  const scrollRef = useRef<ScrollView>(null)
   const { form, handleNewMessage, handleUpdateMessageText } = useInterviewFormContext()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(INTERVIEW_AUDIO_FOLDER_NAME)
   const duration = form.getValues('interviewDurationInMinutes') ?? 30 // Default to 30 minutes if not set
   const { extendTime, isOutOfTime } = useInterviewTimer(duration)
-
-  function scrollToBottom() {
-    setTimeout(() => {
-      scrollRef.current?.scrollToEnd()
-    }, 1000)
-  }
 
   function handleGenerateNextQuestion(message: string) {
     const { topicName, customTopicName, responseId, interviewDurationInMinutes } = form.getValues()
@@ -112,32 +103,11 @@ export function ChatScreen() {
   return (
     <>
       <View className="flex-1 pb-safe">
-        <ScrollView
-          className="flex-1 px-4"
-          ref={scrollRef}
-          contentContainerClassName="flex flex-col"
-          onContentSizeChange={scrollToBottom}
-        >
-          {messages.map((message, index) => (
-            <React.Fragment key={`${index}-${message.text}`}>
-              {message.isIncoming ? (
-                <View className="pb-10">
-                  <IncomingMessage avatarUrl={avatar} message={message.text} />
-                </View>
-              ) : (
-                <View className="pb-3 ml-auto">
-                  <OutgoingMessage
-                    onViewTranscript={() => setViewMessage(message)}
-                    audioSrc={message.audioUrl}
-                    isLoading={message.isLoading}
-                    message={message.text}
-                  />
-                </View>
-              )}
-            </React.Fragment>
-          ))}
-          {generateNextQuestion.isPending && <IncomingMessage message="" avatarUrl={avatar} isLoading={true} />}
-        </ScrollView>
+        <MessagesList
+          messages={messages}
+          onViewTranscript={setViewMessage}
+          isLoadingNextQuestion={generateNextQuestion.isPending}
+        />
         <View className="gap-1 px-8">
           <Typography color="red">Stop interview</Typography>
           <MessageInput
