@@ -33,6 +33,7 @@ const variants = cva(undefined, {
       bold: 'font-bold',
     },
     color: {
+      red: 'text-typography-red',
       accent: 'text-typography-accent',
       primary: 'text-typography-primary',
       secondary: 'text-typography-secondary',

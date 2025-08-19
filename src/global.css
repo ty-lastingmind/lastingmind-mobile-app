@@ -21,7 +21,7 @@
     --overline-1: 10px;
     --overline-2: 8px;
 
-    --button-sm-text-size: var(--caption-1);
+    --button-sm-text-size: 20px;
     --button-md-text-size: 20px;
     --button-lg-text-size: var(--h6);
 
@@ -41,7 +41,9 @@
     --input-text-size: 15px;
 
     --radius-sm: 0.625rem;
-    --radius-md: 1rem;
+    --radius-md: 26px;
+
+    --height-sm: 32px;
     --height-md: 52px;
 
     /* COLORS */
@@ -57,7 +59,7 @@
     --label-secondary: rgba(60, 60, 67, 0.6);
     --label-accent: rgba(22, 0, 110, 1);
     --fill-accent: rgba(52, 46, 125, 1);
-    --bg-vibrant-primary: rgba(0, 0, 0, 1);
+    --bg-vibrant-primary: rgba(229, 229, 229, 0.75);
     --bg-primary: rgba(255, 255, 255, 1);
     --bg-secondary: rgba(120, 120, 128, 0.16);
     --bg-tertiary: rgba(239, 239, 239, 1);
@@ -75,12 +77,16 @@
     --button-primary-text: var(--white);
     --button-primary-border: var(--accent);
 
-    --button-secondary-bg: rgba(74, 108, 250, 0.1);
-    --button-secondary-text: var(--brand);
+    --button-secondary-bg: var(--bg-secondary);
+    --button-secondary-text: var(--accent);
 
     --button-outlined-bg: transparent;
     --button-outlined-text: var(--label-accent);
     --button-outlined-border: var(--accent);
+
+    --button-outlined-secondary-bg: transparent;
+    --button-outlined-secondary-text: var(--label-accent);
+    --button-outlined-secondary-border: var(--miscellaneous-topic-stroke);
 
     /* BADGE */
     --badge-primary-bg: var(--accent);
@@ -111,12 +117,14 @@
     --typography-secondary: var(--label-secondary);
     --typography-tertiary: var(--black);
     --typography-accent: var(--label-accent);
+    --typography-red: var(--red);
 
     /* SEPARATOR */
     --separator-bg: rgba(255, 255, 255, 0.1);
 
     /* INPUT */
-    --input-border: var(--accent);
+    --input-primary-border: var(--accent);
+    --input-secondary-border: var(--miscellaneous-topic-stroke);
     --input-border--error: rgba(239, 68, 68, 1);
     --input-border--focus: rgba(0, 0, 0, 1);
     --input-text: var(--label-primary);

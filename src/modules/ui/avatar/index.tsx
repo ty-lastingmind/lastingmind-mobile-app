@@ -1,8 +1,9 @@
 import { Image } from 'expo-image'
 import React from 'react'
+import { ImageSrc } from '~/types/images'
 
 interface AvatarProps {
-  source: string
+  source: ImageSrc
 }
 
 export function Avatar({ source }: AvatarProps) {

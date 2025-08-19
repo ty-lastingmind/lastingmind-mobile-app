@@ -13,6 +13,7 @@ module.exports = {
       'badge-md': 'var(--badge-md-text-size)',
     },
     minHeight: {
+      sm: 'var(--height-sm)',
       md: 'var(--height-md)',
     },
     fontSize: {
@@ -79,6 +80,10 @@ module.exports = {
       'button-outlined-text': 'var(--button-outlined-text)',
       'button-outlined-border': 'var(--button-outlined-border)',
 
+      'button-outlined-secondary-bg': 'var(--button-outlined-secondary-bg)',
+      'button-outlined-secondary-text': 'var(--button-outlined-secondary-text)',
+      'button-outlined-secondary-border': 'var(--button-outlined-secondary-border)',
+
       'badge-primary-bg': 'var(--badge-primary-bg)',
       'badge-primary-text': 'var(--badge-primary-text)',
       'badge-primary-border': 'var(--badge-primary-border)',
@@ -105,12 +110,14 @@ module.exports = {
       'typography-secondary': 'var(--typography-secondary)',
       'typography-tertiary': 'var(--typography-tertiary)',
       'typography-accent': 'var(--typography-accent)',
+      'typography-red': 'var(--typography-red)',
 
       'separator-bg': 'var(--separator-bg)',
 
       'input-border--focus': 'var(--input-border--focus)',
       'input-border--error': 'var(--input-border--error)',
-      'input-border': 'var(--input-border)',
+      'input-primary-border': 'var(--input-primary-border)',
+      'input-secondary-border': 'var(--input-secondary-border)',
       'input-text': 'var(--input-text)',
       'input-label': 'var(--input-label)',
       'input-placeholder': 'var(--input-placeholder)',

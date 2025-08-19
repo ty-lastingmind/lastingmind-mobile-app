@@ -9,7 +9,7 @@ export default function Questions() {
       <Link href="/questions/journal/add/01-select-topic">
         <Typography>Journal</Typography>
       </Link>
-      <Link href="/questions/interview/01-select-topic">
+      <Link href="/questions/interview/add/01-select-topic">
         <Typography>Interview</Typography>
       </Link>
     </SafeAreaView>

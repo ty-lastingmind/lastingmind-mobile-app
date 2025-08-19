@@ -1,5 +1,5 @@
 import { ScrollView } from 'react-native'
-import { AudioTrack } from './parts/audio-track'
+import { AudioTrack } from '~/modules/components/audio-track'
 
 interface AudioTracksListProps {
   audioFiles: string[]
