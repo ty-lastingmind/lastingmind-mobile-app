@@ -2,7 +2,7 @@ import { AudioRecorder } from 'expo-audio'
 import React from 'react'
 import { Controller } from 'react-hook-form'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
-import { MessageInputTextField } from '~/modules/interview/screens/chat/parts/message-input/parts/message-input-text-field'
+import { MessageInputTextField } from '~/modules/interview/screens/04-chat/parts/message-input/parts/message-input-text-field'
 
 interface MessageInputProps {
   audioRecorder: AudioRecorder

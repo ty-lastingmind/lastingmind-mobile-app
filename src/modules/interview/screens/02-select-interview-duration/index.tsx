@@ -1,7 +1,7 @@
 import { Link } from 'expo-router'
 import { View } from 'react-native'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
-import { interviewDurationOptions } from '~/modules/interview/screens/select-interview-duration/index.static'
+import { interviewDurationOptions } from '~/modules/interview/screens/02-select-interview-duration/index.static'
 import { ScreenContainer } from '~/modules/questions/parts/screen-container'
 import { ScreenTitle } from '~/modules/questions/parts/screen-title'
 import { Button } from '~/modules/ui/button'

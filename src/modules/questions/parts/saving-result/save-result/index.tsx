@@ -6,7 +6,7 @@ import {
   dataIsMilestoneData,
   dataIsPercentIncreaseData,
   dataIsSavedAnswerData,
-} from '~/modules/journal/screens/saving-journal-entry/parts/save-result/index.utils'
+} from '~/modules/questions/parts/saving-result/save-result/index.utils'
 import { NextPageResponseNextPageData, NextPageType } from '~/services/api/model'
 import { ExampleChat } from './parts/example-chat'
 import { LevelIncrease } from './parts/level-increase'

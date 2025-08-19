@@ -1,1 +1,1 @@
-export { LoadingScreen as default } from '~/modules/interview/screens/loading'
+export { LoadingScreen as default } from '~/modules/interview/screens/03-loading'

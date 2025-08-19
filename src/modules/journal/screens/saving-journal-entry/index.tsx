@@ -2,10 +2,10 @@ import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { Alert } from 'react-native'
 import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
-import { SaveResult } from '~/modules/journal/screens/saving-journal-entry/parts/save-result'
+import { SaveResult } from '~/modules/questions/parts/saving-result/save-result'
+import { TitleAndCaption } from '~/modules/questions/parts/saving-result/title-and-caption'
 import { Logger } from '~/services'
 import { useSubmitJournalEntryJournalSubmitJournalEntryPost } from '~/services/api/generated'
-import { TitleAndCaption } from './parts/title-and-caption'
 
 export function SavingJournalEntryScreen() {
   const submitJournalEntry = useSubmitJournalEntryJournalSubmitJournalEntryPost()

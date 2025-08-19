@@ -1,19 +1,21 @@
+import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
-import { Alert, View } from 'react-native'
-import { TranscriptDialog } from 'src/modules/interview/screens/chat/parts/transcript-dialog'
+import { Alert, TouchableOpacity, View } from 'react-native'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
-import { useInterviewTimer } from '~/modules/interview/screens/chat/hooks/use-interview-timer'
-import { MessageInput } from '~/modules/interview/screens/chat/parts/message-input'
-import { MessagesList } from '~/modules/interview/screens/chat/parts/messages-list'
-import { OutOfTimeDialog } from '~/modules/interview/screens/chat/parts/out-of-time-dialog'
+import { useInterviewTimer } from '~/modules/interview/screens/04-chat/hooks/use-interview-timer'
+import { MessageInput } from '~/modules/interview/screens/04-chat/parts/message-input'
+import { MessagesList } from '~/modules/interview/screens/04-chat/parts/messages-list'
+import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-of-time-dialog'
+import { TranscriptDialog } from '~/modules/interview/screens/04-chat/parts/transcript-dialog'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import { Typography } from '~/modules/ui/typography'
 import { Logger } from '~/services'
 import { useGenerateNextQuestionInterviewGenerateNextQuestionPost } from '~/services/api/generated'
 
 export function ChatScreen() {
+  const router = useRouter()
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost()
   const [viewMessage, setViewMessage] = useState<InterviewMessage | null>(null)
   const { form, handleNewMessage, handleUpdateMessageText } = useInterviewFormContext()
@@ -98,6 +100,24 @@ export function ChatScreen() {
     })
   }
 
+  function handleStopInterview() {
+    router.replace('/questions/interview/add/05-saving')
+  }
+
+  function handleConfirmStopInterview() {
+    Alert.alert('Stop interview', 'Are you sure you want to stop the interview?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Stop',
+        style: 'destructive',
+        onPress: handleStopInterview,
+      },
+    ])
+  }
+
   const messages = form.watch('messages')
 
   return (
@@ -109,7 +129,9 @@ export function ChatScreen() {
           isLoadingNextQuestion={generateNextQuestion.isPending}
         />
         <View className="gap-1 px-8">
-          <Typography color="red">Stop interview</Typography>
+          <TouchableOpacity onPress={handleConfirmStopInterview}>
+            <Typography color="red">Stop interview</Typography>
+          </TouchableOpacity>
           <MessageInput
             audioRecorder={audioRecorder}
             disabled={generateNextQuestion.isPending}
@@ -130,14 +152,7 @@ export function ChatScreen() {
           }}
         />
       )}
-      {isOutOfTime && (
-        <OutOfTimeDialog
-          onStopInterview={() => {
-            // TODO: Implement stop interview functionality
-          }}
-          onExtendTime={extendTime}
-        />
-      )}
+      {isOutOfTime && <OutOfTimeDialog onStopInterview={handleStopInterview} onExtendTime={extendTime} />}
     </>
   )
 }
