@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
 import { Alert, TouchableOpacity, View } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
@@ -128,7 +129,7 @@ export function ChatScreen() {
           onViewTranscript={setViewMessage}
           isLoadingNextQuestion={generateNextQuestion.isPending}
         />
-        <View className="gap-1 px-8">
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-8 pt-2">
           <TouchableOpacity onPress={handleConfirmStopInterview}>
             <Typography color="red">Stop interview</Typography>
           </TouchableOpacity>
@@ -140,7 +141,7 @@ export function ChatScreen() {
             onStartRecording={recordingControls.startRecording}
             onSendTextMessage={handleSendTextMessage}
           />
-        </View>
+        </KeyboardAvoidingView>
       </View>
       {viewMessage && (
         <TranscriptDialog
