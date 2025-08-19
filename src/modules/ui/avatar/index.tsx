@@ -7,5 +7,5 @@ interface AvatarProps {
 }
 
 export function Avatar({ source }: AvatarProps) {
-  return <Image className="rounded-full" source={source} style={{ width: 40, height: 40, borderRadius: '100%' }} />
+  return <Image source={source} style={{ width: 40, height: 40, borderRadius: '100%' }} />
 }

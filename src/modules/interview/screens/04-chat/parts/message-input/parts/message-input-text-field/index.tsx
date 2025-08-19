@@ -33,7 +33,6 @@ export function MessageInputTextField({
     <View className="relative">
       <Input
         {...props}
-        color="secondary"
         value={value}
         placeholder={!isRecording ? 'Respond here...' : ''}
         leftAdornment={

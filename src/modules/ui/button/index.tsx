@@ -5,13 +5,13 @@ import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View 
 import { cn } from '~/utils/cn'
 
 const variants = {
-  button: cva('rounded-md flex flex-row items-center gap-2 justify-center', {
+  button: cva('rounded-full flex flex-row items-center gap-2 justify-center', {
     variants: {
       variant: {
-        primary: 'bg-button-primary-bg border-2 border-button-primary-border',
+        primary: 'bg-button-primary-bg border border-button-primary-border',
         secondary: 'bg-button-secondary-bg',
-        outlined: 'bg-button-outlined-bg border-2 border-button-outlined-border',
-        outlinedSecondary: 'bg-button-outlined-secondary-bg border-2 border-button-outlined-secondary-border',
+        outlined: 'bg-button-outlined-bg border border-button-outlined-border',
+        outlinedSecondary: 'bg-button-outlined-secondary-bg border border-button-outlined-secondary-border',
       },
       size: {
         sm: 'min-h-sm px-4 py-1',

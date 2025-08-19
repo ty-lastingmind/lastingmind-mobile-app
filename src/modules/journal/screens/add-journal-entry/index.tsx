@@ -34,7 +34,7 @@ export function AddJournalEntryScreen() {
           {formattedDate}
         </Typography>
       </View>
-      <View className="border-2 border-miscellaneous-topic-stroke flex-1 rounded-md">
+      <View className="flex-1 rounded-md bg-bg-secondary">
         <View className="flex-1">
           <Controller
             control={form.control}
@@ -54,11 +54,11 @@ export function AddJournalEntryScreen() {
           />
         </View>
         {audioFiles.length !== 0 && (
-          <View className="border-t-2 border-miscellaneous-topic-stroke">
+          <View className="border-t border-miscellaneous-topic-stroke">
             <AudioTracksList audioFiles={audioFiles} />
           </View>
         )}
-        <View className="border-t-2 border-miscellaneous-topic-stroke p-3">
+        <View className="border-t border-miscellaneous-topic-stroke p-3">
           <AudioRecorder />
         </View>
       </View>

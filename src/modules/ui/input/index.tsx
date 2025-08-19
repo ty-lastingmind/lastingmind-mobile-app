@@ -11,8 +11,8 @@ import { Icon } from '../icon'
 const variants = cva('', {
   variants: {
     color: {
-      primary: 'border-input-primary-border',
-      secondary: 'border-input-secondary-border',
+      primary: 'bg-bg-secondary',
+      secondary: '',
     },
   },
 })
@@ -50,7 +50,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   const className = useMemo(() => {
     return {
       textInputClassName: cn(
-        'gap-2 min-h-input-height border-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
+        'gap-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
         // isFocused.value && 'border-input-border--focus', // todo - maybe add focus state
         variants({ color }),
         isError && 'border-input-border--error'

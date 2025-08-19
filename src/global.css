@@ -26,7 +26,7 @@
     --button-lg-text-size: var(--h6);
 
     --badge-sm-text-size: var(--caption-2);
-    --badge-md-text-size: 15px;
+    --badge-md-text-size: 16px;
     --badge-lg-text-size: 20px;
 
     --icon-xs-size: 12px;
@@ -41,7 +41,7 @@
     --input-text-size: 15px;
 
     --radius-sm: 0.625rem;
-    --radius-md: 26px;
+    --radius-md: 20px;
 
     --height-sm: 32px;
     --height-md: 52px;
@@ -93,8 +93,8 @@
     --badge-primary-text: var(--white);
     --badge-primary-border: var(--accent);
 
-    --badge-secondary-bg: rgba(74, 108, 250, 0.1);
-    --badge-secondary-text: var(--brand);
+    --badge-secondary-bg: var(--bg-primary);
+    --badge-secondary-text: var(--label-accent);
 
     --badge-outlined-bg: transparent;
     --badge-outlined-text: var(--label-accent);
@@ -155,10 +155,6 @@
     /* BUTTON */
     --button-secondary-bg: rgba(74, 108, 250, 0.2);
     --button-outlined-bg: transparent;
-
-    /* BADGE */
-    --badge-secondary-bg: rgba(74, 108, 250, 0.2);
-    --badge-outlined-bg: transparent;
 
     /* ICON */
     --icon-primary: var(--white);

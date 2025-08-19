@@ -23,7 +23,7 @@ export function SelectInterviewDurationScreen() {
           <Button
             onPress={() => handleChangeInterviewDuration(option)}
             key={index}
-            variant={interviewDurationInMinutes === option ? 'primary' : 'outlinedSecondary'}
+            variant={interviewDurationInMinutes === option ? 'primary' : 'secondary'}
           >
             {option} mins
           </Button>

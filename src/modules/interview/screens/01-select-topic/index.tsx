@@ -1,5 +1,6 @@
 import { Link } from 'expo-router'
 import { Controller } from 'react-hook-form'
+import { View } from 'react-native'
 import { useInterviewForm } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { useHandleSelectTopic } from '~/modules/questions/hooks/use-handle-select-topic'
 import { ScreenContainer } from '~/modules/questions/parts/screen-container'
@@ -38,9 +39,11 @@ export function SelectTopicScreen() {
         customTopicName={customTopicName}
         onTopicChange={handleTopicChange}
       />
-      <Link disabled={!hasTopic} asChild href="/questions/interview/add/02-select-interview-duration">
-        <Button variant={hasTopic ? 'primary' : 'outlined'}>Next</Button>
-      </Link>
+      <View className="pb-4">
+        <Link disabled={!hasTopic} asChild href="/questions/interview/add/02-select-interview-duration">
+          <Button variant={hasTopic ? 'primary' : 'outlined'}>Next</Button>
+        </Link>
+      </View>
     </ScreenContainer>
   )
 }
