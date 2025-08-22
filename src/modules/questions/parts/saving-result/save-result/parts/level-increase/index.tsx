@@ -1,9 +1,9 @@
 import LottieView from 'lottie-react-native'
 import { View } from 'react-native'
 import { Badge } from '~/modules/ui/badge'
+import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { Animation, animations } from '../../index.static'
-import { Button } from '~/modules/ui/button'
 
 interface LevelIncreaseProps {
   title: string

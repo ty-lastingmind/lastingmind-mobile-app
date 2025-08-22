@@ -1,5 +1,5 @@
-import { cva } from 'class-variance-authority'
 import type { VariantProps } from 'class-variance-authority'
+import { cva } from 'class-variance-authority'
 import { forwardRef, PropsWithChildren, useMemo } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 import { cn } from '~/utils/cn'

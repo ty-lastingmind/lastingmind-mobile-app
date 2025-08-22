@@ -1,4 +1,4 @@
-import { putFile, ref, getDownloadURL as getDownloadURLFirebase } from '@react-native-firebase/storage'
+import { getDownloadURL as getDownloadURLFirebase, putFile, ref } from '@react-native-firebase/storage'
 import { storage } from '~/libs/firebase'
 
 export function uploadFile(fileUri: string, fileStoragePath: string) {

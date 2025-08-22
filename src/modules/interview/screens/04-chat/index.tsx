@@ -1,12 +1,13 @@
 import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
+import { Controller } from 'react-hook-form'
 import { Alert, TouchableOpacity, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
+import { MessageInput } from '~/modules/components/chat/message-input'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
 import { useInterviewTimer } from '~/modules/interview/screens/04-chat/hooks/use-interview-timer'
-import { MessageInput } from '~/modules/interview/screens/04-chat/parts/message-input'
 import { MessagesList } from '~/modules/interview/screens/04-chat/parts/messages-list'
 import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-of-time-dialog'
 import { TranscriptDialog } from '~/modules/interview/screens/04-chat/parts/transcript-dialog'
@@ -133,13 +134,22 @@ export function ChatScreen() {
           <TouchableOpacity onPress={handleConfirmStopInterview}>
             <Typography color="red">Stop interview</Typography>
           </TouchableOpacity>
-          <MessageInput
-            audioRecorder={audioRecorder}
-            disabled={generateNextQuestion.isPending}
-            onSendAudioMessage={handleSendAudioMessage}
-            onCancelRecording={recordingControls.cancelRecording}
-            onStartRecording={recordingControls.startRecording}
-            onSendTextMessage={handleSendTextMessage}
+          <Controller
+            control={form.control}
+            name="message"
+            render={({ field }) => (
+              <MessageInput
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                value={field.value}
+                audioRecorder={audioRecorder}
+                disabled={generateNextQuestion.isPending}
+                onSendAudioMessage={handleSendAudioMessage}
+                onCancelRecording={recordingControls.cancelRecording}
+                onStartRecording={recordingControls.startRecording}
+                onSendTextMessage={handleSendTextMessage}
+              />
+            )}
           />
         </KeyboardAvoidingView>
       </View>

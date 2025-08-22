@@ -1,6 +1,6 @@
 import type { VariantProps } from 'class-variance-authority'
 import { cva } from 'class-variance-authority'
-import { PropsWithChildren, useMemo } from 'react'
+import { forwardRef, PropsWithChildren, useMemo } from 'react'
 import { Text, TextProps } from 'react-native'
 
 import { font } from '~/constants/fonts'
@@ -47,14 +47,10 @@ export interface TypographyProps extends PropsWithChildren<TextProps>, Typograph
   brand?: boolean
 }
 
-export function Typography({
-  level = 'body-1',
-  weight = 'normal',
-  color = 'primary',
-  className,
-  brand = false,
-  ...props
-}: TypographyProps) {
+export const Typography = forwardRef<Text, TypographyProps>(function Typography(
+  { level = 'body-1', weight = 'normal', color = 'primary', className, brand = false, ...props },
+  ref
+) {
   const textClassName = useMemo(() => {
     const variantsClassName = variants({ level, weight, color })
     return cn(variantsClassName, className)
@@ -62,6 +58,7 @@ export function Typography({
 
   return (
     <Text
+      ref={ref}
       style={{
         fontFamily: brand ? font.family.InriaSerif.Bold : undefined,
       }}
@@ -69,4 +66,4 @@ export function Typography({
       {...props}
     />
   )
-}
+})

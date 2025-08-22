@@ -14,8 +14,12 @@ export function DialogFooter({ children }: PropsWithChildren) {
   return <View>{children}</View>
 }
 
-export function DialogOverlay({ children }: PropsWithChildren) {
-  return <View className="h-full w-full bg-bg-vibrant-primary flex items-center justify-center p-4">{children}</View>
+export function DialogOverlay({ children, isOpen }: PropsWithChildren<{ isOpen: boolean }>) {
+  return (
+    <Modal animationType="fade" transparent visible={isOpen}>
+      <View className="h-full w-full bg-bg-vibrant-primary flex items-center justify-center p-4">{children}</View>
+    </Modal>
+  )
 }
 
 export interface DialogProps {
@@ -25,10 +29,8 @@ export interface DialogProps {
 
 export function Dialog({ children, isOpen }: PropsWithChildren<DialogProps>) {
   return (
-    <Modal animationType="fade" transparent visible={isOpen}>
-      <DialogOverlay>
-        <DialogContent>{children}</DialogContent>
-      </DialogOverlay>
-    </Modal>
+    <DialogOverlay isOpen={isOpen}>
+      <DialogContent>{children}</DialogContent>
+    </DialogOverlay>
   )
 }

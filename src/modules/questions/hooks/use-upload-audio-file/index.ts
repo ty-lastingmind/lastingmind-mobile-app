@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { Storage, Logger } from '~/services'
+import { Logger, Storage } from '~/services'
 import { getFileExtension } from '~/utils/getFileExtension'
 
 export function useUploadAudioFile(folderName: string) {

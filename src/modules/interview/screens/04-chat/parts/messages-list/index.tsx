@@ -2,8 +2,8 @@ import React, { useRef } from 'react'
 import { ScrollView, View } from 'react-native'
 import { IncomingMessage } from '~/modules/components/chat/incoming-message'
 import { OutgoingMessage } from '~/modules/components/chat/outgoing-message'
-import avatar from '../../../../../../../assets/images/jane-avatar.jpg'
 import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
+import avatar from '../../../../../../../assets/images/jane-avatar.jpg'
 
 interface MessagesListProps {
   messages: InterviewMessage[]

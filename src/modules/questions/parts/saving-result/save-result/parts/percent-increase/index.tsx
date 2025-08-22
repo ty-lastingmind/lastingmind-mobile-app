@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Button } from '~/modules/ui/button'
 import { Progress } from '~/modules/ui/progress'
 import { Typography } from '~/modules/ui/typography'
-import { animations, Animation } from '../../index.static'
+import { Animation, animations } from '../../index.static'
 
 interface PercentIncreaseProps {
   title: string

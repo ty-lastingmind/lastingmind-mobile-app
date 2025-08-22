@@ -1,27 +1,24 @@
 import { Drawer } from 'expo-router/drawer'
-import { FormProvider } from 'react-hook-form'
+import { ChatWithContextProvider } from '~/modules/chat/screens/chat-screen/parts/chat-with-context'
+import { Header } from '~/modules/chat/screens/chat-screen/parts/header'
 import { DrawerJournal } from '~/modules/components/drawer/parts/drawer-journal'
-
-import { Header } from '~/modules/components/header'
-import { useInterviewForm } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
-export default function JournalLayout() {
+export default function Layout() {
   const colors = useTailwindColors()
-  const form = useInterviewForm()
 
   return (
-    <FormProvider {...form}>
+    <ChatWithContextProvider>
       <Drawer
         screenOptions={{
-          headerTitle: 'Interview',
-          header: Header,
+          headerTitle: 'Chat',
+          header: (props) => <Header {...props} />,
           sceneStyle: {
             backgroundColor: colors['bg-primary'],
           },
         }}
         drawerContent={() => <DrawerJournal />}
       />
-    </FormProvider>
+    </ChatWithContextProvider>
   )
 }
