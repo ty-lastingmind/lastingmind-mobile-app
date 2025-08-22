@@ -1,11 +1,11 @@
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { Alert } from 'react-native'
+import { JOURNAL_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import { Logger } from '~/services'
 import { RecorderStateIcon } from './parts/recorder-state-icon'
-import { JOURNAL_AUDIO_FOLDER_NAME } from '~/constants/storage'
 
 export function AudioRecorder() {
   const form = useAddJournalEntryFormContext()

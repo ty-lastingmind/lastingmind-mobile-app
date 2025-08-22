@@ -1,6 +1,6 @@
 import { RecordingPresets, useAudioRecorder } from 'expo-audio'
-import { useUploadAndTranscribeAudioMessage } from 'src/modules/questions/hooks/use-upload-and-transcribe-audio-message'
 import { useRecordingControls } from '~/modules/questions/hooks/use-recording-controls'
+import { useUploadAndTranscribeAudioMessage } from '../use-upload-and-transcribe-audio-message'
 
 export function useAudioMessage(folderName: string) {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY)

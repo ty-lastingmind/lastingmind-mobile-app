@@ -1,6 +1,6 @@
+import { getIdToken } from '@react-native-firebase/auth'
 import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { auth } from '../firebase'
-import { getIdToken } from '@react-native-firebase/auth'
 
 export const AXIOS_INSTANCE = Axios.create({
   // todo - replace with env variable

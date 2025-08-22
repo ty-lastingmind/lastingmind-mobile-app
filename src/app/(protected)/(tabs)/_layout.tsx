@@ -1,7 +1,7 @@
 import { Tabs, usePathname } from 'expo-router'
 import { useMemo } from 'react'
-import { hideTabBar } from '~/modules/tab-bar/index.utils'
-import { TabBarIcon } from '~/modules/tab-bar/parts/tab-bar-icon'
+import { hideTabBar } from '~/modules/components/tab-bar/index.utils'
+import { TabBarIcon } from '~/modules/components/tab-bar/parts/tab-bar-icon'
 
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
@@ -48,7 +48,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="chats/index"
+        name="chats"
         options={{
           title: 'Chat',
           tabBarIcon: ({ focused }) => <TabBarIcon name="chatbubble" focused={focused} />,

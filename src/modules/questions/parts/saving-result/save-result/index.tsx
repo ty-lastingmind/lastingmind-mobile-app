@@ -8,12 +8,12 @@ import {
   dataIsSavedAnswerData,
 } from '~/modules/questions/parts/saving-result/save-result/index.utils'
 import { NextPageResponseNextPageData, NextPageType } from '~/services/api/model'
+import { exampleChatToData, levelToData, milestoneToData, percentIncreaseToData } from './index.static'
 import { ExampleChat } from './parts/example-chat'
 import { LevelIncrease } from './parts/level-increase'
 import { Milestone } from './parts/milestone'
 import { PercentIncrease } from './parts/percent-increase'
 import { SavedAnswer } from './parts/saved-answer'
-import { exampleChatToData, levelToData, milestoneToData, percentIncreaseToData } from './index.static'
 
 interface SaveResultProps {
   type: NextPageType
