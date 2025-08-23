@@ -16,6 +16,7 @@ import { CanChatWithItem } from '~/services/api/model'
 export function Header(props: DrawerHeaderProps) {
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
   const isOpen = useBoolean(false)
+  const isChatDetail = props.route.name === 'chat/[uid]'
   const { measurements, measureElement } = useMeasureElement()
   const chattingWithViewUid = (props.route.params as { uid?: string })?.uid
 
@@ -49,7 +50,7 @@ export function Header(props: DrawerHeaderProps) {
           </TouchableOpacity>
           <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
             {chattingWithUser && (
-              <Animated.View entering={FadeInUp}>
+              <Animated.View entering={isChatDetail ? undefined : FadeInUp}>
                 <TouchableOpacity onPress={isOpen.setTrue} className="flex flex-row items-center gap-1">
                   <Typography ref={measureElement} level="h5" brand color="accent">
                     {chattingWithUser.chattingWithName}

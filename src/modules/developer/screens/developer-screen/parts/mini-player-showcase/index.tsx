@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Container } from '~/modules/components/chat/outgoing-message/parts/container'
-import { MiniAudioPlayer } from '~/modules/components/chat/outgoing-message/parts/mini-audio-player'
+import { Container } from '~/modules/components/chat/messages-list/parts/outgoing-message/parts/container'
+import { MiniAudioPlayer } from '~/modules/components/chat/messages-list/parts/outgoing-message/parts/mini-audio-player'
 import { Typography } from '~/modules/ui/typography'
 
 export function MiniPlayerShowcase() {

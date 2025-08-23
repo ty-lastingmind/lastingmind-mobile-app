@@ -5,10 +5,10 @@ import { Alert, TouchableOpacity, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { MessageInput } from '~/modules/components/chat/message-input'
+import { MessagesList } from '~/modules/components/chat/messages-list'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
 import { useInterviewTimer } from '~/modules/interview/screens/04-chat/hooks/use-interview-timer'
-import { MessagesList } from '~/modules/interview/screens/04-chat/parts/messages-list'
 import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-of-time-dialog'
 import { TranscriptDialog } from '~/modules/interview/screens/04-chat/parts/transcript-dialog'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
@@ -124,13 +124,13 @@ export function ChatScreen() {
 
   return (
     <>
-      <View className="flex-1 pb-safe">
+      <View className="flex-1 pb-safe px-4">
         <MessagesList
           messages={messages}
           onViewTranscript={setViewMessage}
-          isLoadingNextQuestion={generateNextQuestion.isPending}
+          isLoadingNextIncomingMessage={generateNextQuestion.isPending}
         />
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-8 pt-2">
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-11 pt-2">
           <TouchableOpacity onPress={handleConfirmStopInterview}>
             <Typography color="red">Stop interview</Typography>
           </TouchableOpacity>

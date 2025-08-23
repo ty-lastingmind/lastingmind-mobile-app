@@ -1,17 +1,18 @@
 import React, { useRef } from 'react'
-import { ScrollView, View } from 'react-native'
-import { IncomingMessage } from '~/modules/components/chat/incoming-message'
-import { OutgoingMessage } from '~/modules/components/chat/outgoing-message'
+import { ScrollView } from 'react-native'
+import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated'
 import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
-import avatar from '../../../../../../../assets/images/jane-avatar.jpg'
+import avatar from '../../../../../assets/images/jane-avatar.jpg'
+import { IncomingMessage } from './parts/incoming-message'
+import { OutgoingMessage } from './parts/outgoing-message'
 
 interface MessagesListProps {
   messages: InterviewMessage[]
   onViewTranscript: (message: InterviewMessage) => void
-  isLoadingNextQuestion: boolean
+  isLoadingNextIncomingMessage: boolean
 }
 
-export function MessagesList({ messages, isLoadingNextQuestion, onViewTranscript }: MessagesListProps) {
+export function MessagesList({ messages, isLoadingNextIncomingMessage, onViewTranscript }: MessagesListProps) {
   const scrollRef = useRef<ScrollView>(null)
 
   function scrollToBottom() {
@@ -22,30 +23,31 @@ export function MessagesList({ messages, isLoadingNextQuestion, onViewTranscript
 
   return (
     <ScrollView
-      className="flex-1 px-4"
+      className="flex-1"
       ref={scrollRef}
       contentContainerClassName="flex flex-col"
+      showsVerticalScrollIndicator={false}
       onContentSizeChange={scrollToBottom}
     >
       {messages.map((message, index) => (
         <React.Fragment key={`${index}-${message.text}`}>
           {message.isIncoming ? (
-            <View className="pb-10">
+            <Animated.View entering={FadeInLeft} className="pb-10">
               <IncomingMessage avatarUrl={avatar} message={message.text} />
-            </View>
+            </Animated.View>
           ) : (
-            <View className="pb-3 ml-auto">
+            <Animated.View entering={FadeInRight} className="pb-5 ml-auto">
               <OutgoingMessage
                 onViewTranscript={() => onViewTranscript(message)}
                 audioSrc={message.audioUrl}
                 isLoading={message.isLoading}
                 message={message.text}
               />
-            </View>
+            </Animated.View>
           )}
         </React.Fragment>
       ))}
-      {isLoadingNextQuestion && <IncomingMessage message="" avatarUrl={avatar} isLoading={true} />}
+      {isLoadingNextIncomingMessage && <IncomingMessage message="" avatarUrl={avatar} isLoading={true} />}
     </ScrollView>
   )
 }

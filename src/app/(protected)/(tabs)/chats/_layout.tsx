@@ -1,5 +1,5 @@
 import { Drawer } from 'expo-router/drawer'
-import { Header } from '~/modules/chat/screens/chat-screen/parts/header'
+import { Header } from '~/modules/chat/screens/chats-screen/parts/header'
 import { DrawerJournal } from '~/modules/components/drawer/parts/drawer-journal'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
