@@ -1,14 +1,14 @@
 import React, { useRef } from 'react'
 import { ScrollView } from 'react-native'
 import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated'
-import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
 import avatar from '../../../../../assets/images/jane-avatar.jpg'
+import { ChatMessage } from '../hooks/use-messages'
 import { IncomingMessage } from './parts/incoming-message'
 import { OutgoingMessage } from './parts/outgoing-message'
 
 interface MessagesListProps {
-  messages: InterviewMessage[]
-  onViewTranscript: (message: InterviewMessage) => void
+  messages: ChatMessage[]
+  onViewTranscript: (message: ChatMessage) => void
   isLoadingNextIncomingMessage: boolean
 }
 
@@ -30,13 +30,13 @@ export function MessagesList({ messages, isLoadingNextIncomingMessage, onViewTra
       onContentSizeChange={scrollToBottom}
     >
       {messages.map((message, index) => (
-        <React.Fragment key={`${index}-${message.text}`}>
+        <React.Fragment key={index}>
           {message.isIncoming ? (
-            <Animated.View entering={FadeInLeft} className="pb-10">
+            <Animated.View key={index} entering={FadeInLeft} className="pb-10">
               <IncomingMessage avatarUrl={avatar} message={message.text} />
             </Animated.View>
           ) : (
-            <Animated.View entering={FadeInRight} className="pb-5 ml-auto">
+            <Animated.View key={index} entering={FadeInRight} className="pb-5 ml-auto">
               <OutgoingMessage
                 onViewTranscript={() => onViewTranscript(message)}
                 audioSrc={message.audioUrl}

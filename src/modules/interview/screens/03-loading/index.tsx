@@ -8,7 +8,7 @@ import { useInterviewFormContext } from '../../hooks/use-add-journal-entry-form-
 
 export function LoadingScreen() {
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost()
-  const { form, handleNewMessage } = useInterviewFormContext()
+  const form = useInterviewFormContext()
   const router = useRouter()
 
   useFocusEffect(
@@ -27,11 +27,12 @@ export function LoadingScreen() {
         },
         {
           onSuccess: (message) => {
-            handleNewMessage(
-              message as string, // todo fix type
-              true
-            )
-            router.replace('/questions/interview/add/04-chat')
+            router.replace({
+              pathname: '/questions/interview/add/04-chat',
+              params: {
+                firstMessage: message as string, // todo fix type
+              },
+            })
           },
         }
       )

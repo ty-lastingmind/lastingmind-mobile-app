@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-interface ChatMessage {
+export interface ChatMessage {
   index: number
   text: string
   isIncoming: boolean
@@ -44,6 +44,19 @@ export function useMessages() {
     )
   }, [])
 
+  const updateMessageAtIndex = useCallback((index: number, updateMessage: Partial<ChatMessage>) => {
+    setMessages((prevMessages) =>
+      prevMessages.map((message, messageIndex) =>
+        index === messageIndex
+          ? {
+              ...message,
+              ...updateMessage,
+            }
+          : message
+      )
+    )
+  }, [])
+
   const removeLastMessage = useCallback(() => {
     setMessages((prevMessages) => prevMessages.slice(0, prevMessages.length - 1))
   }, [])
@@ -53,6 +66,7 @@ export function useMessages() {
     addNewMessage,
     addLoadingOutgoingMessage,
     updateLastMessage,
+    updateMessageAtIndex,
     removeLastMessage,
   }
 }

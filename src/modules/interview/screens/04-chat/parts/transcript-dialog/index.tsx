@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { TextInput, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { AudioTrack } from '~/modules/components/audio-track'
-import { InterviewMessage } from '~/modules/interview/hooks/use-add-journal-entry-form-context/index.types'
+import { ChatMessage } from '~/modules/components/chat/hooks/use-messages'
 import { Button } from '~/modules/ui/button'
 import { Dialog, DialogFooter, DialogHeader } from '~/modules/ui/dialog'
 import { Icon } from '~/modules/ui/icon'
@@ -10,7 +10,7 @@ import { Icon } from '~/modules/ui/icon'
 interface TranscriptDialogProps {
   onClose: () => void
   onSaveChanges: (text: string) => void
-  message: InterviewMessage
+  message: ChatMessage
 }
 
 export function TranscriptDialog({ onClose, message, onSaveChanges }: TranscriptDialogProps) {
