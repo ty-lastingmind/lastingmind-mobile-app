@@ -12,13 +12,12 @@ import { Popover } from '~/modules/ui/popover'
 import { Typography } from '~/modules/ui/typography'
 import { usePullCanChatWithChatPullCanChatWithGet } from '~/services/api/generated'
 import { CanChatWithItem } from '~/services/api/model'
-import { useChatWithContext } from '../chat-with-context'
 
 export function Header(props: DrawerHeaderProps) {
-  const { setChattingWithViewUid, chattingWithViewUid } = useChatWithContext()
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
   const isOpen = useBoolean(false)
   const { measurements, measureElement } = useMeasureElement()
+  const chattingWithViewUid = (props.route.params as { uid?: string })?.uid
 
   /**
    * Initialize chat with first user
@@ -28,19 +27,17 @@ export function Header(props: DrawerHeaderProps) {
       const firstUser = canChatWith.data.can_chat_with.at(0)
 
       if (firstUser) {
-        setChattingWithViewUid(firstUser.chattingWithViewId)
+        props.navigation.setParams({ uid: firstUser.chattingWithViewId })
       }
     }
-  }, [canChatWith, chattingWithViewUid, setChattingWithViewUid])
+  }, [canChatWith, chattingWithViewUid, props.navigation])
 
   const users = canChatWith.data?.can_chat_with ?? []
   const chattingWithUser = users.find((user) => user.chattingWithViewId === chattingWithViewUid)
 
   function selectPersonToChat(user: CanChatWithItem) {
-    if (chattingWithUser) {
-      setChattingWithViewUid(user.chattingWithViewId)
-      isOpen.setFalse()
-    }
+    props.navigation.setParams({ uid: user.chattingWithViewId })
+    isOpen.setFalse()
   }
 
   return (

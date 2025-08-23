@@ -1,3 +1,4 @@
+import { useLocalSearchParams } from 'expo-router'
 import { View } from 'react-native'
 import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
@@ -9,16 +10,16 @@ import {
   usePullCanChatWithChatPullCanChatWithGet,
   usePullStartingPromptsChatPullStartingPromptsGet,
 } from '~/services/api/generated'
-import { useChatWithContext } from './parts/chat-with-context'
 
 export function ChatScreen() {
-  const { chattingWithViewUid } = useChatWithContext()
+  const { uid } = useLocalSearchParams<{ uid?: string }>()
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet({
     query: {
-      enabled: Boolean(chattingWithViewUid),
+      enabled: Boolean(uid),
     },
   })
-  const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === chattingWithViewUid)
+
+  const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === uid)
   const startingPrompts = usePullStartingPromptsChatPullStartingPromptsGet(
     {
       chattingWithViewId: chatWithUser?.chattingWithViewId ?? '',
