@@ -20,7 +20,7 @@ export default function JournalLayout() {
             backgroundColor: colors['bg-primary'],
           },
         }}
-        drawerContent={() => <DrawerJournal />}
+        drawerContent={(props) => <DrawerJournal {...props} />}
       />
     </FormProvider>
   )

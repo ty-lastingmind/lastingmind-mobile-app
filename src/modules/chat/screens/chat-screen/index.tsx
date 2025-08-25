@@ -19,7 +19,7 @@ export function ChatScreen() {
   const { firstMessage, uid } = useLocalSearchParams<SearchParams>()
   const { addLoadingOutgoingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
-  const convoId = useMemo(() => Math.random().toString(), [])
+  const conversationId = useMemo(() => Math.random().toString(), [])
   const sendMessage = useSendUserQueryChatSendUserQueryPost({
     mutation: {
       onSuccess: (data) => {
@@ -46,14 +46,14 @@ export function ChatScreen() {
       data: {
         chattingWithViewId: uid,
         query: firstMessage,
-        convoId,
+        convoId: conversationId,
       },
     })
   }, [])
 
   useFocusEffect(handleSendFirstMessage)
 
-  function handleSendTextMessage() {
+  const handleSendTextMessage = useCallback(() => {
     setText('')
 
     addNewMessage({
@@ -66,12 +66,12 @@ export function ChatScreen() {
       data: {
         chattingWithViewId: uid,
         query: text,
-        convoId,
+        convoId: conversationId,
       },
     })
-  }
+  }, [addNewMessage, conversationId, sendMessage, text, uid])
 
-  async function handleSendAudioMessage() {
+  const handleSendAudioMessage = useCallback(async () => {
     await recordingControls.stopRecording()
     const recordingUri = audioRecorder.uri
 
@@ -92,7 +92,7 @@ export function ChatScreen() {
           data: {
             chattingWithViewId: uid,
             query: transcript,
-            convoId,
+            convoId: conversationId,
           },
         })
       },
@@ -101,7 +101,17 @@ export function ChatScreen() {
         removeLastMessage()
       },
     })
-  }
+  }, [
+    addLoadingOutgoingMessage,
+    audioRecorder.uri,
+    conversationId,
+    recordingControls,
+    removeLastMessage,
+    sendMessage,
+    uid,
+    updateLastMessage,
+    uploader.uploadAndTranscribeAudioMessage,
+  ])
 
   return (
     <View className="flex-1 pb-safe px-4">

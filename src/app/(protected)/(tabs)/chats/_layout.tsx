@@ -15,7 +15,7 @@ export default function Layout() {
           backgroundColor: colors['bg-primary'],
         },
       }}
-      drawerContent={() => <DrawerJournal />}
+      drawerContent={(props) => <DrawerJournal {...props} />}
     />
   )
 }
