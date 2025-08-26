@@ -114,29 +114,31 @@ export function ChatScreen() {
   ])
 
   return (
-    <View className="flex-1 pb-safe">
-      <MessagesList
-        messages={messages}
-        contentContainerClassName="px-4"
-        onUpvote={() => {}}
-        onDownvote={() => {}}
-        onEdit={() => {}}
-        isLoadingNextIncomingMessage={sendMessage.isPending}
-      />
-      <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
-        <View className="pb-3">
-          <MessageInput
-            audioRecorder={audioRecorder}
-            disabled={sendMessage.isPending || uploader.uploadAndTranscribeAudioMessage.isPending}
-            onSendTextMessage={handleSendTextMessage}
-            onSendAudioMessage={handleSendAudioMessage}
-            value={text}
-            onChangeText={setText}
-            onCancelRecording={recordingControls.stopRecording}
-            onStartRecording={recordingControls.startRecording}
-          />
-        </View>
-      </KeyboardAvoidingView>
-    </View>
+    <>
+      <View className="flex-1 pb-safe">
+        <MessagesList
+          messages={messages}
+          contentContainerClassName="px-4"
+          onUpvote={() => {}}
+          onDownvote={() => {}}
+          onEdit={() => {}}
+          isLoadingNextIncomingMessage={sendMessage.isPending}
+        />
+        <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
+          <View className="pb-3">
+            <MessageInput
+              audioRecorder={audioRecorder}
+              disabled={sendMessage.isPending || uploader.uploadAndTranscribeAudioMessage.isPending}
+              onSendTextMessage={handleSendTextMessage}
+              onSendAudioMessage={handleSendAudioMessage}
+              value={text}
+              onChangeText={setText}
+              onCancelRecording={recordingControls.stopRecording}
+              onStartRecording={recordingControls.startRecording}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </View>
+    </>
   )
 }

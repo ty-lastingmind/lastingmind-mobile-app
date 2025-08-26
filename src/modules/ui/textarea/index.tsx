@@ -1,12 +1,11 @@
 import { cva, VariantProps } from 'class-variance-authority'
 import { cssInterop } from 'nativewind'
 import React, { forwardRef, useCallback, useMemo } from 'react'
-import { NativeSyntheticEvent, TextInput, TextInputFocusEventData, TextInputProps, View } from 'react-native'
+import { NativeSyntheticEvent, TextInput, TextInputFocusEventData, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
+import { InputProps } from '~/modules/ui/input'
 
 import { cn } from '~/utils/cn'
-
-import { Icon } from '../icon'
 
 const variants = cva('', {
   variants: {
@@ -17,16 +16,15 @@ const variants = cva('', {
   },
 })
 
-type InputVariants = VariantProps<typeof variants>
+type TextareaVariants = VariantProps<typeof variants>
 
-export interface InputProps extends TextInputProps, InputVariants {
+export interface TextareaProps extends Omit<InputProps, 'multiline'>, TextareaVariants {
   isError?: boolean
-  rightAdornment?: React.ReactNode
-  leftAdornment?: React.ReactNode
+  bottomAdornment?: React.ReactNode
 }
 
-export const Input = forwardRef<TextInput, InputProps>(function Input(
-  { onFocus, color = 'primary', onBlur, isError, rightAdornment, className, leftAdornment, ...props },
+export const Textarea = forwardRef<TextInput, TextareaProps>(function Textarea(
+  { onFocus, color = 'primary', onBlur, bottomAdornment, isError, className, ...props },
   ref
 ) {
   const isFocused = useBoolean(false)
@@ -49,8 +47,8 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
 
   const classNames = useMemo(() => {
     return {
-      textInputClassName: cn(
-        'gap-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
+      textTextareaClassName: cn(
+        'rounded-md min-h-md pt-6 pb-4 flex flex-column',
         // isFocused.value && 'border-input-border--focus', // todo - maybe add focus state
         variants({ color }),
         isError && 'border-input-border--error',
@@ -61,18 +59,17 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   }, [className, color, isError])
 
   return (
-    <View className={classNames.textInputClassName}>
-      {leftAdornment ? leftAdornment : null}
+    <View className={classNames.textTextareaClassName}>
       <TextInput
         placeholderClassName={classNames.placeholderClassName}
-        className="flex-1 text-input-text text-input-text-size p-0"
+        className="flex-1 text-input-text text-input-text-size px-3.5 py-0"
         onBlur={handleBlur}
         onFocus={handleFocus}
         ref={ref}
+        multiline
         {...props}
       />
-      {isError ? <Icon color="error" size="md" name="alert-circle-outline" /> : null}
-      {rightAdornment ? rightAdornment : null}
+      {bottomAdornment ? bottomAdornment : null}
     </View>
   )
 })
