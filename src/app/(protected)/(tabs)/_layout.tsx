@@ -4,6 +4,7 @@ import { hideTabBar } from '~/modules/components/tab-bar/index.utils'
 import { TabBarIcon } from '~/modules/components/tab-bar/parts/tab-bar-icon'
 
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
+import { BottomTabHeader } from '~/modules/components/bottom-tab-header'
 
 export default function TabLayout() {
   const colors = useTailwindColors()
@@ -36,6 +37,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home/index"
         options={{
+          headerShown: true,
+          header: (props) => <BottomTabHeader {...props} />,
           title: 'Home',
           tabBarIcon: ({ focused }) => <TabBarIcon name="home" focused={focused} />,
         }}
