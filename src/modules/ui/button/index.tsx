@@ -3,6 +3,8 @@ import { cva } from 'class-variance-authority'
 import { forwardRef, PropsWithChildren, useMemo } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 import { cn } from '~/utils/cn'
+import { SvgIcon } from '../svg-icon'
+import { SvgIconProps } from '../svg-icon/index.types'
 
 const variants = {
   button: cva('rounded-full flex flex-row items-center gap-2 justify-center', {
@@ -12,6 +14,7 @@ const variants = {
         secondary: 'bg-button-secondary-bg',
         outlined: 'bg-button-outlined-bg border border-button-outlined-border',
         outlinedSecondary: 'bg-button-outlined-secondary-bg border border-button-outlined-secondary-border',
+        white: 'bg-button-white-bg',
       },
       size: {
         sm: 'min-h-sm px-4 py-1',
@@ -27,6 +30,7 @@ const variants = {
         secondary: 'text-button-secondary-text',
         outlined: 'text-button-outlined-text',
         outlinedSecondary: 'text-button-outlined-secondary-text',
+        white: 'text-button-secondary-text',
       },
       size: {
         sm: 'text-button-sm',
@@ -42,26 +46,29 @@ type ButtonVariants = VariantProps<(typeof variants)['button']>
 interface ButtonProps extends TouchableOpacityProps, ButtonVariants {
   loading?: boolean
   btnContainerClassName?: string
+  textClassName?: string
+  icon?: SvgIconProps
 }
 
 export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function Button(
-  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, ...props },
+  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, textClassName, icon, ...props },
   ref
 ) {
   const classNames = useMemo(() => {
     const buttonClassName = cn(variants.button({ variant, size }), btnContainerClassName)
-    const textClassName = variants.text({ variant, size })
+    const textClassNameValue = cn(variants.text({ variant, size }), textClassName)
 
     return {
       buttonClassName,
-      textClassName,
+      textClassName: textClassNameValue,
     }
-  }, [variant, size, btnContainerClassName])
+  }, [variant, size, btnContainerClassName, textClassName])
 
   return (
     <TouchableOpacity className={classNames.buttonClassName} {...props} ref={ref}>
       {loading && <ActivityIndicator />}
       <Text className={classNames.textClassName}>{children}</Text>
+      {icon && <SvgIcon name={icon.name} size={icon.size} color={icon.color} />}
     </TouchableOpacity>
   )
 })

@@ -38,6 +38,7 @@ const variants = cva(undefined, {
       primary: 'text-typography-primary',
       secondary: 'text-typography-secondary',
       tertiary: 'text-typography-tertiary',
+      white: 'text-typography-white',
     },
   },
 })
