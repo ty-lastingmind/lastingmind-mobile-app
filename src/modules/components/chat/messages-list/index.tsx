@@ -1,18 +1,25 @@
 import React, { useRef } from 'react'
-import { ScrollView } from 'react-native'
+import { ScrollView, ScrollViewProps } from 'react-native'
 import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated'
 import avatar from '../../../../../assets/images/jane-avatar.jpg'
 import { ChatMessage } from '../hooks/use-messages'
 import { IncomingMessage } from './parts/incoming-message'
 import { OutgoingMessage } from './parts/outgoing-message'
+import { cn } from '~/utils/cn'
 
-interface MessagesListProps {
+interface MessagesListProps extends ScrollViewProps {
   messages: ChatMessage[]
   onViewTranscript: (message: ChatMessage) => void
   isLoadingNextIncomingMessage: boolean
 }
 
-export function MessagesList({ messages, isLoadingNextIncomingMessage, onViewTranscript }: MessagesListProps) {
+export function MessagesList({
+  messages,
+  isLoadingNextIncomingMessage,
+  onViewTranscript,
+  contentContainerClassName,
+  ...props
+}: MessagesListProps) {
   const scrollRef = useRef<ScrollView>(null)
 
   function scrollToBottom() {
@@ -23,9 +30,10 @@ export function MessagesList({ messages, isLoadingNextIncomingMessage, onViewTra
 
   return (
     <ScrollView
+      {...props}
       className="flex-1"
       ref={scrollRef}
-      contentContainerClassName="flex flex-col"
+      contentContainerClassName={cn('flex flex-col', contentContainerClassName)}
       showsVerticalScrollIndicator={false}
       onContentSizeChange={scrollToBottom}
     >

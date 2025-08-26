@@ -114,13 +114,14 @@ export function ChatScreen() {
   ])
 
   return (
-    <View className="flex-1 pb-safe px-4">
+    <View className="flex-1 pb-safe">
       <MessagesList
         messages={messages}
+        contentContainerClassName="px-4"
         onViewTranscript={() => {}}
         isLoadingNextIncomingMessage={sendMessage.isPending}
       />
-      <KeyboardAvoidingView behavior="padding" className="px-11 pt-4" keyboardVerticalOffset={150}>
+      <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
         <View className="pb-3">
           <MessageInput
             audioRecorder={audioRecorder}
