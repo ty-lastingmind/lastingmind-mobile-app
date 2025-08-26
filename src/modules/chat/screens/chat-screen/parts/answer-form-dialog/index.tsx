@@ -1,25 +1,26 @@
 import React from 'react'
 import { Alert, View } from 'react-native'
-import { ADD_ANSWER_AUDIO_FOLDER_NAME } from '~/constants/storage'
+import { ANSWER_FORM_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { AudioRecorder } from '~/modules/components/audio-recorder'
+import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import { Button } from '~/modules/ui/button'
 import { Dialog, DialogClose, DialogTitle } from '~/modules/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
 import { Textarea } from '~/modules/ui/textarea'
-import { AddAnswerFormData, useAddAnswerForm } from './hooks/use-add-answer-form'
-import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
+import { AnswerFormData, useAnswerForm } from './hooks/use-answer-form'
 
-interface AddAnswerDialogProps {
+interface AnswerFormDialogProps {
+  title: string
   onClose: () => void
-  onSave: (data: AddAnswerFormData) => void
+  onSave: (data: AnswerFormData) => void
 }
 
-export function AddAnswerDialog({ onClose, onSave }: AddAnswerDialogProps) {
-  const form = useAddAnswerForm()
-  const { uploader, recordingControls, audioRecorder } = useAudioMessage(ADD_ANSWER_AUDIO_FOLDER_NAME)
+export function AnswerFormDialog({ title, onClose, onSave }: AnswerFormDialogProps) {
+  const form = useAnswerForm()
+  const { uploader, recordingControls, audioRecorder } = useAudioMessage(ANSWER_FORM_AUDIO_FOLDER_NAME)
 
-  function handleSubmit(data: AddAnswerFormData) {
+  function handleSubmit(data: AnswerFormData) {
     onSave(data)
   }
 
@@ -43,7 +44,7 @@ export function AddAnswerDialog({ onClose, onSave }: AddAnswerDialogProps) {
     <Dialog isOpen className="flex-1 max-h-[80vh] w-full">
       <View className="flex-1 gap-2.5 py-2">
         <View className="flex flex-row justify-between">
-          <DialogTitle>Add answer</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogClose onPress={onClose} />
         </View>
         <Form {...form}>
@@ -57,7 +58,7 @@ export function AddAnswerDialog({ onClose, onSave }: AddAnswerDialogProps) {
                   <Input
                     isError={Boolean(fieldState.error?.message)}
                     onBlur={field.onBlur}
-                    placeholder="Enter your e-mail"
+                    placeholder="Write your question"
                     onChangeText={field.onChange}
                     value={field.value}
                   />
@@ -75,7 +76,7 @@ export function AddAnswerDialog({ onClose, onSave }: AddAnswerDialogProps) {
                   <Textarea
                     isError={Boolean(fieldState.error?.message)}
                     onBlur={field.onBlur}
-                    placeholder="Enter your e-mail"
+                    placeholder="Write an answer."
                     onChangeText={field.onChange}
                     value={field.value}
                     bottomAdornment={

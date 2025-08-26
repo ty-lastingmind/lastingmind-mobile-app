@@ -7,9 +7,9 @@ const schema = z.object({
   answer: z.string(),
 })
 
-export type AddAnswerFormData = z.infer<typeof schema>
+export type AnswerFormData = z.infer<typeof schema>
 
-export function useAddAnswerForm() {
+export function useAnswerForm() {
   return useForm({
     resolver: zodResolver(schema),
   })

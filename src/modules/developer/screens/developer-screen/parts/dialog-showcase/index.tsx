@@ -1,6 +1,6 @@
 import { View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
-import { AddAnswerDialog } from '~/modules/chat/screens/chat-screen/parts/add-answer-dialog'
+import { AnswerFormDialog } from '~/modules/chat/screens/chat-screen/parts/answer-form-dialog'
 import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-of-time-dialog'
 import { TranscriptDialog } from '~/modules/interview/screens/04-chat/parts/transcript-dialog'
 import { Button } from '~/modules/ui/button'
@@ -40,13 +40,13 @@ function TranscriptDialogShowcase() {
   )
 }
 
-export function AddAnswerDialogShowcase() {
+export function AnswerFormDialogShowcase() {
   const isOpen = useBoolean(false)
 
   return (
     <>
-      <Button onPress={isOpen.setTrue}>Add answer dialog</Button>
-      {isOpen.value && <AddAnswerDialog onSave={isOpen.setFalse} onClose={isOpen.setFalse} />}
+      <Button onPress={isOpen.setTrue}>Answer form dialog</Button>
+      {isOpen.value && <AnswerFormDialog title="Add answer" onSave={isOpen.setFalse} onClose={isOpen.setFalse} />}
     </>
   )
 }
@@ -58,7 +58,7 @@ export function DialogShowcase() {
       <View className="flex gap-2">
         <TranscriptDialogShowcase />
         <OutOfTimeDialogShowcase />
-        <AddAnswerDialogShowcase />
+        <AnswerFormDialogShowcase />
       </View>
     </View>
   )
