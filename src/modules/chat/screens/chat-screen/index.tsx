@@ -118,7 +118,9 @@ export function ChatScreen() {
       <MessagesList
         messages={messages}
         contentContainerClassName="px-4"
-        onViewTranscript={() => {}}
+        onUpvote={() => {}}
+        onDownvote={() => {}}
+        onEdit={() => {}}
         isLoadingNextIncomingMessage={sendMessage.isPending}
       />
       <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>

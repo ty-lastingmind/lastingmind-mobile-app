@@ -9,7 +9,10 @@ import { cn } from '~/utils/cn'
 
 interface MessagesListProps extends ScrollViewProps {
   messages: ChatMessage[]
-  onViewTranscript: (message: ChatMessage) => void
+  onViewTranscript?: (message: ChatMessage) => void
+  onUpvote?: (message: ChatMessage) => void
+  onDownvote?: (message: ChatMessage) => void
+  onEdit?: (message: ChatMessage) => void
   isLoadingNextIncomingMessage: boolean
 }
 
@@ -18,6 +21,9 @@ export function MessagesList({
   isLoadingNextIncomingMessage,
   onViewTranscript,
   contentContainerClassName,
+  onUpvote,
+  onDownvote,
+  onEdit,
   ...props
 }: MessagesListProps) {
   const scrollRef = useRef<ScrollView>(null)
@@ -41,12 +47,18 @@ export function MessagesList({
         <React.Fragment key={index}>
           {message.isIncoming ? (
             <Animated.View key={index} entering={FadeInLeft} className="pb-10">
-              <IncomingMessage avatarUrl={avatar} message={message.text} />
+              <IncomingMessage
+                onUpvote={() => onUpvote?.(message)}
+                onDownvote={() => onDownvote?.(message)}
+                onEdit={() => onEdit?.(message)}
+                avatarUrl={avatar}
+                message={message.text}
+              />
             </Animated.View>
           ) : (
             <Animated.View key={index} entering={FadeInRight} className="pb-5 ml-auto">
               <OutgoingMessage
-                onViewTranscript={() => onViewTranscript(message)}
+                onViewTranscript={() => onViewTranscript?.(message)}
                 audioSrc={message.audioUrl}
                 isLoading={message.isLoading}
                 message={message.text}
