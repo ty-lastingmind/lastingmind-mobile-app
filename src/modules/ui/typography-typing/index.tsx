@@ -16,7 +16,7 @@ export function TypographyTyping({ children, ...typographyProps }: TypographyTyp
     <View className="gap-2">
       <Typography {...typographyProps}>
         {parts.map((part, index) => (
-          <Animated.View entering={FadeIn.delay(index * 50)} key={index}>
+          <Animated.View entering={FadeIn.delay(index * 50)} key={`${part}-${index}`}>
             <Typography {...typographyProps}>{part} </Typography>
           </Animated.View>
         ))}

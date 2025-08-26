@@ -9,7 +9,7 @@ import { useStopInterviewInterviewStopInterviewPost } from '~/services/api/gener
 
 export function SavingScreen() {
   const stopInterview = useStopInterviewInterviewStopInterviewPost()
-  const { form } = useInterviewFormContext()
+  const form = useInterviewFormContext()
 
   useFocusEffect(
     useCallback(() => {
@@ -28,9 +28,7 @@ export function SavingScreen() {
             form.reset({
               topicName: '',
               customTopicName: '',
-              message: '',
               responseId: String(Math.random()), // todo - better move it to BE
-              messages: [],
               interviewDurationInMinutes: undefined,
             })
           },

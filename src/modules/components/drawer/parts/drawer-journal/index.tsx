@@ -1,3 +1,5 @@
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { DrawerActions } from '@react-navigation/routers'
 import { Href, Link } from 'expo-router'
 import { TouchableOpacity, View } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
@@ -11,12 +13,17 @@ const items: { title: string; icon: IconName; href: Href }[] = [
   { title: 'Chat', icon: 'chatbubble-outline', href: '/chats' },
 ]
 
-export function DrawerJournal() {
+export function DrawerJournal(props: DrawerContentComponentProps) {
   return (
     <View className="pt-safe px-10 bg-bg-primary flex-1">
       {items.map((item, index) => (
-        <Link key={index} href={item.href} asChild>
-          <TouchableOpacity className="flex flex-row gap-4 items-center h-[64px]">
+        <Link key={index} href={item.href} asChild replace>
+          <TouchableOpacity
+            className="flex flex-row gap-4 items-center h-[64px]"
+            onPress={() => {
+              props.navigation.dispatch(DrawerActions.closeDrawer())
+            }}
+          >
             <Icon color="accent" name={item.icon} size="2xl" />
             <Typography color="accent" level="body-lg" brand>
               {item.title}

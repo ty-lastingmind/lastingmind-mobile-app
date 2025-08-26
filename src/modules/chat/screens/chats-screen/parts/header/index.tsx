@@ -12,13 +12,13 @@ import { Popover } from '~/modules/ui/popover'
 import { Typography } from '~/modules/ui/typography'
 import { usePullCanChatWithChatPullCanChatWithGet } from '~/services/api/generated'
 import { CanChatWithItem } from '~/services/api/model'
-import { useChatWithContext } from '../chat-with-context'
 
 export function Header(props: DrawerHeaderProps) {
-  const { setChattingWithViewUid, chattingWithViewUid } = useChatWithContext()
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
   const isOpen = useBoolean(false)
+  const isChatDetail = props.route.name === 'chat/[uid]'
   const { measurements, measureElement } = useMeasureElement()
+  const chattingWithViewUid = (props.route.params as { uid?: string })?.uid
 
   /**
    * Initialize chat with first user
@@ -28,19 +28,17 @@ export function Header(props: DrawerHeaderProps) {
       const firstUser = canChatWith.data.can_chat_with.at(0)
 
       if (firstUser) {
-        setChattingWithViewUid(firstUser.chattingWithViewId)
+        props.navigation.setParams({ uid: firstUser.chattingWithViewId })
       }
     }
-  }, [canChatWith, chattingWithViewUid, setChattingWithViewUid])
+  }, [canChatWith, chattingWithViewUid, props.navigation])
 
   const users = canChatWith.data?.can_chat_with ?? []
   const chattingWithUser = users.find((user) => user.chattingWithViewId === chattingWithViewUid)
 
   function selectPersonToChat(user: CanChatWithItem) {
-    if (chattingWithUser) {
-      setChattingWithViewUid(user.chattingWithViewId)
-      isOpen.setFalse()
-    }
+    props.navigation.setParams({ uid: user.chattingWithViewId })
+    isOpen.setFalse()
   }
 
   return (
@@ -52,7 +50,7 @@ export function Header(props: DrawerHeaderProps) {
           </TouchableOpacity>
           <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
             {chattingWithUser && (
-              <Animated.View entering={FadeInUp}>
+              <Animated.View entering={isChatDetail ? undefined : FadeInUp}>
                 <TouchableOpacity onPress={isOpen.setTrue} className="flex flex-row items-center gap-1">
                   <Typography ref={measureElement} level="h5" brand color="accent">
                     {chattingWithUser.chattingWithName}
