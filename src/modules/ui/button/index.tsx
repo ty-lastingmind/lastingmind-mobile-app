@@ -52,7 +52,7 @@ export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function 
 ) {
   const classNames = useMemo(() => {
     const buttonClassName = cn(variants.button({ variant, size }), btnContainerClassName)
-    const textClassName = cn(variants.text({ variant, size }))
+    const textClassName = variants.text({ variant, size })
 
     return {
       buttonClassName,
