@@ -1,7 +1,7 @@
 import { View, FlatList } from 'react-native'
 import { useCallback, useMemo } from 'react'
-import { QuickActionItem } from './parts/quick-action-item'
-import { HomeHeader } from './components/home-header'
+import { QuickActionItem } from '~/modules/home/parts/quick-action-item'
+import { HomeHeader } from '~/modules/home/parts/header'
 import { useGetHomeElementsHomePullHomeElementsGet } from '~/services/api/generated'
 import type { ProgressData } from '~/services/api/model'
 
