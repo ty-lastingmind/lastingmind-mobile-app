@@ -95,6 +95,8 @@ module.exports = {
       'badge-outlined-text': 'var(--badge-outlined-text)',
       'badge-outlined-border': 'var(--badge-outlined-border)',
 
+      'button-white-bg': 'var(--button-white-bg)',
+
       'icon-accent': 'var(--icon-accent)',
       'icon-white': 'var(--icon-white)',
       'icon-primary': 'var(--icon-primary)',
@@ -111,6 +113,7 @@ module.exports = {
       'typography-tertiary': 'var(--typography-tertiary)',
       'typography-accent': 'var(--typography-accent)',
       'typography-red': 'var(--typography-red)',
+      'typography-white': 'var(--typography-white)',
 
       'separator-bg': 'var(--separator-bg)',
 

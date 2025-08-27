@@ -6,6 +6,8 @@ import { useMemo } from 'react'
 
 import { IconName } from './index.types'
 
+export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'
+
 const variants = cva('', {
   variants: {
     size: {
@@ -39,11 +41,12 @@ const variants = cva('', {
 
 type IconVariants = VariantProps<typeof variants>
 
-interface IconProps extends IconVariants {
+export interface IconProps extends IconVariants {
   name: IconName
+  size?: IconSize
 }
 
-export function Icon({ name, size, color }: IconProps) {
+export function Icon({ name, size = 'md', color }: IconProps) {
   const className = useMemo(() => variants({ size, color }), [color, size])
 
   return <Ionicons name={name} className={className} />

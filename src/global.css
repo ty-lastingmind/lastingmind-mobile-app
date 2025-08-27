@@ -88,6 +88,8 @@
     --button-outlined-secondary-text: var(--label-accent);
     --button-outlined-secondary-border: var(--miscellaneous-topic-stroke);
 
+    --button-white-bg: var(--bg-primary);
+
     /* BADGE */
     --badge-primary-bg: var(--accent);
     --badge-primary-text: var(--white);
@@ -118,6 +120,7 @@
     --typography-tertiary: var(--black);
     --typography-accent: var(--label-accent);
     --typography-red: var(--red);
+    --typography-white: var(--white);
 
     /* SEPARATOR */
     --separator-bg: rgba(255, 255, 255, 0.1);
@@ -164,6 +167,7 @@
     --typography-primary: var(--white);
     --typography-secondary: var(--white);
     --typography-tertiary: var(--white);
+    --typography-white: var(--white);
 
     /* SEPARATOR */
     --separator-bg: rgba(255, 255, 255, 0.2);

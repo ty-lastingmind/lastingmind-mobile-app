@@ -12,6 +12,7 @@ const variants = {
         secondary: 'bg-button-secondary-bg',
         outlined: 'bg-button-outlined-bg border border-button-outlined-border',
         outlinedSecondary: 'bg-button-outlined-secondary-bg border border-button-outlined-secondary-border',
+        white: 'bg-button-white-bg',
       },
       size: {
         sm: 'min-h-sm px-4 py-1',
@@ -27,6 +28,7 @@ const variants = {
         secondary: 'text-button-secondary-text',
         outlined: 'text-button-outlined-text',
         outlinedSecondary: 'text-button-outlined-secondary-text',
+        white: 'text-button-secondary-text',
       },
       size: {
         sm: 'text-button-sm',
