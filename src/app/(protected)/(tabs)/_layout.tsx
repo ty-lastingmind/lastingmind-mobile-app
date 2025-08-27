@@ -4,7 +4,7 @@ import { hideTabBar } from '~/modules/components/tab-bar/index.utils'
 import { TabBarIcon } from '~/modules/components/tab-bar/parts/tab-bar-icon'
 
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
-import { BottomTabHeader } from '~/modules/components/bottom-tab-header'
+import { BottomTabHeader } from '~/components/bottom-tab-header'
 
 export default function TabLayout() {
   const colors = useTailwindColors()

@@ -1,0 +1,51 @@
+import { View, FlatList } from 'react-native'
+import { useCallback, useMemo } from 'react'
+import { QuickActionItem } from './parts/quick-action-item'
+import { HomeHeader } from './components/home-header'
+import { useGetHomeElementsHomePullHomeElementsGet } from '~/services/api/generated'
+import type { ProgressData } from '~/services/api/model'
+
+export function Home() {
+  const { data } = useGetHomeElementsHomePullHomeElementsGet()
+
+  const progressData = useMemo(() => {
+    const topContainerData = data?.top_container.top_container_data
+    if (topContainerData && 'progress_percent' in topContainerData) {
+      return topContainerData as ProgressData
+    }
+    return null
+  }, [data])
+
+  const progressText = useMemo(() => {
+    const percent = progressData?.progress_percent ?? 0
+    return `Pick up where you left off! You're already ${percent}% towards Platinum.`
+  }, [progressData])
+
+  const handleContinueWhereLeftOff = useCallback(() => {
+    /* 
+    - Navigate to the last question that was answered
+    - /curated-questions/continue-questions with topic field empty.
+    */
+    console.log('Continue where left off')
+  }, [])
+
+  return (
+    <FlatList
+      data={data?.quick_actions ?? []}
+      renderItem={({ item }) => <QuickActionItem action={item} />}
+      keyExtractor={(item, index) => `${item.action}-${index}`}
+      ListHeaderComponent={
+        <HomeHeader
+          progressPercent={progressData?.progress_percent ?? 0}
+          progressText={progressText}
+          onContinuePress={handleContinueWhereLeftOff}
+        />
+      }
+      numColumns={2}
+      showsVerticalScrollIndicator={false}
+      contentContainerClassName="px-6"
+      ItemSeparatorComponent={() => <View className="h-6" />}
+      columnWrapperClassName="gap-6 items-center justify-center"
+    />
+  )
+}
