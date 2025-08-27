@@ -4,8 +4,7 @@ import { Typography } from '~/modules/ui/typography'
 import type { QuickAction } from '~/services/api/model'
 import { quickActionToData, defaultQuickActionConfig } from './index.static'
 import { useCallback } from 'react'
-
-const ICON_COLOR = '#000000'
+import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 const ICON_SIZE = 48
 
 interface QuickActionItemProps {
@@ -13,6 +12,7 @@ interface QuickActionItemProps {
 }
 
 export const QuickActionItem = ({ action }: QuickActionItemProps) => {
+  const colors = useTailwindColors()
   const actionProps = quickActionToData[action.action] ?? {
     ...defaultQuickActionConfig,
     title: `${defaultQuickActionConfig.title} (${action.action})`,
@@ -39,7 +39,7 @@ export const QuickActionItem = ({ action }: QuickActionItemProps) => {
       <Typography level="label-1" color="primary" className="text-center px-2">
         {actionProps.title}
       </Typography>
-      <SvgIcon name={actionProps.icon} size={ICON_SIZE} color={ICON_COLOR} />
+      <SvgIcon name={actionProps.icon} size={ICON_SIZE} color={colors['label-primary']} />
     </TouchableOpacity>
   )
 }
