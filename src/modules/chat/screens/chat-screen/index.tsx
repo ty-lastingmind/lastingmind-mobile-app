@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router'
-import { useAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useCallback, useState } from 'react'
 import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
@@ -7,7 +7,9 @@ import { assets } from '~/constants/assets'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useConversationId } from '~/modules/chat/screens/chat-screen/hooks/use-conversaion-id'
 import { useStartConversation } from '~/modules/chat/screens/chat-screen/hooks/use-start-conversation'
-import { editMessageAtom } from '~/modules/chat/screens/chat-screen/index.store'
+import { confirmAddAnswerAtom, editMessageAtom } from '~/modules/chat/screens/chat-screen/index.store'
+import { AddAnswerDialog } from '~/modules/chat/screens/chat-screen/parts/add-answer-dialog'
+import { ConfirmAddAnswerDialog } from '~/modules/chat/screens/chat-screen/parts/confirm-add-answer-dialog'
 import { ConfirmEditAnswerDialog } from '~/modules/chat/screens/chat-screen/parts/confirm-edit-answer-dialog'
 import { EditAnswerDialog } from '~/modules/chat/screens/chat-screen/parts/edit-answer-dialog'
 import { ChatMessage, useMessages } from '~/modules/components/chat/hooks/use-messages'
@@ -23,7 +25,8 @@ type SearchParams = {
 
 export function ChatScreen() {
   const [text, setText] = useState('')
-  const [, setEditAnswer] = useAtom(editMessageAtom)
+  const setEditAnswer = useSetAtom(editMessageAtom)
+  const setAddAnswer = useSetAtom(confirmAddAnswerAtom)
   const { firstMessage, uid } = useLocalSearchParams<SearchParams>()
   const { addLoadingOutgoingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
@@ -145,6 +148,16 @@ export function ChatScreen() {
     })
   }
 
+  function handleDislikeAnswer(message: ChatMessage) {
+    const prevMessage = messages.find((m) => m.index === message.index - 1)
+    if (!prevMessage) return
+
+    setAddAnswer({
+      question: prevMessage,
+      answer: message,
+    })
+  }
+
   return (
     <>
       <View className="flex-1 pb-safe">
@@ -152,7 +165,7 @@ export function ChatScreen() {
           messages={messages}
           contentContainerClassName="px-4"
           onLike={handleLikeAnswer}
-          onDislike={() => {}}
+          onDislike={handleDislikeAnswer}
           onEdit={handleStartEditAnswer}
           isLoadingNextIncomingMessage={sendMessage.isPending}
         />
@@ -173,6 +186,8 @@ export function ChatScreen() {
       </View>
       <EditAnswerDialog />
       <ConfirmEditAnswerDialog chattingWithViewId={uid} conversationId={conversationId} avatarUrl={assets.ty} />
+      <ConfirmAddAnswerDialog />
+      <AddAnswerDialog chattingWithViewId={uid} conversationId={conversationId} />
     </>
   )
 }

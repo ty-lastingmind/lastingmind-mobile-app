@@ -8,3 +8,13 @@ export const editMessageAtom = atom<{
 } | null>(null)
 
 export const confirmEditAnswerAtom = atom<AnswerFormData | null>(null)
+
+export const confirmAddAnswerAtom = atom<{
+  question: ChatMessage
+  answer: ChatMessage
+} | null>(null)
+
+export const addAnswerAtom = atom<{
+  question: ChatMessage
+  answer: ChatMessage
+} | null>(null)

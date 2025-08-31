@@ -1,5 +1,6 @@
 import { View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
+import { ConfirmDialog } from '~/components/confirm-dialog'
 import { AnswerFormDialog } from '~/modules/chat/screens/chat-screen/parts/answer-form-dialog'
 import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-of-time-dialog'
 import { TranscriptDialog } from '~/modules/interview/screens/04-chat/parts/transcript-dialog'
@@ -51,6 +52,23 @@ export function AnswerFormDialogShowcase() {
   )
 }
 
+export function ConfirmDialogShowcase() {
+  const isOpen = useBoolean(false)
+
+  return (
+    <>
+      <Button onPress={isOpen.setTrue}>Confirm dialog</Button>
+      {isOpen.value && (
+        <ConfirmDialog
+          onConfirm={isOpen.setFalse}
+          onCancel={isOpen.setFalse}
+          title="Would you like to add a new answer?"
+        />
+      )}
+    </>
+  )
+}
+
 export function DialogShowcase() {
   return (
     <View className="flex gap-4">
@@ -59,6 +77,7 @@ export function DialogShowcase() {
         <TranscriptDialogShowcase />
         <OutOfTimeDialogShowcase />
         <AnswerFormDialogShowcase />
+        <ConfirmDialogShowcase />
       </View>
     </View>
   )
