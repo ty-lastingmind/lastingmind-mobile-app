@@ -90,6 +90,9 @@
 
     --button-white-bg: var(--bg-primary);
 
+    --button-apple-bg: var(--label-primary);
+    --button-google-bg: var(--bg-tertiary);
+
     /* BADGE */
     --badge-primary-bg: var(--accent);
     --badge-primary-text: var(--white);

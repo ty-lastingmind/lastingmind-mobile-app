@@ -1,6 +1,6 @@
 import type { VariantProps } from 'class-variance-authority'
 import { cva } from 'class-variance-authority'
-import { forwardRef, PropsWithChildren, useMemo } from 'react'
+import React, { forwardRef, PropsWithChildren, useMemo } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 import { cn } from '~/utils/cn'
 
@@ -13,6 +13,8 @@ const variants = {
         outlined: 'bg-button-outlined-bg border border-button-outlined-border',
         outlinedSecondary: 'bg-button-outlined-secondary-bg border border-button-outlined-secondary-border',
         white: 'bg-button-white-bg',
+        apple: 'bg-button-apple-bg',
+        google: 'bg-button-google-bg',
       },
       size: {
         sm: 'min-h-sm px-4 py-1',
@@ -29,6 +31,8 @@ const variants = {
         outlined: 'text-button-outlined-text',
         outlinedSecondary: 'text-button-outlined-secondary-text',
         white: 'text-button-secondary-text',
+        apple: 'text-button-primary-text font-semibold',
+        google: 'font-semibold',
       },
       size: {
         sm: 'text-button-sm',
@@ -44,10 +48,11 @@ type ButtonVariants = VariantProps<(typeof variants)['button']>
 interface ButtonProps extends TouchableOpacityProps, ButtonVariants {
   loading?: boolean
   btnContainerClassName?: string
+  icon?: React.ReactNode
 }
 
 export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function Button(
-  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, ...props },
+  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, icon, ...props },
   ref
 ) {
   const classNames = useMemo(() => {
@@ -63,7 +68,8 @@ export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function 
   return (
     <TouchableOpacity className={classNames.buttonClassName} {...props} ref={ref}>
       {loading && <ActivityIndicator />}
-      <Text className={classNames.textClassName}>{children}</Text>
+      {icon}
+      <Text className={classNames.textClassName + ' items-center'}>{children}</Text>
     </TouchableOpacity>
   )
 })

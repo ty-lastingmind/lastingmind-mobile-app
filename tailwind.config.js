@@ -53,8 +53,8 @@ module.exports = {
       'input-text-size': 'var(--input-text-size)',
     },
     colors: {
-      'accent': 'var(--accent)',
-      'red': 'var(--red)',
+      accent: 'var(--accent)',
+      red: 'var(--red)',
       'label-primary': 'var(--label-primary)',
       'label-secondary': 'var(--label-secondary)',
       'label-accent': 'var(--label-accent)',
@@ -63,7 +63,7 @@ module.exports = {
       'bg-primary': 'var(--bg-primary)',
       'bg-secondary': 'var(--bg-secondary)',
       'bg-tertiary': 'var(--bg-tertiary)',
-      'miscellaneous': 'var(--miscellaneous)',
+      miscellaneous: 'var(--miscellaneous)',
       'miscellaneous-topic-stroke': 'var(--miscellaneous-topic-stroke)',
       'miscellaneous-component': 'var(--miscellaneous-component)',
 
@@ -96,6 +96,9 @@ module.exports = {
       'badge-outlined-border': 'var(--badge-outlined-border)',
 
       'button-white-bg': 'var(--button-white-bg)',
+
+      'button-apple-bg': 'var(--button-apple-bg)',
+      'button-google-bg': 'var(--button-google-bg)',
 
       'icon-accent': 'var(--icon-accent)',
       'icon-white': 'var(--icon-white)',
