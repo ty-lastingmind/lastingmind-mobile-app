@@ -1,4 +1,5 @@
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
+import { useBoolean } from 'usehooks-ts'
 import { Avatar } from '~/modules/ui/avatar'
 import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
@@ -8,8 +9,8 @@ interface IncomingMessageProps {
   avatarUrl?: ImageSrc
   message: string
   isLoading?: boolean
-  onUpvote?: () => void
-  onDownvote?: () => void
+  onLike?: () => void
+  onDislike?: () => void
   onEdit?: () => void
 }
 
@@ -18,10 +19,16 @@ export function IncomingMessage({
   message,
   isLoading = false,
   onEdit,
-  onUpvote,
-  onDownvote,
+  onLike,
+  onDislike,
 }: IncomingMessageProps) {
-  const hasBottomActions = onEdit || onDownvote || onUpvote
+  const isLiked = useBoolean(false)
+  const hasBottomActions = onEdit || onDislike || onLike
+
+  function handleLike() {
+    isLiked.setTrue()
+    onLike?.()
+  }
 
   return (
     <View className="gap-3">
@@ -37,13 +44,17 @@ export function IncomingMessage({
               <Icon size="lg" color="secondary" name="create-outline" />
             </TouchableOpacity>
           )}
-          {onUpvote && (
-            <TouchableOpacity onPress={onUpvote}>
-              <Icon size="lg" color="secondary" name="thumbs-up-outline" />
+          {onLike && (
+            <TouchableOpacity disabled={isLiked.value} onPress={handleLike}>
+              <Icon
+                size="lg"
+                color={isLiked.value ? 'accent' : 'secondary'}
+                name={isLiked.value ? 'thumbs-up' : 'thumbs-up-outline'}
+              />
             </TouchableOpacity>
           )}
-          {onDownvote && (
-            <TouchableOpacity onPress={onDownvote}>
+          {onDislike && (
+            <TouchableOpacity onPress={onDislike}>
               <Icon size="lg" color="secondary" name="thumbs-down-outline" />
             </TouchableOpacity>
           )}

@@ -10,8 +10,8 @@ import { ImageSrc } from '~/types/images'
 interface MessagesListProps extends ScrollViewProps {
   messages: ChatMessage[]
   onViewTranscript?: (message: ChatMessage) => void
-  onUpvote?: (message: ChatMessage) => void
-  onDownvote?: (message: ChatMessage) => void
+  onLike?: (message: ChatMessage) => void
+  onDislike?: (message: ChatMessage) => void
   onEdit?: (message: ChatMessage) => void
   isLoadingNextIncomingMessage?: boolean
   avatarUrl?: ImageSrc
@@ -22,8 +22,8 @@ export function MessagesList({
   isLoadingNextIncomingMessage,
   onViewTranscript,
   contentContainerClassName,
-  onUpvote,
-  onDownvote,
+  onLike,
+  onDislike,
   onEdit,
   avatarUrl,
   ...props
@@ -50,8 +50,8 @@ export function MessagesList({
           {message.isIncoming ? (
             <Animated.View key={index} entering={FadeInLeft} className="pb-10">
               <IncomingMessage
-                onUpvote={onUpvote ? () => onUpvote(message) : undefined}
-                onDownvote={onDownvote ? () => onDownvote(message) : undefined}
+                onLike={onLike ? () => onLike(message) : undefined}
+                onDislike={onDislike ? () => onDislike(message) : undefined}
                 onEdit={onEdit ? () => onEdit(message) : undefined}
                 avatarUrl={avatarUrl}
                 message={message.text}

@@ -14,7 +14,7 @@ import { ChatMessage, useMessages } from '~/modules/components/chat/hooks/use-me
 import { MessageInput } from '~/modules/components/chat/message-input'
 import { MessagesList } from '~/modules/components/chat/messages-list'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
-import { useSendUserQueryChatSendUserQueryPost } from '~/services/api/generated'
+import { useLikeAnswerChatLikeAnswerPost, useSendUserQueryChatSendUserQueryPost } from '~/services/api/generated'
 
 type SearchParams = {
   uid: string
@@ -27,6 +27,7 @@ export function ChatScreen() {
   const { firstMessage, uid } = useLocalSearchParams<SearchParams>()
   const { addLoadingOutgoingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
+  const likeAnswer = useLikeAnswerChatLikeAnswerPost()
   const conversationId = useConversationId()
   useStartConversation(() => {
     addNewMessage({
@@ -43,6 +44,20 @@ export function ChatScreen() {
       },
     })
   })
+
+  function handleLikeAnswer(message: ChatMessage) {
+    const prevMessage = messages.find((m) => m.index === message.index - 1)
+
+    if (!prevMessage) return
+
+    likeAnswer.mutate({
+      data: {
+        question: prevMessage.text,
+        answer: message.text,
+        chattingWithViewId: uid,
+      },
+    })
+  }
 
   const sendMessage = useSendUserQueryChatSendUserQueryPost({
     mutation: {
@@ -136,8 +151,8 @@ export function ChatScreen() {
         <MessagesList
           messages={messages}
           contentContainerClassName="px-4"
-          onUpvote={() => {}}
-          onDownvote={() => {}}
+          onLike={handleLikeAnswer}
+          onDislike={() => {}}
           onEdit={handleStartEditAnswer}
           isLoadingNextIncomingMessage={sendMessage.isPending}
         />
