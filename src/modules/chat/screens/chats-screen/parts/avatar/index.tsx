@@ -20,7 +20,7 @@ export function Avatar({ src, isLoading, className, iconSize = '4xl' }: AvatarPr
     }
 
     if (src) {
-      return <Image source={src} style={{ width: '100%', height: '100%' }} />
+      return <Image source={src} style={{ width: '100%', height: '100%', borderRadius: '100%' }} />
     }
 
     return (
@@ -32,7 +32,10 @@ export function Avatar({ src, isLoading, className, iconSize = '4xl' }: AvatarPr
 
   return (
     <View
-      className={cn('bg-bg-secondary rounded-full flex items-center justify-center h-[224px] w-[224px]', className)}
+      className={cn(
+        'bg-bg-secondary shadow-md rounded-full flex items-center justify-center h-[224px] w-[224px]',
+        className
+      )}
     >
       {renderContent()}
     </View>

@@ -3,7 +3,6 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useState } from 'react'
 import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
-import { assets } from '~/constants/assets'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useConversationId } from '~/modules/chat/screens/chat-screen/hooks/use-conversaion-id'
 import { useStartConversation } from '~/modules/chat/screens/chat-screen/hooks/use-start-conversation'
@@ -16,10 +15,14 @@ import { ChatMessage, useMessages } from '~/modules/components/chat/hooks/use-me
 import { MessageInput } from '~/modules/components/chat/message-input'
 import { MessagesList } from '~/modules/components/chat/messages-list'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
-import { useLikeAnswerChatLikeAnswerPost, useSendUserQueryChatSendUserQueryPost } from '~/services/api/generated'
+import {
+  useLikeAnswerChatLikeAnswerPost,
+  usePullCanChatWithChatPullCanChatWithGet,
+  useSendUserQueryChatSendUserQueryPost,
+} from '~/services/api/generated'
 
 type SearchParams = {
-  uid: string
+  chattingWithViewId: string
   firstMessage: string
 }
 
@@ -27,41 +30,13 @@ export function ChatScreen() {
   const [text, setText] = useState('')
   const setEditAnswer = useSetAtom(editMessageAtom)
   const setAddAnswer = useSetAtom(confirmAddAnswerAtom)
-  const { firstMessage, uid } = useLocalSearchParams<SearchParams>()
+  const { firstMessage, chattingWithViewId } = useLocalSearchParams<SearchParams>()
   const { addLoadingOutgoingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
   const likeAnswer = useLikeAnswerChatLikeAnswerPost()
   const conversationId = useConversationId()
-  useStartConversation(() => {
-    addNewMessage({
-      text: firstMessage,
-      isIncoming: false,
-      isLoading: false,
-    })
-
-    sendMessage.mutate({
-      data: {
-        chattingWithViewId: uid,
-        query: firstMessage,
-        convoId: conversationId,
-      },
-    })
-  })
-
-  function handleLikeAnswer(message: ChatMessage) {
-    const prevMessage = messages.find((m) => m.index === message.index - 1)
-
-    if (!prevMessage) return
-
-    likeAnswer.mutate({
-      data: {
-        question: prevMessage.text,
-        answer: message.text,
-        chattingWithViewId: uid,
-      },
-    })
-  }
-
+  const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
+  const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === chattingWithViewId)
   const sendMessage = useSendUserQueryChatSendUserQueryPost({
     mutation: {
       onSuccess: (data) => {
@@ -77,6 +52,36 @@ export function ChatScreen() {
     },
   })
 
+  useStartConversation(() => {
+    addNewMessage({
+      text: firstMessage,
+      isIncoming: false,
+      isLoading: false,
+    })
+
+    sendMessage.mutate({
+      data: {
+        chattingWithViewId: chattingWithViewId,
+        query: firstMessage,
+        convoId: conversationId,
+      },
+    })
+  })
+
+  function handleLikeAnswer(message: ChatMessage) {
+    const prevMessage = messages.find((m) => m.index === message.index - 1)
+
+    if (!prevMessage) return
+
+    likeAnswer.mutate({
+      data: {
+        question: prevMessage.text,
+        answer: message.text,
+        chattingWithViewId: chattingWithViewId,
+      },
+    })
+  }
+
   const handleSendTextMessage = useCallback(() => {
     setText('')
 
@@ -88,12 +93,12 @@ export function ChatScreen() {
 
     sendMessage.mutate({
       data: {
-        chattingWithViewId: uid,
+        chattingWithViewId: chattingWithViewId,
         query: text,
         convoId: conversationId,
       },
     })
-  }, [addNewMessage, conversationId, sendMessage, text, uid])
+  }, [addNewMessage, conversationId, sendMessage, text, chattingWithViewId])
 
   const handleSendAudioMessage = useCallback(async () => {
     await recordingControls.stopRecording()
@@ -114,7 +119,7 @@ export function ChatScreen() {
 
         sendMessage.mutate({
           data: {
-            chattingWithViewId: uid,
+            chattingWithViewId: chattingWithViewId,
             query: transcript,
             convoId: conversationId,
           },
@@ -132,7 +137,7 @@ export function ChatScreen() {
     recordingControls,
     removeLastMessage,
     sendMessage,
-    uid,
+    chattingWithViewId,
     updateLastMessage,
     uploader.uploadAndTranscribeAudioMessage,
   ])
@@ -167,6 +172,7 @@ export function ChatScreen() {
           onLike={handleLikeAnswer}
           onDislike={handleDislikeAnswer}
           onEdit={handleStartEditAnswer}
+          avatarUrl={chatWithUser?.chattingWithImage}
           isLoadingNextIncomingMessage={sendMessage.isPending}
         />
         <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
@@ -185,9 +191,13 @@ export function ChatScreen() {
         </KeyboardAvoidingView>
       </View>
       <EditAnswerDialog />
-      <ConfirmEditAnswerDialog chattingWithViewId={uid} conversationId={conversationId} avatarUrl={assets.ty} />
+      <ConfirmEditAnswerDialog
+        chattingWithViewId={chattingWithViewId}
+        conversationId={conversationId}
+        avatarUrl={chatWithUser?.chattingWithImage}
+      />
       <ConfirmAddAnswerDialog />
-      <AddAnswerDialog chattingWithViewId={uid} conversationId={conversationId} />
+      <AddAnswerDialog chattingWithViewId={chattingWithViewId} conversationId={conversationId} />
     </>
   )
 }
