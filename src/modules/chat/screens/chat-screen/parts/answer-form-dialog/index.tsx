@@ -14,10 +14,11 @@ interface AnswerFormDialogProps {
   title: string
   onClose: () => void
   onSave: (data: AnswerFormData) => void
+  defaultValues?: AnswerFormData
 }
 
-export function AnswerFormDialog({ title, onClose, onSave }: AnswerFormDialogProps) {
-  const form = useAnswerForm()
+export function AnswerFormDialog({ title, onClose, onSave, defaultValues }: AnswerFormDialogProps) {
+  const form = useAnswerForm(defaultValues)
   const { uploader, recordingControls, audioRecorder } = useAudioMessage(ANSWER_FORM_AUDIO_FOLDER_NAME)
 
   function handleSubmit(data: AnswerFormData) {
@@ -32,7 +33,8 @@ export function AnswerFormDialog({ title, onClose, onSave }: AnswerFormDialogPro
 
     uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
       onSuccess: ({ transcript }) => {
-        form.setValue('answer', `\n${transcript}`)
+        const answer = form.getValues('answer')
+        form.setValue('answer', `${answer}\n${transcript}`)
       },
       onError: () => {
         Alert.alert('Error', 'Failed to upload and transcribe audio message')

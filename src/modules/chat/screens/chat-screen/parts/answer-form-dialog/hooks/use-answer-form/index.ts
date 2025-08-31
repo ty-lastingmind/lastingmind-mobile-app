@@ -9,8 +9,9 @@ const schema = z.object({
 
 export type AnswerFormData = z.infer<typeof schema>
 
-export function useAnswerForm() {
+export function useAnswerForm(defaultValues?: AnswerFormData) {
   return useForm({
     resolver: zodResolver(schema),
+    defaultValues,
   })
 }

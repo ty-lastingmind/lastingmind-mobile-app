@@ -5,7 +5,7 @@ import { Typography } from '~/modules/ui/typography'
 import { ImageSrc } from '~/types/images'
 
 interface IncomingMessageProps {
-  avatarUrl: ImageSrc
+  avatarUrl?: ImageSrc
   message: string
   isLoading?: boolean
   onUpvote?: () => void
@@ -33,17 +33,17 @@ export function IncomingMessage({
       {hasBottomActions && (
         <View className="flex flex-row gap-3 px-4">
           {onEdit && (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onEdit}>
               <Icon size="lg" color="secondary" name="create-outline" />
             </TouchableOpacity>
           )}
           {onUpvote && (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onUpvote}>
               <Icon size="lg" color="secondary" name="thumbs-up-outline" />
             </TouchableOpacity>
           )}
           {onDownvote && (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onDownvote}>
               <Icon size="lg" color="secondary" name="thumbs-down-outline" />
             </TouchableOpacity>
           )}

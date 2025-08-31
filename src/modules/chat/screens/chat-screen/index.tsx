@@ -1,9 +1,16 @@
-import { useFocusEffect, useLocalSearchParams } from 'expo-router'
-import { useCallback, useMemo, useState } from 'react'
+import { useLocalSearchParams } from 'expo-router'
+import { useAtom } from 'jotai'
+import { useCallback, useState } from 'react'
 import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
+import { assets } from '~/constants/assets'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
-import { useMessages } from '~/modules/components/chat/hooks/use-messages'
+import { useConversationId } from '~/modules/chat/screens/chat-screen/hooks/use-conversaion-id'
+import { useStartConversation } from '~/modules/chat/screens/chat-screen/hooks/use-start-conversation'
+import { editMessageAtom } from '~/modules/chat/screens/chat-screen/index.store'
+import { ConfirmEditAnswerDialog } from '~/modules/chat/screens/chat-screen/parts/confirm-edit-answer-dialog'
+import { EditAnswerDialog } from '~/modules/chat/screens/chat-screen/parts/edit-answer-dialog'
+import { ChatMessage, useMessages } from '~/modules/components/chat/hooks/use-messages'
 import { MessageInput } from '~/modules/components/chat/message-input'
 import { MessagesList } from '~/modules/components/chat/messages-list'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
@@ -16,10 +23,27 @@ type SearchParams = {
 
 export function ChatScreen() {
   const [text, setText] = useState('')
+  const [, setEditAnswer] = useAtom(editMessageAtom)
   const { firstMessage, uid } = useLocalSearchParams<SearchParams>()
   const { addLoadingOutgoingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
-  const conversationId = useMemo(() => Math.random().toString(), [])
+  const conversationId = useConversationId()
+  useStartConversation(() => {
+    addNewMessage({
+      text: firstMessage,
+      isIncoming: false,
+      isLoading: false,
+    })
+
+    sendMessage.mutate({
+      data: {
+        chattingWithViewId: uid,
+        query: firstMessage,
+        convoId: conversationId,
+      },
+    })
+  })
+
   const sendMessage = useSendUserQueryChatSendUserQueryPost({
     mutation: {
       onSuccess: (data) => {
@@ -34,24 +58,6 @@ export function ChatScreen() {
       },
     },
   })
-
-  const handleSendFirstMessage = useCallback(() => {
-    addNewMessage({
-      text: firstMessage,
-      isIncoming: false,
-      isLoading: false,
-    })
-
-    sendMessage.mutate({
-      data: {
-        chattingWithViewId: uid,
-        query: firstMessage,
-        convoId: conversationId,
-      },
-    })
-  }, [])
-
-  useFocusEffect(handleSendFirstMessage)
 
   const handleSendTextMessage = useCallback(() => {
     setText('')
@@ -113,6 +119,17 @@ export function ChatScreen() {
     uploader.uploadAndTranscribeAudioMessage,
   ])
 
+  function handleStartEditAnswer(message: ChatMessage) {
+    const prevMessage = messages.find((m) => m.index === message.index - 1)
+
+    if (!prevMessage) return
+
+    setEditAnswer({
+      question: prevMessage,
+      answer: message,
+    })
+  }
+
   return (
     <>
       <View className="flex-1 pb-safe">
@@ -121,7 +138,7 @@ export function ChatScreen() {
           contentContainerClassName="px-4"
           onUpvote={() => {}}
           onDownvote={() => {}}
-          onEdit={() => {}}
+          onEdit={handleStartEditAnswer}
           isLoadingNextIncomingMessage={sendMessage.isPending}
         />
         <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
@@ -139,6 +156,8 @@ export function ChatScreen() {
           </View>
         </KeyboardAvoidingView>
       </View>
+      <EditAnswerDialog />
+      <ConfirmEditAnswerDialog chattingWithViewId={uid} conversationId={conversationId} avatarUrl={assets.ty} />
     </>
   )
 }
