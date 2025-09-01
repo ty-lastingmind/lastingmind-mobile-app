@@ -1,5 +1,5 @@
-import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
+import { useCallback, useState } from 'react'
 import { Alert, View } from 'react-native'
 import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
@@ -23,6 +23,14 @@ export function ChatsScreen() {
       enabled: Boolean(chattingWithViewId),
     },
   })
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setText('')
+      }
+    }, [])
+  )
 
   const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === chattingWithViewId)
   const startingPrompts = usePullStartingPromptsChatPullStartingPromptsGet(

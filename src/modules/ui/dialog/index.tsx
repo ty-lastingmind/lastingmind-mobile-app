@@ -1,11 +1,19 @@
 import React, { PropsWithChildren } from 'react'
-import { Modal, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
+import { Modal, TouchableOpacity, TouchableOpacityProps, View, ViewProps } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
 import { cn } from '~/utils/cn'
 import { Typography } from '../typography'
 
-export function DialogContent({ children, className }: PropsWithChildren<{ className?: string }>) {
-  return <View className={cn('bg-bg-primary rounded-md p-4 gap-4', className)}>{children}</View>
+export function DialogContent({
+  children,
+  className,
+  style,
+}: PropsWithChildren<{ className?: string; style?: ViewProps['style'] }>) {
+  return (
+    <View style={style} className={cn('bg-bg-primary rounded-md p-4 gap-4', className)}>
+      {children}
+    </View>
+  )
 }
 
 export function DialogHeader({ children }: PropsWithChildren) {
@@ -43,12 +51,15 @@ export function DialogOverlay({ children, isOpen }: PropsWithChildren<{ isOpen: 
 export interface DialogProps {
   isOpen: boolean
   className?: string
+  style?: ViewProps['style']
 }
 
-export function Dialog({ children, isOpen, className }: PropsWithChildren<DialogProps>) {
+export function Dialog({ children, isOpen, className, style }: PropsWithChildren<DialogProps>) {
   return (
     <DialogOverlay isOpen={isOpen}>
-      <DialogContent className={className}>{children}</DialogContent>
+      <DialogContent style={style} className={className}>
+        {children}
+      </DialogContent>
     </DialogOverlay>
   )
 }

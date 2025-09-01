@@ -7,3 +7,4 @@ import App from './App'
 // the environment is set up appropriately
 registerRootComponent(App)
 export { SearchParams } from '~/modules/chat/index.types'
+export { formatDuration } from '~/utils/player'

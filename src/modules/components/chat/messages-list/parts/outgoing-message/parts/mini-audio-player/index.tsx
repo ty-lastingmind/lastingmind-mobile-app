@@ -4,15 +4,10 @@ import { TouchableOpacity, View } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
 import { Progress } from '~/modules/ui/progress'
 import { Typography } from '~/modules/ui/typography'
+import { formatDuration } from '~/utils/player'
 
 interface MiniAudioPlayerProps {
   audioSrc: string
-}
-
-const formatTime = (seconds: number): string => {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = Math.floor(seconds % 60)
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
 }
 
 export function MiniAudioPlayer({ audioSrc }: MiniAudioPlayerProps) {
@@ -38,8 +33,8 @@ export function MiniAudioPlayer({ audioSrc }: MiniAudioPlayerProps) {
       </TouchableOpacity>
       <Progress size="sm" color="primary" value={Math.max(0, Math.min(100, progress))} />
       <View className="flex-row">
-        <Typography level="caption-2">{formatTime(status.currentTime || 0)}/</Typography>
-        <Typography level="caption-2">{formatTime(status.duration || 0)}</Typography>
+        <Typography level="caption-2">{formatDuration(status.currentTime || 0)}/</Typography>
+        <Typography level="caption-2">{formatDuration(status.duration || 0)}</Typography>
       </View>
     </View>
   )
