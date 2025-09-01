@@ -2,7 +2,8 @@ import { Image, ImageProps } from 'expo-image'
 import React from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import Animated, { FadeIn } from 'react-native-reanimated'
-import { Icon, IconSize } from '~/modules/ui/icon'
+import { Icon } from '~/modules/ui/icon'
+import { IconSize } from '~/modules/ui/icon/index.types'
 import { cn } from '~/utils/cn'
 
 interface AvatarProps {

@@ -10,10 +10,12 @@ import { InputShowcase } from '~/modules/developer/screens/developer-screen/part
 import { MiniPlayerShowcase } from '~/modules/developer/screens/developer-screen/parts/mini-player-showcase'
 import { NotificationsShowcase } from '~/modules/developer/screens/developer-screen/parts/notifications-showcase'
 import { ProgressShowcase } from '~/modules/developer/screens/developer-screen/parts/progress-showcase'
+import { SvgIconShowcase } from '~/modules/developer/screens/developer-screen/parts/svg-icon-showcase'
 import { TypographyShowcase } from '~/modules/developer/screens/developer-screen/parts/typography-showcase'
 import { Badge } from '~/modules/ui/badge'
 
 const showCaseComponents = {
+  SvgIconShowcase: SvgIconShowcase,
   MiniPlayerShowcase: MiniPlayerShowcase,
   AnimatedTypographyShowcase: AnimatedTypographyShowcase,
   AvatarShowcase: AvatarShowcase,
