@@ -20,7 +20,7 @@ export function Avatar({ src, isLoading, className, iconSize = '4xl' }: AvatarPr
     }
 
     if (src) {
-      return <Image source={src} style={{ width: '100%', height: '100%', borderRadius: '100%' }} />
+      return <Image transition={300} source={src} style={{ width: '100%', height: '100%', borderRadius: '100%' }} />
     }
 
     return (
