@@ -8,6 +8,7 @@ export function AvatarShowcase() {
       <Typography level="h2">Avatar</Typography>
       <View className="flex gap-2">
         <Avatar source="https://picsum.photos/id/1/200/300" />
+        <Avatar />
       </View>
     </View>
   )

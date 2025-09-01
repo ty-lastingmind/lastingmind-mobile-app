@@ -11,19 +11,20 @@ import {
   usePullCanChatWithChatPullCanChatWithGet,
   usePullStartingPromptsChatPullStartingPromptsGet,
 } from '~/services/api/generated'
+import { SearchParams } from '../../index.types'
 
 export function ChatsScreen() {
   const router = useRouter()
   const [text, setText] = useState('')
-  const { uid } = useLocalSearchParams<{ uid?: string }>()
+  const { chattingWithViewId } = useLocalSearchParams<{ chattingWithViewId?: string }>()
   const { audioRecorder, uploader, recordingControls } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet({
     query: {
-      enabled: Boolean(uid),
+      enabled: Boolean(chattingWithViewId),
     },
   })
 
-  const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === uid)
+  const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === chattingWithViewId)
   const startingPrompts = usePullStartingPromptsChatPullStartingPromptsGet(
     {
       chattingWithViewId: chatWithUser?.chattingWithViewId ?? '',
@@ -57,18 +58,16 @@ export function ChatsScreen() {
   }
 
   function handleSendTextMessage() {
-    const uid = chatWithUser?.chattingWithViewId
+    if (!chatWithUser) return
 
-    if (!uid) {
-      return
+    const searchParams: SearchParams = {
+      chattingWithViewId: chatWithUser.chattingWithViewId,
+      firstMessage: text,
     }
 
     router.push({
-      pathname: '/chats/chat/[uid]',
-      params: {
-        uid: uid,
-        firstMessage: text,
-      },
+      pathname: '/chats/chat/[chattingWithViewId]',
+      params: searchParams,
     })
   }
 
@@ -77,7 +76,7 @@ export function ChatsScreen() {
   return (
     <View className="pt-6 px-10 pb-safe flex-1 flex justify-between">
       <View className="mx-auto">
-        <Avatar isLoading={!chatWithUser} src={null} />
+        <Avatar isLoading={!chatWithUser} src={chatWithUser?.chattingWithImage} />
       </View>
       {!text && (
         <View className="flex gap-4">

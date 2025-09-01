@@ -26,7 +26,7 @@ export interface InputProps extends TextInputProps, InputVariants {
 }
 
 export const Input = forwardRef<TextInput, InputProps>(function Input(
-  { onFocus, color = 'primary', onBlur, isError, rightAdornment, leftAdornment, ...props },
+  { onFocus, color = 'primary', onBlur, isError, rightAdornment, className, leftAdornment, ...props },
   ref
 ) {
   const isFocused = useBoolean(false)
@@ -47,24 +47,25 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
     [isFocused, onBlur]
   )
 
-  const className = useMemo(() => {
+  const classNames = useMemo(() => {
     return {
       textInputClassName: cn(
         'gap-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
         // isFocused.value && 'border-input-border--focus', // todo - maybe add focus state
         variants({ color }),
-        isError && 'border-input-border--error'
+        isError && 'border-input-border--error',
+        className
       ),
       placeholderClassName: cn('text-input-placeholder', isError && 'text-input-placeholder--error'),
     }
-  }, [color, isError])
+  }, [className, color, isError])
 
   return (
-    <View className={className.textInputClassName}>
+    <View className={classNames.textInputClassName}>
       {leftAdornment ? leftAdornment : null}
       <TextInput
-        placeholderClassName={className.placeholderClassName}
-        className="flex-1 text-input-text text-input-text-size"
+        placeholderClassName={classNames.placeholderClassName}
+        className="flex-1 text-input-text text-input-text-size p-0"
         onBlur={handleBlur}
         onFocus={handleFocus}
         ref={ref}

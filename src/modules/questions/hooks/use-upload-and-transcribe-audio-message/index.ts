@@ -5,11 +5,13 @@ import { Storage } from '~/services'
 import { useTranscribeAudioUtilsTranscribeAudioPost } from '~/services/api/generated'
 import { useUploadAudioFile } from '../use-upload-audio-file'
 
+export type UploadStatus = 'idle' | 'uploading' | 'transcribing'
+
 export function useUploadAndTranscribeAudioMessage(folderName: string) {
   const uid = useUid()
   const uploadAudio = useUploadAudioFile(folderName)
   const transcribeAudio = useTranscribeAudioUtilsTranscribeAudioPost()
-  const [status, setStatus] = useState<'idle' | 'uploading' | 'transcribing'>('idle')
+  const [status, setStatus] = useState<UploadStatus>('idle')
 
   return {
     status,

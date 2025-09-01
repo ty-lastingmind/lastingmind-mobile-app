@@ -1,7 +1,7 @@
 import { View } from 'react-native'
-import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
 import { CircularProgress } from '~/modules/ui/circular-progress'
+import { Typography } from '~/modules/ui/typography'
 
 interface HomeHeaderProps {
   progressPercent: number
