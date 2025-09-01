@@ -7,6 +7,7 @@ import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { SearchParams } from '~/modules/chat/index.types'
 import { useConversationId } from '~/modules/chat/screens/chat-screen/hooks/use-conversaion-id'
 import { useStartConversation } from '~/modules/chat/screens/chat-screen/hooks/use-start-conversation'
+import { AnswerExplanations } from '~/modules/chat/screens/chat-screen/parts/answer-explanations'
 import { useMessages } from '~/modules/components/chat/hooks/use-messages'
 import { MessageInput } from '~/modules/components/chat/message-input'
 import { MessagesList } from '~/modules/components/chat/messages-list'
@@ -33,6 +34,9 @@ export function ChatScreen() {
   const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === chattingWithViewId)
   const sendMessage = useSendUserQueryChatSendUserQueryPost({
     mutation: {
+      onMutate: () => {
+        getExplanations.reset()
+      },
       onSuccess: (data) => {
         addNewMessage({
           text: data as string, // todo fix type
@@ -147,9 +151,14 @@ export function ChatScreen() {
             showActions
             contentContainerClassName="px-4"
             showAddAnswerButton={getExplanations.data?.button === 'add_answer'}
-            showSendQuestionButton={getExplanations.data?.button === 'send_answer'}
+            showSendQuestionButton={getExplanations.data?.button === 'send_question'}
             avatarUrl={chatWithUser?.chattingWithImage}
             isLoadingNextIncomingMessage={sendMessage.isPending}
+            listFooterComponent={
+              getExplanations.data?.explanation ? (
+                <AnswerExplanations explanations={getExplanations.data.explanation} />
+              ) : null
+            }
           />
         </MessagesListContextProvider>
         <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>

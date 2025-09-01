@@ -1,4 +1,5 @@
 import { DrawerHeaderProps } from '@react-navigation/drawer'
+import { useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
@@ -15,7 +16,8 @@ import { CanChatWithItem } from '~/services/api/model'
 export function Header(props: DrawerHeaderProps) {
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
   const isOpen = useBoolean(false)
-  const isChatDetail = props.route.name === 'chat/[chattingWithViewId]'
+  const router = useRouter()
+  const isChatDetail = props.route.name === 'chat'
   const { measurements, measureElement } = useMeasureElement()
   const chattingWithViewId = (props.route.params as { chattingWithViewId?: string })?.chattingWithViewId
 
@@ -36,7 +38,16 @@ export function Header(props: DrawerHeaderProps) {
   const chattingWithUser = users.find((user) => user.chattingWithViewId === chattingWithViewId)
 
   function selectPersonToChat(user: CanChatWithItem) {
-    props.navigation.setParams({ chattingWithViewId: user.chattingWithViewId })
+    if (isChatDetail) {
+      router.replace({
+        pathname: '/chats',
+        params: {
+          chattingWithViewId: user.chattingWithViewId,
+        },
+      })
+    } else {
+      props.navigation.setParams({ chattingWithViewId: user.chattingWithViewId })
+    }
     isOpen.setFalse()
   }
 

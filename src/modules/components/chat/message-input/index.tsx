@@ -24,6 +24,7 @@ export function MessageInput({
   return (
     <MessageInputTextField
       {...props}
+      className="rounded-full"
       onSendTextMessage={onSendTextMessage}
       disabled={disabled}
       audioRecorder={audioRecorder}

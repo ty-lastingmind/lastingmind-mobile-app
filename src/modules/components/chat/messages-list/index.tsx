@@ -69,6 +69,7 @@ export function MessagesList({
                   {showSendQuestionButton && isLastMessage && (
                     <SendQuestionButton question={messages[index - 1]?.text ?? ''} />
                   )}
+                  {listFooterComponent}
                 </Animated.View>
               </React.Fragment>
             ) : (
@@ -95,7 +96,6 @@ export function MessagesList({
           avatarUrl={avatarUrl}
         />
       )}
-      {listFooterComponent}
     </ScrollView>
   )
 }
