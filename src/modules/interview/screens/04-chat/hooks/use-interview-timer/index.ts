@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useBoolean } from 'usehooks-ts'
 
 export function useInterviewTimer(interviewDurationInMinutes: number) {
-  const timerRef = useRef<number | null>(null)
+  const timerRef = useRef<number | NodeJS.Timeout | null>(null)
   const isOutOfTime = useBoolean(false)
 
   useEffect(() => {
