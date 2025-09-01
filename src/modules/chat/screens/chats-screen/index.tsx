@@ -11,6 +11,7 @@ import {
   usePullCanChatWithChatPullCanChatWithGet,
   usePullStartingPromptsChatPullStartingPromptsGet,
 } from '~/services/api/generated'
+import { SearchParams } from '../../index.types'
 
 export function ChatsScreen() {
   const router = useRouter()
@@ -59,12 +60,14 @@ export function ChatsScreen() {
   function handleSendTextMessage() {
     if (!chatWithUser) return
 
+    const searchParams: SearchParams = {
+      chattingWithViewId: chatWithUser.chattingWithViewId,
+      firstMessage: text,
+    }
+
     router.push({
       pathname: '/chats/chat/[chattingWithViewId]',
-      params: {
-        chattingWithViewId: chatWithUser.chattingWithViewId,
-        firstMessage: text,
-      },
+      params: searchParams,
     })
   }
 

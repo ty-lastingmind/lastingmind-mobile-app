@@ -73,7 +73,7 @@ export function AnswerFormDialog({ title, onClose, onSave, defaultValues }: Answ
             name="answer"
             render={({ field, fieldState }) => (
               <FormItem className="flex-1">
-                <FormLabel>Question</FormLabel>
+                <FormLabel>Answer</FormLabel>
                 <FormControl className="flex-1">
                   <Textarea
                     isError={Boolean(fieldState.error?.message)}

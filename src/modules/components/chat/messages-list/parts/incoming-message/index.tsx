@@ -1,63 +1,32 @@
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
-import { useBoolean } from 'usehooks-ts'
+import { ActivityIndicator, View } from 'react-native'
+import { ChatMessage } from '~/modules/components/chat/hooks/use-messages'
+import { EditButton } from '~/modules/components/chat/messages-list/parts/incoming-message/parts/edit-button'
+import { LikeButton } from '~/modules/components/chat/messages-list/parts/incoming-message/parts/like-button'
 import { Avatar } from '~/modules/ui/avatar'
-import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 import { ImageSrc } from '~/types/images'
+import { DislikeButton } from './parts/dislike-button'
 
 interface IncomingMessageProps {
+  message: ChatMessage
+  prevMessage?: ChatMessage
   avatarUrl?: ImageSrc
-  message: string
-  isLoading?: boolean
-  onLike?: () => void
-  onDislike?: () => void
-  onEdit?: () => void
+  showActions?: boolean
 }
 
-export function IncomingMessage({
-  avatarUrl,
-  message,
-  isLoading = false,
-  onEdit,
-  onLike,
-  onDislike,
-}: IncomingMessageProps) {
-  const isLiked = useBoolean(false)
-  const hasBottomActions = onEdit || onDislike || onLike
-
-  function handleLike() {
-    isLiked.setTrue()
-    onLike?.()
-  }
-
+export function IncomingMessage({ avatarUrl, message, prevMessage, showActions }: IncomingMessageProps) {
   return (
     <View className="gap-3">
       <View className="flex flex-row gap-2">
         <Avatar source={avatarUrl} />
-        {isLoading && <ActivityIndicator />}
+        {message.isLoading && <ActivityIndicator />}
       </View>
-      <Typography level="body-1">{message}</Typography>
-      {hasBottomActions && (
+      <Typography level="body-1">{message.text}</Typography>
+      {showActions && prevMessage && (
         <View className="flex flex-row gap-3 px-4">
-          {onEdit && (
-            <TouchableOpacity onPress={onEdit}>
-              <Icon size="lg" color="secondary" name="create-outline" />
-            </TouchableOpacity>
-          )}
-          {onLike && (
-            <TouchableOpacity disabled={isLiked.value} onPress={handleLike}>
-              <Icon
-                size="lg"
-                color={isLiked.value ? 'accent' : 'secondary'}
-                name={isLiked.value ? 'thumbs-up' : 'thumbs-up-outline'}
-              />
-            </TouchableOpacity>
-          )}
-          {onDislike && (
-            <TouchableOpacity onPress={onDislike}>
-              <Icon size="lg" color="secondary" name="thumbs-down-outline" />
-            </TouchableOpacity>
-          )}
+          <EditButton avatarUrl={avatarUrl} message={message} prevMessage={prevMessage} />
+          <LikeButton prevMessage={prevMessage} message={message} />
+          <DislikeButton prevMessage={prevMessage} message={message} />
         </View>
       )}
     </View>

@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { ConfirmDialog } from '~/components/confirm-dialog'
-import { AnswerFormDialog } from '~/modules/chat/screens/chat-screen/parts/answer-form-dialog'
+import { AnswerFormDialog } from '~/modules/components/chat/messages-list/parts/answer-form-dialog'
 import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-of-time-dialog'
 import { TranscriptDialog } from '~/modules/interview/screens/04-chat/parts/transcript-dialog'
 import { Button } from '~/modules/ui/button'

@@ -1,54 +1,29 @@
-import { useAtom } from 'jotai'
-import { Alert, View } from 'react-native'
+import { View } from 'react-native'
 import { MessagesList } from '~/modules/components/chat/messages-list'
 import { Button } from '~/modules/ui/button'
 import { Dialog } from '~/modules/ui/dialog'
 import { Typography } from '~/modules/ui/typography'
-import { useEditAnswerChatEditAnswerPost } from '~/services/api/generated'
-import { confirmEditAnswerAtom } from '../../index.store'
 import { ImageSrc } from '~/types/images'
+import { AnswerFormData } from '~/modules/components/chat/messages-list/parts/answer-form-dialog/hooks/use-answer-form'
 
 interface ConfirmEditAnswerDialogProps {
   avatarUrl: ImageSrc
-  conversationId: string
-  chattingWithViewId: string
+  dataToConfirm: AnswerFormData
+  onClose: () => void
+  onConfirm: (data: AnswerFormData) => void
+  isLoading: boolean
 }
 
 export function ConfirmEditAnswerDialog({
   avatarUrl,
-  conversationId,
-  chattingWithViewId,
+  dataToConfirm,
+  onConfirm,
+  onClose,
+  isLoading,
 }: ConfirmEditAnswerDialogProps) {
-  const [data, setData] = useAtom(confirmEditAnswerAtom)
-  const editAnswerMutation = useEditAnswerChatEditAnswerPost()
-
-  function handleSave() {
-    if (!data) return
-
-    editAnswerMutation.mutate(
-      {
-        data: {
-          chattingWithViewId,
-          newAnswer: data.answer,
-          convoId: conversationId,
-        },
-      },
-      {
-        onSuccess: () => {
-          setData(null)
-        },
-        onError: () => {
-          Alert.alert('Error', 'Failed to save answer')
-        },
-      }
-    )
+  function handleConfirm() {
+    onConfirm(dataToConfirm)
   }
-
-  function handleClose() {
-    setData(null)
-  }
-
-  if (!data) return null
 
   return (
     <Dialog isOpen className="flex-1 max-h-[65vh] gap-6 w-full py-6">
@@ -62,13 +37,13 @@ export function ConfirmEditAnswerDialog({
           messages={[
             {
               index: 0,
-              text: data.question,
+              text: dataToConfirm.question,
               isIncoming: false,
               isLoading: false,
             },
             {
               index: 1,
-              text: data.answer,
+              text: dataToConfirm.answer,
               isIncoming: true,
               isLoading: false,
             },
@@ -76,10 +51,10 @@ export function ConfirmEditAnswerDialog({
         />
       </View>
       <View className="flex flex-row gap-2 justify-center">
-        <Button disabled={editAnswerMutation.isPending} onPress={handleClose} variant="outlined" size="sm">
+        <Button disabled={isLoading} onPress={onClose} variant="outlined" size="sm">
           No
         </Button>
-        <Button loading={editAnswerMutation.isPending} onPress={handleSave} size="sm">
+        <Button disabled={isLoading} loading={isLoading} onPress={handleConfirm} size="sm">
           Yes
         </Button>
       </View>

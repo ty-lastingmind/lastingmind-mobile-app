@@ -1,7 +1,7 @@
-import { View, FlatList } from 'react-native'
 import { useCallback, useMemo } from 'react'
-import { QuickActionItem } from '~/modules/home/parts/quick-action-item'
+import { FlatList, View } from 'react-native'
 import { HomeHeader } from '~/modules/home/parts/header'
+import { QuickActionItem } from '~/modules/home/parts/quick-action-item'
 import { useGetHomeElementsHomePullHomeElementsGet } from '~/services/api/generated'
 import type { ProgressData } from '~/services/api/model'
 
@@ -22,7 +22,7 @@ export function Home() {
   }, [progressData])
 
   const handleContinueWhereLeftOff = useCallback(() => {
-    /* 
+    /*
     - Navigate to the last question that was answered
     - /curated-questions/continue-questions with topic field empty.
     */

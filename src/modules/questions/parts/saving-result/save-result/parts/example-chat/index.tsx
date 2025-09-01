@@ -36,7 +36,15 @@ export function ExampleChat({ title, caption, overline, message, answer, avatarU
           <OutgoingMessage message={message} />
         </View>
         <View>
-          <IncomingMessage message={answer} avatarUrl={avatarUrl} />
+          <IncomingMessage
+            message={{
+              text: answer,
+              isIncoming: true,
+              isLoading: false,
+              index: 0,
+            }}
+            avatarUrl={avatarUrl}
+          />
         </View>
       </ScrollView>
       {overline && (
