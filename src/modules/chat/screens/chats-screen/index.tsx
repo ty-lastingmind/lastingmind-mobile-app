@@ -60,7 +60,7 @@ export function ChatsScreen() {
 
     uploader.uploadAndTranscribeAudioMessage.mutate(fileUri, {
       onSuccess: ({ transcript }) => {
-        console.log('[debug]', transcript)
+        setText(transcript)
       },
       onError: () => {
         Alert.alert('Error', 'Something went wrong')
