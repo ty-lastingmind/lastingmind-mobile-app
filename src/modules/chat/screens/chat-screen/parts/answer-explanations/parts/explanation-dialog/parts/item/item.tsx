@@ -1,9 +1,8 @@
-import { useEffect } from 'react'
 import { ScrollView, useWindowDimensions, View } from 'react-native'
 import { Player } from '~/modules/chat/screens/chat-screen/parts/answer-explanations/parts/explanation-dialog/parts/item/parts/player'
 import { useMessagesListContext } from '~/modules/components/chat/messages-list/parts/messages-list-context'
 import { Typography } from '~/modules/ui/typography'
-import { usePullQuestionInfoChatPullQuestionInfoPost } from '~/services/api/generated'
+import { usePullQuestionInfoChatPullQuestionInfoGet } from '~/services/api/generated'
 import { ExplanationItem } from '~/services/api/model'
 import { formatDate } from '~/utils/date'
 
@@ -14,17 +13,11 @@ interface ItemProps {
 export function Item({ item }: ItemProps) {
   const { width } = useWindowDimensions()
   const { chattingWithViewId } = useMessagesListContext()
-  const explanationDetail = usePullQuestionInfoChatPullQuestionInfoPost()
+  const explanationDetail = usePullQuestionInfoChatPullQuestionInfoGet({
+    chattingWithViewId,
+    responseId: item.question_info.questionId,
+  })
   const firstAudio = explanationDetail.data?.question_details.audio_files?.at(0)
-
-  useEffect(() => {
-    explanationDetail.mutate({
-      data: {
-        chattingWithViewId,
-        responseId: item.question_info.questionId,
-      },
-    })
-  }, [])
 
   return (
     <View

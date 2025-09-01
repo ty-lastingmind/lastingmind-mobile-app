@@ -1,6 +1,7 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { Alert, View } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { Avatar } from '~/modules/chat/screens/chats-screen/parts/avatar'
@@ -18,6 +19,8 @@ export function ChatsScreen() {
   const [text, setText] = useState('')
   const { chattingWithViewId } = useLocalSearchParams<{ chattingWithViewId?: string }>()
   const { audioRecorder, uploader, recordingControls } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
+  const [showQuestions, setShowQuestions] = useState(true)
+
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet({
     query: {
       enabled: Boolean(chattingWithViewId),
@@ -82,12 +85,12 @@ export function ChatsScreen() {
   const prompts = startingPrompts.data?.starting_prompts ?? []
 
   return (
-    <View className="pt-6 px-10 pb-safe flex-1 flex justify-between">
+    <View className="pt-6 pb-safe flex-1 flex justify-between">
       <View className="mx-auto">
         <Avatar isLoading={!chatWithUser} src={chatWithUser?.chattingWithImage} />
       </View>
-      {!text && (
-        <View className="flex gap-4">
+      {!text && showQuestions && (
+        <View className="flex gap-4 px-10">
           {prompts.map((prompt, index) => (
             <Animated.View key={`${prompt}-${index}`} exiting={FadeOut} entering={FadeInDown.delay(index * 100)}>
               <StartingPrompt onPress={() => setText(prompt)} prompt={prompt} />
@@ -96,18 +99,26 @@ export function ChatsScreen() {
         </View>
       )}
       {chatWithUser && Boolean(prompts.length) && (
-        <Animated.View entering={FadeInDown.delay(prompts.length * 100)}>
-          <MessageInput
-            audioRecorder={audioRecorder}
-            disabled={false}
-            value={text}
-            onChangeText={setText}
-            onSendTextMessage={handleSendTextMessage}
-            onSendAudioMessage={handleSendAudioMessage}
-            onStartRecording={recordingControls.startRecording}
-            onCancelRecording={recordingControls.cancelRecording}
-          />
-        </Animated.View>
+        <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
+          <Animated.View className="pb-3" entering={FadeInDown.delay(prompts.length * 100)}>
+            <MessageInput
+              audioRecorder={audioRecorder}
+              disabled={false}
+              value={text}
+              onChangeText={setText}
+              onFocus={() => {
+                setShowQuestions(false)
+              }}
+              onBlur={() => {
+                setShowQuestions(true)
+              }}
+              onSendTextMessage={handleSendTextMessage}
+              onSendAudioMessage={handleSendAudioMessage}
+              onStartRecording={recordingControls.startRecording}
+              onCancelRecording={recordingControls.cancelRecording}
+            />
+          </Animated.View>
+        </KeyboardAvoidingView>
       )}
     </View>
   )

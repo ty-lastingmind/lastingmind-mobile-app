@@ -151,7 +151,7 @@ export function ChatScreen() {
             showActions
             contentContainerClassName="px-4"
             showAddAnswerButton={getExplanations.data?.button === 'add_answer'}
-            showSendQuestionButton={getExplanations.data?.button === 'send_answer'}
+            showSendQuestionButton={getExplanations.data?.button === 'send_question'}
             avatarUrl={chatWithUser?.chattingWithImage}
             isLoadingNextIncomingMessage={sendMessage.isPending}
             listFooterComponent={
