@@ -10,7 +10,7 @@ export default function TosDialog({ isOpen = false, onClose }: { isOpen?: boolea
         <TouchableOpacity className="w-full flex-row justify-end" onPress={onClose}>
           <SvgIcon name="close" />
         </TouchableOpacity>
-        <SvgIcon name="shield" />
+        <SvgIcon name="shield" size="2xl" />
         <Typography brand level="h3" className="text-center">
           Terms of Service
         </Typography>
