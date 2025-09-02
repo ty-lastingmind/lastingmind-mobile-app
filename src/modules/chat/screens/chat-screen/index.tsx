@@ -26,7 +26,7 @@ export function ChatScreen() {
     },
   })
   const { firstMessage, chattingWithViewId } = useLocalSearchParams<SearchParams>()
-  const { addLoadingOutgoingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
+  const { addLoadingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
   const conversationId = useConversationId()
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
@@ -36,11 +36,11 @@ export function ChatScreen() {
     mutation: {
       onMutate: () => {
         getExplanations.reset()
+        addLoadingMessage({ isIncoming: true })
       },
       onSuccess: (data) => {
-        addNewMessage({
+        updateLastMessage({
           text: data as string, // todo fix type
-          isIncoming: true,
           isLoading: false,
         })
 
@@ -55,6 +55,7 @@ export function ChatScreen() {
       },
       onError: () => {
         Alert.alert('Error', 'Failed to send message')
+        removeLastMessage()
       },
     },
   })
@@ -100,7 +101,7 @@ export function ChatScreen() {
 
     if (!recordingUri) return
 
-    addLoadingOutgoingMessage()
+    addLoadingMessage()
 
     uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
       onSuccess: ({ transcript, url }) => {
@@ -125,7 +126,7 @@ export function ChatScreen() {
       },
     })
   }, [
-    addLoadingOutgoingMessage,
+    addLoadingMessage,
     audioRecorder.uri,
     conversationId,
     recordingControls,
@@ -153,7 +154,6 @@ export function ChatScreen() {
             showAddAnswerButton={getExplanations.data?.button === 'add_answer'}
             showSendQuestionButton={getExplanations.data?.button === 'send_question'}
             avatarUrl={chatWithUser?.chattingWithImage}
-            isLoadingNextIncomingMessage={sendMessage.isPending}
             listFooterComponent={
               getExplanations.data?.explanation ? (
                 <AnswerExplanations explanations={getExplanations.data.explanation} />

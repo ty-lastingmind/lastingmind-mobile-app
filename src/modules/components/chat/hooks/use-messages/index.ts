@@ -20,13 +20,14 @@ export function useMessages() {
     )
   }, [])
 
-  const addLoadingOutgoingMessage = useCallback(() => {
+  const addLoadingMessage = useCallback((message: Partial<ChatMessage> = {}) => {
     return setMessages((prev) =>
       prev.concat({
         text: '',
         index: prev.length,
         isIncoming: false,
         isLoading: true,
+        ...message,
       })
     )
   }, [])
@@ -64,7 +65,7 @@ export function useMessages() {
   return {
     messages,
     addNewMessage,
-    addLoadingOutgoingMessage,
+    addLoadingMessage,
     updateLastMessage,
     updateMessageAtIndex,
     removeLastMessage,

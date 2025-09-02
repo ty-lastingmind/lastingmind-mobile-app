@@ -6,6 +6,7 @@ import { Avatar } from '~/modules/ui/avatar'
 import { Typography } from '~/modules/ui/typography'
 import { ImageSrc } from '~/types/images'
 import { DislikeButton } from './parts/dislike-button'
+import Animated, { FadeInLeft } from 'react-native-reanimated'
 
 interface IncomingMessageProps {
   message: ChatMessage
@@ -21,7 +22,11 @@ export function IncomingMessage({ avatarUrl, message, prevMessage, showActions }
         <Avatar source={avatarUrl} />
         {message.isLoading && <ActivityIndicator />}
       </View>
-      <Typography level="body-1">{message.text}</Typography>
+      {message.text && (
+        <Animated.View entering={FadeInLeft}>
+          <Typography level="body-1">{message.text}</Typography>
+        </Animated.View>
+      )}
       {showActions && prevMessage && (
         <View className="flex flex-row gap-3 px-4">
           <EditButton avatarUrl={avatarUrl} message={message} prevMessage={prevMessage} />

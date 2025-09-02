@@ -17,7 +17,6 @@ interface MessagesListProps extends ScrollViewProps {
   listFooterComponent?: ReactNode
   showAddAnswerButton?: boolean
   showSendQuestionButton?: boolean
-  isLoadingNextIncomingMessage?: boolean
 }
 
 export function MessagesList({
@@ -29,7 +28,6 @@ export function MessagesList({
   listFooterComponent,
   showAddAnswerButton,
   showSendQuestionButton,
-  isLoadingNextIncomingMessage,
   ...props
 }: MessagesListProps) {
   const scrollRef = useRef<ScrollView>(null)
@@ -51,24 +49,21 @@ export function MessagesList({
     >
       {messages.map((message, index) => {
         const isLastMessage = index === messages.length - 1
+        const prevMessage = messages.at(index - 1)
 
         return (
           <React.Fragment key={index}>
             {message.isIncoming ? (
               <React.Fragment key={index}>
-                <Animated.View entering={FadeInLeft} className="pb-10 gap-3 flex items-start">
+                <Animated.View entering={FadeInLeft.delay(500)} className="pb-10 gap-3 flex items-start">
                   <IncomingMessage
-                    showActions={showActions}
+                    showActions={showActions && !message.isLoading}
                     avatarUrl={avatarUrl}
                     message={message}
-                    prevMessage={messages[index - 1]}
+                    prevMessage={prevMessage}
                   />
-                  {showAddAnswerButton && isLastMessage && (
-                    <AddAnswerButton question={messages[index - 1]?.text ?? ''} />
-                  )}
-                  {showSendQuestionButton && isLastMessage && (
-                    <SendQuestionButton question={messages[index - 1]?.text ?? ''} />
-                  )}
+                  {showAddAnswerButton && isLastMessage && <AddAnswerButton question={prevMessage?.text ?? ''} />}
+                  {showSendQuestionButton && isLastMessage && <SendQuestionButton question={prevMessage?.text ?? ''} />}
                   {isLastMessage && listFooterComponent}
                 </Animated.View>
               </React.Fragment>
@@ -85,17 +80,6 @@ export function MessagesList({
           </React.Fragment>
         )
       })}
-      {isLoadingNextIncomingMessage && (
-        <IncomingMessage
-          message={{
-            index: messages.length,
-            text: '',
-            isIncoming: true,
-            isLoading: true,
-          }}
-          avatarUrl={avatarUrl}
-        />
-      )}
     </ScrollView>
   )
 }
