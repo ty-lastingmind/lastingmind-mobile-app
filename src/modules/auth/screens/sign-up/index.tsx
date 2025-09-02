@@ -9,6 +9,7 @@ import { SignUpForm, signUpFormSchema, SignUpFormValues } from '../../parts/sign
 import { Typography } from '~/modules/ui/typography'
 import TermsOfService from '../../parts/terms-of-service'
 import BackButton from '../../parts/back-button'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 
 export function SignUpScreen() {
   const signUpWithEmailAndPasswordMutation = useSignUpWithEmailAndPassword()
@@ -29,7 +30,7 @@ export function SignUpScreen() {
       <View className="gap-4 px-8 pt-safe flex h-screen-safe justify-between">
         <BackButton />
 
-        {/* sign up form */}
+        {/* logo and sign up form */}
         <View>
           <View className="py-12 gap-4">
             <Title>LastingMind</Title>
@@ -43,13 +44,15 @@ export function SignUpScreen() {
         {/* continue and TOS */}
         <View>
           <TermsOfService />
-          <Button
-            onPress={form.handleSubmit(handleSignUpWithEmailAndPassword)}
-            loading={signUpWithEmailAndPasswordMutation.isPending}
-            disabled={!isValid}
-          >
-            {'Continue'}
-          </Button>
+          <KeyboardAvoidingView behavior="height" keyboardVerticalOffset={150}>
+            <Button
+              onPress={form.handleSubmit(handleSignUpWithEmailAndPassword)}
+              loading={signUpWithEmailAndPasswordMutation.isPending}
+              disabled={!isValid}
+            >
+              {'Continue'}
+            </Button>
+          </KeyboardAvoidingView>
         </View>
       </View>
     </SafeAreaView>

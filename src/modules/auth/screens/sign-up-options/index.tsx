@@ -24,7 +24,7 @@ export function SignUpOptionsScreen() {
         <BackButton />
 
         {/* logo */}
-        <View className="py-12">
+        <View className="py-12 gap-4">
           <Title>LastingMind</Title>
 
           <Typography brand className="text-center" level="body-lg" color="accent">
@@ -35,8 +35,8 @@ export function SignUpOptionsScreen() {
         {/* signup options and TOS */}
         <View className="gap-4">
           <TermsOfService />
-          <AppleButton label="Signup with Apple" />
-          <GoogleButton label="Signup with Google" />
+          <AppleButton label="Sign up with Apple" />
+          <GoogleButton label="Sign up with Google" />
           <Button variant="google" size="lg" icon={<Icon name="mail" />} onPress={handleEmailOrPhone}>
             <Text>Email or Phone</Text>
           </Button>

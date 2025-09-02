@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '~/modules/ui/button'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 
 export function SignInScreen() {
   const signInWithEmailAndPasswordMutation = useSignInWithEmailAndPassword()
@@ -46,13 +47,15 @@ export function SignInScreen() {
 
         {/* login options */}
         {isDirty ? (
-          <Button
-            onPress={form.handleSubmit(handleSignInWithEmailAndPassword)}
-            loading={signInWithEmailAndPasswordMutation.isPending}
-            disabled={!isValid}
-          >
-            {'Continue'}
-          </Button>
+          <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={80}>
+            <Button
+              onPress={form.handleSubmit(handleSignInWithEmailAndPassword)}
+              loading={signInWithEmailAndPasswordMutation.isPending}
+              disabled={!isValid}
+            >
+              {'Continue'}
+            </Button>
+          </KeyboardAvoidingView>
         ) : (
           <View className="gap-4">
             <AppleButton label="Sign In with Apple" />
