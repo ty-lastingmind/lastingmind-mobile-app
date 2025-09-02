@@ -58,7 +58,7 @@ export function SignInScreen() {
             <AppleButton label="Sign In with Apple" />
             <GoogleButton label="Sign In with Google" />
             <Typography level="label-1" className="text-center py-4" color="secondary">
-              <Link href="/auth/sign-up">Or Sign Up</Link>
+              <Link href="/auth/sign-up-options">Or Sign Up</Link>
             </Typography>
           </View>
         )}
