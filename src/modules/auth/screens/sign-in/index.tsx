@@ -1,4 +1,4 @@
-import { Link } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { View } from 'react-native'
 
 import { useSignInWithEmailAndPassword } from '~/hooks/auth/use-sign-in-with-email-and-password'
@@ -22,6 +22,7 @@ import WarningLabel from '~/modules/ui/warning-label'
 export function SignInScreen() {
   const signInWithEmailAndPasswordMutation = useSignInWithEmailAndPassword()
   const [signInFailed, setSignInFailed] = useState(false)
+  const router = useRouter()
 
   const form = useForm({
     resolver: zodResolver(emailPasswordSchema),
@@ -34,6 +35,10 @@ export function SignInScreen() {
     signInWithEmailAndPasswordMutation.mutate(data, {
       onError: () => setSignInFailed(true),
     })
+  }
+
+  const handleSignUpButton = () => {
+    router.navigate('/auth/sign-up-options')
   }
 
   return (
@@ -66,9 +71,9 @@ export function SignInScreen() {
           <View className="gap-4">
             <AppleButton label="Sign In with Apple" />
             <GoogleButton label="Sign In with Google" />
-            <Typography level="label-1" className="text-center py-4" color="secondary">
-              <Link href="/auth/sign-up-options">Or Sign Up</Link>
-            </Typography>
+            <Button variant="whitesecondary" onPress={handleSignUpButton}>
+              {'Or Sign Up'}
+            </Button>
           </View>
         )}
       </View>

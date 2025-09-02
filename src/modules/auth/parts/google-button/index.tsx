@@ -15,7 +15,7 @@ export function GoogleButton({ label }: GoogleButtonProps) {
   }
 
   return (
-    <Button onPress={handleGoogleSignIn} variant="google" size="lg" icon={<SvgIcon name="google" />}>
+    <Button onPress={handleGoogleSignIn} variant="email" size="lg" icon={<SvgIcon name="google" />}>
       <Text>{label}</Text>
     </Button>
   )

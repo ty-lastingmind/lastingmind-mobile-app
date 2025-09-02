@@ -37,7 +37,7 @@ export function SignUpOptionsScreen() {
           <TermsOfService />
           <AppleButton label="Sign up with Apple" />
           <GoogleButton label="Sign up with Google" />
-          <Button variant="google" size="lg" icon={<Icon name="mail" />} onPress={handleEmailOrPhone}>
+          <Button variant="email" size="lg" icon={<Icon name="mail" />} onPress={handleEmailOrPhone}>
             <Text>Email or Phone</Text>
           </Button>
         </View>

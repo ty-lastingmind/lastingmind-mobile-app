@@ -15,7 +15,7 @@ export function AppleButton({ label }: GoogleButtonProps) {
   }
 
   return (
-    <Button onPress={handleAppleSignIn} variant="apple" size="lg" icon={<SvgIcon name="apple" />}>
+    <Button onPress={handleAppleSignIn} variant="black" size="lg" icon={<SvgIcon name="apple" />}>
       {label}
     </Button>
   )
