@@ -69,7 +69,7 @@ export function MessagesList({
                   {showSendQuestionButton && isLastMessage && (
                     <SendQuestionButton question={messages[index - 1]?.text ?? ''} />
                   )}
-                  {listFooterComponent}
+                  {isLastMessage && listFooterComponent}
                 </Animated.View>
               </React.Fragment>
             ) : (
