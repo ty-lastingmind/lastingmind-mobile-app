@@ -4,10 +4,12 @@ import { Progress } from '~/modules/ui/progress'
 import {
   useGenerateContinuedQuestionsCuratedQuestionsContinueQuestionsPost,
   usePullUserInfoHomePullUserInfoGet,
+  useSaveQuestionCuratedQuestionsAddSavedQuestionPost,
 } from '~/services/api/generated'
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import type { StarterQuestionsResponseNextQuestionsItem } from '~/services/api/model/starterQuestionsResponseNextQuestionsItem'
 import { CuratedQuestionItem } from '../parts/curated-question-item'
+import { SaveQuestionInput } from '~/services/api/model'
 
 export function CuratedQuestionsScreen() {
   const [nextQuestions, setNextQuestions] = useState<StarterQuestionsResponseNextQuestionsItem[]>([])
@@ -15,8 +17,9 @@ export function CuratedQuestionsScreen() {
   const flatListRef = useRef<FlatList>(null)
   const user = usePullUserInfoHomePullUserInfoGet()
 
-  const { mutate: generateContinuedQuestions, isPending } =
+  const { mutate: generateContinuedQuestions, isPending: isGeneratingQuestions } =
     useGenerateContinuedQuestionsCuratedQuestionsContinueQuestionsPost()
+  const { mutate: saveQuestion, isPending: isSavingQuestion } = useSaveQuestionCuratedQuestionsAddSavedQuestionPost()
 
   useEffect(() => {
     if (!user.data) return
@@ -55,6 +58,15 @@ export function CuratedQuestionsScreen() {
     }
   }, [currentQuestionIndex, nextQuestions.length])
 
+  const handleSaveForLaterPress = useCallback(
+    (data: SaveQuestionInput) => {
+      saveQuestion({
+        data,
+      })
+    },
+    [saveQuestion]
+  )
+
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: Array<{ index: number | null }> }) => {
       if (viewableItems.length > 0) {
@@ -72,7 +84,7 @@ export function CuratedQuestionsScreen() {
     return nextQuestions.length > 0 ? ((currentQuestionIndex + 1) / nextQuestions.length) * 100 : 0
   }, [currentQuestionIndex, nextQuestions.length])
 
-  if (isPending) {
+  if (isGeneratingQuestions || isSavingQuestion) {
     return (
       <View className="flex-1 justify-center items-center bg-bg-primary">
         <ActivityIndicator className="text-accent" size="large" />
@@ -85,7 +97,7 @@ export function CuratedQuestionsScreen() {
       <FlatList
         ref={flatListRef}
         data={nextQuestions}
-        renderItem={({ item }) => <CuratedQuestionItem question={item} />}
+        renderItem={({ item }) => <CuratedQuestionItem question={item} onSaveForLaterPress={handleSaveForLaterPress} />}
         keyExtractor={(_item, index) => index.toString()}
         horizontal
         pagingEnabled
