@@ -2,11 +2,11 @@
 import { Button } from '~/modules/ui/button'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 
-interface GoogleButtonProps {
+interface AppleButtonProps {
   label: string
 }
 
-export function AppleButton({ label }: GoogleButtonProps) {
+export function AppleButton({ label }: AppleButtonProps) {
   // TODO: Configure Apple sign in certificates
   // const appleSignInMutation = useAppleSignIn()
 
@@ -15,7 +15,7 @@ export function AppleButton({ label }: GoogleButtonProps) {
   }
 
   return (
-    <Button onPress={handleAppleSignIn} variant="black" size="lg" icon={<SvgIcon name="apple" />}>
+    <Button onPress={handleAppleSignIn} variant="apple" size="lg" icon={<SvgIcon name="apple" color="logo" />}>
       {label}
     </Button>
   )

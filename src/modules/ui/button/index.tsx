@@ -14,7 +14,7 @@ const variants = {
         outlinedSecondary: 'bg-button-outlined-secondary-bg border border-button-outlined-secondary-border',
         white: 'bg-button-white-bg',
         whitesecondary: 'bg-button-white-bg',
-        black: 'bg-button-black-bg',
+        apple: 'bg-button-black-bg',
         email: 'bg-button-email-bg',
       },
       size: {
@@ -33,8 +33,8 @@ const variants = {
         outlinedSecondary: 'text-button-outlined-secondary-text',
         white: 'text-button-secondary-text',
         whitesecondary: 'text-miscellaneous-topic-stroke',
-        black: 'text-button-primary-text font-semibold',
-        email: 'font-semibold',
+        apple: 'text-bg-primary font-semibold',
+        email: 'text-button-black-bg font-semibold',
       },
       size: {
         sm: 'text-button-sm',

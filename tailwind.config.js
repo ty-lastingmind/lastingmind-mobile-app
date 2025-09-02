@@ -105,6 +105,7 @@ module.exports = {
       'icon-primary': 'var(--icon-primary)',
       'icon-secondary': 'var(--icon-secondary)',
       'icon-tertiary': 'var(--icon-tertiary)',
+      'icon-logo': 'var(--icon-logo)',
       'icon-brand': 'var(--icon-brand)',
       'icon-red': 'var(--icon-red)',
       'icon-green': 'var(--icon-green)',
