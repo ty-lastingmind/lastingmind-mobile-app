@@ -4,6 +4,7 @@ import { z } from 'zod'
 
 import { Form, FormControl, FormField, FormItem } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
+import WarningLabel from '~/modules/ui/warning-label'
 
 export const signUpFormSchema = z
   .object({
@@ -23,6 +24,9 @@ interface SignUpFormProps {
 }
 
 export function SignUpForm({ form }: SignUpFormProps) {
+  const values = form.watch()
+  const showWarningLabel = values.password !== values.confirmPassword && values.confirmPassword !== ''
+
   return (
     <Form {...form}>
       <View>
@@ -81,6 +85,7 @@ export function SignUpForm({ form }: SignUpFormProps) {
             </FormItem>
           )}
         />
+        {showWarningLabel && <WarningLabel label="Your passwords don't match." />}
       </View>
     </Form>
   )

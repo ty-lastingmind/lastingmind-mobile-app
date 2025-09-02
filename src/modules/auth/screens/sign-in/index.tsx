@@ -16,9 +16,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '~/modules/ui/button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
+import { useState } from 'react'
+import WarningLabel from '~/modules/ui/warning-label'
 
 export function SignInScreen() {
   const signInWithEmailAndPasswordMutation = useSignInWithEmailAndPassword()
+  const [signInFailed, setSignInFailed] = useState(false)
 
   const form = useForm({
     resolver: zodResolver(emailPasswordSchema),
@@ -28,7 +31,9 @@ export function SignInScreen() {
   const { isDirty, isValid } = form.formState
 
   function handleSignInWithEmailAndPassword(data: EmailPasswordFormValues) {
-    signInWithEmailAndPasswordMutation.mutate(data)
+    signInWithEmailAndPasswordMutation.mutate(data, {
+      onError: () => setSignInFailed(true),
+    })
   }
 
   return (
@@ -48,6 +53,7 @@ export function SignInScreen() {
         {/* login options */}
         {isDirty ? (
           <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={80}>
+            {signInFailed && <WarningLabel label="Either the email or password is incorrect." />}
             <Button
               onPress={form.handleSubmit(handleSignInWithEmailAndPassword)}
               loading={signInWithEmailAndPasswordMutation.isPending}
