@@ -1,4 +1,4 @@
-import { useGoogleSignIn } from '~/hooks/auth/use-google-sign-in'
+// import { useAppleSignIn } from '~/hooks/auth/use-apple-sign-in'
 import { Button } from '~/modules/ui/button'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 
@@ -7,14 +7,15 @@ interface GoogleButtonProps {
 }
 
 export function AppleButton({ label }: GoogleButtonProps) {
-  const googleSignInMutation = useGoogleSignIn()
+  // TODO: Configure Apple sign in certificates
+  // const appleSignInMutation = useAppleSignIn()
 
-  function handleGoogleSignIn() {
-    googleSignInMutation.mutate()
+  function handleAppleSignIn() {
+    // appleSignInMutation.mutate()
   }
 
   return (
-    <Button onPress={handleGoogleSignIn} variant="apple" size="lg" icon={<SvgIcon name="apple" />}>
+    <Button onPress={handleAppleSignIn} variant="apple" size="lg" icon={<SvgIcon name="apple" />}>
       {label}
     </Button>
   )
