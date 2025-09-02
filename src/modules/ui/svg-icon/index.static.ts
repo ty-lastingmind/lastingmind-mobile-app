@@ -16,6 +16,9 @@ import { Family } from './svg/family'
 import { Work } from './svg/work'
 import { Education } from './svg/education'
 import { Home } from './svg/home'
+import { CuratedQuestions } from './svg/curated-questions'
+import { Mic } from './svg/mic'
+import { WriteAnswer } from './svg/write-answer'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -36,4 +39,7 @@ export const iconNameToSvg = {
   work: Work,
   education: Education,
   home: Home,
+  curated_questions: CuratedQuestions,
+  mic: Mic,
+  write_answer: WriteAnswer,
 } as const
