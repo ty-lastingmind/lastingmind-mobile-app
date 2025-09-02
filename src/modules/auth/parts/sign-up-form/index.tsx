@@ -54,7 +54,7 @@ export function SignUpForm({ form }: SignUpFormProps) {
                   isError={Boolean(fieldState.error?.message)}
                   onBlur={field.onBlur}
                   placeholder="Password"
-                  variant="email"
+                  variant="top"
                   onChangeText={field.onChange}
                   value={field.value}
                 />
@@ -72,7 +72,7 @@ export function SignUpForm({ form }: SignUpFormProps) {
                   secureTextEntry
                   isError={Boolean(fieldState.error?.message)}
                   placeholder="Confirm Password"
-                  variant="password"
+                  variant="bottom"
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
                   value={field.value}

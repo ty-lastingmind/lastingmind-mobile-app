@@ -12,8 +12,8 @@ const variants = cva('', {
   variants: {
     variant: {
       primary: 'rounded-md',
-      email: 'rounded-t-md',
-      password: 'rounded-b-md',
+      top: 'rounded-t-md border-b border-miscellaneous-topic-stroke',
+      bottom: 'rounded-b-md',
     },
     color: {
       primary: 'bg-bg-secondary',

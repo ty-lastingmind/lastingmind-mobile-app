@@ -30,7 +30,7 @@ export function EmailPasswordForm({ form }: EmailPasswordFormProps) {
                   isError={Boolean(fieldState.error?.message)}
                   onBlur={field.onBlur}
                   placeholder="Enter your e-mail"
-                  variant="email"
+                  variant="top"
                   onChangeText={field.onChange}
                   value={field.value}
                 />
@@ -48,7 +48,7 @@ export function EmailPasswordForm({ form }: EmailPasswordFormProps) {
                   secureTextEntry
                   isError={Boolean(fieldState.error?.message)}
                   placeholder="Enter password"
-                  variant="password"
+                  variant="bottom"
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
                   value={field.value}
