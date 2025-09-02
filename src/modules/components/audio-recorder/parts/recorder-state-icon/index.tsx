@@ -7,7 +7,7 @@ import { Typography } from '~/modules/ui/typography'
 
 interface RecorderStateProps {
   audioRecorder: AudioRecorder
-  onRecord: () => void
+  onStartRecording: () => void
   onStopRecording: () => void
   isUploading: boolean
   isTranscribing: boolean
@@ -18,7 +18,7 @@ export function RecorderStateIcon({
   isUploading,
   isTranscribing,
   onStopRecording,
-  onRecord,
+  onStartRecording,
 }: RecorderStateProps) {
   const recorderState = useAudioRecorderState(audioRecorder)
   const { icon, onPress, label } = useMemo(
@@ -35,10 +35,10 @@ export function RecorderStateIcon({
           }
         : {
             icon: 'mic-outline',
-            onPress: onRecord,
+            onPress: onStartRecording,
             label: 'Press to start recording',
           },
-    [onRecord, onStopRecording, recorderState.isRecording]
+    [onStartRecording, onStopRecording, recorderState.isRecording]
   )
 
   if (isUploading || isTranscribing) {

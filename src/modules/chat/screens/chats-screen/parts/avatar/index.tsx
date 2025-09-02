@@ -2,7 +2,8 @@ import { Image, ImageProps } from 'expo-image'
 import React from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import Animated, { FadeIn } from 'react-native-reanimated'
-import { Icon, IconSize } from '~/modules/ui/icon'
+import { Icon } from '~/modules/ui/icon'
+import { IconSize } from '~/modules/ui/icon/index.types'
 import { cn } from '~/utils/cn'
 
 interface AvatarProps {
@@ -19,7 +20,7 @@ export function Avatar({ src, isLoading, className, iconSize = '4xl' }: AvatarPr
     }
 
     if (src) {
-      return <Image source={src} style={{ width: '100%', height: '100%' }} />
+      return <Image transition={300} source={src} style={{ width: '100%', height: '100%', borderRadius: '100%' }} />
     }
 
     return (
@@ -31,7 +32,10 @@ export function Avatar({ src, isLoading, className, iconSize = '4xl' }: AvatarPr
 
   return (
     <View
-      className={cn('bg-bg-secondary rounded-full flex items-center justify-center h-[224px] w-[224px]', className)}
+      className={cn(
+        'bg-bg-secondary shadow-md rounded-full flex items-center justify-center h-[224px] w-[224px]',
+        className
+      )}
     >
       {renderContent()}
     </View>

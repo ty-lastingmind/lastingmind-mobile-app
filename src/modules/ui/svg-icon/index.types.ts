@@ -1,9 +1,12 @@
+import { IconVariants } from '~/modules/ui/icon/index.types'
 import { iconNameToSvg } from './index.static'
 
-export interface SvgIconProps {
-  name: keyof typeof iconNameToSvg
+export type SvgIconName = keyof typeof iconNameToSvg
+export interface SvgIconProps extends IconVariants {
+  name: SvgIconName
+}
+
+export type SvgProps = Omit<SvgIconProps, 'name' | 'size' | 'color'> & {
   size?: number
   color?: string
 }
-
-export type SvgProps = Omit<SvgIconProps, 'name'>

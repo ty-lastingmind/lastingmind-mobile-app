@@ -6,6 +6,10 @@ import { Apple } from '~/modules/ui/svg-icon/svg/apple'
 import { Google } from '~/modules/ui/svg-icon/svg/google'
 import { Shield } from './svg/shield'
 import { Close } from './svg/close'
+import { Explanation } from './svg/explanation'
+import { Expand } from './svg/expand'
+import { Question } from './svg/question'
+import { Plus } from './svg/plus'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -16,4 +20,8 @@ export const iconNameToSvg = {
   google: Google,
   shield: Shield,
   close: Close,
+  explanation: Explanation,
+  expand: Expand,
+  question: Question,
+  plus: Plus,
 } as const

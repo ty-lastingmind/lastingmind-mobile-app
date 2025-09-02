@@ -1,23 +1,33 @@
-import React, { useRef } from 'react'
+import React, { ReactNode, useRef } from 'react'
 import { ScrollView, ScrollViewProps } from 'react-native'
 import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated'
-import avatar from '../../../../../assets/images/jane-avatar.jpg'
+import { ImageSrc } from '~/types/images'
+import { cn } from '~/utils/cn'
 import { ChatMessage } from '../hooks/use-messages'
 import { IncomingMessage } from './parts/incoming-message'
 import { OutgoingMessage } from './parts/outgoing-message'
-import { cn } from '~/utils/cn'
+import { AddAnswerButton } from './parts/add-answer-button'
+import { SendQuestionButton } from './parts/send-question-button'
 
 interface MessagesListProps extends ScrollViewProps {
   messages: ChatMessage[]
-  onViewTranscript: (message: ChatMessage) => void
-  isLoadingNextIncomingMessage: boolean
+  onViewTranscript?: (message: ChatMessage) => void
+  avatarUrl?: ImageSrc
+  showActions?: boolean
+  listFooterComponent?: ReactNode
+  showAddAnswerButton?: boolean
+  showSendQuestionButton?: boolean
 }
 
 export function MessagesList({
   messages,
-  isLoadingNextIncomingMessage,
   onViewTranscript,
   contentContainerClassName,
+  avatarUrl,
+  showActions,
+  listFooterComponent,
+  showAddAnswerButton,
+  showSendQuestionButton,
   ...props
 }: MessagesListProps) {
   const scrollRef = useRef<ScrollView>(null)
@@ -37,25 +47,39 @@ export function MessagesList({
       showsVerticalScrollIndicator={false}
       onContentSizeChange={scrollToBottom}
     >
-      {messages.map((message, index) => (
-        <React.Fragment key={index}>
-          {message.isIncoming ? (
-            <Animated.View key={index} entering={FadeInLeft} className="pb-10">
-              <IncomingMessage avatarUrl={avatar} message={message.text} />
-            </Animated.View>
-          ) : (
-            <Animated.View key={index} entering={FadeInRight} className="pb-5 ml-auto">
-              <OutgoingMessage
-                onViewTranscript={() => onViewTranscript(message)}
-                audioSrc={message.audioUrl}
-                isLoading={message.isLoading}
-                message={message.text}
-              />
-            </Animated.View>
-          )}
-        </React.Fragment>
-      ))}
-      {isLoadingNextIncomingMessage && <IncomingMessage message="" avatarUrl={avatar} isLoading={true} />}
+      {messages.map((message, index) => {
+        const isLastMessage = index === messages.length - 1
+        const prevMessage = messages.at(index - 1)
+
+        return (
+          <React.Fragment key={index}>
+            {message.isIncoming ? (
+              <React.Fragment key={index}>
+                <Animated.View entering={FadeInLeft.delay(500)} className="pb-10 gap-3 flex items-start">
+                  <IncomingMessage
+                    showActions={showActions && !message.isLoading}
+                    avatarUrl={avatarUrl}
+                    message={message}
+                    prevMessage={prevMessage}
+                  />
+                  {showAddAnswerButton && isLastMessage && <AddAnswerButton question={prevMessage?.text ?? ''} />}
+                  {showSendQuestionButton && isLastMessage && <SendQuestionButton question={prevMessage?.text ?? ''} />}
+                  {isLastMessage && listFooterComponent}
+                </Animated.View>
+              </React.Fragment>
+            ) : (
+              <Animated.View key={index} entering={FadeInRight} className="pb-5 ml-auto">
+                <OutgoingMessage
+                  onViewTranscript={() => onViewTranscript?.(message)}
+                  audioSrc={message.audioUrl}
+                  isLoading={message.isLoading}
+                  message={message.text}
+                />
+              </Animated.View>
+            )}
+          </React.Fragment>
+        )
+      })}
     </ScrollView>
   )
 }

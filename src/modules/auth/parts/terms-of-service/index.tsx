@@ -9,7 +9,7 @@ export default function TermsOfService() {
 
   return (
     <View className="items-center py-8 gap-4">
-      <SvgIcon name="shield" size={32} />
+      <SvgIcon name="shield" />
       <Typography level="label-1" className="text-center" color="secondary">
         By creating an account with LastingMind you agree to our terms and conditions.{' '}
         <Typography

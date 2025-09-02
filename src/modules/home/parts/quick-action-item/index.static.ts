@@ -1,5 +1,5 @@
-import type { QuickActionAction } from '~/services/api/model'
 import type { SvgIconProps } from '~/modules/ui/svg-icon/index.types'
+import type { QuickActionAction } from '~/services/api/model'
 
 interface QuickActionConfig {
   title: string

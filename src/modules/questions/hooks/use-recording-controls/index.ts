@@ -20,9 +20,9 @@ export function useRecordingControls(audioRecorder: AudioRecorder) {
     audioRecorder.record()
   }
 
-  const stopRecording = async () => {
+  const stopRecording = useCallback(async () => {
     await audioRecorder.stop()
-  }
+  }, [audioRecorder])
 
   const cleanupRecording = useCallback(async () => {
     const fileUri = audioRecorder.uri

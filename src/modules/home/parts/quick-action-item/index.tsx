@@ -1,18 +1,15 @@
+import { useCallback } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
 import type { QuickAction } from '~/services/api/model'
-import { quickActionToData, defaultQuickActionConfig } from './index.static'
-import { useCallback } from 'react'
-import { useTailwindColors } from '~/providers/tailwind-colors-provider'
-const ICON_SIZE = 48
+import { defaultQuickActionConfig, quickActionToData } from './index.static'
 
 interface QuickActionItemProps {
   action: QuickAction
 }
 
 export const QuickActionItem = ({ action }: QuickActionItemProps) => {
-  const colors = useTailwindColors()
   const actionProps = quickActionToData[action.action] ?? {
     ...defaultQuickActionConfig,
     title: `${defaultQuickActionConfig.title} (${action.action})`,
@@ -39,7 +36,7 @@ export const QuickActionItem = ({ action }: QuickActionItemProps) => {
       <Typography level="label-1" color="primary" className="text-center px-2">
         {actionProps.title}
       </Typography>
-      <SvgIcon name={actionProps.icon} size={ICON_SIZE} color={colors['label-primary']} />
+      <SvgIcon name={actionProps.icon} size="3xl" color="primary" />
     </TouchableOpacity>
   )
 }

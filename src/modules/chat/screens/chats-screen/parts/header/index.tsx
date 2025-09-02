@@ -1,9 +1,9 @@
 import { DrawerHeaderProps } from '@react-navigation/drawer'
+import { useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
 import { useBoolean } from 'usehooks-ts'
-import { assets } from '~/constants/assets'
 import { useMeasureElement } from '~/hooks/use-measure-element'
 import { Logo } from '~/modules/components/logo'
 import { Avatar } from '~/modules/ui/avatar'
@@ -16,28 +16,38 @@ import { CanChatWithItem } from '~/services/api/model'
 export function Header(props: DrawerHeaderProps) {
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
   const isOpen = useBoolean(false)
-  const isChatDetail = props.route.name === 'chat/[uid]'
+  const router = useRouter()
+  const isChatDetail = props.route.name === 'chat'
   const { measurements, measureElement } = useMeasureElement()
-  const chattingWithViewUid = (props.route.params as { uid?: string })?.uid
+  const chattingWithViewId = (props.route.params as { chattingWithViewId?: string })?.chattingWithViewId
 
   /**
    * Initialize chat with first user
    */
   useEffect(() => {
-    if (canChatWith.data?.can_chat_with && !chattingWithViewUid) {
+    if (canChatWith.data?.can_chat_with && !chattingWithViewId) {
       const firstUser = canChatWith.data.can_chat_with.at(0)
 
       if (firstUser) {
-        props.navigation.setParams({ uid: firstUser.chattingWithViewId })
+        props.navigation.setParams({ chattingWithViewId: firstUser.chattingWithViewId })
       }
     }
-  }, [canChatWith, chattingWithViewUid, props.navigation])
+  }, [canChatWith, chattingWithViewId, props.navigation])
 
   const users = canChatWith.data?.can_chat_with ?? []
-  const chattingWithUser = users.find((user) => user.chattingWithViewId === chattingWithViewUid)
+  const chattingWithUser = users.find((user) => user.chattingWithViewId === chattingWithViewId)
 
   function selectPersonToChat(user: CanChatWithItem) {
-    props.navigation.setParams({ uid: user.chattingWithViewId })
+    if (isChatDetail) {
+      router.replace({
+        pathname: '/chats',
+        params: {
+          chattingWithViewId: user.chattingWithViewId,
+        },
+      })
+    } else {
+      props.navigation.setParams({ chattingWithViewId: user.chattingWithViewId })
+    }
     isOpen.setFalse()
   }
 
@@ -72,7 +82,7 @@ export function Header(props: DrawerHeaderProps) {
                 key={user.chattingWithViewId}
                 className="flex flex-row gap-2 items-center"
               >
-                <Avatar source={assets.ty} />
+                <Avatar source={user.chattingWithImage} />
                 <Typography>{user.chattingWithName}</Typography>
               </TouchableOpacity>
             ))}

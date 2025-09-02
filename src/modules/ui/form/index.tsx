@@ -78,7 +78,7 @@ function FormItem({ className, ...props }: ViewProps) {
 }
 
 function FormLabel({ className, ...props }: TypographyProps) {
-  return <Typography className={className} {...props} />
+  return <Typography color="secondary" className={cn(className, 'px-4')} {...props} />
 }
 
 function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {

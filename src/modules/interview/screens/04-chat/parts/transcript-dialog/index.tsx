@@ -4,7 +4,7 @@ import { useBoolean } from 'usehooks-ts'
 import { AudioTrack } from '~/modules/components/audio-track'
 import { ChatMessage } from '~/modules/components/chat/hooks/use-messages'
 import { Button } from '~/modules/ui/button'
-import { Dialog, DialogFooter, DialogHeader } from '~/modules/ui/dialog'
+import { Dialog, DialogClose, DialogFooter, DialogHeader } from '~/modules/ui/dialog'
 import { Icon } from '~/modules/ui/icon'
 
 interface TranscriptDialogProps {
@@ -31,12 +31,10 @@ export function TranscriptDialog({ onClose, message, onSaveChanges }: Transcript
   }
 
   return (
-    <Dialog className="flex-1" isOpen>
+    <Dialog className="flex-1 max-h-[60vh]" isOpen>
       <DialogHeader>
         <View className="flex flex-row justify-between">
-          <TouchableOpacity onPress={onClose}>
-            <Icon name="close-circle-outline" size="lg" />
-          </TouchableOpacity>
+          <DialogClose onPress={onClose} />
           <View className="flex flex-row gap-2">
             {!isEdit.value && (
               <TouchableOpacity onPress={isEdit.setTrue}>

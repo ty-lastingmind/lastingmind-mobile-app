@@ -1,9 +1,9 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { View } from 'react-native'
-import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
-import { Avatar } from '~/modules/ui/avatar'
 import { Logo } from '~/modules/components/logo'
+import { Avatar } from '~/modules/ui/avatar'
 import { Typography } from '~/modules/ui/typography'
+import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
 
 export function BottomTabHeader(props: BottomTabHeaderProps) {
   const userInfoQuery = usePullUserInfoHomePullUserInfoGet()

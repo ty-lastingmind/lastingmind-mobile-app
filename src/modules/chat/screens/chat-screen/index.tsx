@@ -1,41 +1,66 @@
-import { useFocusEffect, useLocalSearchParams } from 'expo-router'
-import { useCallback, useMemo, useState } from 'react'
+import { useLocalSearchParams } from 'expo-router'
+import { useCallback } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
+import { SearchParams } from '~/modules/chat/index.types'
+import { useConversationId } from '~/modules/chat/screens/chat-screen/hooks/use-conversaion-id'
+import { useStartConversation } from '~/modules/chat/screens/chat-screen/hooks/use-start-conversation'
+import { AnswerExplanations } from '~/modules/chat/screens/chat-screen/parts/answer-explanations'
 import { useMessages } from '~/modules/components/chat/hooks/use-messages'
 import { MessageInput } from '~/modules/components/chat/message-input'
 import { MessagesList } from '~/modules/components/chat/messages-list'
+import { MessagesListContextProvider } from '~/modules/components/chat/messages-list/parts/messages-list-context'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
-import { useSendUserQueryChatSendUserQueryPost } from '~/services/api/generated'
-
-type SearchParams = {
-  uid: string
-  firstMessage: string
-}
+import {
+  usePullCanChatWithChatPullCanChatWithGet,
+  usePullExplanationAndButtonChatPullExplanationAndButtonPost,
+  useSendUserQueryChatSendUserQueryPost,
+} from '~/services/api/generated'
 
 export function ChatScreen() {
-  const [text, setText] = useState('')
-  const { firstMessage, uid } = useLocalSearchParams<SearchParams>()
-  const { addLoadingOutgoingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
+  const form = useForm({
+    defaultValues: {
+      question: '',
+    },
+  })
+  const { firstMessage, chattingWithViewId } = useLocalSearchParams<SearchParams>()
+  const { addLoadingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
-  const conversationId = useMemo(() => Math.random().toString(), [])
+  const conversationId = useConversationId()
+  const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
+  const getExplanations = usePullExplanationAndButtonChatPullExplanationAndButtonPost()
+  const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === chattingWithViewId)
   const sendMessage = useSendUserQueryChatSendUserQueryPost({
     mutation: {
+      onMutate: () => {
+        getExplanations.reset()
+        addLoadingMessage({ isIncoming: true })
+      },
       onSuccess: (data) => {
-        addNewMessage({
+        updateLastMessage({
           text: data as string, // todo fix type
-          isIncoming: true,
           isLoading: false,
         })
+
+        setTimeout(() => {
+          getExplanations.mutate({
+            data: {
+              chattingWithViewId: chattingWithViewId,
+              convoId: conversationId,
+            },
+          })
+        }, 5000)
       },
       onError: () => {
         Alert.alert('Error', 'Failed to send message')
+        removeLastMessage()
       },
     },
   })
 
-  const handleSendFirstMessage = useCallback(() => {
+  useStartConversation(() => {
     addNewMessage({
       text: firstMessage,
       isIncoming: false,
@@ -44,32 +69,31 @@ export function ChatScreen() {
 
     sendMessage.mutate({
       data: {
-        chattingWithViewId: uid,
+        chattingWithViewId: chattingWithViewId,
         query: firstMessage,
         convoId: conversationId,
       },
     })
-  }, [])
-
-  useFocusEffect(handleSendFirstMessage)
+  })
 
   const handleSendTextMessage = useCallback(() => {
-    setText('')
+    const question = form.getValues('question')
+    form.reset()
 
     addNewMessage({
-      text,
+      text: question,
       isIncoming: false,
       isLoading: false,
     })
 
     sendMessage.mutate({
       data: {
-        chattingWithViewId: uid,
-        query: text,
+        chattingWithViewId: chattingWithViewId,
+        query: question,
         convoId: conversationId,
       },
     })
-  }, [addNewMessage, conversationId, sendMessage, text, uid])
+  }, [form, addNewMessage, sendMessage, chattingWithViewId, conversationId])
 
   const handleSendAudioMessage = useCallback(async () => {
     await recordingControls.stopRecording()
@@ -77,7 +101,7 @@ export function ChatScreen() {
 
     if (!recordingUri) return
 
-    addLoadingOutgoingMessage()
+    addLoadingMessage()
 
     uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
       onSuccess: ({ transcript, url }) => {
@@ -90,7 +114,7 @@ export function ChatScreen() {
 
         sendMessage.mutate({
           data: {
-            chattingWithViewId: uid,
+            chattingWithViewId: chattingWithViewId,
             query: transcript,
             convoId: conversationId,
           },
@@ -102,39 +126,62 @@ export function ChatScreen() {
       },
     })
   }, [
-    addLoadingOutgoingMessage,
+    addLoadingMessage,
     audioRecorder.uri,
     conversationId,
     recordingControls,
     removeLastMessage,
     sendMessage,
-    uid,
+    chattingWithViewId,
     updateLastMessage,
     uploader.uploadAndTranscribeAudioMessage,
   ])
 
   return (
-    <View className="flex-1 pb-safe">
-      <MessagesList
-        messages={messages}
-        contentContainerClassName="px-4"
-        onViewTranscript={() => {}}
-        isLoadingNextIncomingMessage={sendMessage.isPending}
-      />
-      <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
-        <View className="pb-3">
-          <MessageInput
-            audioRecorder={audioRecorder}
-            disabled={sendMessage.isPending || uploader.uploadAndTranscribeAudioMessage.isPending}
-            onSendTextMessage={handleSendTextMessage}
-            onSendAudioMessage={handleSendAudioMessage}
-            value={text}
-            onChangeText={setText}
-            onCancelRecording={recordingControls.stopRecording}
-            onStartRecording={recordingControls.startRecording}
+    <>
+      <View className="flex-1 pb-safe">
+        <MessagesListContextProvider
+          value={{
+            chattingWithViewId: chatWithUser?.chattingWithViewId ?? '',
+            chattingWithRealId: chatWithUser?.chattingWithRealId ?? '',
+            conversationId: conversationId,
+          }}
+        >
+          <MessagesList
+            messages={messages}
+            showActions
+            contentContainerClassName="px-4"
+            showAddAnswerButton={getExplanations.data?.button === 'add_answer'}
+            showSendQuestionButton={getExplanations.data?.button === 'send_question'}
+            avatarUrl={chatWithUser?.chattingWithImage}
+            listFooterComponent={
+              getExplanations.data?.explanation ? (
+                <AnswerExplanations explanations={getExplanations.data.explanation} />
+              ) : null
+            }
           />
-        </View>
-      </KeyboardAvoidingView>
-    </View>
+        </MessagesListContextProvider>
+        <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
+          <View className="pb-3">
+            <Controller
+              name="question"
+              control={form.control}
+              render={({ field }) => (
+                <MessageInput
+                  audioRecorder={audioRecorder}
+                  disabled={sendMessage.isPending || uploader.uploadAndTranscribeAudioMessage.isPending}
+                  onSendTextMessage={handleSendTextMessage}
+                  onSendAudioMessage={handleSendAudioMessage}
+                  onChangeText={field.onChange}
+                  value={field.value}
+                  onCancelRecording={recordingControls.stopRecording}
+                  onStartRecording={recordingControls.startRecording}
+                />
+              )}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </View>
+    </>
   )
 }

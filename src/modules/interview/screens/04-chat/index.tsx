@@ -17,18 +17,31 @@ import { useGenerateNextQuestionInterviewGenerateNextQuestionPost } from '~/serv
 
 export function ChatScreen() {
   const router = useRouter()
-  const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost()
   const [viewMessage, setViewMessage] = useState<ChatMessage | null>(null)
   const [text, setText] = useState('')
   const form = useInterviewFormContext()
-  const {
-    addLoadingOutgoingMessage,
-    messages,
-    updateMessageAtIndex,
-    addNewMessage,
-    removeLastMessage,
-    updateLastMessage,
-  } = useMessages()
+  const { addLoadingMessage, messages, updateMessageAtIndex, addNewMessage, removeLastMessage, updateLastMessage } =
+    useMessages()
+  const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost({
+    mutation: {
+      onMutate: () => {
+        addLoadingMessage({
+          isIncoming: true,
+        })
+      },
+      onSuccess: (incomingMessage) => {
+        updateLastMessage({
+          text: incomingMessage as string, // todo fix type
+          isIncoming: true,
+          isLoading: false,
+        })
+      },
+      onError: () => {
+        removeLastMessage()
+      },
+    },
+  })
+
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(INTERVIEW_AUDIO_FOLDER_NAME)
   const duration = form.getValues('interviewDurationInMinutes') ?? 30 // Default to 30 minutes if not set
   const { extendTime, isOutOfTime } = useInterviewTimer(duration)
@@ -47,26 +60,15 @@ export function ChatScreen() {
   function handleGenerateNextQuestion(message: string) {
     const { topicName, customTopicName, responseId, interviewDurationInMinutes } = form.getValues()
 
-    generateNextQuestion.mutate(
-      {
-        data: {
-          answer: message,
-          userFullName: 'zarif abdalimov', // todo - add user full name
-          topic: topicName ?? customTopicName,
-          duration: interviewDurationInMinutes,
-          responseId,
-        },
+    generateNextQuestion.mutate({
+      data: {
+        answer: message,
+        userFullName: 'zarif abdalimov', // todo - add user full name
+        topic: topicName ?? customTopicName,
+        duration: interviewDurationInMinutes,
+        responseId,
       },
-      {
-        onSuccess: (incomingMessage) => {
-          addNewMessage({
-            text: incomingMessage as string, // todo fix type
-            isIncoming: true,
-            isLoading: false,
-          })
-        },
-      }
-    )
+    })
   }
 
   function handleSendTextMessage() {
@@ -89,7 +91,7 @@ export function ChatScreen() {
       return
     }
 
-    addLoadingOutgoingMessage()
+    addLoadingMessage()
 
     uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
       onSuccess: ({ transcript, url }) => {
@@ -134,11 +136,7 @@ export function ChatScreen() {
   return (
     <>
       <View className="flex-1 pb-safe px-4">
-        <MessagesList
-          messages={messages}
-          onViewTranscript={setViewMessage}
-          isLoadingNextIncomingMessage={generateNextQuestion.isPending}
-        />
+        <MessagesList messages={messages} onViewTranscript={setViewMessage} />
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-11 pt-2">
           <TouchableOpacity onPress={handleConfirmStopInterview}>
             <Typography color="red">Stop interview</Typography>

@@ -12,6 +12,8 @@ export function ButtonShowcase() {
         <Button variant="primary">Button primary</Button>
         <Button variant="secondary">Button secondary</Button>
         <Button variant="outlined">Button outlined</Button>
+        <Button variant="outlinedSecondary">Button outlinedSecondary</Button>
+        <Button variant="white">Button white</Button>
       </View>
 
       <View className="flex gap-2">
