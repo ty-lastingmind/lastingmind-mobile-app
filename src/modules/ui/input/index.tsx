@@ -10,6 +10,11 @@ import { Icon } from '../icon'
 
 const variants = cva('', {
   variants: {
+    variant: {
+      primary: 'rounded-md',
+      email: 'rounded-t-md',
+      password: 'rounded-b-md',
+    },
     color: {
       primary: 'bg-bg-secondary',
       secondary: '',
@@ -26,7 +31,7 @@ export interface InputProps extends TextInputProps, InputVariants {
 }
 
 export const Input = forwardRef<TextInput, InputProps>(function Input(
-  { onFocus, color = 'primary', onBlur, isError, rightAdornment, leftAdornment, ...props },
+  { onFocus, color = 'primary', onBlur, isError, rightAdornment, leftAdornment, variant = 'primary', ...props },
   ref
 ) {
   const isFocused = useBoolean(false)
@@ -50,14 +55,15 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   const className = useMemo(() => {
     return {
       textInputClassName: cn(
-        'gap-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
+        'gap-2 px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
         // isFocused.value && 'border-input-border--focus', // todo - maybe add focus state
         variants({ color }),
+        variants({ variant }),
         isError && 'border-input-border--error'
       ),
       placeholderClassName: cn('text-input-placeholder', isError && 'text-input-placeholder--error'),
     }
-  }, [color, isError])
+  }, [color, isError, variant])
 
   return (
     <View className={className.textInputClassName}>

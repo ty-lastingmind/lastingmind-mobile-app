@@ -52,21 +52,21 @@ interface ButtonProps extends TouchableOpacityProps, ButtonVariants {
 }
 
 export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function Button(
-  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, icon, ...props },
+  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, icon, disabled, ...props },
   ref
 ) {
   const classNames = useMemo(() => {
-    const buttonClassName = cn(variants.button({ variant, size }), btnContainerClassName)
+    const buttonClassName = cn(variants.button({ variant, size }), btnContainerClassName, disabled && 'opacity-50')
     const textClassName = variants.text({ variant, size })
 
     return {
       buttonClassName,
       textClassName,
     }
-  }, [variant, size, btnContainerClassName])
+  }, [variant, size, btnContainerClassName, disabled])
 
   return (
-    <TouchableOpacity className={classNames.buttonClassName} {...props} ref={ref}>
+    <TouchableOpacity className={classNames.buttonClassName} {...props} ref={ref} disabled={disabled}>
       {loading && <ActivityIndicator />}
       {icon}
       <Text className={classNames.textClassName + ' items-center'}>{children}</Text>

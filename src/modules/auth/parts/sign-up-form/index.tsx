@@ -5,18 +5,24 @@ import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
 
-export const emailPasswordSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-})
+export const signUpFormSchema = z
+  .object({
+    email: z.email(),
+    password: z.string().min(6),
+    confirmPassword: z.string().min(6),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords must match',
+    path: ['confirmPassword'],
+  })
 
-export type EmailPasswordFormValues = z.infer<typeof emailPasswordSchema>
+export type SignUpFormValues = z.infer<typeof signUpFormSchema>
 
-interface EmailPasswordFormProps {
-  form: UseFormReturn<EmailPasswordFormValues>
+interface SignUpFormProps {
+  form: UseFormReturn<SignUpFormValues>
 }
 
-export function EmailPasswordForm({ form }: EmailPasswordFormProps) {
+export function SignUpForm({ form }: SignUpFormProps) {
   return (
     <Form {...form}>
       <View>
@@ -24,13 +30,12 @@ export function EmailPasswordForm({ form }: EmailPasswordFormProps) {
           control={form.control}
           name="email"
           render={({ field, fieldState }) => (
-            <FormItem>
+            <FormItem className="pb-4">
               <FormControl>
                 <Input
                   isError={Boolean(fieldState.error?.message)}
                   onBlur={field.onBlur}
-                  placeholder="Enter your e-mail"
-                  variant="email"
+                  placeholder="Email or Phone"
                   onChangeText={field.onChange}
                   value={field.value}
                 />
@@ -47,7 +52,26 @@ export function EmailPasswordForm({ form }: EmailPasswordFormProps) {
                 <Input
                   secureTextEntry
                   isError={Boolean(fieldState.error?.message)}
-                  placeholder="Enter password"
+                  onBlur={field.onBlur}
+                  placeholder="Password"
+                  variant="email"
+                  onChangeText={field.onChange}
+                  value={field.value}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field, fieldState }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  secureTextEntry
+                  isError={Boolean(fieldState.error?.message)}
+                  placeholder="Confirm Password"
                   variant="password"
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
