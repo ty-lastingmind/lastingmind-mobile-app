@@ -14,8 +14,8 @@ const variants = {
         outlinedSecondary: 'bg-button-outlined-secondary-bg border border-button-outlined-secondary-border',
         white: 'bg-button-white-bg',
         whitesecondary: 'bg-button-white-bg',
-        black: 'bg-button-apple-bg',
-        email: 'bg-button-google-bg',
+        black: 'bg-button-black-bg',
+        email: 'bg-button-email-bg',
       },
       size: {
         sm: 'min-h-sm px-4 py-1',

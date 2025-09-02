@@ -97,8 +97,8 @@ module.exports = {
 
       'button-white-bg': 'var(--button-white-bg)',
 
-      'button-apple-bg': 'var(--button-apple-bg)',
-      'button-google-bg': 'var(--button-google-bg)',
+      'button-black-bg': 'var(--button-black-bg)',
+      'button-email-bg': 'var(--button-email-bg)',
 
       'icon-accent': 'var(--icon-accent)',
       'icon-white': 'var(--icon-white)',
