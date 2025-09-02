@@ -9,7 +9,7 @@ interface QuickActionConfig {
 export const quickActionToData: Record<QuickActionAction, QuickActionConfig> = {
   curated_question_action: {
     title: 'Answer Curated Questions',
-    icon: 'interview',
+    icon: 'curated_questions',
   },
   interview_action: {
     title: 'Record an Interview',

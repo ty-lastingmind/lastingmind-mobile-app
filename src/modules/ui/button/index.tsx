@@ -3,6 +3,8 @@ import { cva } from 'class-variance-authority'
 import { forwardRef, PropsWithChildren, useMemo } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 import { cn } from '~/utils/cn'
+import { SvgIcon } from '../svg-icon'
+import { SvgIconProps } from '../svg-icon/index.types'
 
 const variants = {
   button: cva('rounded-full flex flex-row items-center gap-2 justify-center', {
@@ -44,10 +46,11 @@ type ButtonVariants = VariantProps<(typeof variants)['button']>
 interface ButtonProps extends TouchableOpacityProps, ButtonVariants {
   loading?: boolean
   btnContainerClassName?: string
+  icon?: SvgIconProps
 }
 
 export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function Button(
-  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, ...props },
+  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, icon, ...props },
   ref
 ) {
   const classNames = useMemo(() => {
@@ -63,6 +66,7 @@ export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function 
   return (
     <TouchableOpacity className={classNames.buttonClassName} {...props} ref={ref}>
       {loading && <ActivityIndicator />}
+      {icon && <SvgIcon {...icon} />}
       <Text className={classNames.textClassName}>{children}</Text>
     </TouchableOpacity>
   )

@@ -6,6 +6,9 @@ import { Explanation } from './svg/explanation'
 import { Expand } from './svg/expand'
 import { Question } from './svg/question'
 import { Plus } from './svg/plus'
+import { CuratedQuestions } from './svg/curated-questions'
+import { Mic } from './svg/mic'
+import { WriteAnswer } from './svg/write-answer'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -16,4 +19,7 @@ export const iconNameToSvg = {
   expand: Expand,
   question: Question,
   plus: Plus,
+  curated_questions: CuratedQuestions,
+  mic: Mic,
+  write_answer: WriteAnswer,
 } as const
