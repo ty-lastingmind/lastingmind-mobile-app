@@ -3,14 +3,17 @@ import { Button } from '~/modules/ui/button'
 import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 import { StarterQuestionsResponseNextQuestionsItem } from '~/services/api/model/starterQuestionsResponseNextQuestionsItem'
-
+import { useCallback } from 'react'
+import { SaveQuestionInput } from '~/services/api/model'
 interface CuratedQuestionItemProps {
   question: StarterQuestionsResponseNextQuestionsItem
+  onSaveForLaterPress: (data: SaveQuestionInput) => void
 }
 
-export function CuratedQuestionItem({ question: questionItem }: CuratedQuestionItemProps) {
+export function CuratedQuestionItem({ question: questionItem, onSaveForLaterPress }: CuratedQuestionItemProps) {
   // Extract the actual question data from the nested structure
   const question = Object.values(questionItem)[0]
+  const responseId = Object.keys(questionItem)[0]
 
   const handleSenderPress = () => {
     // TODO: Show sender options
@@ -27,10 +30,13 @@ export function CuratedQuestionItem({ question: questionItem }: CuratedQuestionI
     console.log('Write answer')
   }
 
-  const handleSaveForLaterPress = () => {
-    // TODO: Implement save for later functionality
-    console.log('Save for later')
-  }
+  const handleSaveForLaterPress = useCallback(() => {
+    onSaveForLaterPress({
+      responseId,
+      topic: question?.topic,
+      question_text: question?.question_text,
+    })
+  }, [onSaveForLaterPress, question?.question_text, question?.topic, responseId])
 
   return (
     <View className="flex-1 w-screen">
@@ -81,11 +87,9 @@ export function CuratedQuestionItem({ question: questionItem }: CuratedQuestionI
           Write Answer
         </Button>
 
-        <TouchableOpacity onPress={handleSaveForLaterPress} className="py-3">
-          <Typography level="body-1" color="accent" className="text-center">
-            Save for Later
-          </Typography>
-        </TouchableOpacity>
+        <Button variant="white" size="lg" onPress={handleSaveForLaterPress}>
+          Save for Later
+        </Button>
       </View>
     </View>
   )
