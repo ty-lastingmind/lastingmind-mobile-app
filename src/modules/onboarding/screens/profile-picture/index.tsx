@@ -9,7 +9,7 @@ export function ProfilePictureScreen() {
   const router = useRouter()
 
   const handleContinueButton = () => {
-    router.navigate('/onboarding/age')
+    router.navigate('/(protected)/onboarding/age')
   }
 
   return (
