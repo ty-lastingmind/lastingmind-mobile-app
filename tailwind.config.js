@@ -32,6 +32,7 @@ module.exports = {
       'caption-2': 'var(--caption-2)',
       'overline-1': 'var(--overline-1)',
       'overline-2': 'var(--overline-2)',
+      logo: 'var(--logo)',
 
       'button-sm': 'var(--button-sm-text-size)',
       'button-md': 'var(--button-md-text-size)',
