@@ -26,7 +26,7 @@ export function SignUpScreen() {
   }
 
   return (
-    <View className="gap-4 px-10 pt-safe flex h-screen-safe justify-between">
+    <View className="gap-4 px-10 py-safe flex flex-1 justify-between">
       <BackButton />
 
       <View className="flex-1">

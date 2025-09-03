@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '~/modules/ui/button'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
-import WarningLabel from '~/modules/ui/warning-label'
+import WarningLabel from '../../parts/warning-label'
 
 export function SignInScreen() {
   const signInWithEmailAndPasswordMutation = useSignInWithEmailAndPassword()
@@ -37,7 +37,7 @@ export function SignInScreen() {
   }
 
   return (
-    <View className="gap-4 px-10 pt-safe flex h-screen-safe justify-between">
+    <View className="gap-4 px-10 py-safe flex flex-1 justify-between">
       <View>
         <View className="py-20">
           <Title>LastingMind</Title>

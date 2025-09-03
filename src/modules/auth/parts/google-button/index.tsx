@@ -1,4 +1,3 @@
-import { Text } from 'react-native'
 import { useGoogleSignIn } from '~/hooks/auth/use-google-sign-in'
 import { Button } from '~/modules/ui/button'
 import { SvgIcon } from '~/modules/ui/svg-icon'
@@ -16,7 +15,7 @@ export function GoogleButton({ label }: GoogleButtonProps) {
 
   return (
     <Button onPress={handleGoogleSignIn} variant="email" size="lg" icon={<SvgIcon name="google" />}>
-      <Text>{label}</Text>
+      {label}
     </Button>
   )
 }

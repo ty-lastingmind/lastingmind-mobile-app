@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { Title } from '../../parts/title'
@@ -18,7 +18,7 @@ export function SignUpOptionsScreen() {
   }
 
   return (
-    <View className="gap-4 px-10 pt-safe flex h-screen-safe justify-between">
+    <View className="gap-4 px-10 py-safe flex flex-1 justify-between">
       <BackButton />
 
       <View className="py-20 gap-4">
@@ -34,7 +34,7 @@ export function SignUpOptionsScreen() {
         <AppleButton label="Sign up with Apple" />
         <GoogleButton label="Sign up with Google" />
         <Button variant="email" size="lg" icon={<Icon name="mail" />} onPress={handleEmailOrPhone}>
-          <Text>Email or Phone</Text>
+          Email or Phone
         </Button>
       </View>
     </View>

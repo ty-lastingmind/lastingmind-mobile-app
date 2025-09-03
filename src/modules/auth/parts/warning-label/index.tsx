@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import React from 'react'
-import { Icon } from '../icon'
-import { Typography } from '../typography'
+import { Icon } from '~/modules/ui/icon'
+import { Typography } from '~/modules/ui/typography'
 
 export default function WarningLabel({ label }: { label: string }) {
   return (

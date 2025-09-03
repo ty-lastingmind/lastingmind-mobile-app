@@ -10,11 +10,6 @@ import { Icon } from '../icon'
 
 const variants = cva('', {
   variants: {
-    variant: {
-      primary: 'rounded-md',
-      top: 'rounded-t-md border-b border-miscellaneous-topic-stroke',
-      bottom: 'rounded-b-md',
-    },
     color: {
       primary: 'bg-bg-secondary',
       secondary: '',
@@ -31,17 +26,7 @@ export interface InputProps extends TextInputProps, InputVariants {
 }
 
 export const Input = forwardRef<TextInput, InputProps>(function Input(
-  {
-    onFocus,
-    color = 'primary',
-    onBlur,
-    isError,
-    rightAdornment,
-    className,
-    leftAdornment,
-    variant = 'primary',
-    ...props
-  },
+  { onFocus, color = 'primary', onBlur, isError, rightAdornment, className, leftAdornment, ...props },
   ref
 ) {
   const isFocused = useBoolean(false)
@@ -65,16 +50,15 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   const classNames = useMemo(() => {
     return {
       textInputClassName: cn(
-        'gap-2 px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
+        'gap-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between',
         // isFocused.value && 'border-input-border--focus', // todo - maybe add focus state
         variants({ color }),
-        variants({ variant }),
         isError && 'border-input-border--error',
         className
       ),
       placeholderClassName: cn('text-input-placeholder', isError && 'text-input-placeholder--error'),
     }
-  }, [color, isError, variant])
+  }, [color, isError])
 
   return (
     <View className={classNames.textInputClassName}>

@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 import { Form, FormControl, FormField, FormItem } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
-import WarningLabel from '~/modules/ui/warning-label'
+import WarningLabel from '../warning-label'
 
 export const signUpFormSchema = z
   .object({
@@ -58,7 +58,7 @@ export function SignUpForm({ form }: SignUpFormProps) {
                   isError={Boolean(fieldState.error?.message)}
                   onBlur={field.onBlur}
                   placeholder="Password"
-                  variant="top"
+                  className="rounded-b-none border-b border-miscellaneous-topic-stroke"
                   onChangeText={field.onChange}
                   value={field.value}
                 />
@@ -76,7 +76,7 @@ export function SignUpForm({ form }: SignUpFormProps) {
                   secureTextEntry
                   isError={Boolean(fieldState.error?.message)}
                   placeholder="Confirm Password"
-                  variant="bottom"
+                  className="rounded-t-none"
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
                   value={field.value}
