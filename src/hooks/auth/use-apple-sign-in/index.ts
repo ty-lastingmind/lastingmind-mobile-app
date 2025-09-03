@@ -11,8 +11,7 @@ export function useAppleSignIn() {
     mutationFn: async () => {
       return Auth.signInWithApple()
     },
-    onError: (error) => {
-      console.error('[debug]', error)
+    onError: () => {
       Alert.alert('Error', 'Failed to sign in with Apple')
     },
     onSuccess: async () => {

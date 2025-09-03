@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { SafeAreaView, View } from 'react-native'
+import { View } from 'react-native'
 
 import { useSignUpWithEmailAndPassword } from '~/hooks/auth/use-sign-up-with-email-and-password'
 import { Title } from '~/modules/auth/parts/title'
@@ -26,35 +26,29 @@ export function SignUpScreen() {
   }
 
   return (
-    <SafeAreaView>
-      <View className="gap-4 px-8 pt-safe flex h-screen-safe justify-between">
-        <BackButton />
+    <View className="gap-4 px-10 pt-safe flex h-screen-safe justify-between">
+      <BackButton />
 
-        {/* logo and sign up form */}
-        <View>
-          <View className="py-12 gap-4">
-            <Title>LastingMind</Title>
-            <Typography brand className="text-center" level="body-lg" color="accent">
-              Sign Up
-            </Typography>
-          </View>
-          <SignUpForm form={form} />
+      <View className="flex-1">
+        <View className="py-20 gap-4">
+          <Title>LastingMind</Title>
+          <Typography brand className="text-center" level="body-lg" color="accent">
+            Sign Up
+          </Typography>
         </View>
-
-        {/* continue and TOS */}
-        <View>
-          <TermsOfService />
-          <KeyboardAvoidingView behavior="height" keyboardVerticalOffset={150}>
-            <Button
-              onPress={form.handleSubmit(handleSignUpWithEmailAndPassword)}
-              loading={signUpWithEmailAndPasswordMutation.isPending}
-              disabled={!isValid}
-            >
-              {'Continue'}
-            </Button>
-          </KeyboardAvoidingView>
-        </View>
+        <SignUpForm form={form} />
       </View>
-    </SafeAreaView>
+
+      <TermsOfService />
+      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={20}>
+        <Button
+          onPress={form.handleSubmit(handleSignUpWithEmailAndPassword)}
+          loading={signUpWithEmailAndPasswordMutation.isPending}
+          disabled={!isValid}
+        >
+          Continue
+        </Button>
+      </KeyboardAvoidingView>
+    </View>
   )
 }
