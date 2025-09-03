@@ -2,7 +2,6 @@ import { View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { Title } from '../../parts/title'
-import BackButton from '../../parts/back-button'
 import TermsOfService from '../../parts/terms-of-service'
 import { AppleButton } from '../../parts/apple-button'
 import { GoogleButton } from '../../parts/google-button'
@@ -19,9 +18,7 @@ export function SignUpOptionsScreen() {
 
   return (
     <View className="gap-4 px-10 py-safe flex flex-1 justify-between">
-      <BackButton />
-
-      <View className="py-20 gap-4">
+      <View className="py-24 gap-4">
         <Title>LastingMind</Title>
 
         <Typography brand className="text-center" level="body-lg" color="accent">

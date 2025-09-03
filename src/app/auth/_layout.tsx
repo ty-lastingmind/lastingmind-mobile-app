@@ -18,7 +18,12 @@ export default function AuthLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerTransparent: true,
+        headerTitle: '',
+        headerBackTitle: 'Back',
+        headerBackButtonMenuEnabled: false,
+        headerTintColor: colors['accent'],
         contentStyle: {
           backgroundColor: colors['bg-primary'],
         },

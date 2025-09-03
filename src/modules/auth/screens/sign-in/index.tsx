@@ -39,7 +39,7 @@ export function SignInScreen() {
   return (
     <View className="gap-4 px-10 py-safe flex flex-1 justify-between">
       <View>
-        <View className="py-20">
+        <View className="py-24">
           <Title>LastingMind</Title>
         </View>
         <EmailPasswordForm form={form} />
