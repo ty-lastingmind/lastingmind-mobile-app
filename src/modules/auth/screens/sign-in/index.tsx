@@ -63,7 +63,7 @@ export function SignInScreen() {
         </KeyboardAvoidingView>
       ) : (
         <View className="gap-4">
-          <AppleButton label="Sign In with Apple" />
+          <AppleButton />
           <GoogleButton label="Sign In with Google" />
           <Button variant="whitesecondary" onPress={handleSignUpButton}>
             Or Sign Up

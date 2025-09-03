@@ -1,12 +1,8 @@
 // import { useAppleSignIn } from '~/hooks/auth/use-apple-sign-in'
-import { Button } from '~/modules/ui/button'
-import { SvgIcon } from '~/modules/ui/svg-icon'
+import { View } from 'react-native'
+import * as AppleAuthentication from 'expo-apple-authentication'
 
-interface AppleButtonProps {
-  label: string
-}
-
-export function AppleButton({ label }: AppleButtonProps) {
+export function AppleButton() {
   // TODO: Configure Apple sign in certificates
   // const appleSignInMutation = useAppleSignIn()
 
@@ -15,8 +11,13 @@ export function AppleButton({ label }: AppleButtonProps) {
   }
 
   return (
-    <Button onPress={handleAppleSignIn} variant="apple" size="lg" icon={<SvgIcon name="apple" color="logo" />}>
-      {label}
-    </Button>
+    <View className="flex-1 items-center justify-center">
+      <AppleAuthentication.AppleAuthenticationButton
+        buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+        buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+        cornerRadius={5}
+        onPress={handleAppleSignIn}
+      />
+    </View>
   )
 }

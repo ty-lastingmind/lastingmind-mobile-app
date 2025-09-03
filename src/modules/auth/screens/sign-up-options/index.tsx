@@ -31,7 +31,7 @@ export function SignUpOptionsScreen() {
 
       <View className="gap-4">
         <TermsOfService />
-        <AppleButton label="Sign up with Apple" />
+        <AppleButton />
         <GoogleButton label="Sign up with Google" />
         <Button variant="email" size="lg" icon={<Icon name="mail" />} onPress={handleEmailOrPhone}>
           Email or Phone
