@@ -8,9 +8,9 @@ export default function TosDialog({ isOpen = false, onClose }: { isOpen?: boolea
     <Dialog isOpen={isOpen}>
       <View className="items-center px-4 gap-4">
         <TouchableOpacity className="w-full flex-row justify-end" onPress={onClose}>
-          <SvgIcon name="close" />
+          <SvgIcon name="close" color="miscellaneous" />
         </TouchableOpacity>
-        <SvgIcon name="shield" size="2xl" />
+        <SvgIcon name="shield" size="2xl" color="secondary" />
         <Typography brand level="h3" className="text-center">
           Terms of Service
         </Typography>

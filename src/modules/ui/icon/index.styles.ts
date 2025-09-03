@@ -19,6 +19,7 @@ export const variants = cva('', {
       secondary: 'text-icon-secondary',
       tertiary: 'text-icon-tertiary',
       logo: 'text-icon-logo',
+      miscellaneous: 'text-icon-miscellaneous',
       brand: 'text-icon-brand',
       red: 'text-icon-red',
       green: 'text-icon-green',

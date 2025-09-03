@@ -111,6 +111,7 @@
     --icon-primary: var(--black);
     --icon-secondary: var(--label-secondary);
     --icon-logo: var(--bg-primary);
+    --icon-miscellaneous: var(--miscellaneous-topic-stroke);
     --icon-tertiary: rgba(0, 0, 0, 0.5);
     --icon-brand: var(--brand);
     --icon-red: rgba(239, 68, 68, 1);
