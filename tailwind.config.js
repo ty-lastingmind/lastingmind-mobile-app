@@ -61,6 +61,7 @@ module.exports = {
       'label-accent': 'var(--label-accent)',
       'fill-accent': 'var(--fill-accent)',
       'bg-vibrant-primary': 'var(--bg-vibrant-primary)',
+      'bg-vibrant-accent': 'var(--bg-vibrant-accent)',
       'bg-primary': 'var(--bg-primary)',
       'bg-secondary': 'var(--bg-secondary)',
       'bg-tertiary': 'var(--bg-tertiary)',

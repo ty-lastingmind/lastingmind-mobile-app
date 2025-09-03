@@ -1,1 +1,1 @@
-export { CompletedProfileScreen as default } from '~/modules/onboarding/pages/complete-profile'
+export { CompletedProfileScreen as default } from '~/modules/onboarding/screens/complete-profile'
