@@ -1,14 +1,16 @@
 import { View } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
 import { CheckboxList } from '../../parts/CheckboxList'
 import { useRouter } from 'expo-router'
+import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 
 const ageOptions = ['Less than 20', '20s', '30s', '40s', '50s', '60+']
 
 export function AgePage() {
-  const [selectedAge, setSelectedAge] = useState<string | null>(null)
+  const form = useOnboardingFormContext()
+  const currentAge = form.watch('age')
 
   const router = useRouter()
 
@@ -17,7 +19,7 @@ export function AgePage() {
   }
 
   const handleCheckboxChange = (label: string) => {
-    setSelectedAge(label)
+    form.setValue('age', label)
   }
 
   return (
@@ -29,10 +31,12 @@ export function AgePage() {
         <Typography color="accent">Please select one option.</Typography>
       </View>
 
-      <CheckboxList options={ageOptions} selectedOption={selectedAge} onSelect={handleCheckboxChange} />
+      <CheckboxList options={ageOptions} selectedOption={currentAge} onSelect={handleCheckboxChange} />
 
       <View className="px-2">
-        <Button onPress={handleContinueButton}>Continue</Button>
+        <Button onPress={handleContinueButton} disabled={!currentAge}>
+          Continue
+        </Button>
       </View>
     </View>
   )

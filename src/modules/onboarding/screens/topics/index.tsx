@@ -1,8 +1,9 @@
 import { View } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { TopicButton, TopicsList } from '../../parts/TopicsList'
 import { Button } from '~/modules/ui/button'
+import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 
 const topics = [
   '👶 Growing Up',
@@ -18,14 +19,15 @@ const topics = [
 ]
 
 export function TopicsPage() {
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([])
+  const form = useOnboardingFormContext()
+  const selectedTopics = form.watch('topics')
 
   const handleTopicChange = (topic: string) => {
-    setSelectedTopics(
-      (prev) =>
-        prev.includes(topic)
-          ? prev.filter((t) => t !== topic) // Remove if already selected
-          : [...prev, topic] // Add if not selected
+    form.setValue(
+      'topics',
+      form.getValues('topics').includes(topic)
+        ? form.getValues('topics').filter((t) => t !== topic)
+        : [...form.getValues('topics'), topic]
     )
   }
 

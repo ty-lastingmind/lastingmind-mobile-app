@@ -7,9 +7,10 @@ import * as ImagePicker from 'expo-image-picker'
 
 type ProfilePicSelectorProps = {
   onProfilePicChange?: (uri: string) => void
+  picture?: string
 }
 
-export function ProfilePicSelector({ onProfilePicChange }: ProfilePicSelectorProps) {
+export function ProfilePicSelector({ onProfilePicChange, picture }: ProfilePicSelectorProps) {
   const handleProfilePicChange = async () => {
     if (onProfilePicChange) {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -26,17 +27,18 @@ export function ProfilePicSelector({ onProfilePicChange }: ProfilePicSelectorPro
   }
 
   return (
-    <View className="w-[160px] h-[160px] relative rounded-full border border-black">
-      <Image
-        transition={300}
-        cachePolicy="memory"
-        source={assets.placeholder}
-        style={{
-          width: '100%',
-          height: '100%',
-          overflow: 'hidden',
-        }}
-      />
+    <View className="w-[160px] h-[160px] relative">
+      <View className="w-full h-full rounded-full overflow-hidden border border-black">
+        <Image
+          transition={300}
+          cachePolicy="memory"
+          source={picture ? { uri: picture } : assets.placeholder}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        />
+      </View>
       <TouchableOpacity className="absolute bottom-0 right-0" onPress={handleProfilePicChange}>
         <SvgIcon name="add" size="2xl" color="accent" />
       </TouchableOpacity>
