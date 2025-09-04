@@ -10,7 +10,9 @@ export function ProfilePictureScreen() {
   const router = useRouter()
   const form = useOnboardingFormContext()
 
-  const handleContinueButton = () => {
+  const disableContinue = !form.watch('profilePicture')
+
+  const handleContinue = () => {
     router.navigate('/(protected)/onboarding/age')
   }
 
@@ -25,8 +27,12 @@ export function ProfilePictureScreen() {
         <ProfilePicSelector onProfilePicChange={handleProfilePicChange} picture={form.watch('profilePicture')} />
       </View>
       <View className="gap-4">
-        <Button onPress={handleContinueButton}>Continue</Button>
-        <Button variant="outlined">Skip</Button>
+        <Button onPress={handleContinue} disabled={disableContinue}>
+          Continue
+        </Button>
+        <Button variant="outlined" onPress={handleContinue}>
+          Skip
+        </Button>
       </View>
     </View>
   )

@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { KeyboardAvoidingView, View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { NameForm } from '../../parts/NameForm'
@@ -10,6 +10,8 @@ export function CompletedProfileScreen() {
   const router = useRouter()
 
   const form = useOnboardingFormContext()
+
+  const continueDisabled = form.watch('firstName').length < 2 || form.watch('lastName').length < 2
 
   const handleContinueButton = () => {
     router.navigate('/(protected)/onboarding/profile-picture')
@@ -26,13 +28,17 @@ export function CompletedProfileScreen() {
         </Typography>
       </View>
 
-      <View className="gap-8">
-        <NameForm
-          onFirstNameChange={(text) => form.setValue('firstName', text)}
-          onLastNameChange={(text) => form.setValue('lastName', text)}
-        />
-        <Button onPress={handleContinueButton}>Continue</Button>
-      </View>
+      <KeyboardAvoidingView behavior="padding">
+        <View className="gap-8">
+          <NameForm
+            onFirstNameChange={(text) => form.setValue('firstName', text)}
+            onLastNameChange={(text) => form.setValue('lastName', text)}
+          />
+          <Button onPress={handleContinueButton} disabled={continueDisabled}>
+            Continue
+          </Button>
+        </View>
+      </KeyboardAvoidingView>
     </View>
   )
 }
