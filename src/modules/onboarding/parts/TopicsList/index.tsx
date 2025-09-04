@@ -9,29 +9,48 @@ interface TopicsListProps {
   onTopicChange: (topic: string) => void
 }
 
-export function TopicsList({ onTopicChange, topics, selectedTopic }: TopicsListProps) {
-  const buttonClassName = (isSelected: boolean) =>
-    cn([
-      'rounded-full flex flex-row items-center gap-2 min-h-md px-4 py-3',
-      isSelected ? 'bg-button-primary-bg' : 'bg-button-secondary-bg',
-    ])
+interface TopicButtonProps {
+  label: string
+  isSelected?: boolean
+  secondary?: boolean
+  onPress?: () => void
+}
+
+export function TopicButton({ label: topic, isSelected, secondary, onPress }: TopicButtonProps) {
+  const buttonClassName = cn([
+    'rounded-full flex flex-row items-center justify-center gap-2 min-h-md px-4 py-3',
+    isSelected ? 'bg-button-primary-bg' : 'bg-button-secondary-bg',
+  ])
+
+  const typographyColor = cn({
+    white: isSelected && !secondary,
+    primary: !isSelected && !secondary,
+    secondary: secondary,
+  }) as 'white' | 'primary' | 'secondary'
 
   return (
-    <View className="flex-1 gap-3 relative">
+    <TouchableOpacity className={buttonClassName} onPress={onPress}>
+      <Typography level="h6" color={typographyColor} className="text-center">
+        {topic}
+      </Typography>
+    </TouchableOpacity>
+  )
+}
+
+export function TopicsList({ onTopicChange, topics, selectedTopic }: TopicsListProps) {
+  return (
+    <View className="gap-3 relative">
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerClassName="flex flex-row flex-wrap gap-2 pb-4 justify-center"
       >
         {topics.map((topic, index) => (
-          <TouchableOpacity
+          <TopicButton
             key={index}
-            className={buttonClassName(selectedTopic.includes(topic))}
+            label={topic}
+            isSelected={selectedTopic.includes(topic)}
             onPress={() => onTopicChange(topic)}
-          >
-            <Typography level="h6" color={selectedTopic.includes(topic) ? 'white' : 'primary'}>
-              {topic}
-            </Typography>
-          </TouchableOpacity>
+          />
         ))}
       </ScrollView>
     </View>

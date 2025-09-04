@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import React, { useState } from 'react'
 import { Typography } from '~/modules/ui/typography'
-import { TopicsList } from '../../parts/TopicsList'
+import { TopicButton, TopicsList } from '../../parts/TopicsList'
 import { Button } from '~/modules/ui/button'
 
 const topics = [
@@ -40,6 +40,9 @@ export function TopicsPage() {
 
       <View className="flex-1">
         <TopicsList topics={topics} selectedTopic={selectedTopics} onTopicChange={handleTopicChange} />
+        <View className="px-20">
+          <TopicButton label="Enter a custom topic." secondary />
+        </View>
       </View>
 
       <View>
