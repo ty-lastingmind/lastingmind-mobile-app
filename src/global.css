@@ -90,6 +90,9 @@
 
     --button-white-bg: var(--bg-primary);
 
+    --button-black-bg: var(--label-primary);
+    --button-email-bg: var(--bg-tertiary);
+
     /* BADGE */
     --badge-primary-bg: var(--accent);
     --badge-primary-text: var(--white);
@@ -107,6 +110,8 @@
     --icon-white: var(--white);
     --icon-primary: var(--black);
     --icon-secondary: var(--label-secondary);
+    --icon-logo: var(--bg-primary);
+    --icon-miscellaneous: var(--miscellaneous-topic-stroke);
     --icon-tertiary: rgba(0, 0, 0, 0.5);
     --icon-brand: var(--brand);
     --icon-red: rgba(239, 68, 68, 1);

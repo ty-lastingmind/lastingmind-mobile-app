@@ -58,7 +58,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
       ),
       placeholderClassName: cn('text-input-placeholder', isError && 'text-input-placeholder--error'),
     }
-  }, [className, color, isError])
+  }, [color, isError])
 
   return (
     <View className={classNames.textInputClassName}>

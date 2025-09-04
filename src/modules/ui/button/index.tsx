@@ -1,6 +1,6 @@
 import type { VariantProps } from 'class-variance-authority'
 import { cva } from 'class-variance-authority'
-import { forwardRef, PropsWithChildren, useMemo } from 'react'
+import React, { forwardRef, PropsWithChildren, useMemo } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 import { cn } from '~/utils/cn'
 
@@ -13,6 +13,9 @@ const variants = {
         outlined: 'bg-button-outlined-bg border border-button-outlined-border',
         outlinedSecondary: 'bg-button-outlined-secondary-bg border border-button-outlined-secondary-border',
         white: 'bg-button-white-bg',
+        whitesecondary: 'bg-button-white-bg',
+        apple: 'bg-button-black-bg',
+        email: 'bg-button-email-bg',
       },
       size: {
         sm: 'min-h-sm px-4 py-1',
@@ -29,6 +32,9 @@ const variants = {
         outlined: 'text-button-outlined-text',
         outlinedSecondary: 'text-button-outlined-secondary-text',
         white: 'text-button-secondary-text',
+        whitesecondary: 'text-miscellaneous-topic-stroke',
+        apple: 'text-bg-primary font-semibold',
+        email: 'text-button-black-bg font-semibold',
       },
       size: {
         sm: 'text-button-sm',
@@ -44,26 +50,28 @@ type ButtonVariants = VariantProps<(typeof variants)['button']>
 interface ButtonProps extends TouchableOpacityProps, ButtonVariants {
   loading?: boolean
   btnContainerClassName?: string
+  icon?: React.ReactNode
 }
 
 export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function Button(
-  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, ...props },
+  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, icon, disabled, ...props },
   ref
 ) {
   const classNames = useMemo(() => {
-    const buttonClassName = cn(variants.button({ variant, size }), btnContainerClassName)
+    const buttonClassName = cn(variants.button({ variant, size }), btnContainerClassName, disabled && 'opacity-50')
     const textClassName = variants.text({ variant, size })
 
     return {
       buttonClassName,
       textClassName,
     }
-  }, [variant, size, btnContainerClassName])
+  }, [variant, size, btnContainerClassName, disabled])
 
   return (
-    <TouchableOpacity className={classNames.buttonClassName} {...props} ref={ref}>
+    <TouchableOpacity className={classNames.buttonClassName} {...props} ref={ref} disabled={disabled}>
       {loading && <ActivityIndicator />}
-      <Text className={classNames.textClassName}>{children}</Text>
+      {icon}
+      <Text className={classNames.textClassName + ' items-center'}>{children}</Text>
     </TouchableOpacity>
   )
 })

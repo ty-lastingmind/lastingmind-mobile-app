@@ -1,33 +1,25 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form'
 import { View } from 'react-native'
 import { z } from 'zod'
 
-import { Button } from '~/modules/ui/button'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '~/modules/ui/form'
+import { Form, FormControl, FormField, FormItem } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
 
-interface EmailPasswordFormProps {
-  onSubmit: (data: EmailPasswordFormValues) => void
-  isLoading: boolean
-  buttonLabel: string
-}
-
-const emailPasswordSchema = z.object({
+export const emailPasswordSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 })
 
 export type EmailPasswordFormValues = z.infer<typeof emailPasswordSchema>
 
-export function EmailPasswordForm({ onSubmit, isLoading, buttonLabel }: EmailPasswordFormProps) {
-  const form = useForm({
-    resolver: zodResolver(emailPasswordSchema),
-  })
+interface EmailPasswordFormProps {
+  form: UseFormReturn<EmailPasswordFormValues>
+}
 
+export function EmailPasswordForm({ form }: EmailPasswordFormProps) {
   return (
     <Form {...form}>
-      <View className="gap-4">
+      <View>
         <FormField
           control={form.control}
           name="email"
@@ -38,11 +30,11 @@ export function EmailPasswordForm({ onSubmit, isLoading, buttonLabel }: EmailPas
                   isError={Boolean(fieldState.error?.message)}
                   onBlur={field.onBlur}
                   placeholder="Enter your e-mail"
+                  className="rounded-b-none border-b border-miscellaneous-topic-stroke"
                   onChangeText={field.onChange}
                   value={field.value}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -56,18 +48,15 @@ export function EmailPasswordForm({ onSubmit, isLoading, buttonLabel }: EmailPas
                   secureTextEntry
                   isError={Boolean(fieldState.error?.message)}
                   placeholder="Enter password"
+                  className="rounded-t-none"
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
                   value={field.value}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
-        <Button onPress={form.handleSubmit(onSubmit)} loading={isLoading}>
-          {buttonLabel}
-        </Button>
       </View>
     </Form>
   )

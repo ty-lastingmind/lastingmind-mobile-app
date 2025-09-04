@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query'
-import { Alert } from 'react-native'
 import { queryClient } from '~/libs/query-client'
 import { Auth } from '~/services'
 
@@ -12,7 +11,6 @@ export function useSignInWithEmailAndPassword() {
     },
     onError: (error) => {
       console.error('[debug]', error)
-      Alert.alert('Error', 'Failed to sign in with email and password')
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({

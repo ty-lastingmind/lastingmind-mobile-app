@@ -53,8 +53,8 @@ module.exports = {
       'input-text-size': 'var(--input-text-size)',
     },
     colors: {
-      'accent': 'var(--accent)',
-      'red': 'var(--red)',
+      accent: 'var(--accent)',
+      red: 'var(--red)',
       'label-primary': 'var(--label-primary)',
       'label-secondary': 'var(--label-secondary)',
       'label-accent': 'var(--label-accent)',
@@ -63,7 +63,7 @@ module.exports = {
       'bg-primary': 'var(--bg-primary)',
       'bg-secondary': 'var(--bg-secondary)',
       'bg-tertiary': 'var(--bg-tertiary)',
-      'miscellaneous': 'var(--miscellaneous)',
+      miscellaneous: 'var(--miscellaneous)',
       'miscellaneous-topic-stroke': 'var(--miscellaneous-topic-stroke)',
       'miscellaneous-component': 'var(--miscellaneous-component)',
 
@@ -97,11 +97,16 @@ module.exports = {
 
       'button-white-bg': 'var(--button-white-bg)',
 
+      'button-black-bg': 'var(--button-black-bg)',
+      'button-email-bg': 'var(--button-email-bg)',
+
       'icon-accent': 'var(--icon-accent)',
       'icon-white': 'var(--icon-white)',
       'icon-primary': 'var(--icon-primary)',
       'icon-secondary': 'var(--icon-secondary)',
       'icon-tertiary': 'var(--icon-tertiary)',
+      'icon-logo': 'var(--icon-logo)',
+      'icon-miscellaneous': 'var(--icon-miscellaneous)',
       'icon-brand': 'var(--icon-brand)',
       'icon-red': 'var(--icon-red)',
       'icon-green': 'var(--icon-green)',

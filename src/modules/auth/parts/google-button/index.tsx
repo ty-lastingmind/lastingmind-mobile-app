@@ -1,5 +1,6 @@
 import { useGoogleSignIn } from '~/hooks/auth/use-google-sign-in'
 import { Button } from '~/modules/ui/button'
+import { SvgIcon } from '~/modules/ui/svg-icon'
 
 interface GoogleButtonProps {
   label: string
@@ -13,7 +14,7 @@ export function GoogleButton({ label }: GoogleButtonProps) {
   }
 
   return (
-    <Button onPress={handleGoogleSignIn} variant="outlined">
+    <Button onPress={handleGoogleSignIn} variant="email" size="lg" icon={<SvgIcon name="google" />}>
       {label}
     </Button>
   )
