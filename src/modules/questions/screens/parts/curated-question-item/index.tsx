@@ -1,10 +1,14 @@
 import { TouchableOpacity, View } from 'react-native'
-import { Button } from '~/modules/ui/button'
 import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 import { StarterQuestionsResponseNextQuestionsItem } from '~/services/api/model/starterQuestionsResponseNextQuestionsItem'
 import { useCallback } from 'react'
 import { SaveQuestionInput } from '~/services/api/model'
+import { SubmittingAnswerOverlay } from '../submitting-answer-overlay'
+import { useBoolean } from 'usehooks-ts'
+import { useRecordingState } from '~/modules/questions/hooks/use-recording-state'
+import { RecordingControls } from '../../parts/recording-controls'
+
 interface CuratedQuestionItemProps {
   question: StarterQuestionsResponseNextQuestionsItem
   onSaveForLaterPress: (data: SaveQuestionInput) => void
@@ -15,28 +19,43 @@ export function CuratedQuestionItem({ question: questionItem, onSaveForLaterPres
   const question = Object.values(questionItem)[0]
   const responseId = Object.keys(questionItem)[0]
 
+  const isSubmittingAnswer = useBoolean(false)
+
+  const recordingCallbacks = {
+    onViewTranscription: () => isSubmittingAnswer.setTrue(),
+    onListenAnswer: () => {
+      // TODO: Implement audio playback functionality
+      console.log('Listen to recorded answer')
+    },
+    onWriteAnswer: () => {
+      // TODO: Implement write answer functionality
+      console.log('Write answer')
+      isSubmittingAnswer.setTrue()
+    },
+    onSaveForLater: () => {
+      onSaveForLaterPress({
+        responseId,
+        topic: question?.topic,
+        question_text: question?.question_text,
+      })
+    },
+    onSubmitAnswer: () => {
+      // TODO: Implement submit answer functionality
+      console.log('Submit answer')
+    },
+  }
+
+  const recordingState = useRecordingState(recordingCallbacks)
+
   const handleSenderPress = () => {
     // TODO: Show sender options
     console.log('Sender options')
   }
 
-  const handleRecordAnswerPress = () => {
-    // TODO: Implement record answer functionality
-    console.log('Record answer')
-  }
-
-  const handleWriteAnswerPress = () => {
-    // TODO: Implement write answer functionality
-    console.log('Write answer')
-  }
-
-  const handleSaveForLaterPress = useCallback(() => {
-    onSaveForLaterPress({
-      responseId,
-      topic: question?.topic,
-      question_text: question?.question_text,
-    })
-  }, [onSaveForLaterPress, question?.question_text, question?.topic, responseId])
+  const handleEditAnswer = useCallback(() => {
+    recordingState.setAnswer('answer')
+    isSubmittingAnswer.setFalse()
+  }, [recordingState, isSubmittingAnswer])
 
   return (
     <View className="flex-1 w-screen">
@@ -60,37 +79,16 @@ export function CuratedQuestionItem({ question: questionItem, onSaveForLaterPres
         </View>
       </View>
 
-      <View className="px-6 gap-4 justify-end">
-        <Button
-          onPress={handleRecordAnswerPress}
-          size="lg"
-          btnContainerClassName="bg-accent border-0"
-          icon={{
-            name: 'mic',
-            size: 'sm',
-            color: 'white',
-          }}
-        >
-          Record Answer
-        </Button>
+      <RecordingControls callbacks={recordingCallbacks} />
 
-        <Button
-          variant="outlined"
-          onPress={handleWriteAnswerPress}
-          size="lg"
-          icon={{
-            name: 'write_answer',
-            size: 'sm',
-            color: 'accent',
-          }}
-        >
-          Write Answer
-        </Button>
-
-        <Button variant="white" size="lg" onPress={handleSaveForLaterPress}>
-          Save for Later
-        </Button>
-      </View>
+      <SubmittingAnswerOverlay
+        isOpen={isSubmittingAnswer.value}
+        onClose={isSubmittingAnswer.setFalse}
+        onEdit={handleEditAnswer}
+        onSubmit={isSubmittingAnswer.setFalse}
+        question={question?.question_text}
+        answer={recordingState.answer}
+      />
     </View>
   )
 }
