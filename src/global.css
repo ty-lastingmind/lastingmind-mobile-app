@@ -128,6 +128,7 @@
     --typography-accent: var(--label-accent);
     --typography-red: var(--red);
     --typography-white: var(--white);
+    --typography-black: var(--black);
 
     /* SEPARATOR */
     --separator-bg: rgba(255, 255, 255, 0.1);

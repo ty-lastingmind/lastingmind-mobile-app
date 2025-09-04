@@ -1,12 +1,14 @@
 import { View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { TopicButton, TopicsList } from '../../parts/TopicsList'
 import { Button } from '~/modules/ui/button'
 import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
+import CustomTopicModal from '../../parts/CustomTopicModal'
+import { ScrollView } from 'react-native-gesture-handler'
 
-const topics = [
-  '👶 Growing Up',
+const initialTopics = [
+  '🧓 Growing Up',
   '🏡 Family History',
   '💼 Politics',
   '🖤 Love & Relationships',
@@ -19,6 +21,8 @@ const topics = [
 ]
 
 export function TopicsPage() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [topics, setTopics] = useState(initialTopics)
   const form = useOnboardingFormContext()
   const selectedTopics = form.watch('topics')
 
@@ -31,6 +35,14 @@ export function TopicsPage() {
     )
   }
 
+  const handleAddCustomTopic = (customTopic: string) => {
+    if (customTopic && !topics.includes(customTopic)) {
+      setTopics((prevTopics) => [...prevTopics, customTopic])
+      form.setValue('topics', [...form.getValues('topics'), customTopic])
+    }
+    setIsDialogOpen(false)
+  }
+
   return (
     <View className="gap-4 px-8 py-safe flex flex-1">
       <View className="pt-28 pb-16 gap-2">
@@ -41,15 +53,27 @@ export function TopicsPage() {
       </View>
 
       <View className="flex-1">
-        <TopicsList topics={topics} selectedTopic={selectedTopics} onTopicChange={handleTopicChange} />
-        <View className="px-20">
-          <TopicButton label="Enter a custom topic." secondary />
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ paddingBottom: 80 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <TopicsList topics={topics} selectedTopic={selectedTopics} onTopicChange={handleTopicChange} />
+          <View className="px-20">
+            <TopicButton label="Enter a custom topic." secondary onPress={() => setIsDialogOpen(true)} />
+          </View>
+        </ScrollView>
+
+        <View className="absolute bottom-0 left-0 right-0">
+          <Button disabled={selectedTopics.length < 3}>Continue</Button>
         </View>
       </View>
 
-      <View>
-        <Button>Continue</Button>
-      </View>
+      <CustomTopicModal
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onAddCustomTopic={handleAddCustomTopic}
+      />
     </View>
   )
 }

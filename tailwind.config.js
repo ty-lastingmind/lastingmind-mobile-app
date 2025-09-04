@@ -121,6 +121,7 @@ module.exports = {
       'typography-accent': 'var(--typography-accent)',
       'typography-red': 'var(--typography-red)',
       'typography-white': 'var(--typography-white)',
+      'typography-black': 'var(--typography-black)',
 
       'separator-bg': 'var(--separator-bg)',
 

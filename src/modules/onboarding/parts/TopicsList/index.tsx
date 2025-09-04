@@ -1,4 +1,4 @@
-import { ScrollView, View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import { Typography } from '~/modules/ui/typography'
 import { cn } from '~/utils/cn'
 
@@ -40,10 +40,7 @@ export function TopicButton({ label: topic, isSelected, secondary, onPress }: To
 export function TopicsList({ onTopicChange, topics, selectedTopic }: TopicsListProps) {
   return (
     <View className="gap-3 relative">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerClassName="flex flex-row flex-wrap gap-2 pb-4 justify-center"
-      >
+      <View className="flex flex-row flex-wrap gap-2 pb-4 justify-center">
         {topics.map((topic, index) => (
           <TopicButton
             key={index}
@@ -52,7 +49,7 @@ export function TopicsList({ onTopicChange, topics, selectedTopic }: TopicsListP
             onPress={() => onTopicChange(topic)}
           />
         ))}
-      </ScrollView>
+      </View>
     </View>
   )
 }

@@ -28,7 +28,7 @@ export function ProfilePicSelector({ onProfilePicChange, picture }: ProfilePicSe
 
   return (
     <View className="w-[160px] h-[160px] relative">
-      <View className="w-full h-full rounded-full overflow-hidden border border-black">
+      <View className="w-full h-full rounded-full overflow-hidden border border-black bg-icon-white">
         <Image
           transition={300}
           cachePolicy="memory"
