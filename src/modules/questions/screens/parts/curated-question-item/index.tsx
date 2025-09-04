@@ -8,6 +8,7 @@ import { SubmittingAnswerOverlay } from '../submitting-answer-overlay'
 import { useBoolean } from 'usehooks-ts'
 import { useRecordingState } from '~/modules/questions/hooks/use-recording-state'
 import { RecordingControls } from '../../parts/recording-controls'
+import { EditAnswerOverlay } from '../../parts/edit-answer-overlay'
 
 interface CuratedQuestionItemProps {
   question: StarterQuestionsResponseNextQuestionsItem
@@ -20,6 +21,7 @@ export function CuratedQuestionItem({ question: questionItem, onSaveForLaterPres
   const responseId = Object.keys(questionItem)[0]
 
   const isSubmittingAnswer = useBoolean(false)
+  const isEditAnswerOverlayOpen = useBoolean(false)
 
   const recordingCallbacks = {
     onViewTranscription: () => isSubmittingAnswer.setTrue(),
@@ -27,11 +29,7 @@ export function CuratedQuestionItem({ question: questionItem, onSaveForLaterPres
       // TODO: Implement audio playback functionality
       console.log('Listen to recorded answer')
     },
-    onWriteAnswer: () => {
-      // TODO: Implement write answer functionality
-      console.log('Write answer')
-      isSubmittingAnswer.setTrue()
-    },
+    onWriteAnswer: isEditAnswerOverlayOpen.setTrue,
     onSaveForLater: () => {
       onSaveForLaterPress({
         responseId,
@@ -52,10 +50,18 @@ export function CuratedQuestionItem({ question: questionItem, onSaveForLaterPres
     console.log('Sender options')
   }
 
-  const handleEditAnswer = useCallback(() => {
-    recordingState.setAnswer('answer')
+  const handleOpenEditAnswerOverlay = useCallback(() => {
     isSubmittingAnswer.setFalse()
-  }, [recordingState, isSubmittingAnswer])
+    isEditAnswerOverlayOpen.setTrue()
+  }, [isEditAnswerOverlayOpen, isSubmittingAnswer])
+
+  const handleEditAnswer = useCallback(
+    (answer: string) => {
+      recordingState.setAnswer(answer)
+      isEditAnswerOverlayOpen.setFalse()
+    },
+    [isEditAnswerOverlayOpen, recordingState]
+  )
 
   return (
     <View className="flex-1 w-screen">
@@ -84,8 +90,16 @@ export function CuratedQuestionItem({ question: questionItem, onSaveForLaterPres
       <SubmittingAnswerOverlay
         isOpen={isSubmittingAnswer.value}
         onClose={isSubmittingAnswer.setFalse}
-        onEdit={handleEditAnswer}
+        onEdit={handleOpenEditAnswerOverlay}
         onSubmit={isSubmittingAnswer.setFalse}
+        question={question?.question_text}
+        answer={recordingState.answer}
+      />
+
+      <EditAnswerOverlay
+        isOpen={isEditAnswerOverlayOpen.value}
+        onClose={isEditAnswerOverlayOpen.setFalse}
+        onSave={handleEditAnswer}
         question={question?.question_text}
         answer={recordingState.answer}
       />
