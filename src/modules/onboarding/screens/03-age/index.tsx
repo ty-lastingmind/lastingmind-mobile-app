@@ -2,7 +2,7 @@ import { View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
-import { CheckboxList } from '../../parts/CheckboxList'
+import { CheckboxList } from '../../../ui/checkbox-list'
 import { useRouter } from 'expo-router'
 import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 
