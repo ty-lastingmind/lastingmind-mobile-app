@@ -15,7 +15,7 @@ export function AgePage() {
   const router = useRouter()
 
   const handleContinueButton = () => {
-    router.push('/(protected)/onboarding/topics')
+    router.push('/(protected)/onboarding/04-topics')
   }
 
   const handleCheckboxChange = (label: string) => {

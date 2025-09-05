@@ -13,7 +13,7 @@ export function ProfilePictureScreen() {
   const disableContinue = !form.watch('profilePicture')
 
   const handleContinue = () => {
-    router.navigate('/(protected)/onboarding/age')
+    router.navigate('/(protected)/onboarding/03-age')
   }
 
   const handleProfilePicChange = (uri: string) => {

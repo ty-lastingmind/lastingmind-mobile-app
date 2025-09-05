@@ -6,7 +6,7 @@ import { Button } from '~/modules/ui/button'
 import { useRouter } from 'expo-router'
 import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 
-export function CompletedProfileScreen() {
+export function NameScreen() {
   const router = useRouter()
 
   const form = useOnboardingFormContext()
@@ -14,7 +14,7 @@ export function CompletedProfileScreen() {
   const continueDisabled = form.watch('firstName').length < 2 || form.watch('lastName').length < 2
 
   const handleContinueButton = () => {
-    router.navigate('/(protected)/onboarding/profile-picture')
+    router.navigate('/(protected)/onboarding/02-profile-picture')
   }
   return (
     <View className="gap-4 px-10 py-safe flex flex-1">
