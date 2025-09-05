@@ -3,11 +3,12 @@ import React, { useState } from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { TopicButton, TopicsList } from '../../parts/TopicsList'
 import { Button } from '~/modules/ui/button'
-import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
+import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 import CustomTopicModal from '../../parts/CustomTopicModal'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useRouter } from 'expo-router'
 import { useInitializeUserOnboardingInitializeUserPost } from '~/services/api/generated'
+import { useBoolean } from 'usehooks-ts'
 
 const initialTopics = [
   '🧓 Growing Up',
@@ -23,7 +24,7 @@ const initialTopics = [
 ]
 
 export function TopicsPage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const { value: isDialogOpen, setTrue: openDialog, setFalse: closeDialog } = useBoolean(false)
   const [topics, setTopics] = useState(initialTopics)
   const form = useOnboardingFormContext()
   const selectedTopics = form.watch('topics')
@@ -45,17 +46,17 @@ export function TopicsPage() {
       setTopics((prevTopics) => [...prevTopics, customTopic])
       form.setValue('topics', [...form.getValues('topics'), customTopic])
     }
-    setIsDialogOpen(false)
+    closeDialog()
   }
-  const handleSubmit = () => {
-    const values = form.getValues()
+
+  const handleSubmit = (data: OnboardingFormData) => {
     initializeUser.mutate(
       {
         data: {
-          name: `${values.firstName} ${values.lastName}`,
-          age: values.age,
-          profile_image: values.profilePicture,
-          chosen_topics: values.topics,
+          name: `${data.firstName} ${data.lastName}`,
+          age: data.age,
+          profile_image: data.profilePicture,
+          chosen_topics: data.topics,
         },
       },
       {
@@ -82,22 +83,18 @@ export function TopicsPage() {
         <ScrollView className="flex-1" contentContainerClassName="mt-8" showsVerticalScrollIndicator={false}>
           <TopicsList topics={topics} selectedTopic={selectedTopics} onTopicChange={handleTopicChange} />
           <View className="px-20">
-            <TopicButton label="Enter a custom topic." secondary onPress={() => setIsDialogOpen(true)} />
+            <TopicButton label="Enter a custom topic." secondary onPress={openDialog} />
           </View>
         </ScrollView>
 
         <View className="pt-2">
-          <Button disabled={selectedTopics.length < 3} onPress={handleSubmit}>
+          <Button disabled={selectedTopics.length < 3} onPress={form.handleSubmit(handleSubmit)}>
             Continue
           </Button>
         </View>
       </View>
 
-      <CustomTopicModal
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        onAddCustomTopic={handleAddCustomTopic}
-      />
+      <CustomTopicModal isOpen={isDialogOpen} onClose={closeDialog} onAddCustomTopic={handleAddCustomTopic} />
     </View>
   )
 }
