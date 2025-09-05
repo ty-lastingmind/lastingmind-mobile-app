@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import React, { useState } from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { TopicButton, TopicsList } from '../../parts/TopicsList'
@@ -6,6 +6,8 @@ import { Button } from '~/modules/ui/button'
 import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 import CustomTopicModal from '../../parts/CustomTopicModal'
 import { ScrollView } from 'react-native-gesture-handler'
+import { useRouter } from 'expo-router'
+import { useInitializeUserOnboardingInitializeUserPost } from '~/services/api/generated'
 
 const initialTopics = [
   '🧓 Growing Up',
@@ -25,6 +27,9 @@ export function TopicsPage() {
   const [topics, setTopics] = useState(initialTopics)
   const form = useOnboardingFormContext()
   const selectedTopics = form.watch('topics')
+  const router = useRouter()
+
+  const initializeUser = useInitializeUserOnboardingInitializeUserPost()
 
   const handleTopicChange = (topic: string) => {
     form.setValue(
@@ -41,6 +46,27 @@ export function TopicsPage() {
       form.setValue('topics', [...form.getValues('topics'), customTopic])
     }
     setIsDialogOpen(false)
+  }
+  const handleSubmit = () => {
+    const values = form.getValues()
+    initializeUser.mutate(
+      {
+        data: {
+          name: `${values.firstName} ${values.lastName}`,
+          age: values.age,
+          profile_image: values.profilePicture,
+          chosen_topics: values.topics,
+        },
+      },
+      {
+        onSuccess: () => {
+          router.push('/(protected)/onboarding/05-congrats')
+        },
+        onError: () => {
+          Alert.alert('Error', 'Failed to save profile.')
+        },
+      }
+    )
   }
 
   return (
@@ -65,7 +91,9 @@ export function TopicsPage() {
         </ScrollView>
 
         <View className="absolute bottom-0 left-0 right-0">
-          <Button disabled={selectedTopics.length < 3}>Continue</Button>
+          <Button disabled={selectedTopics.length < 3} onPress={handleSubmit}>
+            Continue
+          </Button>
         </View>
       </View>
 
