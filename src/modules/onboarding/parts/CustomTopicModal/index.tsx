@@ -10,7 +10,7 @@ import {
 import { Dialog } from '~/modules/ui/dialog'
 import { Icon } from '~/modules/ui/icon'
 
-type CustomTopicModalProps = {
+interface CustomTopicModalProps {
   isOpen?: boolean
   onClose: () => void
   onAddCustomTopic: (topic: string) => void
@@ -33,7 +33,7 @@ export default function CustomTopicModal({ isOpen = false, onClose, onAddCustomT
           onClose()
         }}
       >
-        <KeyboardAvoidingView behavior={'padding'} className="flex-1" keyboardVerticalOffset={30}>
+        <KeyboardAvoidingView behavior="padding" className="flex-1" keyboardVerticalOffset={30}>
           <View className="w-full h-full justify-end">
             <CustomTopicInput inputRef={inputRef} onClose={onClose} onAddCustomTopic={onAddCustomTopic} />
           </View>
@@ -43,7 +43,7 @@ export default function CustomTopicModal({ isOpen = false, onClose, onAddCustomT
   )
 }
 
-type CustomTopicInputProps = {
+interface CustomTopicInputProps {
   inputRef: React.RefObject<TextInput | null>
   onClose: () => void
   onAddCustomTopic: (topic: string) => void

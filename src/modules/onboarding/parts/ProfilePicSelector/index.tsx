@@ -5,7 +5,7 @@ import { Image } from 'expo-image'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import * as ImagePicker from 'expo-image-picker'
 
-type ProfilePicSelectorProps = {
+interface ProfilePicSelectorProps {
   onProfilePicChange?: (uri: string) => void
   picture?: string
 }

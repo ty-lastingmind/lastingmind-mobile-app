@@ -3,7 +3,7 @@ import React from 'react'
 import { Input } from '~/modules/ui/input'
 import { Typography } from '~/modules/ui/typography'
 
-type NameFormProps = {
+interface NameFormProps {
   onFirstNameChange?: (text: string) => void
   onLastNameChange?: (text: string) => void
 }
