@@ -74,6 +74,7 @@ const plugins: ExpoConfig['plugins'] = [
       microphonePermission: 'Allow $(PRODUCT_NAME) to access your microphone.',
     },
   ],
+  ['expo-image-picker'],
 ]
 
 // UPDATE VERSION

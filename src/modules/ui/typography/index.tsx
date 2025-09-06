@@ -24,6 +24,7 @@ const variants = cva(undefined, {
       'caption-2': 'text-caption-2',
       'overline-1': 'text-overline-1',
       'overline-2': 'text-overline-2',
+      logo: 'text-logo',
     },
     weight: {
       light: 'font-light',

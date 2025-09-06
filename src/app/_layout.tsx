@@ -10,6 +10,10 @@ import { queryClient } from '~/libs/query-client'
 import { ColorSchemeProvider } from '~/providers/color-scheme-provider'
 import { TailwindColorsProvider, useTailwindColors } from '~/providers/tailwind-colors-provider'
 
+if (__DEV__) {
+  import('../../ReactotronConfig')
+}
+
 SplashScreen.setOptions({
   duration: 500,
   fade: true,

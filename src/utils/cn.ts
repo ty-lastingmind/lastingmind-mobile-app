@@ -26,6 +26,7 @@ const twMerge = extendTailwindMerge({
         'text-badge-sm',
         'text-badge-md',
         'text-badge-lg',
+        'text-logo',
       ],
     },
   },
