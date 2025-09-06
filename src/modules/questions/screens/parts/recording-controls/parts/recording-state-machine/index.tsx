@@ -2,6 +2,7 @@ import { InitialState } from '../initial-state'
 import { RecordingState } from '../recording-state'
 import { RecordedState } from '../recorded-state'
 import { RecordingState as RecordingStateType, RecordingActions } from '~/modules/questions/hooks/use-recording-state'
+import { UploadingState } from '../uploading-state'
 
 interface RecordingStateMachineProps extends RecordingStateType, RecordingActions {}
 
@@ -34,6 +35,8 @@ export function RecordingStateMachine({
           audioUrl={audioUrl}
         />
       )
+    case 'uploading':
+      return <UploadingState />
     default:
       return <InitialState onRecord={startRecording} onWrite={writeAnswer} onSaveForLater={saveForLater} />
   }

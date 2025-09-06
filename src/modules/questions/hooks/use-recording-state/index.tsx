@@ -4,7 +4,7 @@ import { useAudioRecorderState } from 'expo-audio'
 import { CURATED_CUESTIONS_FOLDER_NAME } from '~/constants/storage'
 
 export interface RecordingState {
-  currentState: 'initial' | 'recording' | 'recorded'
+  currentState: 'initial' | 'recording' | 'recorded' | 'uploading'
   isRecording: boolean
   isRecorded: boolean
   answer: string
@@ -39,6 +39,7 @@ interface UseRecordingState extends RecordingState, RecordingActions {}
 export function useRecordingState(callbacks?: RecordingCallbacks): UseRecordingState {
   const [answer, setAnswer] = useState('')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   const { audioRecorder, recordingControls, uploader } = useAudioMessage(CURATED_CUESTIONS_FOLDER_NAME)
   const { isRecording, durationMillis } = useAudioRecorderState(audioRecorder)
@@ -48,14 +49,16 @@ export function useRecordingState(callbacks?: RecordingCallbacks): UseRecordingS
   const currentState = useMemo(() => {
     if (isRecording) return 'recording'
     if (isRecorded) return 'recorded'
+    if (isUploading) return 'uploading'
     return 'initial'
-  }, [isRecording, isRecorded])
+  }, [isRecording, isRecorded, isUploading])
 
   const startRecording = useCallback(async () => {
     await recordingControls.startRecording()
   }, [recordingControls])
 
   const stopRecording = useCallback(async () => {
+    setIsUploading(true)
     await recordingControls.stopRecording()
 
     const recordingUri = audioRecorder.uri
@@ -74,6 +77,7 @@ export function useRecordingState(callbacks?: RecordingCallbacks): UseRecordingS
     }
 
     await recordingControls.cleanupRecording()
+    setIsUploading(false)
   }, [recordingControls, audioRecorder.uri, uploader.uploadAndTranscribeAudioMessage])
 
   const pauseRecording = useCallback(() => {
