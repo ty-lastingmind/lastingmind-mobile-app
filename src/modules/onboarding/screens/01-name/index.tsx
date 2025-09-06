@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, View } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
@@ -6,6 +6,7 @@ import { Link } from 'expo-router'
 import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 import { Input } from '~/modules/ui/input'
 import { UseFormReturn } from 'react-hook-form'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 
 export function NameScreen() {
   const form = useOnboardingFormContext()
@@ -52,7 +53,7 @@ function SubmitButton({ form }: SubmitButtonProps) {
   const continueDisabled = form.watch('firstName').length < 2 || form.watch('lastName').length < 2
 
   return (
-    <Link href={'/(protected)/onboarding/02-profile-picture'} asChild>
+    <Link href="/(protected)/onboarding/02-profile-picture" asChild>
       <Button disabled={continueDisabled}>Continue</Button>
     </Link>
   )

@@ -6,29 +6,41 @@ import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
 export default function OnboardingLayout() {
   const colors = useTailwindColors()
-  const headerTitleRoutes = ['complete-profile/index', 'profile-picture/index']
-
   const form = useOnboardingForm()
 
   return (
     <FormProvider {...form}>
       <Stack
-        screenOptions={({ route }) => ({
+        screenOptions={{
           headerShown: true,
+          headerTitle: '',
           headerTransparent: true,
-          headerTitle: headerTitleRoutes.includes(route.name) ? 'Complete Profile' : '',
+          headerBackTitle: 'Back',
+          headerBackButtonMenuEnabled: false,
+          headerTintColor: colors['accent'],
           headerTitleStyle: {
             fontFamily: font.family.InriaSerif.Bold,
             fontSize: 22,
           },
-          headerBackTitle: 'Back',
-          headerBackButtonMenuEnabled: false,
-          headerTintColor: colors['accent'],
           contentStyle: {
             backgroundColor: colors['bg-primary'],
           },
-        })}
-      />
+        }}
+      >
+        <Stack.Screen
+          name="01-name/index"
+          options={{
+            headerTitle: 'Complete Profile',
+          }}
+        />
+        <Stack.Screen
+          name="02-profile-picture/index"
+          options={{
+            headerTitle: 'Complete Profile',
+          }}
+        />
+        <Stack.Screen name="*" options={{ headerTitle: '' }} />
+      </Stack>
     </FormProvider>
   )
 }

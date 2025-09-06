@@ -3,18 +3,13 @@ import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
 import { ProfilePicSelector } from '../../parts/ProfilePicSelector'
-import { useRouter } from 'expo-router'
+import { Link } from 'expo-router'
 import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 
 export function ProfilePictureScreen() {
-  const router = useRouter()
   const form = useOnboardingFormContext()
 
   const disableContinue = !form.watch('profilePicture')
-
-  const handleContinue = () => {
-    router.navigate('/(protected)/onboarding/03-age')
-  }
 
   const handleProfilePicChange = (uri: string) => {
     form.setValue('profilePicture', uri)
@@ -27,12 +22,12 @@ export function ProfilePictureScreen() {
         <ProfilePicSelector onProfilePicChange={handleProfilePicChange} picture={form.watch('profilePicture')} />
       </View>
       <View className="gap-4">
-        <Button onPress={handleContinue} disabled={disableContinue}>
-          Continue
-        </Button>
-        <Button variant="outlined" onPress={handleContinue}>
-          Skip
-        </Button>
+        <Link href="/(protected)/onboarding/03-age" asChild>
+          <Button disabled={disableContinue}>Continue</Button>
+        </Link>
+        <Link href="/(protected)/onboarding/03-age" asChild>
+          <Button variant="outlined">Skip</Button>
+        </Link>
       </View>
     </View>
   )
