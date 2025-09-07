@@ -30,6 +30,7 @@ export default defineConfig([
     rules: {
       ...pluginReact.configs.flat.recommended.rules,
       'react/react-in-jsx-scope': 0,
+      'react/jsx-curly-brace-presence': "error"
     },
   },
   { files: ['**/*.json'], plugins: { json }, language: 'json/json', extends: ['json/recommended'] },

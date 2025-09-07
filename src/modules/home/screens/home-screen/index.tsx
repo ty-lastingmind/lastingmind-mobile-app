@@ -1,12 +1,17 @@
+import { Redirect } from 'expo-router'
 import { useCallback, useMemo } from 'react'
 import { FlatList, View } from 'react-native'
 import { HomeHeader } from '~/modules/home/parts/header'
 import { QuickActionItem } from '~/modules/home/parts/quick-action-item'
-import { useGetHomeElementsHomePullHomeElementsGet } from '~/services/api/generated'
+import {
+  useCheckOnboardingCompleteLoginCompletedOnboardingGet,
+  useGetHomeElementsHomePullHomeElementsGet,
+} from '~/services/api/generated'
 import type { ProgressData } from '~/services/api/model'
 
 export function Home() {
   const { data } = useGetHomeElementsHomePullHomeElementsGet()
+  const onboarding = useCheckOnboardingCompleteLoginCompletedOnboardingGet()
 
   const progressData = useMemo(() => {
     const topContainerData = data?.top_container.top_container_data
@@ -28,6 +33,14 @@ export function Home() {
     */
     console.log('Continue where left off')
   }, [])
+
+  if (onboarding.isLoading) {
+    return null
+  }
+
+  if (onboarding.data?.response === false) {
+    return <Redirect href="/(protected)/onboarding/01-name" />
+  }
 
   return (
     <FlatList

@@ -20,6 +20,7 @@
     --caption-2: 10px;
     --overline-1: 10px;
     --overline-2: 8px;
+    --logo: 160px;
 
     --button-sm-text-size: 20px;
     --button-md-text-size: 20px;
@@ -60,6 +61,7 @@
     --label-accent: rgba(22, 0, 110, 1);
     --fill-accent: rgba(52, 46, 125, 1);
     --bg-vibrant-primary: rgba(229, 229, 229, 0.75);
+    --bg-vibrant-accent: rgba(99, 109, 172, 0.2);
     --bg-primary: rgba(255, 255, 255, 1);
     --bg-secondary: rgba(120, 120, 128, 0.16);
     --bg-tertiary: rgba(239, 239, 239, 1);
@@ -126,6 +128,7 @@
     --typography-accent: var(--label-accent);
     --typography-red: var(--red);
     --typography-white: var(--white);
+    --typography-black: var(--black);
 
     /* SEPARATOR */
     --separator-bg: rgba(255, 255, 255, 0.1);
