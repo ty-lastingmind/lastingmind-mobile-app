@@ -6,7 +6,7 @@ import { UploadingState } from '../uploading-state'
 import { useQuestionContext } from '~/modules/questions/contexts/question-context'
 
 export function RecordingStateMachine() {
-  const { handleViewTranscription, handleListenAnswer, handleSubmitAnswer, handleWriteAnswer, handleSaveForLater } =
+  const { handleViewTranscription, handleSubmitAnswer, openWriteAnswerOverlay, handleSaveForLater } =
     useQuestionContext()
 
   const {
@@ -27,7 +27,6 @@ export function RecordingStateMachine() {
       return (
         <RecordedState
           onViewTranscription={handleViewTranscription}
-          onListen={handleListenAnswer}
           onSubmit={handleSubmitAnswer}
           onRecordAgain={recordAgain}
           onCancel={cancelRecording}
@@ -37,6 +36,8 @@ export function RecordingStateMachine() {
     case 'uploading':
       return <UploadingState />
     default:
-      return <InitialState onRecord={startRecording} onWrite={handleWriteAnswer} onSaveForLater={handleSaveForLater} />
+      return (
+        <InitialState onRecord={startRecording} onWrite={openWriteAnswerOverlay} onSaveForLater={handleSaveForLater} />
+      )
   }
 }
