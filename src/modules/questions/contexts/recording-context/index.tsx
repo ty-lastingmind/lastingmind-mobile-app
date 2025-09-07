@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useState } from 'react'
-import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
-import { useAudioRecorderState } from 'expo-audio'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { useAudioMessage } from '../../hooks/use-audio-message'
 import { CURATED_CUESTIONS_FOLDER_NAME } from '~/constants/storage'
+import { useAudioRecorderState } from 'expo-audio'
 
 export interface RecordingState {
   currentState: 'initial' | 'recording' | 'recorded' | 'uploading'
@@ -17,33 +17,34 @@ export interface RecordingActions {
   stopRecording: () => Promise<void>
   pauseRecording: () => void
   recordAgain: () => void
-  submitAnswer: () => void
-  viewTranscription: () => void
-  listenAnswer: () => void
-  writeAnswer: () => void
-  saveForLater: () => void
   cancelRecording: () => void
   setAnswer: (answer: string) => void
 }
 
-export interface RecordingCallbacks {
-  onViewTranscription?: () => void
-  onListenAnswer?: () => void
-  onWriteAnswer?: () => void
-  onSaveForLater?: () => void
-  onSubmitAnswer?: () => void
-}
+interface RecordingContextValue extends RecordingState, RecordingActions {}
 
-interface UseRecordingState extends RecordingState, RecordingActions {}
+const RecordingContext = createContext<RecordingContextValue>({
+  currentState: 'initial',
+  isRecording: false,
+  isRecorded: false,
+  answer: '',
+  durationMillis: 0,
+  audioUrl: null,
+  startRecording: () => Promise.resolve(),
+  stopRecording: () => Promise.resolve(),
+  pauseRecording: () => {},
+  recordAgain: () => {},
+  cancelRecording: () => {},
+  setAnswer: () => {},
+})
 
-export function useRecordingState(callbacks?: RecordingCallbacks): UseRecordingState {
+export const RecordingProvider = ({ children }: { children: React.ReactNode }) => {
   const [answer, setAnswer] = useState('')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
 
   const { audioRecorder, recordingControls, uploader } = useAudioMessage(CURATED_CUESTIONS_FOLDER_NAME)
   const { isRecording, durationMillis } = useAudioRecorderState(audioRecorder)
-
   const isRecorded = Boolean(answer)
 
   const currentState = useMemo(() => {
@@ -94,45 +95,38 @@ export function useRecordingState(callbacks?: RecordingCallbacks): UseRecordingS
     // TODO: Clean up previous recording if needed
   }, [])
 
-  const viewTranscription = useCallback(() => {
-    callbacks?.onViewTranscription?.()
-  }, [callbacks])
+  const value: RecordingContextValue = useMemo(
+    () => ({
+      currentState,
+      isRecording,
+      isRecorded,
+      answer,
+      durationMillis,
+      audioUrl,
+      startRecording,
+      stopRecording,
+      pauseRecording,
+      recordAgain,
+      cancelRecording,
+      setAnswer,
+    }),
+    [
+      currentState,
+      isRecording,
+      isRecorded,
+      answer,
+      durationMillis,
+      audioUrl,
+      startRecording,
+      stopRecording,
+      pauseRecording,
+      recordAgain,
+      cancelRecording,
+      setAnswer,
+    ]
+  )
 
-  const listenAnswer = useCallback(() => {
-    callbacks?.onListenAnswer?.()
-  }, [callbacks])
-
-  const writeAnswer = useCallback(() => {
-    callbacks?.onWriteAnswer?.()
-  }, [callbacks])
-
-  const saveForLater = useCallback(() => {
-    callbacks?.onSaveForLater?.()
-  }, [callbacks])
-
-  const submitAnswer = useCallback(() => {
-    callbacks?.onSubmitAnswer?.()
-    // Reset to initial state after submission
-    setAnswer('')
-  }, [callbacks])
-
-  return {
-    currentState,
-    isRecording,
-    isRecorded,
-    answer,
-    durationMillis,
-    audioUrl,
-    cancelRecording,
-    startRecording,
-    stopRecording,
-    pauseRecording,
-    recordAgain,
-    submitAnswer,
-    viewTranscription,
-    listenAnswer,
-    writeAnswer,
-    saveForLater,
-    setAnswer,
-  }
+  return <RecordingContext.Provider value={value}>{children}</RecordingContext.Provider>
 }
+
+export const useRecordingContext = () => useContext(RecordingContext)
