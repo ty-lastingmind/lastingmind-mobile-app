@@ -2,12 +2,9 @@ import { TouchableOpacity, View } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 import { StarterQuestionsResponseNextQuestionsItem } from '~/services/api/model/starterQuestionsResponseNextQuestionsItem'
-import { useCallback } from 'react'
 import { SubmittingAnswerOverlay } from '../submitting-answer-overlay'
 import { RecordingControls } from '../../parts/recording-controls'
 import { EditAnswerOverlay } from '../../parts/edit-answer-overlay'
-import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
-import { useQuestionContext } from '~/modules/questions/contexts/question-context'
 
 interface CuratedQuestionItemProps {
   question: StarterQuestionsResponseNextQuestionsItem
@@ -17,29 +14,10 @@ export function CuratedQuestionItem({ question: questionItem }: CuratedQuestionI
   // Extract the actual question data from the nested structure
   const question = Object.values(questionItem)[0]
 
-  const recordingState = useRecordingContext()
-
-  const {
-    isSubmittingAnswer,
-    isEditAnswerOverlayOpen,
-    handleSubmitAnswer,
-    closeSubmittingOverlay,
-    openEditOverlay,
-    closeEditOverlay,
-  } = useQuestionContext()
-
   const handleSenderPress = () => {
     // TODO: Show sender options
     console.log('Sender options')
   }
-
-  const handleEditAnswer = useCallback(
-    (answer: string) => {
-      recordingState.setAnswer(answer)
-      closeEditOverlay()
-    },
-    [recordingState, closeEditOverlay]
-  )
 
   return (
     <View className="flex-1 w-screen">
@@ -58,29 +36,16 @@ export function CuratedQuestionItem({ question: questionItem }: CuratedQuestionI
       <View className="flex-1 items-center px-6">
         <View className="bg-bg-secondary rounded-2xl p-4 gap-2.5 w-full max-w-sm min-h-26">
           <Typography level="h4" weight="normal" color="primary" className="text-wrap mx-2.5">
-            {question?.question_text || 'Loading question...'}
+            {question?.question_text}
           </Typography>
         </View>
       </View>
 
       <RecordingControls />
 
-      <SubmittingAnswerOverlay
-        isOpen={isSubmittingAnswer}
-        onClose={closeSubmittingOverlay}
-        onEdit={openEditOverlay}
-        onSubmit={handleSubmitAnswer}
-        question={question?.question_text}
-        answer={recordingState.answer}
-      />
+      <SubmittingAnswerOverlay question={question?.question_text} />
 
-      <EditAnswerOverlay
-        isOpen={isEditAnswerOverlayOpen}
-        onClose={closeEditOverlay}
-        onSave={handleEditAnswer}
-        question={question?.question_text}
-        answer={recordingState.answer}
-      />
+      <EditAnswerOverlay question={question?.question_text} />
     </View>
   )
 }

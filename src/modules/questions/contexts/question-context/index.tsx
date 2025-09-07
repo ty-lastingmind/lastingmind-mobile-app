@@ -9,7 +9,8 @@ import { StarterQuestionsResponseNextQuestionsItem } from '~/services/api/model'
 
 interface QuestionContextValue {
   isSubmittingAnswer: boolean
-  isEditAnswerOverlayOpen: boolean
+  isEditingAnswer: boolean
+  isWritingAnswer: boolean
   nextQuestions: StarterQuestionsResponseNextQuestionsItem[]
   currentQuestionIndex: number
   questionsProgress: number
@@ -18,19 +19,20 @@ interface QuestionContextValue {
 
   handleQuestionIndexChange: (index: number) => void
   handleViewTranscription: () => void
-  handleListenAnswer: () => void
-  handleWriteAnswer: () => void
   handleSaveForLater: () => void
   handleSubmitAnswer: () => void
 
   closeSubmittingOverlay: () => void
   openEditOverlay: () => void
+  openWriteAnswerOverlay: () => void
   closeEditOverlay: () => void
+  closeWriteAnswerOverlay: () => void
 }
 
 const QuestionContext = createContext<QuestionContextValue>({
   isSubmittingAnswer: false,
-  isEditAnswerOverlayOpen: false,
+  isEditingAnswer: false,
+  isWritingAnswer: false,
   nextQuestions: [],
   currentQuestionIndex: 0,
   questionsProgress: 0,
@@ -38,18 +40,19 @@ const QuestionContext = createContext<QuestionContextValue>({
   isGeneratingQuestions: false,
   handleQuestionIndexChange: () => {},
   handleViewTranscription: () => {},
-  handleListenAnswer: () => {},
-  handleWriteAnswer: () => {},
   handleSaveForLater: () => {},
   handleSubmitAnswer: () => {},
   closeSubmittingOverlay: () => {},
   openEditOverlay: () => {},
+  openWriteAnswerOverlay: () => {},
   closeEditOverlay: () => {},
+  closeWriteAnswerOverlay: () => {},
 })
 
 export const QuestionProvider = ({ children }: { children: React.ReactNode }) => {
   const isSubmittingAnswer = useBoolean(false)
-  const isEditAnswerOverlayOpen = useBoolean(false)
+  const isEditingAnswer = useBoolean(false)
+  const isWritingAnswer = useBoolean(false)
 
   const [nextQuestions, setNextQuestions] = useState<StarterQuestionsResponseNextQuestionsItem[]>([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -98,15 +101,6 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
     isSubmittingAnswer.setTrue()
   }, [isSubmittingAnswer])
 
-  const handleListenAnswer = useCallback(() => {
-    // TODO: Implement audio playback functionality
-    console.log('Listen to recorded answer')
-  }, [])
-
-  const handleWriteAnswer = useCallback(() => {
-    isEditAnswerOverlayOpen.setTrue()
-  }, [isEditAnswerOverlayOpen])
-
   const handleSaveForLater = useCallback(() => {
     if (!currentQuestion) {
       return
@@ -131,12 +125,20 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
 
   const openEditOverlay = useCallback(() => {
     isSubmittingAnswer.setFalse()
-    isEditAnswerOverlayOpen.setTrue()
-  }, [isSubmittingAnswer, isEditAnswerOverlayOpen])
+    isEditingAnswer.setTrue()
+  }, [isSubmittingAnswer, isEditingAnswer])
+
+  const openWriteAnswerOverlay = useCallback(() => {
+    isWritingAnswer.setTrue()
+  }, [isWritingAnswer])
 
   const closeEditOverlay = useCallback(() => {
-    isEditAnswerOverlayOpen.setFalse()
-  }, [isEditAnswerOverlayOpen])
+    isEditingAnswer.setFalse()
+  }, [isEditingAnswer])
+
+  const closeWriteAnswerOverlay = useCallback(() => {
+    isWritingAnswer.setFalse()
+  }, [isWritingAnswer])
 
   const questionsProgress = useMemo(() => {
     return nextQuestions.length > 0 ? ((currentQuestionIndex + 1) / nextQuestions.length) * 100 : 0
@@ -145,7 +147,8 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
   const value: QuestionContextValue = useMemo(
     () => ({
       isSubmittingAnswer: isSubmittingAnswer.value,
-      isEditAnswerOverlayOpen: isEditAnswerOverlayOpen.value,
+      isEditingAnswer: isEditingAnswer.value,
+      isWritingAnswer: isWritingAnswer.value,
       nextQuestions,
       currentQuestionIndex,
       questionsProgress,
@@ -153,30 +156,31 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
       isGeneratingQuestions,
       handleQuestionIndexChange: setCurrentQuestionIndex,
       handleViewTranscription,
-      handleListenAnswer,
-      handleWriteAnswer,
       handleSaveForLater,
       handleSubmitAnswer,
       closeSubmittingOverlay,
       openEditOverlay,
+      openWriteAnswerOverlay,
       closeEditOverlay,
+      closeWriteAnswerOverlay,
     }),
     [
-      isSubmittingAnswer,
-      isEditAnswerOverlayOpen,
+      isSubmittingAnswer.value,
+      isEditingAnswer.value,
+      isWritingAnswer.value,
       nextQuestions,
       currentQuestionIndex,
       questionsProgress,
       isSavingQuestion,
       isGeneratingQuestions,
       handleViewTranscription,
-      handleListenAnswer,
-      handleWriteAnswer,
       handleSaveForLater,
       handleSubmitAnswer,
       closeSubmittingOverlay,
       openEditOverlay,
+      openWriteAnswerOverlay,
       closeEditOverlay,
+      closeWriteAnswerOverlay,
     ]
   )
 

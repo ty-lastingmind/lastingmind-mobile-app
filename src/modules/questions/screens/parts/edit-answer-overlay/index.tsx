@@ -1,34 +1,60 @@
 import { View, TouchableOpacity } from 'react-native'
 import { Typography } from '~/modules/ui/typography'
 import { DialogContent, DialogHeader, Dialog, DialogTitle, DialogFooter } from '~/modules/ui/dialog'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '~/modules/ui/button'
 import { Textarea } from '~/modules/ui/textarea'
 import { SvgIcon } from '~/modules/ui/svg-icon'
+import { useQuestionContext } from '~/modules/questions/contexts/question-context'
+import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
+import { AudioPlayer } from '../audio-player'
 
 interface EditAnswerOverlayProps {
-  isOpen: boolean
-  onClose: () => void
-  onSave: (answer: string) => void
   question: string
-  answer: string
 }
 
-export function EditAnswerOverlay({ isOpen, onClose, onSave, question, answer }: EditAnswerOverlayProps) {
-  const [editAnswer, setEditAnswer] = useState(answer)
+export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
+  const { answer, handleAnswerChange, audioUrl } = useRecordingContext()
+  const { isEditingAnswer, isWritingAnswer, closeEditOverlay, closeWriteAnswerOverlay } = useQuestionContext()
+  const [editingAnswer, setEditingAnswer] = useState('')
+  const hasInitialized = useRef(false)
+
+  useEffect(() => {
+    if ((isEditingAnswer || isWritingAnswer) && !hasInitialized.current) {
+      hasInitialized.current = true
+      setEditingAnswer(answer)
+    } else if (!isEditingAnswer && !isWritingAnswer) {
+      hasInitialized.current = false
+    }
+  }, [isEditingAnswer, isWritingAnswer, answer])
+
+  const handleClose = useCallback(() => {
+    if (isWritingAnswer) {
+      closeWriteAnswerOverlay()
+    } else {
+      closeEditOverlay()
+    }
+  }, [closeEditOverlay, closeWriteAnswerOverlay, isWritingAnswer])
+
   const handleSave = useCallback(() => {
-    onSave(editAnswer)
-    onClose()
-  }, [onSave, onClose, editAnswer])
+    handleAnswerChange(editingAnswer)
+    handleClose()
+  }, [editingAnswer, handleClose, handleAnswerChange])
+
+  const handleCancel = useCallback(() => {
+    handleClose()
+  }, [handleClose])
+
+  const dialogTitle = isWritingAnswer ? 'Write Answer' : 'Edit Transcription'
 
   return (
-    <Dialog isOpen={isOpen} className="gap-0 mt-safe mb-safe">
+    <Dialog isOpen={isEditingAnswer || isWritingAnswer} className="gap-0 mt-safe mb-safe">
       <DialogHeader>
         <View className="flex flex-row gap-2 justify-between items-center">
-          <Button onPress={onClose} variant="outlined" size="sm">
+          <Button onPress={handleCancel} variant="outlined" size="sm">
             Cancel
           </Button>
-          <DialogTitle>Edit Transcription</DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
           <Button onPress={handleSave} size="sm">
             Save
           </Button>
@@ -50,8 +76,8 @@ export function EditAnswerOverlay({ isOpen, onClose, onSave, question, answer }:
             Answer
           </Typography>
           <Textarea
-            value={editAnswer}
-            onChangeText={setEditAnswer}
+            value={editingAnswer}
+            onChangeText={setEditingAnswer}
             numberOfLines={20}
             scrollEnabled
             className="h-80 border-b-0"
@@ -68,31 +94,25 @@ export function EditAnswerOverlay({ isOpen, onClose, onSave, question, answer }:
           />
         </View>
       </DialogContent>
-      <DialogFooter>
-        <View className="gap-4 mx-4">
-          <View className="gap-2">
-            <Typography level="label-1" color="secondary" weight="medium">
-              Answer Audio
-            </Typography>
-            <View className="flex-row items-center gap-3 bg-bg-secondary rounded-md p-4">
-              <TouchableOpacity>
-                <SvgIcon name="play" size="md" color="accent" />
-              </TouchableOpacity>
-              <Typography level="body-lg" color="primary" className="flex-1">
-                Your Answer
-              </Typography>
-              <Typography level="body-lg" color="accent" brand>
-                1:58
-              </Typography>
+      {isEditingAnswer && (
+        <DialogFooter>
+          <View className="gap-4 mx-4">
+            <View className="gap-2">
+              <View className="gap-3">
+                <Typography level="label-1" color="secondary" weight="medium">
+                  Answer Audio
+                </Typography>
+                {audioUrl && <AudioPlayer audioSrc={audioUrl} className="bg-bg-secondary" />}
+              </View>
+            </View>
+            <View className="flex-row justify-end">
+              <Button onPress={handleSave} size="md" disabled btnContainerClassName="py-3">
+                Submit
+              </Button>
             </View>
           </View>
-          <View className="flex-row justify-end">
-            <Button onPress={handleSave} size="md" disabled={editAnswer.length === 0} btnContainerClassName="py-3">
-              Submit
-            </Button>
-          </View>
-        </View>
-      </DialogFooter>
+        </DialogFooter>
+      )}
     </Dialog>
   )
 }

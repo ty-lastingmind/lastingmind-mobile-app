@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 import { useAudioMessage } from '../../hooks/use-audio-message'
 import { CURATED_CUESTIONS_FOLDER_NAME } from '~/constants/storage'
 import { useAudioRecorderState } from 'expo-audio'
+import { useBoolean } from 'usehooks-ts'
 
 export interface RecordingState {
   currentState: 'initial' | 'recording' | 'recorded' | 'uploading'
@@ -18,7 +19,7 @@ export interface RecordingActions {
   pauseRecording: () => void
   recordAgain: () => void
   cancelRecording: () => void
-  setAnswer: (answer: string) => void
+  handleAnswerChange: (answer: string) => void
 }
 
 interface RecordingContextValue extends RecordingState, RecordingActions {}
@@ -35,22 +36,24 @@ const RecordingContext = createContext<RecordingContextValue>({
   pauseRecording: () => {},
   recordAgain: () => {},
   cancelRecording: () => {},
-  setAnswer: () => {},
+  handleAnswerChange: () => {},
 })
 
 export const RecordingProvider = ({ children }: { children: React.ReactNode }) => {
   const [answer, setAnswer] = useState('')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
-  const [isUploading, setIsUploading] = useState(false)
+  const isUploading = useBoolean()
 
   const { audioRecorder, recordingControls, uploader } = useAudioMessage(CURATED_CUESTIONS_FOLDER_NAME)
   const { isRecording, durationMillis } = useAudioRecorderState(audioRecorder)
-  const isRecorded = Boolean(answer)
+  const isRecorded = useMemo(() => {
+    return Boolean(audioUrl || answer)
+  }, [audioUrl, answer])
 
   const currentState = useMemo(() => {
     if (isRecording) return 'recording'
     if (isRecorded) return 'recorded'
-    if (isUploading) return 'uploading'
+    if (isUploading.value) return 'uploading'
     return 'initial'
   }, [isRecording, isRecorded, isUploading])
 
@@ -59,7 +62,7 @@ export const RecordingProvider = ({ children }: { children: React.ReactNode }) =
   }, [recordingControls])
 
   const stopRecording = useCallback(async () => {
-    setIsUploading(true)
+    isUploading.setTrue()
     await recordingControls.stopRecording()
 
     const recordingUri = audioRecorder.uri
@@ -78,22 +81,22 @@ export const RecordingProvider = ({ children }: { children: React.ReactNode }) =
     }
 
     await recordingControls.cleanupRecording()
-    setIsUploading(false)
-  }, [recordingControls, audioRecorder.uri, uploader.uploadAndTranscribeAudioMessage])
+    isUploading.setFalse()
+  }, [isUploading, recordingControls, audioRecorder.uri, uploader.uploadAndTranscribeAudioMessage])
 
   const pauseRecording = useCallback(() => {
     recordingControls.pauseRecording()
   }, [recordingControls])
 
-  const cancelRecording = useCallback(async () => {
-    await recordingControls.cancelRecording()
+  const cancelRecording = useCallback(() => {
+    setAnswer('')
+    setAudioUrl(null)
+  }, [setAnswer, setAudioUrl])
+
+  const recordAgain = useCallback(async () => {
+    await recordingControls.cleanupRecording()
     setAnswer('')
   }, [recordingControls])
-
-  const recordAgain = useCallback(() => {
-    setAnswer('')
-    // TODO: Clean up previous recording if needed
-  }, [])
 
   const value: RecordingContextValue = useMemo(
     () => ({
@@ -108,7 +111,7 @@ export const RecordingProvider = ({ children }: { children: React.ReactNode }) =
       pauseRecording,
       recordAgain,
       cancelRecording,
-      setAnswer,
+      handleAnswerChange: setAnswer,
     }),
     [
       currentState,
