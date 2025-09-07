@@ -1,6 +1,6 @@
 import { View, TouchableOpacity } from 'react-native'
 import { Typography } from '~/modules/ui/typography'
-import { DialogContent, DialogHeader, Dialog, DialogTitle } from '~/modules/ui/dialog'
+import { DialogContent, DialogHeader, Dialog, DialogTitle, DialogFooter } from '~/modules/ui/dialog'
 import { useCallback, useState } from 'react'
 import { Button } from '~/modules/ui/button'
 import { Textarea } from '~/modules/ui/textarea'
@@ -54,44 +54,45 @@ export function EditAnswerOverlay({ isOpen, onClose, onSave, question, answer }:
             onChangeText={setEditAnswer}
             numberOfLines={20}
             scrollEnabled
-            className="h-64 border-b-0"
+            className="h-80 border-b-0"
             placeholderTextColor="text-label-secondary"
             placeholder="Enter Answer..."
             bottomAdornment={
               <>
                 <View className="border-t border-miscellaneous-topic-stroke" />
-                <TouchableOpacity className="mx-2 mt-2 h-5 w-5 items-center justify-center">
+                <TouchableOpacity className="mx-3.5 mt-3.5 h-5 w-5 items-center justify-center">
                   <SvgIcon name="mic" size="md" color="secondary" />
                 </TouchableOpacity>
               </>
             }
           />
         </View>
-
-        <View className="gap-2">
-          <Typography level="label-1" color="secondary" weight="medium">
-            Answer Audio
-          </Typography>
-          <View className="flex-row items-center gap-3 bg-bg-secondary rounded-md p-4">
-            <TouchableOpacity>
-              <SvgIcon name="play" size="md" color="accent" />
-            </TouchableOpacity>
-            <Typography level="body-2" color="primary" className="flex-1">
-              Your Answer 1
+      </DialogContent>
+      <DialogFooter>
+        <View className="gap-4 mx-4">
+          <View className="gap-2">
+            <Typography level="label-1" color="secondary" weight="medium">
+              Answer Audio
             </Typography>
-            <Typography level="body-2" color="accent">
-              1:58
-            </Typography>
+            <View className="flex-row items-center gap-3 bg-bg-secondary rounded-md p-4">
+              <TouchableOpacity>
+                <SvgIcon name="play" size="md" color="accent" />
+              </TouchableOpacity>
+              <Typography level="body-lg" color="primary" className="flex-1">
+                Your Answer
+              </Typography>
+              <Typography level="body-lg" color="accent" brand>
+                1:58
+              </Typography>
+            </View>
+          </View>
+          <View className="flex-row justify-end">
+            <Button onPress={handleSave} size="md" disabled={editAnswer.length === 0} btnContainerClassName="py-3">
+              Submit
+            </Button>
           </View>
         </View>
-
-        <View className="flex-row justify-end">
-          {/* todo: make disabled style */}
-          <Button onPress={handleSave} size="md" disabled={editAnswer.length === 0}>
-            Submit
-          </Button>
-        </View>
-      </DialogContent>
+      </DialogFooter>
     </Dialog>
   )
 }

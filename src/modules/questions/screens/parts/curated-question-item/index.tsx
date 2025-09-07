@@ -3,64 +3,42 @@ import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 import { StarterQuestionsResponseNextQuestionsItem } from '~/services/api/model/starterQuestionsResponseNextQuestionsItem'
 import { useCallback } from 'react'
-import { SaveQuestionInput } from '~/services/api/model'
 import { SubmittingAnswerOverlay } from '../submitting-answer-overlay'
-import { useBoolean } from 'usehooks-ts'
-import { useRecordingState } from '~/modules/questions/hooks/use-recording-state'
 import { RecordingControls } from '../../parts/recording-controls'
 import { EditAnswerOverlay } from '../../parts/edit-answer-overlay'
+import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
+import { useQuestionContext } from '~/modules/questions/contexts/question-context'
 
 interface CuratedQuestionItemProps {
   question: StarterQuestionsResponseNextQuestionsItem
-  onSaveForLaterPress: (data: SaveQuestionInput) => void
 }
 
-export function CuratedQuestionItem({ question: questionItem, onSaveForLaterPress }: CuratedQuestionItemProps) {
+export function CuratedQuestionItem({ question: questionItem }: CuratedQuestionItemProps) {
   // Extract the actual question data from the nested structure
   const question = Object.values(questionItem)[0]
-  const responseId = Object.keys(questionItem)[0]
 
-  const isSubmittingAnswer = useBoolean(false)
-  const isEditAnswerOverlayOpen = useBoolean(false)
+  const recordingState = useRecordingContext()
 
-  const recordingCallbacks = {
-    onViewTranscription: () => isSubmittingAnswer.setTrue(),
-    onListenAnswer: () => {
-      // TODO: Implement audio playback functionality
-      console.log('Listen to recorded answer')
-    },
-    onWriteAnswer: isEditAnswerOverlayOpen.setTrue,
-    onSaveForLater: () => {
-      onSaveForLaterPress({
-        responseId,
-        topic: question?.topic,
-        question_text: question?.question_text,
-      })
-    },
-    onSubmitAnswer: () => {
-      // TODO: Implement submit answer functionality
-      console.log('Submit answer')
-    },
-  }
-
-  const recordingState = useRecordingState(recordingCallbacks)
+  const {
+    isSubmittingAnswer,
+    isEditAnswerOverlayOpen,
+    handleSubmitAnswer,
+    closeSubmittingOverlay,
+    openEditOverlay,
+    closeEditOverlay,
+  } = useQuestionContext()
 
   const handleSenderPress = () => {
     // TODO: Show sender options
     console.log('Sender options')
   }
 
-  const handleOpenEditAnswerOverlay = useCallback(() => {
-    isSubmittingAnswer.setFalse()
-    isEditAnswerOverlayOpen.setTrue()
-  }, [isEditAnswerOverlayOpen, isSubmittingAnswer])
-
   const handleEditAnswer = useCallback(
     (answer: string) => {
       recordingState.setAnswer(answer)
-      isEditAnswerOverlayOpen.setFalse()
+      closeEditOverlay()
     },
-    [isEditAnswerOverlayOpen, recordingState]
+    [recordingState, closeEditOverlay]
   )
 
   return (
@@ -85,20 +63,20 @@ export function CuratedQuestionItem({ question: questionItem, onSaveForLaterPres
         </View>
       </View>
 
-      <RecordingControls callbacks={recordingCallbacks} />
+      <RecordingControls />
 
       <SubmittingAnswerOverlay
-        isOpen={isSubmittingAnswer.value}
-        onClose={isSubmittingAnswer.setFalse}
-        onEdit={handleOpenEditAnswerOverlay}
-        onSubmit={isSubmittingAnswer.setFalse}
+        isOpen={isSubmittingAnswer}
+        onClose={closeSubmittingOverlay}
+        onEdit={openEditOverlay}
+        onSubmit={handleSubmitAnswer}
         question={question?.question_text}
         answer={recordingState.answer}
       />
 
       <EditAnswerOverlay
-        isOpen={isEditAnswerOverlayOpen.value}
-        onClose={isEditAnswerOverlayOpen.setFalse}
+        isOpen={isEditAnswerOverlayOpen}
+        onClose={closeEditOverlay}
         onSave={handleEditAnswer}
         question={question?.question_text}
         answer={recordingState.answer}
