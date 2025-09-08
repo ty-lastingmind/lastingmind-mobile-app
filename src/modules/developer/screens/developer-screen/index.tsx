@@ -14,6 +14,7 @@ import { ProgressShowcase } from '~/modules/developer/screens/developer-screen/p
 import { SvgIconShowcase } from '~/modules/developer/screens/developer-screen/parts/svg-icon-showcase'
 import { TypographyShowcase } from '~/modules/developer/screens/developer-screen/parts/typography-showcase'
 import { Badge } from '~/modules/ui/badge'
+import SurveyShowcase from './parts/survey-showcase'
 
 const showCaseComponents = {
   SvgIconShowcase: SvgIconShowcase,
@@ -28,6 +29,7 @@ const showCaseComponents = {
   IconShowcase: IconShowcase,
   InputShowcase: InputShowcase,
   TypographyShowcase: TypographyShowcase,
+  SurveyShowcase: SurveyShowcase,
 } as const
 
 type ShowCaseComponent = keyof typeof showCaseComponents
