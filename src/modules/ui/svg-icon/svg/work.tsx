@@ -2,7 +2,7 @@ import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 import { SvgProps } from '../index.types'
 
-export const HomeWork = ({ size, color }: SvgProps) => (
+export const Work = ({ size, color }: SvgProps) => (
   <Svg width={size} height={size} viewBox="0 0 60 60" fill="none">
     <Path
       d="M35.4 25.9992L22.9 17.0742C21.15 15.8242 18.825 15.8242 17.1 17.0742L4.6 25.9992C3.275 26.9492 2.5 28.4492 2.5 30.0742V49.9992C2.5 51.3742 3.625 52.4992 5 52.4992H15V37.4992H25V52.4992H35C36.375 52.4992 37.5 51.3742 37.5 49.9992V30.0742C37.5 28.4492 36.725 26.9492 35.4 25.9992Z"
