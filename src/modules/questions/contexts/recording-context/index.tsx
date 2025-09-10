@@ -30,6 +30,7 @@ export interface RecordingState {
   answer: string
   durationMillis: number
   audioUrl: string | null
+  metering: number | undefined
 }
 
 export interface RecordingActions {
@@ -51,6 +52,7 @@ const RecordingContext = createContext<RecordingContextValue>({
   answer: '',
   durationMillis: 0,
   audioUrl: null,
+  metering: undefined,
   handleStartRecording: () => Promise.resolve(),
   handleStopRecording: () => Promise.resolve(),
   handlePauseRecording: () => {},
@@ -74,6 +76,7 @@ export const RecordingProvider = ({ children }: { children: React.ReactNode }) =
     recordAgain,
     isRecording,
     durationMillis,
+    metering,
   } = useRecordingAnswer()
 
   const { isAnswerSaved } = useQuestionContext()
@@ -166,8 +169,9 @@ export const RecordingProvider = ({ children }: { children: React.ReactNode }) =
       answer,
       durationMillis,
       audioUrl,
+      metering,
     }),
-    [status, isRecording, isRecorded, answer, durationMillis, audioUrl]
+    [status, isRecording, isRecorded, answer, durationMillis, audioUrl, metering]
   )
 
   const recordingActions = useMemo(

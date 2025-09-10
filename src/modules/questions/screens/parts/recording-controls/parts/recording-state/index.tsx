@@ -7,12 +7,13 @@ interface RecordingStateProps {
   onStop: () => void
   onPause: () => void
   duration: number
+  metering: number | undefined
 }
 
-export function RecordingState({ onStop, onPause, duration }: RecordingStateProps) {
+export function RecordingState({ onStop, onPause, duration, metering }: RecordingStateProps) {
   return (
     <>
-      <RecordingWaveVisualization duration={duration} />
+      <RecordingWaveVisualization duration={duration} metering={metering} />
       <View className="gap-6 pb-5">
         <Button onPress={onStop} icon={<SvgIcon name="stop" size="sm" color="white" />} variant="primary" size="lg">
           Stop
