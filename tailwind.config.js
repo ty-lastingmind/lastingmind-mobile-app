@@ -56,6 +56,7 @@ module.exports = {
     colors: {
       accent: 'var(--accent)',
       red: 'var(--red)',
+      'red-alpha-20': 'var(--red-alpha-20)',
       'label-primary': 'var(--label-primary)',
       'label-secondary': 'var(--label-secondary)',
       'label-accent': 'var(--label-accent)',

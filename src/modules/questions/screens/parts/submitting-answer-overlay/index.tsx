@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
@@ -10,11 +10,17 @@ import { AudioPlayer } from '~/modules/questions/screens/parts/audio-player'
 
 interface SubmittingAnswerOverlayProps {
   question: string
+  onSubmitAnswer: () => void
 }
 
-export function SubmittingAnswerOverlay({ question }: SubmittingAnswerOverlayProps) {
+export function SubmittingAnswerOverlay({ question, onSubmitAnswer }: SubmittingAnswerOverlayProps) {
   const { answer, audioUrl } = useRecordingContext()
-  const { isSubmittingAnswer, closeSubmittingOverlay, openEditOverlay, handleSubmitAnswer } = useQuestionContext()
+  const { isSubmittingAnswer, handleCloseSubmittingOverlay, handleOpenEditOverlay } = useQuestionContext()
+
+  const handleSubmitAnswer = useCallback(() => {
+    handleCloseSubmittingOverlay()
+    onSubmitAnswer()
+  }, [handleCloseSubmittingOverlay, onSubmitAnswer])
 
   return (
     <Dialog isOpen={isSubmittingAnswer} className="flex-1 gap-0 mt-safe mb-safe">
@@ -25,16 +31,16 @@ export function SubmittingAnswerOverlay({ question }: SubmittingAnswerOverlayPro
               Transcription
             </Typography>
             <View className="flex flex-row gap-3">
-              <TouchableOpacity onPress={openEditOverlay}>
+              <TouchableOpacity onPress={handleOpenEditOverlay}>
                 <Icon name="create-outline" size="lg" color="secondary" />
               </TouchableOpacity>
-              <DialogClose onPress={closeSubmittingOverlay} />
+              <DialogClose onPress={handleCloseSubmittingOverlay} />
             </View>
           </View>
         </View>
       </DialogHeader>
 
-      <DialogContent className="p-4 pt-6 gap-6">
+      <DialogContent className="flex-1 p-4 pt-6 gap-4">
         <View className="gap-2">
           <Typography level="label-1" color="secondary" weight="medium">
             Question
@@ -54,7 +60,7 @@ export function SubmittingAnswerOverlay({ question }: SubmittingAnswerOverlayPro
         </View>
       </DialogContent>
 
-      <DialogFooter className="flex-1 gap-4 justify-end p-4">
+      <DialogFooter className="gap-4 justify-end px-4">
         <View className="gap-3">
           <Typography level="label-1" color="secondary" weight="medium">
             Answer Audio
