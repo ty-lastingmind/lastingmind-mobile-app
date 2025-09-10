@@ -1,23 +1,27 @@
 import { View, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
 import { Progress } from '~/modules/ui/progress'
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { CuratedQuestionItem } from '../parts/curated-question-item'
 import { QuestionProvider, useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { RecordingProvider } from '../../contexts/recording-context'
+import { SavedAnswer } from '../../parts/saving-result/save-result/parts/saved-answer'
+import { useNavigation } from 'expo-router'
+import { TitleAndCaption } from '../../parts/saving-result/title-and-caption'
+import { SkippedAllQuestionsOverlay } from '../parts/skipped-all-questions-overlay'
+import { TopicPickerOverlay } from '../parts/topic-picker-overlay'
 
 export function CuratedQuestionsScreen() {
   return (
     <QuestionProvider>
-      <RecordingProvider>
-        <CuratedQuestionsContent />
-      </RecordingProvider>
+      <CuratedQuestionsContent />
     </QuestionProvider>
   )
 }
 
 const CuratedQuestionsContent = () => {
   const flatListRef = useRef<FlatList>(null)
+  const navigation = useNavigation()
 
   const {
     nextQuestions,
@@ -25,24 +29,42 @@ const CuratedQuestionsContent = () => {
     questionsProgress,
     isSavingQuestion,
     isGeneratingQuestions,
+    isSavingAnswer,
+    showSuccessScreen,
     handleQuestionIndexChange,
+    hasSkippedAllQuestions,
+    handleSkippedAllQuestions,
+    handleNewTopicPress,
+    handleGenerateNewQuestionsPress,
+    isTopicPickerOpen,
   } = useQuestionContext()
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: !showSuccessScreen && !isSavingAnswer,
+    })
+  }, [showSuccessScreen, isSavingAnswer, navigation])
 
   const handlePreviousPress = useCallback(() => {
     if (currentQuestionIndex > 0) {
       const newIndex = currentQuestionIndex - 1
       handleQuestionIndexChange(newIndex)
       flatListRef.current?.scrollToIndex({ index: newIndex, animated: true })
+      handleSkippedAllQuestions(false)
     }
-  }, [currentQuestionIndex, handleQuestionIndexChange])
+  }, [currentQuestionIndex, handleQuestionIndexChange, handleSkippedAllQuestions])
 
   const handleNextPress = useCallback(() => {
     if (currentQuestionIndex < nextQuestions.length - 1) {
       const newIndex = currentQuestionIndex + 1
       handleQuestionIndexChange(newIndex)
       flatListRef.current?.scrollToIndex({ index: newIndex, animated: true })
+
+      return
     }
-  }, [currentQuestionIndex, nextQuestions.length, handleQuestionIndexChange])
+
+    handleSkippedAllQuestions(true)
+  }, [currentQuestionIndex, nextQuestions.length, handleSkippedAllQuestions, handleQuestionIndexChange])
 
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: Array<{ index: number | null }> }) => {
@@ -65,12 +87,30 @@ const CuratedQuestionsContent = () => {
     )
   }
 
+  if (isSavingAnswer) {
+    return <TitleAndCaption title="LastingMind" caption="Submitting Answer..." />
+  }
+
+  if (showSuccessScreen) {
+    return (
+      <SavedAnswer
+        title="Entry Saved!"
+        caption="Keep adding more responses to improve your LastingMind!"
+        shouldRedirect={false}
+      />
+    )
+  }
+
   return (
     <View className="flex-1 bg-bg-primary">
       <FlatList
         ref={flatListRef}
         data={nextQuestions}
-        renderItem={({ item }) => <CuratedQuestionItem question={item} />}
+        renderItem={({ item }) => (
+          <RecordingProvider>
+            <CuratedQuestionItem question={item} />
+          </RecordingProvider>
+        )}
         keyExtractor={(_item, index) => index.toString()}
         horizontal
         pagingEnabled
@@ -87,11 +127,7 @@ const CuratedQuestionsContent = () => {
 
           <Progress value={questionsProgress} size="sm" color="accent" />
 
-          <TouchableOpacity
-            onPress={handleNextPress}
-            className="p-2"
-            disabled={currentQuestionIndex >= nextQuestions.length - 1}
-          >
+          <TouchableOpacity onPress={handleNextPress} className="p-2">
             <Icon
               name="chevron-forward"
               size="xl"
@@ -100,6 +136,12 @@ const CuratedQuestionsContent = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <SkippedAllQuestionsOverlay
+        isOpen={hasSkippedAllQuestions}
+        onNewTopic={handleNewTopicPress}
+        onGenerateNewQuestions={handleGenerateNewQuestionsPress}
+      />
+      <TopicPickerOverlay isOpen={isTopicPickerOpen} />
     </View>
   )
 }

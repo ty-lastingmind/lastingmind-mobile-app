@@ -1,22 +1,33 @@
-import { View, TouchableOpacity } from 'react-native'
+import { View } from 'react-native'
 import { Typography } from '~/modules/ui/typography'
 import { DialogContent, DialogHeader, Dialog, DialogTitle, DialogFooter } from '~/modules/ui/dialog'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Button } from '~/modules/ui/button'
 import { Textarea } from '~/modules/ui/textarea'
-import { SvgIcon } from '~/modules/ui/svg-icon'
 import { useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
 import { AudioPlayer } from '../audio-player'
+import { AudioRecorder } from '~/modules/components/audio-recorder'
+import { useRecordingAnswer } from '~/modules/questions/hooks/use-recording-answer'
 
 interface EditAnswerOverlayProps {
   question: string
 }
 
 export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
-  const { answer, handleAnswerChange, audioUrl } = useRecordingContext()
-  const { isEditingAnswer, isWritingAnswer, closeEditOverlay, closeWriteAnswerOverlay } = useQuestionContext()
-  const [editingAnswer, setEditingAnswer] = useState('')
+  const { answer, handleAnswerChange, handleAudioUrlChange, audioUrl } = useRecordingContext()
+  const { isEditingAnswer, isWritingAnswer, handleCloseEditOverlay, handleCloseWriteAnswerOverlay } =
+    useQuestionContext()
+  const {
+    audioRecorder,
+    uploaderStatus,
+    startRecording,
+    stopRecording,
+    cancelRecording,
+    audioUrl: editingAudioUrl,
+    answer: editingAnswer,
+    handleAnswerChange: setEditingAnswer,
+  } = useRecordingAnswer()
   const hasInitialized = useRef(false)
 
   useEffect(() => {
@@ -26,24 +37,26 @@ export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
     } else if (!isEditingAnswer && !isWritingAnswer) {
       hasInitialized.current = false
     }
-  }, [isEditingAnswer, isWritingAnswer, answer])
+  }, [isEditingAnswer, isWritingAnswer, answer, setEditingAnswer])
 
   const handleClose = useCallback(() => {
     if (isWritingAnswer) {
-      closeWriteAnswerOverlay()
+      handleCloseWriteAnswerOverlay()
     } else {
-      closeEditOverlay()
+      handleCloseEditOverlay()
     }
-  }, [closeEditOverlay, closeWriteAnswerOverlay, isWritingAnswer])
+  }, [handleCloseEditOverlay, handleCloseWriteAnswerOverlay, isWritingAnswer])
 
   const handleSave = useCallback(() => {
     handleAnswerChange(editingAnswer)
+    handleAudioUrlChange(editingAudioUrl)
     handleClose()
-  }, [editingAnswer, handleClose, handleAnswerChange])
+  }, [handleAnswerChange, editingAnswer, handleAudioUrlChange, editingAudioUrl, handleClose])
 
   const handleCancel = useCallback(() => {
+    cancelRecording()
     handleClose()
-  }, [handleClose])
+  }, [handleClose, cancelRecording])
 
   const dialogTitle = isWritingAnswer ? 'Write Answer' : 'Edit Transcription'
 
@@ -84,12 +97,14 @@ export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
             placeholderTextColor="text-label-secondary"
             placeholder="Enter Answer..."
             bottomAdornment={
-              <>
-                <View className="border-t border-miscellaneous-topic-stroke" />
-                <TouchableOpacity className="mx-3.5 mt-3.5 h-5 w-5 items-center justify-center">
-                  <SvgIcon name="mic" size="md" color="secondary" />
-                </TouchableOpacity>
-              </>
+              <View className="border-t border-miscellaneous-topic-stroke px-3.5 pt-3">
+                <AudioRecorder
+                  audioRecorder={audioRecorder}
+                  uploaderStatus={uploaderStatus}
+                  onStartRecording={startRecording}
+                  onStopRecording={stopRecording}
+                />
+              </View>
             }
           />
         </View>

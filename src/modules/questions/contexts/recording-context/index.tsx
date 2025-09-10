@@ -1,11 +1,30 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
-import { useAudioMessage } from '../../hooks/use-audio-message'
-import { CURATED_CUESTIONS_FOLDER_NAME } from '~/constants/storage'
-import { useAudioRecorderState } from 'expo-audio'
+import { createContext, useContext, useMemo, useCallback, useEffect, useState } from 'react'
+import { Alert } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
+import { useRecordingAnswer } from '../../hooks/use-recording-answer'
+import { useQuestionContext } from '../question-context'
+
+const RECORDING_ERROR_TITLE = 'Recording Error'
+const DEFAULT_ERROR_MESSAGE = 'An unexpected error occurred'
+
+const ERROR_CONTEXTS = {
+  START_RECORDING: 'starting recording',
+  STOP_RECORDING: 'stopping recording',
+  PAUSE_RECORDING: 'pausing recording',
+  RECORD_AGAIN: 'recording again',
+  CANCEL_RECORDING: 'canceling recording',
+} as const
+
+export enum RecordingStatus {
+  INITIAL = 'initial',
+  RECORDING = 'recording',
+  RECORDED = 'recorded',
+  UPLOADING = 'uploading',
+  SAVED = 'saved',
+}
 
 export interface RecordingState {
-  currentState: 'initial' | 'recording' | 'recorded' | 'uploading'
+  status: RecordingStatus
   isRecording: boolean
   isRecorded: boolean
   answer: string
@@ -14,119 +33,170 @@ export interface RecordingState {
 }
 
 export interface RecordingActions {
-  startRecording: () => Promise<void>
-  stopRecording: () => Promise<void>
-  pauseRecording: () => void
-  recordAgain: () => void
-  cancelRecording: () => void
+  handleStartRecording: () => Promise<void>
+  handleStopRecording: () => Promise<void>
+  handlePauseRecording: () => void
+  handleRecordAgain: () => void
+  handleCancelRecording: () => void
   handleAnswerChange: (answer: string) => void
+  handleAudioUrlChange: (audioUrl: string | null) => void
 }
 
 interface RecordingContextValue extends RecordingState, RecordingActions {}
 
 const RecordingContext = createContext<RecordingContextValue>({
-  currentState: 'initial',
+  status: RecordingStatus.INITIAL,
   isRecording: false,
   isRecorded: false,
   answer: '',
   durationMillis: 0,
   audioUrl: null,
-  startRecording: () => Promise.resolve(),
-  stopRecording: () => Promise.resolve(),
-  pauseRecording: () => {},
-  recordAgain: () => {},
-  cancelRecording: () => {},
+  handleStartRecording: () => Promise.resolve(),
+  handleStopRecording: () => Promise.resolve(),
+  handlePauseRecording: () => {},
+  handleRecordAgain: () => {},
+  handleCancelRecording: () => {},
   handleAnswerChange: () => {},
+  handleAudioUrlChange: () => {},
 })
 
 export const RecordingProvider = ({ children }: { children: React.ReactNode }) => {
-  const [answer, setAnswer] = useState('')
-  const [audioUrl, setAudioUrl] = useState<string | null>(null)
-  const isUploading = useBoolean()
+  const {
+    isUploadingAnswer,
+    answer,
+    handleAnswerChange,
+    handleAudioUrlChange,
+    audioUrl,
+    cancelRecording,
+    startRecording,
+    stopRecording,
+    pauseRecording,
+    recordAgain,
+    isRecording,
+    durationMillis,
+  } = useRecordingAnswer()
 
-  const { audioRecorder, recordingControls, uploader } = useAudioMessage(CURATED_CUESTIONS_FOLDER_NAME)
-  const { isRecording, durationMillis } = useAudioRecorderState(audioRecorder)
-  const isRecorded = useMemo(() => {
-    return Boolean(audioUrl || answer)
-  }, [audioUrl, answer])
+  const { isAnswerSaved } = useQuestionContext()
 
-  const currentState = useMemo(() => {
-    if (isRecording) return 'recording'
-    if (isRecorded) return 'recorded'
-    if (isUploading.value) return 'uploading'
-    return 'initial'
-  }, [isRecording, isRecorded, isUploading])
+  const hasError = useBoolean(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const startRecording = useCallback(async () => {
-    await recordingControls.startRecording()
-  }, [recordingControls])
+  const isRecorded = useMemo(() => Boolean(audioUrl || answer), [audioUrl, answer])
 
-  const stopRecording = useCallback(async () => {
-    isUploading.setTrue()
-    await recordingControls.stopRecording()
+  const status = useMemo(() => {
+    if (isRecording) return RecordingStatus.RECORDING
+    if (isUploadingAnswer) return RecordingStatus.UPLOADING
+    if (isAnswerSaved) return RecordingStatus.SAVED
+    if (isRecorded) return RecordingStatus.RECORDED
+    return RecordingStatus.INITIAL
+  }, [isRecording, isUploadingAnswer, isAnswerSaved, isRecorded])
 
-    const recordingUri = audioRecorder.uri
+  // Internal error handling
+  const handleError = useCallback(
+    (error: unknown, context: string) => {
+      console.error(`Error in ${context}:`, error)
+      hasError.setTrue()
+      setErrorMessage(error instanceof Error ? error.message : DEFAULT_ERROR_MESSAGE)
+    },
+    [hasError]
+  )
 
-    if (!recordingUri) {
-      console.error('Failed to get recording')
-      return
+  const clearError = useCallback(() => {
+    hasError.setFalse()
+    setErrorMessage(null)
+  }, [hasError])
+
+  useEffect(() => {
+    if (hasError.value && errorMessage) {
+      Alert.alert(RECORDING_ERROR_TITLE, errorMessage, [{ text: 'OK', onPress: clearError }])
     }
+  }, [hasError.value, errorMessage, clearError])
 
+  // Wrap recording functions with error handling
+  const handleStartRecording = useCallback(async () => {
     try {
-      const { transcript, url } = await uploader.uploadAndTranscribeAudioMessage.mutateAsync(recordingUri)
-      setAnswer(transcript)
-      setAudioUrl(url)
+      clearError()
+      await startRecording()
     } catch (error) {
-      console.error('Failed to transcribe audio:', error)
+      handleError(error, ERROR_CONTEXTS.START_RECORDING)
     }
+  }, [startRecording, clearError, handleError])
 
-    await recordingControls.cleanupRecording()
-    isUploading.setFalse()
-  }, [isUploading, recordingControls, audioRecorder.uri, uploader.uploadAndTranscribeAudioMessage])
+  const handleStopRecording = useCallback(async () => {
+    try {
+      clearError()
+      await stopRecording()
+    } catch (error) {
+      handleError(error, ERROR_CONTEXTS.STOP_RECORDING)
+    }
+  }, [stopRecording, clearError, handleError])
 
-  const pauseRecording = useCallback(() => {
-    recordingControls.pauseRecording()
-  }, [recordingControls])
+  const handlePauseRecording = useCallback(() => {
+    try {
+      clearError()
+      pauseRecording()
+    } catch (error) {
+      handleError(error, ERROR_CONTEXTS.PAUSE_RECORDING)
+    }
+  }, [pauseRecording, clearError, handleError])
 
-  const cancelRecording = useCallback(() => {
-    setAnswer('')
-    setAudioUrl(null)
-  }, [setAnswer, setAudioUrl])
+  const handleRecordAgain = useCallback(() => {
+    try {
+      clearError()
+      recordAgain()
+    } catch (error) {
+      handleError(error, ERROR_CONTEXTS.RECORD_AGAIN)
+    }
+  }, [recordAgain, clearError, handleError])
 
-  const recordAgain = useCallback(async () => {
-    await recordingControls.cleanupRecording()
-    setAnswer('')
-  }, [recordingControls])
+  const handleCancelRecording = useCallback(() => {
+    try {
+      clearError()
+      cancelRecording()
+    } catch (error) {
+      handleError(error, ERROR_CONTEXTS.CANCEL_RECORDING)
+    }
+  }, [cancelRecording, clearError, handleError])
+
+  const recordingState = useMemo(
+    () => ({
+      status,
+      isRecording,
+      isRecorded,
+      answer,
+      durationMillis,
+      audioUrl,
+    }),
+    [status, isRecording, isRecorded, answer, durationMillis, audioUrl]
+  )
+
+  const recordingActions = useMemo(
+    () => ({
+      handleStartRecording,
+      handleStopRecording,
+      handlePauseRecording,
+      handleRecordAgain,
+      handleCancelRecording,
+      handleAnswerChange,
+      handleAudioUrlChange,
+    }),
+    [
+      handleStartRecording,
+      handleStopRecording,
+      handlePauseRecording,
+      handleRecordAgain,
+      handleCancelRecording,
+      handleAnswerChange,
+      handleAudioUrlChange,
+    ]
+  )
 
   const value: RecordingContextValue = useMemo(
     () => ({
-      currentState,
-      isRecording,
-      isRecorded,
-      answer,
-      durationMillis,
-      audioUrl,
-      startRecording,
-      stopRecording,
-      pauseRecording,
-      recordAgain,
-      cancelRecording,
-      handleAnswerChange: setAnswer,
+      ...recordingState,
+      ...recordingActions,
     }),
-    [
-      currentState,
-      isRecording,
-      isRecorded,
-      answer,
-      durationMillis,
-      audioUrl,
-      startRecording,
-      stopRecording,
-      pauseRecording,
-      recordAgain,
-      cancelRecording,
-      setAnswer,
-    ]
+    [recordingState, recordingActions]
   )
 
   return <RecordingContext.Provider value={value}>{children}</RecordingContext.Provider>

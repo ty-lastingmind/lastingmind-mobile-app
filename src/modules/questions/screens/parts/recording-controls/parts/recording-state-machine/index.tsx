@@ -4,40 +4,58 @@ import { RecordedState } from '../recorded-state'
 import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
 import { UploadingState } from '../uploading-state'
 import { useQuestionContext } from '~/modules/questions/contexts/question-context'
+import { SavedState } from '../saved-state'
+import { RecordingStatus } from '~/modules/questions/contexts/recording-context'
 
-export function RecordingStateMachine() {
-  const { handleViewTranscription, handleSubmitAnswer, openWriteAnswerOverlay, handleSaveForLater } =
-    useQuestionContext()
+interface RecordingStateMachineProps {
+  onSubmitAnswer: () => void
+}
+
+export function RecordingStateMachine({ onSubmitAnswer }: RecordingStateMachineProps) {
+  const { handleViewTranscription, handleOpenWriteAnswerOverlay, handleSaveForLater } = useQuestionContext()
 
   const {
-    currentState,
-    startRecording,
-    stopRecording,
-    pauseRecording,
-    recordAgain,
-    cancelRecording,
+    status,
+    handleStartRecording,
+    handleStopRecording,
+    handlePauseRecording,
+    handleRecordAgain,
+    handleCancelRecording,
     durationMillis,
     audioUrl,
   } = useRecordingContext()
 
-  switch (currentState) {
-    case 'recording':
-      return <RecordingState onStop={stopRecording} onPause={pauseRecording} duration={durationMillis} />
-    case 'recorded':
+  switch (status) {
+    case RecordingStatus.RECORDING:
+      return <RecordingState onStop={handleStopRecording} onPause={handlePauseRecording} duration={durationMillis} />
+    case RecordingStatus.RECORDED:
       return (
         <RecordedState
           onViewTranscription={handleViewTranscription}
-          onSubmit={handleSubmitAnswer}
-          onRecordAgain={recordAgain}
-          onCancel={cancelRecording}
+          onSubmit={onSubmitAnswer}
+          onRecordAgain={handleRecordAgain}
+          onCancel={handleCancelRecording}
           audioUrl={audioUrl}
         />
       )
-    case 'uploading':
+    case RecordingStatus.UPLOADING:
       return <UploadingState />
+    case RecordingStatus.SAVED:
+      return (
+        <SavedState
+          onRecordNewAnswer={handleStartRecording}
+          onWriteNewAnswer={handleOpenWriteAnswerOverlay}
+          onViewTranscription={handleViewTranscription}
+          audioUrl={audioUrl}
+        />
+      )
     default:
       return (
-        <InitialState onRecord={startRecording} onWrite={openWriteAnswerOverlay} onSaveForLater={handleSaveForLater} />
+        <InitialState
+          onRecord={handleStartRecording}
+          onWrite={handleOpenWriteAnswerOverlay}
+          onSaveForLater={handleSaveForLater}
+        />
       )
   }
 }

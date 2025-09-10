@@ -1,10 +1,14 @@
 import { View } from 'react-native'
 import { RecordingStateMachine } from './parts/recording-state-machine'
 
-export const RecordingControls = () => {
+interface RecordingControlsProps {
+  onSubmitAnswer: () => void
+}
+
+export const RecordingControls = ({ onSubmitAnswer }: RecordingControlsProps) => {
   return (
     <View className="px-6 gap-4 justify-end">
-      <RecordingStateMachine />
+      <RecordingStateMachine onSubmitAnswer={onSubmitAnswer} />
     </View>
   )
 }

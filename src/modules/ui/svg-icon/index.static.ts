@@ -22,6 +22,7 @@ import { Refresh } from './svg/refresh'
 import { Play } from './svg/play'
 import { ArrowRight } from './svg/arrow-right'
 import { AudioWave } from './svg/audio-wave'
+import { Trash } from './svg/trash'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -48,4 +49,5 @@ export const iconNameToSvg = {
   play: Play,
   arrow_right: ArrowRight,
   audio_wave: AudioWave,
+  trash: Trash,
 } as const
