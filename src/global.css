@@ -56,6 +56,7 @@
     /* FIGMA COLORS */
     --accent: rgba(22, 0, 110, 1);
     --red: rgba(255, 0, 0, 1);
+    --red-alpha-20: rgba(255, 0, 0, 0.2);
     --label-primary: rgba(0, 0, 0, 1);
     --label-secondary: rgba(60, 60, 67, 0.6);
     --label-accent: rgba(22, 0, 110, 1);

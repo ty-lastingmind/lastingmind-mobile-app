@@ -8,8 +8,10 @@ import {
   useGetHomeElementsHomePullHomeElementsGet,
 } from '~/services/api/generated'
 import type { ProgressData } from '~/services/api/model'
+import { useRouter } from 'expo-router'
 
 export function Home() {
+  const router = useRouter()
   const { data } = useGetHomeElementsHomePullHomeElementsGet()
   const onboarding = useCheckOnboardingCompleteLoginCompletedOnboardingGet()
 
@@ -27,12 +29,8 @@ export function Home() {
   }, [progressData])
 
   const handleContinueWhereLeftOff = useCallback(() => {
-    /*
-    - Navigate to the last question that was answered
-    - /curated-questions/continue-questions with topic field empty.
-    */
-    console.log('Continue where left off')
-  }, [])
+    router.navigate('/questions/curated-questions')
+  }, [router])
 
   if (onboarding.isLoading) {
     return null
