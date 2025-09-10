@@ -22,12 +22,20 @@ export function RecordingStateMachine({ onSubmitAnswer }: RecordingStateMachineP
     handleRecordAgain,
     handleCancelRecording,
     durationMillis,
+    metering,
     audioUrl,
   } = useRecordingContext()
 
   switch (status) {
     case RecordingStatus.RECORDING:
-      return <RecordingState onStop={handleStopRecording} onPause={handlePauseRecording} duration={durationMillis} />
+      return (
+        <RecordingState
+          onStop={handleStopRecording}
+          onPause={handlePauseRecording}
+          duration={durationMillis}
+          metering={metering}
+        />
+      )
     case RecordingStatus.RECORDED:
       return (
         <RecordedState

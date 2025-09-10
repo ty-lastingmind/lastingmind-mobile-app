@@ -12,7 +12,7 @@ export function useRecordingAnswer() {
 
   const { audioRecorder, recordingControls, uploader } = useAudioMessage(CURATED_CUESTIONS_FOLDER_NAME)
   const { status: uploaderStatus } = useUploadAndTranscribeAudioMessage(CURATED_CUESTIONS_FOLDER_NAME)
-  const { isRecording, durationMillis } = useAudioRecorderState(audioRecorder)
+  const { isRecording, durationMillis, metering } = useAudioRecorderState(audioRecorder)
 
   const startRecording = useCallback(async () => {
     await recordingControls.startRecording()
@@ -57,6 +57,7 @@ export function useRecordingAnswer() {
     answer,
     isRecording,
     durationMillis,
+    metering,
     audioRecorder,
     uploaderStatus,
     audioUrl,
