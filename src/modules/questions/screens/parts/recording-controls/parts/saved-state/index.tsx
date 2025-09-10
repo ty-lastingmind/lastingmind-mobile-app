@@ -37,7 +37,7 @@ export function SavedState({ onViewTranscription, onRecordNewAnswer, onWriteNewA
 
       <Button
         onPress={onRecordNewAnswer}
-        icon={{ name: 'mic', size: 'md', color: 'white' }}
+        icon={<SvgIcon name="mic" size="md" color="white" />}
         variant="primary"
         size="lg"
       >
@@ -46,7 +46,7 @@ export function SavedState({ onViewTranscription, onRecordNewAnswer, onWriteNewA
 
       <Button
         onPress={onWriteNewAnswer}
-        icon={{ name: 'write_answer', size: 'md', color: 'accent' }}
+        icon={<SvgIcon name="write_answer" size="md" color="accent" />}
         variant="outlined"
         size="lg"
       >

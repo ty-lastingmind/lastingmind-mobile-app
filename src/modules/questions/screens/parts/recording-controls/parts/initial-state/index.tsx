@@ -1,4 +1,5 @@
 import { Button } from '~/modules/ui/button'
+import { SvgIcon } from '~/modules/ui/svg-icon'
 
 interface InitialStateProps {
   onRecord: () => void
@@ -13,11 +14,7 @@ export function InitialState({ onRecord, onWrite, onSaveForLater }: InitialState
         onPress={onRecord}
         size="lg"
         btnContainerClassName="bg-accent border-0"
-        icon={{
-          name: 'mic',
-          size: 'sm',
-          color: 'white',
-        }}
+        icon={<SvgIcon name="mic" size="sm" color="white" />}
       >
         Record Answer
       </Button>
@@ -26,11 +23,7 @@ export function InitialState({ onRecord, onWrite, onSaveForLater }: InitialState
         variant="outlined"
         onPress={onWrite}
         size="lg"
-        icon={{
-          name: 'write_answer',
-          size: 'sm',
-          color: 'accent',
-        }}
+        icon={<SvgIcon name="write_answer" size="sm" color="accent" />}
       >
         Write Answer
       </Button>

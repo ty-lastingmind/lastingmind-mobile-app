@@ -42,14 +42,19 @@ export function RecordedState({
         </>
       )}
 
-      <Button onPress={onSubmit} icon={{ name: 'check_mark', size: 'md', color: 'white' }} variant="primary" size="lg">
+      <Button
+        onPress={onSubmit}
+        icon={<SvgIcon name="check_mark" size="md" color="white" />}
+        variant="primary"
+        size="lg"
+      >
         Submit Answer
       </Button>
 
       {hasRecorded && (
         <Button
           onPress={onRecordAgain}
-          icon={{ name: 'refresh', size: 'md', color: 'accent' }}
+          icon={<SvgIcon name="refresh" size="md" color="accent" />}
           variant="outlined"
           size="lg"
         >

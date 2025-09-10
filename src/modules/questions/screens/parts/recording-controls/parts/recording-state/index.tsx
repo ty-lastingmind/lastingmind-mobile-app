@@ -1,5 +1,6 @@
 import { View } from 'react-native'
 import { Button } from '~/modules/ui/button'
+import { SvgIcon } from '~/modules/ui/svg-icon'
 import { RecordingWaveVisualization } from '../../../recording-wave-visualization'
 
 interface RecordingStateProps {
@@ -13,10 +14,10 @@ export function RecordingState({ onStop, onPause, duration }: RecordingStateProp
     <>
       <RecordingWaveVisualization duration={duration} />
       <View className="gap-6 pb-5">
-        <Button onPress={onStop} icon={{ name: 'stop', size: 'sm', color: 'white' }} variant="primary" size="lg">
+        <Button onPress={onStop} icon={<SvgIcon name="stop" size="sm" color="white" />} variant="primary" size="lg">
           Stop
         </Button>
-        <Button onPress={onPause} icon={{ name: 'pause', size: 'sm', color: 'accent' }} variant="outlined" size="lg">
+        <Button onPress={onPause} icon={<SvgIcon name="pause" size="sm" color="accent" />} variant="outlined" size="lg">
           Pause
         </Button>
       </View>
