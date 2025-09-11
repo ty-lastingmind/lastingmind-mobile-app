@@ -5,11 +5,7 @@ import { Input } from '~/modules/ui/input'
 import { Selector } from '~/modules/ui/selector'
 import { Typography } from '~/modules/ui/typography'
 
-const mockOptions = [
-  { name: 'option 1', value: 'option1' },
-  { name: 'option 2', value: 'option2' },
-  { name: 'option 3', value: 'option3' },
-]
+const mockOptions = ['option 1', 'option 2', 'option 3']
 
 export function InputShowcase() {
   return (

@@ -11,7 +11,7 @@ interface InputListType {
   name: string
   placeholder: string
   label?: string
-  options?: { name: string; value: string }[]
+  options?: string[]
 }
 
 interface InputGroupProps<T extends FieldValues> {
@@ -45,6 +45,7 @@ export function InputGroup<T extends FieldValues>({ inputList, form }: InputGrou
                   placeholder={input.placeholder}
                   className={inputClassName(index)}
                   onSelect={field.onChange}
+                  initialIndex={input.options?.findIndex((option) => option === field.value)}
                   leftAdornment={input.label ? <Typography className="w-24">{input.label}</Typography> : null}
                 />
               </FormControl>

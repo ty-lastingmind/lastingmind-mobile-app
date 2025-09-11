@@ -3,19 +3,19 @@ import { useForm, useFormContext } from 'react-hook-form'
 import z from 'zod'
 
 export const levelOptions = [
-  { name: 'Elementary School', value: 'elementary_school' },
-  { name: 'Middle School', value: 'middle_school' },
-  { name: 'High School', value: 'high_school' },
-  { name: 'Undergraduate College', value: 'undergraduate_college' },
-  { name: 'Graduate School', value: 'graduate_school' },
-  { name: 'Vocational / Trade School', value: 'vocational_trade_school' },
-  { name: 'Doctorate / PhD', value: 'doctorate_phd' },
-  { name: 'Prep School', value: 'prep_school' },
-  { name: 'Other', value: 'other' },
+  'Elementary School',
+  'Middle School',
+  'High School',
+  'Undergraduate College',
+  'Graduate School',
+  'Vocational / Trade School',
+  'Doctorate / PhD',
+  'Prep School',
+  'Other',
 ]
 
 const educationInfoSchema = z.object({
-  level: z.enum(levelOptions.map((option) => option.value)),
+  level: z.enum(levelOptions),
   school: z.string().min(2),
 })
 

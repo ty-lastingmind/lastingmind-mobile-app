@@ -1,5 +1,5 @@
-import { Alert, View } from 'react-native'
-import React from 'react'
+import { Alert, View, ScrollView, KeyboardAvoidingView } from 'react-native'
+import React, { useState } from 'react'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
 import { InputGroup } from '~/modules/ui/input-group'
@@ -10,6 +10,7 @@ import InputResult from '../../parts/input-result'
 import { useRouter } from 'expo-router'
 import Transition from '../../parts/transition'
 import { useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost } from '~/services/api/generated'
+import { useBoolean } from 'usehooks-ts'
 
 const inputList = [
   {
@@ -40,26 +41,46 @@ const inputList = [
 ]
 
 export function WorkSurveyPage() {
-  const [works, setWorks] = React.useState<WorkInfoData[]>([])
-  const [showForm, setShowForm] = React.useState(true)
+  const [works, setWorks] = useState<WorkInfoData[]>([])
+  const { value: showForm, setTrue: openForm, setFalse: closeForm } = useBoolean(true)
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const router = useRouter()
 
   const { mutateAsync, isPending } = useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost()
 
   const form = useWorkInfoForm()
 
-  const handleSave = (data: WorkInfoData) => {
-    setWorks((prev) => [...prev, data])
-    setShowForm(false)
+  const handleFormSave = (data: WorkInfoData) => {
+    if (editingIndex !== null) {
+      setWorks((prev) => prev.map((item, index) => (index === editingIndex ? data : item)))
+    } else {
+      setWorks((prev) => [...prev, data])
+    }
+    closeForm()
+    setEditingIndex(null)
     form.reset()
   }
 
-  const handleCancel = () => {
-    setShowForm(false)
+  const handleFormCancel = () => {
     form.reset()
+    setEditingIndex(null)
+    closeForm()
   }
 
-  const handleSubmitAll = async () => {
+  const handleEdit = (index: number) => {
+    const work = works[index]
+    form.reset(work)
+    setEditingIndex(index)
+    closeForm()
+  }
+
+  const handleAddAnother = () => {
+    form.reset({ company: '', position: '', startAge: '', endAge: '', description: '' })
+    setEditingIndex(null)
+    openForm()
+  }
+
+  const handleSave = async () => {
     if (works.length) {
       await mutateAsync(
         {
@@ -90,49 +111,85 @@ export function WorkSurveyPage() {
 
   return (
     <Transition title="Response Saved!" subtitle="Only 2 Questions Left!">
-      <View className="gap-4 px-8 py-safe flex flex-1">
-        <View className="pt-28 gap-2">
-          <SvgIcon name="work" size="3xl" color="accent" />
-          <Typography brand level="h3">
-            What is your work history?
-          </Typography>
-          <Typography>If you haven&apos;t worked, feel free to skip.</Typography>
-        </View>
-        {works.map((work, index) => (
-          <InputResult key={index} label={work.company} icon="work" />
-        ))}
-        <Form {...form}>
-          <View className="flex-1 gap-4">
-            {showForm ? (
-              <>
-                <InputGroup<WorkInfoData> inputList={inputList} form={form} />
-                <View className="flex-row justify-around">
-                  {!!works.length && (
-                    <Button variant="white" size="sm" onPress={handleCancel}>
-                      Cancel
-                    </Button>
-                  )}
-                  <Button
-                    variant="white"
-                    size="sm"
-                    disabled={!form.formState.isValid || !form.formState.isDirty}
-                    onPress={form.handleSubmit(handleSave)}
-                  >
-                    Save
+      <View className="flex-1 px-8 py-safe">
+        <KeyboardAvoidingView behavior="padding" className="flex-1">
+          <ScrollView contentContainerClassName="gap-4 pb-8" bounces={false} showsVerticalScrollIndicator={false}>
+            <View className="pt-28 gap-2">
+              <SvgIcon name="work" size="3xl" color="accent" />
+              <Typography brand level="h3">
+                What is your work history?
+              </Typography>
+              <Typography>If you haven&apos;t worked, feel free to skip.</Typography>
+            </View>
+            <Form {...form}>
+              {works.map((work, index) => (
+                <InputResult
+                  key={index}
+                  label={work.company}
+                  icon="work"
+                  onPress={() => handleEdit(index)}
+                  isExpanded={editingIndex === index}
+                  renderExpandedComponent={
+                    <FormControls
+                      form={form}
+                      works={works}
+                      handleFormCancel={handleFormCancel}
+                      handleFormSave={handleFormSave}
+                    />
+                  }
+                />
+              ))}
+              <View className="flex-1 gap-4">
+                {showForm ? (
+                  <FormControls
+                    form={form}
+                    works={works}
+                    handleFormCancel={handleFormCancel}
+                    handleFormSave={handleFormSave}
+                  />
+                ) : (
+                  <Button variant="white" size="sm" onPress={handleAddAnother}>
+                    Add another
                   </Button>
-                </View>
-              </>
-            ) : (
-              <Button variant="white" size="sm" onPress={() => setShowForm(true)}>
-                Add another
-              </Button>
-            )}
-          </View>
-        </Form>
-        <Button onPress={handleSubmitAll} loading={isPending}>
+                )}
+              </View>
+            </Form>
+          </ScrollView>
+          <Button onPress={handleSave} loading={isPending}>
+            Save
+          </Button>
+        </KeyboardAvoidingView>
+      </View>
+    </Transition>
+  )
+}
+
+interface FormControlsProps {
+  form: ReturnType<typeof useWorkInfoForm>
+  works: WorkInfoData[]
+  handleFormCancel: () => void
+  handleFormSave: (data: WorkInfoData) => void
+}
+
+function FormControls({ form, works, handleFormCancel, handleFormSave }: FormControlsProps): React.ReactNode {
+  return (
+    <>
+      <InputGroup<WorkInfoData> inputList={inputList} form={form} />
+      <View className="flex-row justify-around">
+        {!!works.length && (
+          <Button variant="white" size="sm" onPress={handleFormCancel}>
+            Cancel
+          </Button>
+        )}
+        <Button
+          variant="white"
+          size="sm"
+          disabled={!form.formState.isValid || !form.formState.isDirty}
+          onPress={form.handleSubmit(handleFormSave)}
+        >
           Save
         </Button>
       </View>
-    </Transition>
+    </>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { ActionSheetIOS, TouchableOpacity } from 'react-native'
 import { Typography } from '../typography'
 import { Icon } from '../icon'
@@ -8,14 +8,21 @@ interface SelectorProps extends React.ComponentProps<typeof TouchableOpacity> {
   placeholder?: string
   rightAdornment?: React.ReactNode
   leftAdornment?: React.ReactNode
-  options: { name: string; value: string }[]
+  options: string[]
   onSelect?: (value: string) => void
+  initialIndex?: number
 }
 
-export function Selector({ options, placeholder, className, rightAdornment, leftAdornment, onSelect }: SelectorProps) {
-  const [selectedOption, setSelectedOption] = useState('')
-
-  const optionNames = useMemo(() => options.map((option) => option.name), [options])
+export function Selector({
+  options,
+  placeholder,
+  className,
+  rightAdornment,
+  leftAdornment,
+  onSelect,
+  initialIndex,
+}: SelectorProps) {
+  const [selectedOption, setSelectedOption] = useState(options[initialIndex || 0] || '')
 
   const containerClassName = cn(
     'gap-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between bg-bg-secondary',
@@ -27,12 +34,12 @@ export function Selector({ options, placeholder, className, rightAdornment, left
   const handlePress = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: [...optionNames, 'Cancel'],
+        options: [...options, 'Cancel'],
         cancelButtonIndex: options.length,
       },
       (index) => {
-        setSelectedOption(optionNames[index] || selectedOption)
-        onSelect?.(options[index].value || selectedOption)
+        setSelectedOption(options[index] || selectedOption)
+        onSelect?.(options[index] || selectedOption)
       }
     )
   }
