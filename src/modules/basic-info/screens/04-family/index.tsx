@@ -8,6 +8,7 @@ import { useFamilyInfoForm, FamilyInfoData, familyOptions } from '../../hooks/us
 import { Form } from '~/modules/ui/form'
 import InputResult from '../../parts/input-result'
 import { Link } from 'expo-router'
+import Transition from '../../parts/transition'
 
 const inputList = [
   {
@@ -41,48 +42,50 @@ export function FamilySurveyPage() {
   }
 
   return (
-    <View className="gap-4 px-8 py-safe flex flex-1">
-      <View className="pt-28 gap-2">
-        <SvgIcon name="family" size="3xl" color="accent" />
-        <Typography brand level="h3">
-          Who are your close family members?
-        </Typography>
-        <Typography>Add as many as you&apos;d like!</Typography>
-      </View>
-      {familyMembers.map((member, index) => (
-        <InputResult key={index} label={member.name} icon="family" />
-      ))}
-      <Form {...form}>
-        <View className="flex-1 gap-4">
-          {showForm ? (
-            <>
-              <InputGroup<FamilyInfoData> inputList={inputList} form={form} />
-              <View className="flex-row justify-around">
-                {!!familyMembers.length && (
-                  <Button variant="white" size="sm" onPress={handleCancel}>
-                    Cancel
-                  </Button>
-                )}
-                <Button
-                  variant="white"
-                  size="sm"
-                  disabled={!form.formState.isValid || !form.formState.isDirty}
-                  onPress={form.handleSubmit(handleSave)}
-                >
-                  Save
-                </Button>
-              </View>
-            </>
-          ) : (
-            <Button variant="white" size="sm" onPress={() => setShowForm(true)}>
-              Add another
-            </Button>
-          )}
+    <Transition title="Response Saved!" subtitle="Last Question!">
+      <View className="gap-4 px-8 py-safe flex flex-1">
+        <View className="pt-28 gap-2">
+          <SvgIcon name="family" size="3xl" color="accent" />
+          <Typography brand level="h3">
+            Who are your close family members?
+          </Typography>
+          <Typography>Add as many as you&apos;d like!</Typography>
         </View>
-      </Form>
-      <Link asChild href="/">
-        <Button>Next</Button>
-      </Link>
-    </View>
+        {familyMembers.map((member, index) => (
+          <InputResult key={index} label={member.name} icon="family" />
+        ))}
+        <Form {...form}>
+          <View className="flex-1 gap-4">
+            {showForm ? (
+              <>
+                <InputGroup<FamilyInfoData> inputList={inputList} form={form} />
+                <View className="flex-row justify-around">
+                  {!!familyMembers.length && (
+                    <Button variant="white" size="sm" onPress={handleCancel}>
+                      Cancel
+                    </Button>
+                  )}
+                  <Button
+                    variant="white"
+                    size="sm"
+                    disabled={!form.formState.isValid || !form.formState.isDirty}
+                    onPress={form.handleSubmit(handleSave)}
+                  >
+                    Save
+                  </Button>
+                </View>
+              </>
+            ) : (
+              <Button variant="white" size="sm" onPress={() => setShowForm(true)}>
+                Add another
+              </Button>
+            )}
+          </View>
+        </Form>
+        <Link asChild href="/">
+          <Button>Next</Button>
+        </Link>
+      </View>
+    </Transition>
   )
 }
