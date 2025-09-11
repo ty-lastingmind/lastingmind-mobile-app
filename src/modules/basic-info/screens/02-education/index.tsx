@@ -1,14 +1,15 @@
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Button } from '~/modules/ui/button'
 import { InputGroup } from '~/modules/ui/input-group'
-import { Link } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { EducationInfoData, levelOptions, useEducationInfoForm } from '../../hooks/use-education-info-form'
 import { Form } from '~/modules/ui/form'
 import InputResult from '../../parts/input-result'
 import Transition from '../../parts/transition'
+import { useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost } from '~/services/api/generated'
 
 const inputList = [
   {
@@ -27,17 +28,47 @@ const inputList = [
 export function EducationSurveyScreen() {
   const [educations, setEducations] = React.useState<EducationInfoData[]>([])
   const [showForm, setShowForm] = React.useState(true)
+  const router = useRouter()
+
+  const { mutateAsync, isPending } = useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost()
+
   const form = useEducationInfoForm()
 
-  const handleSave = (data: EducationInfoData) => {
+  const handleSaveForm = (data: EducationInfoData) => {
     setEducations((prev) => [...prev, data])
     setShowForm(false)
     form.reset()
   }
 
-  const handleCancel = () => {
+  const handleCancelForm = () => {
     setShowForm(false)
     form.reset()
+  }
+
+  const handleSave = async () => {
+    if (educations.length) {
+      await mutateAsync(
+        {
+          data: {
+            topic: 'education',
+            answers: educations.map((education) => ({
+              level: education.level,
+              school: education.school,
+            })),
+          },
+        },
+        {
+          onSuccess() {
+            router.navigate('/(protected)/basic-info/03-work')
+          },
+          onError() {
+            Alert.alert('An error has ocurred')
+          },
+        }
+      )
+    } else {
+      router.navigate('/(protected)/basic-info/03-work')
+    }
   }
 
   return (
@@ -60,7 +91,7 @@ export function EducationSurveyScreen() {
                 <InputGroup<EducationInfoData> inputList={inputList} form={form} />
                 <View className="flex-row justify-around">
                   {!!educations.length && (
-                    <Button variant="white" size="sm" onPress={handleCancel}>
+                    <Button variant="white" size="sm" onPress={handleCancelForm}>
                       Cancel
                     </Button>
                   )}
@@ -68,7 +99,7 @@ export function EducationSurveyScreen() {
                     variant="white"
                     size="sm"
                     disabled={!form.formState.isValid || !form.formState.isDirty}
-                    onPress={form.handleSubmit(handleSave)}
+                    onPress={form.handleSubmit(handleSaveForm)}
                   >
                     Save
                   </Button>
@@ -81,9 +112,9 @@ export function EducationSurveyScreen() {
             )}
           </View>
         </Form>
-        <Link asChild href="/(protected)/basic-info/03-work">
-          <Button>Save</Button>
-        </Link>
+        <Button onPress={handleSave} loading={isPending}>
+          Save
+        </Button>
       </View>
     </Transition>
   )

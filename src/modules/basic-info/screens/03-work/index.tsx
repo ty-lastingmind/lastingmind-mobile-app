@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import React from 'react'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
@@ -7,8 +7,9 @@ import { Button } from '~/modules/ui/button'
 import { useWorkInfoForm, WorkInfoData } from '../../hooks/use-work-info-form'
 import { Form } from '~/modules/ui/form'
 import InputResult from '../../parts/input-result'
-import { Link } from 'expo-router'
+import { useRouter } from 'expo-router'
 import Transition from '../../parts/transition'
+import { useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost } from '~/services/api/generated'
 
 const inputList = [
   {
@@ -41,6 +42,10 @@ const inputList = [
 export function WorkSurveyPage() {
   const [works, setWorks] = React.useState<WorkInfoData[]>([])
   const [showForm, setShowForm] = React.useState(true)
+  const router = useRouter()
+
+  const { mutateAsync, isPending } = useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost()
+
   const form = useWorkInfoForm()
 
   const handleSave = (data: WorkInfoData) => {
@@ -52,6 +57,35 @@ export function WorkSurveyPage() {
   const handleCancel = () => {
     setShowForm(false)
     form.reset()
+  }
+
+  const handleSubmitAll = async () => {
+    if (works.length) {
+      await mutateAsync(
+        {
+          data: {
+            topic: 'career',
+            answers: works.map((work) => ({
+              company: work.company,
+              position: work.position,
+              start_age: Number(work.startAge),
+              end_age: Number(work.endAge),
+              description: work.description,
+            })),
+          },
+        },
+        {
+          onSuccess() {
+            router.navigate('/(protected)/basic-info/04-family')
+          },
+          onError() {
+            Alert.alert('An error has ocurred')
+          },
+        }
+      )
+    } else {
+      router.navigate('/(protected)/basic-info/04-family')
+    }
   }
 
   return (
@@ -95,9 +129,9 @@ export function WorkSurveyPage() {
             )}
           </View>
         </Form>
-        <Link asChild href="/(protected)/basic-info/04-family">
-          <Button>Save</Button>
-        </Link>
+        <Button onPress={handleSubmitAll} loading={isPending}>
+          Save
+        </Button>
       </View>
     </Transition>
   )

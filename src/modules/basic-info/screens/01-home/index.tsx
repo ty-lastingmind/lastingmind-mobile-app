@@ -1,13 +1,14 @@
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Button } from '~/modules/ui/button'
-import { Link } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { InputGroup } from '~/modules/ui/input-group'
 import InputResult from '../../parts/input-result'
 import { HomeInfoData, useHomeInfoForm } from '../../hooks/use-home-info-form'
 import { Form } from '~/modules/ui/form'
+import { useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost } from '~/services/api/generated'
 
 const inputList = [
   {
@@ -30,18 +31,48 @@ const inputList = [
 export function HomeSurveyScreen() {
   const [locations, setLocations] = React.useState<HomeInfoData[]>([])
   const [showForm, setShowForm] = React.useState(true)
+  const router = useRouter()
+
+  const { mutateAsync, isPending } = useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost()
 
   const form = useHomeInfoForm()
 
-  const handleSave = (data: HomeInfoData) => {
+  const handleFormSave = (data: HomeInfoData) => {
     setLocations((prev) => [...prev, data])
     setShowForm(false)
     form.reset()
   }
 
-  const handleCancel = () => {
+  const handleFormCancel = () => {
     setShowForm(false)
     form.reset()
+  }
+
+  const handleSave = async () => {
+    if (locations.length) {
+      await mutateAsync(
+        {
+          data: {
+            topic: 'cities_lived',
+            answers: locations.map((location) => ({
+              location: location.location,
+              start_age: Number(location.startAge),
+              end_age: Number(location.endAge),
+            })),
+          },
+        },
+        {
+          onSuccess() {
+            router.navigate('/(protected)/basic-info/02-education')
+          },
+          onError() {
+            Alert.alert('An error has ocurred')
+          },
+        }
+      )
+    } else {
+      router.navigate('/(protected)/basic-info/02-education')
+    }
   }
 
   return (
@@ -63,7 +94,7 @@ export function HomeSurveyScreen() {
               <InputGroup<HomeInfoData> inputList={inputList} form={form} />
               <View className="flex-row justify-around">
                 {!!locations.length && (
-                  <Button variant="white" size="sm" onPress={handleCancel}>
+                  <Button variant="white" size="sm" onPress={handleFormCancel}>
                     Cancel
                   </Button>
                 )}
@@ -71,7 +102,7 @@ export function HomeSurveyScreen() {
                   variant="white"
                   size="sm"
                   disabled={!form.formState.isValid || !form.formState.isDirty}
-                  onPress={form.handleSubmit(handleSave)}
+                  onPress={form.handleSubmit(handleFormSave)}
                 >
                   Save
                 </Button>
@@ -84,9 +115,9 @@ export function HomeSurveyScreen() {
           )}
         </View>
       </Form>
-      <Link asChild href="/(protected)/basic-info/02-education">
-        <Button>Save</Button>
-      </Link>
+      <Button onPress={handleSave} loading={isPending}>
+        Save
+      </Button>
     </View>
   )
 }
