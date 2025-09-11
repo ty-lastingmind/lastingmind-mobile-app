@@ -82,7 +82,7 @@ export function EducationSurveyScreen() {
           </View>
         </Form>
         <Link asChild href="/(protected)/basic-info/03-work">
-          <Button>Next</Button>
+          <Button>Save</Button>
         </Link>
       </View>
     </Transition>

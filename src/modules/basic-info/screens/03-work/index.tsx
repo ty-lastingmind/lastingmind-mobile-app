@@ -96,7 +96,7 @@ export function WorkSurveyPage() {
           </View>
         </Form>
         <Link asChild href="/(protected)/basic-info/04-family">
-          <Button>Next</Button>
+          <Button>Save</Button>
         </Link>
       </View>
     </Transition>

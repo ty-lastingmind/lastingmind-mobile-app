@@ -82,8 +82,8 @@ export function FamilySurveyPage() {
             )}
           </View>
         </Form>
-        <Link asChild href="/">
-          <Button>Next</Button>
+        <Link asChild href="/(protected)/basic-info/05-congrats">
+          <Button>Save</Button>
         </Link>
       </View>
     </Transition>
