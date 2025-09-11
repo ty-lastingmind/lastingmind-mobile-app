@@ -5,7 +5,9 @@ import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Button } from '~/modules/ui/button'
 import { Link } from 'expo-router'
 import { InputGroup } from '~/modules/ui/input-group'
-import { Icon } from '~/modules/ui/icon'
+import InputResult from '../../parts/input-result'
+import { HomeInfoData, useHomeInfoForm } from '../../hooks/use-home-info-form'
+import { Form } from '~/modules/ui/form'
 
 const inputList = [
   {
@@ -26,6 +28,22 @@ const inputList = [
 ]
 
 export function HomeSurveyScreen() {
+  const [locations, setLocations] = React.useState<HomeInfoData[]>([])
+  const [showForm, setShowForm] = React.useState(true)
+
+  const form = useHomeInfoForm()
+
+  const handleSave = (data: HomeInfoData) => {
+    setLocations((prev) => [...prev, data])
+    setShowForm(false)
+    form.reset()
+  }
+
+  const handleCancel = () => {
+    setShowForm(false)
+    form.reset()
+  }
+
   return (
     <View className="gap-4 px-8 py-safe flex flex-1">
       <View className="pt-28 gap-2">
@@ -35,16 +53,37 @@ export function HomeSurveyScreen() {
         </Typography>
         <Typography>Select at many as necessary.</Typography>
       </View>
-      <View className="flex-row bg-bg-secondary py-6 rounded-md items-center">
-        <View className="px-6">
-          <SvgIcon name="home" size="lg" color="accent" />
+      {locations.map((location, index) => (
+        <InputResult key={index} label={location.location} icon="home" />
+      ))}
+      <Form {...form}>
+        <View className="flex-1 gap-4">
+          {showForm ? (
+            <>
+              <InputGroup<HomeInfoData> inputList={inputList} form={form} />
+              <View className="flex-row justify-around">
+                {!!locations.length && (
+                  <Button variant="white" size="sm" onPress={handleCancel}>
+                    Cancel
+                  </Button>
+                )}
+                <Button
+                  variant="white"
+                  size="sm"
+                  disabled={!form.formState.isValid || !form.formState.isDirty}
+                  onPress={form.handleSubmit(handleSave)}
+                >
+                  Save
+                </Button>
+              </View>
+            </>
+          ) : (
+            <Button variant="white" size="sm" onPress={() => setShowForm(true)}>
+              Add another
+            </Button>
+          )}
         </View>
-        <Typography className="flex-1">San Francisco CA age 22 to now</Typography>
-        <View className="pr-6">
-          <Icon name="pencil" />
-        </View>
-      </View>
-      <InputGroup inputList={inputList} />
+      </Form>
       <Link asChild href="/(protected)/basic-info/02-education">
         <Button>Save</Button>
       </Link>

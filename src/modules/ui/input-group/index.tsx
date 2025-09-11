@@ -4,19 +4,22 @@ import { Typography } from '../typography'
 import { Input } from '../input'
 import { Selector } from '../selector'
 import { cn } from '~/utils/cn'
+import { UseFormReturn, FieldValues, Path } from 'react-hook-form'
+import { FormControl, FormField, FormItem } from '../form'
 
 interface InputListType {
   name: string
-  label?: string
   placeholder: string
+  label?: string
   options?: { name: string; value: string }[]
 }
 
-interface InputGroupProps {
+interface InputGroupProps<T extends FieldValues> {
+  form: UseFormReturn<T>
   inputList: InputListType[]
 }
 
-export function InputGroup({ inputList }: InputGroupProps) {
+export function InputGroup<T extends FieldValues>({ inputList, form }: InputGroupProps<T>) {
   const inputClassName = (index: number) =>
     cn(
       index === 0 && 'rounded-b-none border-b border-miscellaneous-topic-stroke',
@@ -29,28 +32,53 @@ export function InputGroup({ inputList }: InputGroupProps) {
   const renderInput = (input: InputListType, index: number) => {
     if (input.options) {
       return (
-        <Selector
+        <FormField
           key={input.name}
-          options={input.options}
-          placeholder={input.placeholder}
-          className={inputClassName(index)}
-          leftAdornment={input.label ? <Typography className="w-24">{input.label}</Typography> : null}
+          name={input.name as Path<T>}
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Selector
+                  key={input.name}
+                  options={input.options || []}
+                  placeholder={input.placeholder}
+                  className={inputClassName(index)}
+                  onSelect={field.onChange}
+                  leftAdornment={input.label ? <Typography className="w-24">{input.label}</Typography> : null}
+                />
+              </FormControl>
+            </FormItem>
+          )}
         />
       )
     }
 
     return (
-      <Input
+      <FormField
         key={input.name}
-        className={inputClassName(index)}
-        placeholder={input.placeholder}
-        leftAdornment={input.label ? <Typography className="w-24">{input.label}</Typography> : null}
+        name={input.name as Path<T>}
+        control={form.control}
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input
+                placeholder={input.placeholder}
+                className={inputClassName(index)}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                value={field.value}
+                leftAdornment={input.label ? <Typography className="w-24">{input.label}</Typography> : null}
+              />
+            </FormControl>
+          </FormItem>
+        )}
       />
     )
   }
 
   return (
-    <View className="flex-1 gap-4">
+    <View className="gap-4">
       <View>{inputList.map((input, index) => renderInput(input, index))}</View>
     </View>
   )

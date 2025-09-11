@@ -9,9 +9,10 @@ interface SelectorProps extends React.ComponentProps<typeof TouchableOpacity> {
   rightAdornment?: React.ReactNode
   leftAdornment?: React.ReactNode
   options: { name: string; value: string }[]
+  onSelect?: (value: string) => void
 }
 
-export function Selector({ options, placeholder, className, rightAdornment, leftAdornment }: SelectorProps) {
+export function Selector({ options, placeholder, className, rightAdornment, leftAdornment, onSelect }: SelectorProps) {
   const [selectedOption, setSelectedOption] = useState('')
 
   const optionNames = useMemo(() => options.map((option) => option.name), [options])
@@ -31,6 +32,7 @@ export function Selector({ options, placeholder, className, rightAdornment, left
       },
       (index) => {
         setSelectedOption(optionNames[index] || selectedOption)
+        onSelect?.(options[index].value || selectedOption)
       }
     )
   }
