@@ -1,5 +1,5 @@
-import { Alert, View } from 'react-native'
-import React from 'react'
+import { Alert, View, ScrollView, KeyboardAvoidingView } from 'react-native'
+import React, { useState } from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Button } from '~/modules/ui/button'
@@ -9,6 +9,7 @@ import InputResult from '../../parts/input-result'
 import { HomeInfoData, useHomeInfoForm } from '../../hooks/use-home-info-form'
 import { Form } from '~/modules/ui/form'
 import { useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost } from '~/services/api/generated'
+import { useBoolean } from 'usehooks-ts'
 
 const inputList = [
   {
@@ -29,8 +30,9 @@ const inputList = [
 ]
 
 export function HomeSurveyScreen() {
-  const [locations, setLocations] = React.useState<HomeInfoData[]>([])
-  const [showForm, setShowForm] = React.useState(true)
+  const [locations, setLocations] = useState<HomeInfoData[]>([])
+  const { value: showForm, setTrue: openForm, setFalse: closeForm } = useBoolean(true)
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const router = useRouter()
 
   const { mutateAsync, isPending } = useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost()
@@ -38,14 +40,33 @@ export function HomeSurveyScreen() {
   const form = useHomeInfoForm()
 
   const handleFormSave = (data: HomeInfoData) => {
-    setLocations((prev) => [...prev, data])
-    setShowForm(false)
+    if (editingIndex !== null) {
+      setLocations((prev) => prev.map((item, index) => (index === editingIndex ? data : item)))
+    } else {
+      setLocations((prev) => [...prev, data])
+    }
+    closeForm()
+    setEditingIndex(null)
     form.reset()
   }
 
   const handleFormCancel = () => {
-    setShowForm(false)
     form.reset()
+    setEditingIndex(null)
+    closeForm()
+  }
+
+  const handleEdit = (index: number) => {
+    const location = locations[index]
+    form.reset(location)
+    setEditingIndex(index)
+    closeForm()
+  }
+
+  const handleAddAnother = () => {
+    form.reset({ location: '', startAge: '', endAge: '' })
+    setEditingIndex(null)
+    openForm()
   }
 
   const handleSave = async () => {
@@ -76,48 +97,84 @@ export function HomeSurveyScreen() {
   }
 
   return (
-    <View className="gap-4 px-8 py-safe flex flex-1">
-      <View className="pt-28 gap-2">
-        <SvgIcon name="home" size="3xl" color="accent" />
-        <Typography brand level="h3">
-          Where have you lived throughout your life?
-        </Typography>
-        <Typography>Select at many as necessary.</Typography>
-      </View>
-      {locations.map((location, index) => (
-        <InputResult key={index} label={location.location} icon="home" />
-      ))}
-      <Form {...form}>
-        <View className="flex-1 gap-4">
-          {showForm ? (
-            <>
-              <InputGroup<HomeInfoData> inputList={inputList} form={form} />
-              <View className="flex-row justify-around">
-                {!!locations.length && (
-                  <Button variant="white" size="sm" onPress={handleFormCancel}>
-                    Cancel
-                  </Button>
-                )}
-                <Button
-                  variant="white"
-                  size="sm"
-                  disabled={!form.formState.isValid || !form.formState.isDirty}
-                  onPress={form.handleSubmit(handleFormSave)}
-                >
-                  Save
+    <View className="flex-1 px-8 py-safe">
+      <KeyboardAvoidingView behavior="padding" className="flex-1">
+        <ScrollView contentContainerClassName="gap-4 pb-8" bounces={false} showsVerticalScrollIndicator={false}>
+          <View className="pt-28 gap-2">
+            <SvgIcon name="home" size="3xl" color="accent" />
+            <Typography brand level="h3">
+              Where have you lived throughout your life?
+            </Typography>
+            <Typography>Add as many as necessary.</Typography>
+          </View>
+          <Form {...form}>
+            {locations.map((location, index) => (
+              <InputResult
+                key={index}
+                label={location.location}
+                icon="home"
+                onPress={() => handleEdit(index)}
+                isExpanded={editingIndex === index}
+                renderExpandedComponent={
+                  <FormControls
+                    form={form}
+                    locations={locations}
+                    handleFormCancel={handleFormCancel}
+                    handleFormSave={handleFormSave}
+                  />
+                }
+              />
+            ))}
+            <View className="flex-1 gap-4">
+              {showForm ? (
+                <FormControls
+                  form={form}
+                  locations={locations}
+                  handleFormCancel={handleFormCancel}
+                  handleFormSave={handleFormSave}
+                />
+              ) : (
+                <Button variant="white" size="sm" onPress={handleAddAnother}>
+                  Add another
                 </Button>
-              </View>
-            </>
-          ) : (
-            <Button variant="white" size="sm" onPress={() => setShowForm(true)}>
-              Add another
-            </Button>
-          )}
-        </View>
-      </Form>
-      <Button onPress={handleSave} loading={isPending}>
-        Save
-      </Button>
+              )}
+            </View>
+          </Form>
+        </ScrollView>
+        <Button onPress={handleSave} loading={isPending}>
+          Save
+        </Button>
+      </KeyboardAvoidingView>
     </View>
+  )
+}
+
+interface FormControlsProps {
+  form: ReturnType<typeof useHomeInfoForm>
+  locations: HomeInfoData[]
+  handleFormCancel: () => void
+  handleFormSave: (data: HomeInfoData) => void
+}
+
+function FormControls({ form, locations, handleFormCancel, handleFormSave }: FormControlsProps): React.ReactNode {
+  return (
+    <>
+      <InputGroup<HomeInfoData> inputList={inputList} form={form} />
+      <View className="flex-row justify-around">
+        {!!locations.length && (
+          <Button variant="white" size="sm" onPress={handleFormCancel}>
+            Cancel
+          </Button>
+        )}
+        <Button
+          variant="white"
+          size="sm"
+          disabled={!form.formState.isValid || !form.formState.isDirty}
+          onPress={form.handleSubmit(handleFormSave)}
+        >
+          Save
+        </Button>
+      </View>
+    </>
   )
 }
