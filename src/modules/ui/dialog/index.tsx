@@ -20,8 +20,8 @@ export function DialogHeader({ children }: PropsWithChildren) {
   return <View>{children}</View>
 }
 
-export function DialogFooter({ children }: PropsWithChildren) {
-  return <View>{children}</View>
+export function DialogFooter({ children, className }: PropsWithChildren<{ className?: string }>) {
+  return <View className={className}>{children}</View>
 }
 
 export function DialogTitle({ children }: { children: string }) {

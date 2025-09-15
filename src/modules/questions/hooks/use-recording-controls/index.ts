@@ -39,10 +39,15 @@ export function useRecordingControls(audioRecorder: AudioRecorder) {
     await cleanupRecording()
   }, [cleanupRecording, stopRecording])
 
+  const pauseRecording = useCallback(() => {
+    audioRecorder.pause()
+  }, [audioRecorder])
+
   return {
     startRecording,
     stopRecording,
     cancelRecording,
     cleanupRecording,
+    pauseRecording,
   }
 }

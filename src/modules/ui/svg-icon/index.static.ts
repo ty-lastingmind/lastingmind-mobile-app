@@ -16,6 +16,17 @@ import { Family } from './svg/family'
 import { Work } from './svg/work'
 import { Education } from './svg/education'
 import { Home } from './svg/home'
+import { CuratedQuestions } from './svg/curated-questions'
+import { Mic } from './svg/mic'
+import { WriteAnswer } from './svg/write-answer'
+import { Stop } from './svg/stop'
+import { Pause } from './svg/pause'
+import { CheckMark } from './svg/check-mark'
+import { Refresh } from './svg/refresh'
+import { Play } from './svg/play'
+import { ArrowRight } from './svg/arrow-right'
+import { AudioWave } from './svg/audio-wave'
+import { Trash } from './svg/trash'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -36,4 +47,15 @@ export const iconNameToSvg = {
   work: Work,
   education: Education,
   home: Home,
+  curated_questions: CuratedQuestions,
+  mic: Mic,
+  write_answer: WriteAnswer,
+  stop: Stop,
+  pause: Pause,
+  check_mark: CheckMark,
+  refresh: Refresh,
+  play: Play,
+  arrow_right: ArrowRight,
+  audio_wave: AudioWave,
+  trash: Trash,
 } as const
