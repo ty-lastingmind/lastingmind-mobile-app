@@ -14,7 +14,7 @@ export default function QuestionsProgress({ progress, label, level }: QuestionsP
   return (
     <View>
       <View className="flex-row gap-4 items-center bg-bg-secondary p-4 rounded-xl rounded-b-none border-b border-miscellaneous-topic-stroke">
-        <SvgIcon name="trophy" size="lg" />
+        <SvgIcon name="trophy" size="lg" color="accent" />
         <Typography brand level="h6">
           {level}
         </Typography>

@@ -9,30 +9,63 @@ import { Typography } from '~/modules/ui/typography'
 import InfoCard from '../../parts/info-card'
 import { Icon } from '~/modules/ui/icon'
 import QuestionsProgress from '../../parts/questions-progress'
+import { ScrollView } from 'react-native-gesture-handler'
+import {
+  usePullUserInfoHomePullUserInfoGet,
+  usePullUserStatsProfilePagePullUserStatsGet,
+} from '~/services/api/generated'
+import { useMemo } from 'react'
 
 export function ProfileScreen() {
+  const { data: userStats } = usePullUserStatsProfilePagePullUserStatsGet()
+  const { data: userInfo } = usePullUserInfoHomePullUserInfoGet()
+
+  const progressLabel = useMemo(
+    () =>
+      userStats
+        ? `You're ${userStats.progress_percent}% towards ${userStats.next_stage}. You have ${userStats.current_minutes} of ${userStats.minutes_in_stage} minutes complete. Keep it up!`
+        : '',
+    [userStats]
+  )
+
   return (
-    <View className="py-safe flex px-8">
+    <ScrollView contentContainerClassName="py-safe flex px-8" bounces={false}>
       {/* profile stats */}
       <View className="items-center justify-center gap-4">
         <Typography brand level="h3" className="text-center">
-          Ty Allen
+          {userInfo?.full_user_name}
         </Typography>
-        <Avatar />
-        <QuestionsProgress
-          progress={41}
-          level="Basic"
-          label="You're 41% towards Platinum. You have 15 of 75 minutes complete. Keep it up!"
-        />
+        <Avatar source={userInfo?.profile_image} size="lg" />
+        {userStats && (
+          <QuestionsProgress
+            progress={userStats.progress_percent}
+            level={userStats.current_stage}
+            label={progressLabel}
+          />
+        )}
         <TouchableOpacity className="flex-row gap-4 px-4 py-2">
           <SvgIcon name="chatbubbles" size="lg" color="accent" />
           <Typography className="flex-1">View all past responses</Typography>
           <Icon name="chevron-forward" color="secondary" />
         </TouchableOpacity>
-        <InfoCard title="5" subtitle="Questions Answered" iconName="chatbubbles" />
+        <InfoCard
+          title={`${userInfo?.stats.num_questions_answered}`}
+          subtitle="Questions Answered"
+          iconName="chatbubbles"
+        />
         <View className="flex-row gap-4">
-          <InfoCard title="160" subtitle="Mins Interview" iconName="chatbubbles" className="flex-1" />
-          <InfoCard title="5" subtitle="Journal Entries" iconName="chatbubbles" className="flex-1" />
+          <InfoCard
+            title={`${userInfo?.stats.mins_of_interview}`}
+            subtitle="Mins Interview"
+            iconName="time"
+            className="flex-1"
+          />
+          <InfoCard
+            title={`${userInfo?.stats.num_journals}`}
+            subtitle="Journal Entries"
+            iconName="noteblock"
+            className="flex-1"
+          />
         </View>
       </View>
 
@@ -47,7 +80,7 @@ export function ProfileScreen() {
 
       {/* dev options - should stay at the bottom and hidden in staging/prod  */}
       <DeveloperProfileScreen />
-    </View>
+    </ScrollView>
   )
 }
 

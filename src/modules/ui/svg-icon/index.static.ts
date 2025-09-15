@@ -18,6 +18,8 @@ import { Education } from './svg/education'
 import { Home } from './svg/home'
 import { Trophy } from './svg/trophy'
 import { ChatBubbles } from './svg/chatbubbles'
+import { Time } from './svg/time'
+import { Noteblock } from './svg/noteblock'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -40,4 +42,6 @@ export const iconNameToSvg = {
   home: Home,
   trophy: Trophy,
   chatbubbles: ChatBubbles,
+  time: Time,
+  noteblock: Noteblock,
 } as const
