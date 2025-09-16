@@ -12,16 +12,21 @@ import QuestionsProgress from '../../parts/questions-progress'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
   useGetUserAudienceProfilePageGetUserAudienceGet,
+  usePullSuggestedTopicsUtilsPullSuggestedTopicsGet,
+  usePullTopicsDiscussedProfilePagePullDiscussedTopicsGet,
   usePullUserInfoHomePullUserInfoGet,
   usePullUserStatsProfilePagePullUserStatsGet,
 } from '~/services/api/generated'
 import { useMemo } from 'react'
 import AudienceList from '../../parts/audience-list'
+import { TopicsList } from '~/modules/onboarding/parts/TopicsList'
 
 export function ProfileScreen() {
   const { data: userStats } = usePullUserStatsProfilePagePullUserStatsGet()
   const { data: userInfo } = usePullUserInfoHomePullUserInfoGet()
   const { data: audienceInfo } = useGetUserAudienceProfilePageGetUserAudienceGet()
+  const { data: suggestedTopics } = usePullSuggestedTopicsUtilsPullSuggestedTopicsGet()
+  const { data: discussedTopics } = usePullTopicsDiscussedProfilePagePullDiscussedTopicsGet()
 
   const progressLabel = useMemo(
     () =>
@@ -80,14 +85,35 @@ export function ProfileScreen() {
         {audienceInfo && <AudienceList audienceInfo={audienceInfo} />}
       </View>
 
-      {/* topics */}
-      <View></View>
+      {/* suggested topics */}
+      <View className="gap-4">
+        <Typography level="h5" weight="bold">
+          Topics Needed
+        </Typography>
+        {suggestedTopics && (
+          <View className="h-36">
+            <TopicsList topics={suggestedTopics?.suggested_topics} className="justify-start" />
+          </View>
+        )}
+      </View>
+
+      {/* discussed topics */}
+      <View className="gap-4">
+        <Typography level="h5" weight="bold">
+          Topics Discussed
+        </Typography>
+        {discussedTopics && (
+          <View className="h-36">
+            <TopicsList topics={discussedTopics?.topics_discussed} className="justify-start" />
+          </View>
+        )}
+      </View>
 
       {/* personal info */}
       <View></View>
 
       {/* dev options - should stay at the bottom and hidden in staging/prod  */}
-      {__DEV__ && <DeveloperProfileScreen />}
+      {!__DEV__ && <DeveloperProfileScreen />}
     </ScrollView>
   )
 }

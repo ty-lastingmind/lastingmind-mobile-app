@@ -1,12 +1,14 @@
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, FlatList } from 'react-native'
 import { Typography } from '~/modules/ui/typography'
 import { cn } from '~/utils/cn'
 
 interface TopicsListProps {
-  selectedTopic: string[]
+  selectedTopic?: string[]
   topics: string[]
   customTopicName?: string
-  onTopicChange: (topic: string) => void
+  onTopicChange?: (topic: string) => void
+  className?: string
+  nestedScrollEnabled?: boolean
 }
 
 interface TopicButtonProps {
@@ -37,19 +39,30 @@ export function TopicButton({ label: topic, isSelected, secondary, onPress }: To
   )
 }
 
-export function TopicsList({ onTopicChange, topics, selectedTopic }: TopicsListProps) {
+export function TopicsList({
+  onTopicChange,
+  topics,
+  selectedTopic,
+  className,
+  nestedScrollEnabled = false,
+}: TopicsListProps) {
+  const containerClassName = cn('flex flex-row flex-wrap gap-2 pb-4 justify-center', className)
+
   return (
-    <View className="gap-3 relative">
-      <View className="flex flex-row flex-wrap gap-2 pb-4 justify-center">
-        {topics.map((topic, index) => (
+    <View className="gap-3">
+      <FlatList
+        data={topics}
+        keyExtractor={(index) => index.toString()}
+        nestedScrollEnabled={nestedScrollEnabled}
+        renderItem={({ item: topic }) => (
           <TopicButton
-            key={index}
             label={topic}
-            isSelected={selectedTopic.includes(topic)}
-            onPress={() => onTopicChange(topic)}
+            isSelected={selectedTopic?.includes(topic)}
+            onPress={onTopicChange ? () => onTopicChange(topic) : undefined}
           />
-        ))}
-      </View>
+        )}
+        contentContainerClassName={containerClassName}
+      />
     </View>
   )
 }
