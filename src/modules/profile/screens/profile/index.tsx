@@ -11,14 +11,17 @@ import { Icon } from '~/modules/ui/icon'
 import QuestionsProgress from '../../parts/questions-progress'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
+  useGetUserAudienceProfilePageGetUserAudienceGet,
   usePullUserInfoHomePullUserInfoGet,
   usePullUserStatsProfilePagePullUserStatsGet,
 } from '~/services/api/generated'
 import { useMemo } from 'react'
+import AudienceList from '../../parts/audience-list'
 
 export function ProfileScreen() {
   const { data: userStats } = usePullUserStatsProfilePagePullUserStatsGet()
   const { data: userInfo } = usePullUserInfoHomePullUserInfoGet()
+  const { data: audienceInfo } = useGetUserAudienceProfilePageGetUserAudienceGet()
 
   const progressLabel = useMemo(
     () =>
@@ -29,7 +32,7 @@ export function ProfileScreen() {
   )
 
   return (
-    <ScrollView contentContainerClassName="py-safe flex px-8" bounces={false}>
+    <ScrollView contentContainerClassName="py-safe flex px-8 gap-4">
       {/* profile stats */}
       <View className="items-center justify-center gap-4">
         <Typography brand level="h3" className="text-center">
@@ -70,7 +73,12 @@ export function ProfileScreen() {
       </View>
 
       {/* audience */}
-      <View></View>
+      <View className="gap-4">
+        <Typography level="h5" weight="bold">
+          Audience
+        </Typography>
+        {audienceInfo && <AudienceList audienceInfo={audienceInfo} />}
+      </View>
 
       {/* topics */}
       <View></View>
@@ -79,7 +87,7 @@ export function ProfileScreen() {
       <View></View>
 
       {/* dev options - should stay at the bottom and hidden in staging/prod  */}
-      <DeveloperProfileScreen />
+      {__DEV__ && <DeveloperProfileScreen />}
     </ScrollView>
   )
 }
@@ -96,19 +104,17 @@ function DeveloperProfileScreen() {
     })
   }
 
-  if (!__DEV__) {
-    return (
-      <>
-        <Typography level="h1">Profile</Typography>
-        <Button onPress={handleSignOut} variant="secondary">
-          Sign Out
-        </Button>
-        <Link href="/profile/developer-screen" asChild>
-          <Button>Developer Screen</Button>
-        </Link>
-      </>
-    )
-  }
-
-  return null
+  return (
+    <>
+      <Typography level="h5" weight="bold">
+        Dev options
+      </Typography>
+      <Button onPress={handleSignOut} variant="secondary">
+        Sign Out
+      </Button>
+      <Link href="/profile/developer-screen" asChild>
+        <Button>Developer Screen</Button>
+      </Link>
+    </>
+  )
 }
