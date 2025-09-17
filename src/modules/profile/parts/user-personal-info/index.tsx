@@ -5,6 +5,10 @@ import Dropdown from '~/modules/ui/dropdown'
 import { FamilyInfo } from '../user-info-family'
 import { FriendsInfo } from '../user-info-friends'
 import { EducationInfo } from '../user-info-education'
+import { CareerInfo } from '../user-info-career'
+import { LivingInfo } from '../user-info-living'
+import { DatesInfo } from '../user-info-dates'
+import { OrganizationsInfo } from '../user-info-organizations'
 
 export default function UserPersonalInfo() {
   return (
@@ -22,10 +26,18 @@ export default function UserPersonalInfo() {
       <Dropdown iconName="education-outline" title="Education">
         <EducationInfo />
       </Dropdown>
-      <Dropdown iconName="person" title="Career"></Dropdown>
-      <Dropdown iconName="home-outline" title="Living"></Dropdown>
-      <Dropdown iconName="calendar" title="Dates"></Dropdown>
-      <Dropdown iconName="work-outline" title="Organizations"></Dropdown>
+      <Dropdown iconName="person" title="Career">
+        <CareerInfo />
+      </Dropdown>
+      <Dropdown iconName="home-outline" title="Living">
+        <LivingInfo />
+      </Dropdown>
+      <Dropdown iconName="calendar" title="Dates">
+        <DatesInfo />
+      </Dropdown>
+      <Dropdown iconName="work-outline" title="Organizations">
+        <OrganizationsInfo />
+      </Dropdown>
     </View>
   )
 }
