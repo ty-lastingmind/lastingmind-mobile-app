@@ -1,5 +1,5 @@
 import { View, TouchableOpacity } from 'react-native'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet,
   usePullAiAboutProfilePagePullAiAboutPost,
@@ -11,9 +11,21 @@ import { TypographyTyping } from '~/modules/ui/typography-typing'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 
 export function FamilyInfo() {
+  const [selectedBadge, setSelectedBadge] = useState('')
+  const [aiAbout, setAiAbout] = useState('')
+
   const { data } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
     topic: 'family',
   })
+
+  useEffect(() => {
+    if (data?.personal_info_details?.length) {
+      const firstName = (data.personal_info_details[0] as FamilyItem).name
+      if (firstName) {
+        setSelectedBadge(firstName)
+      }
+    }
+  }, [data])
 
   const aiSummary = usePullAiAboutProfilePagePullAiAboutPost()
 
@@ -24,9 +36,6 @@ export function FamilyInfo() {
         .filter((name): name is string => name !== undefined) || [],
     [data]
   )
-
-  const [selectedBadge, setSelectedBadge] = useState(() => list[0] || '')
-  const [aiAbout, setAiAbout] = useState('')
 
   const selectedFamilyMember = useMemo(
     () => data?.personal_info_details?.find((i) => (i as FamilyItem).name === selectedBadge) as FamilyItem | undefined,

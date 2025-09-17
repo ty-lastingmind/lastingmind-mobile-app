@@ -35,7 +35,7 @@ export default function BadgeList({ list, selectedBadge, onBadgePress, size = 'm
         showsHorizontalScrollIndicator={false}
       />
       {list.length > 5 && (
-        <TouchableOpacity className="py-4" onPress={toggleExpanded}>
+        <TouchableOpacity className="pt-4" onPress={toggleExpanded}>
           <Typography color="secondary">View All</Typography>
         </TouchableOpacity>
       )}
