@@ -1,0 +1,33 @@
+import { TouchableOpacity } from 'react-native'
+import React from 'react'
+import { Icon } from '../icon'
+import { SvgIcon } from '../svg-icon'
+import { Typography } from '../typography'
+import { SvgIconName } from '../svg-icon/index.types'
+import { useBoolean } from 'usehooks-ts'
+import Animated, { FadeInUp } from 'react-native-reanimated'
+import { cn } from '~/utils/cn'
+
+interface DropdownProps extends React.ComponentProps<typeof TouchableOpacity> {
+  iconName?: SvgIconName
+  title: string
+}
+
+export default function Dropdown({ iconName, title, children, className }: DropdownProps) {
+  const { value: isOpen, toggle: toggleOpen } = useBoolean(false)
+
+  const containerClassName = cn('flex-row gap-4 p-6 bg-bg-secondary rounded-xl items-center', className)
+
+  return (
+    <>
+      <TouchableOpacity className={containerClassName} onPress={toggleOpen}>
+        {iconName && <SvgIcon name={iconName} size="xl" color="accent" />}
+        <Typography level="h5" className="flex-1" weight="bold">
+          {title}
+        </Typography>
+        {!isOpen ? <Icon name="chevron-forward" color="secondary" /> : <Icon name="chevron-down" color="secondary" />}
+      </TouchableOpacity>
+      {isOpen && <Animated.View entering={FadeInUp.duration(200)}>{children}</Animated.View>}
+    </>
+  )
+}

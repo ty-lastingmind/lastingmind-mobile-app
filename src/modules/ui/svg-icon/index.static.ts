@@ -20,6 +20,13 @@ import { Trophy } from './svg/trophy'
 import { ChatBubbles } from './svg/chatbubbles'
 import { Time } from './svg/time'
 import { Noteblock } from './svg/noteblock'
+import { HomeOutline } from './svg/home-outline'
+import { EditBox } from './svg/editbox'
+import { Sparks } from './svg/sparks'
+import { EducationOutline } from './svg/education-outline'
+import { Person } from './svg/person'
+import { Calendar } from './svg/calendar'
+import { WorkOutline } from './svg/work-outline'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -44,4 +51,11 @@ export const iconNameToSvg = {
   chatbubbles: ChatBubbles,
   time: Time,
   noteblock: Noteblock,
+  editbox: EditBox,
+  sparks: Sparks,
+  person: Person,
+  calendar: Calendar,
+  'home-outline': HomeOutline,
+  'education-outline': EducationOutline,
+  'work-outline': WorkOutline,
 } as const
