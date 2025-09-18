@@ -4,16 +4,29 @@ import { FlatList } from 'react-native'
 import { Badge } from '../badge'
 import { Typography } from '../typography'
 import { useBoolean } from 'usehooks-ts'
+import { cn } from '~/utils/cn'
 
 interface BadgeListProps {
   list: string[]
   selectedBadge?: string
   onBadgePress?: (label: string) => void
   size?: 'sm' | 'md' | 'lg'
+  badgeContainerClassName?: string
+  badgeTextClassName?: string
 }
 
-export default function BadgeList({ list, selectedBadge, onBadgePress, size = 'md' }: BadgeListProps) {
+export default function BadgeList({
+  list,
+  selectedBadge,
+  onBadgePress,
+  size = 'md',
+  badgeContainerClassName,
+  badgeTextClassName,
+}: BadgeListProps) {
   const { value: isExpanded, toggle: toggleExpanded } = useBoolean(false)
+
+  const containerClassName = cn('rounded-full', badgeContainerClassName)
+  const textClassName = cn('', badgeTextClassName)
 
   return (
     <View>
@@ -28,7 +41,8 @@ export default function BadgeList({ list, selectedBadge, onBadgePress, size = 'm
               variant={selectedBadge === label ? 'primary' : 'outlined'}
               label={label}
               size={size}
-              containerClassName="rounded-full"
+              containerClassName={containerClassName}
+              textClassName={textClassName}
             />
           </TouchableOpacity>
         )}
