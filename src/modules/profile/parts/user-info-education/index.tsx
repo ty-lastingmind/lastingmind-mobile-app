@@ -5,6 +5,9 @@ import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { useProfileInfo } from '../../hooks/use-profile-info'
+import { EducationFormData, useEducationForm } from '../../hooks/use-education-form'
+import { useBoolean } from 'usehooks-ts'
+import EducationForm from '../dialogs/education-form'
 
 export function EducationInfo() {
   const {
@@ -17,11 +20,23 @@ export function EducationInfo() {
     listKey: 'school',
   })
 
+  const form = useEducationForm()
+
+  const { value, setFalse, setTrue } = useBoolean(false)
+
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
-      // TODO
+      form.reset({ school: '', level: '', about: '' })
+      setTrue()
     } else {
       setSelectedBadge(value)
+    }
+  }
+
+  const handleEdit = () => {
+    if (selectedEducation) {
+      form.reset(selectedEducation as EducationFormData)
+      setTrue()
     }
   }
 
@@ -45,11 +60,12 @@ export function EducationInfo() {
               About: <Typography>{selectedEducation.about}</Typography>
             </Typography>
           )}
-          <TouchableOpacity className="absolute right-0 top-0">
+          <TouchableOpacity className="absolute right-0 top-0" onPress={handleEdit}>
             <SvgIcon name="editbox" size="lg" color="accent" />
           </TouchableOpacity>
         </View>
       )}
+      <EducationForm isOpen={value} onClose={setFalse} form={form} />
     </View>
   )
 }

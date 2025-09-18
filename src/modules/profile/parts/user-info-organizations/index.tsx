@@ -5,6 +5,9 @@ import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { useProfileInfo } from '../../hooks/use-profile-info'
+import { OrganizationsFormData, useOrganizationsForm } from '../../hooks/use-organizations-form'
+import { useBoolean } from 'usehooks-ts'
+import OrganizationsForm from '../dialogs/organizations-form'
 
 export function OrganizationsInfo() {
   const {
@@ -17,11 +20,23 @@ export function OrganizationsInfo() {
     listKey: 'title',
   })
 
+  const form = useOrganizationsForm()
+
+  const { value, setFalse, setTrue } = useBoolean(false)
+
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
-      // TODO
+      form.reset({ title: '', about: '' })
+      setTrue()
     } else {
       setSelectedBadge(value)
+    }
+  }
+
+  const handleEdit = () => {
+    if (selectedOrganization) {
+      form.reset(selectedOrganization as OrganizationsFormData)
+      setTrue()
     }
   }
 
@@ -40,11 +55,12 @@ export function OrganizationsInfo() {
               Description: <Typography>{selectedOrganization.about}</Typography>
             </Typography>
           )}
-          <TouchableOpacity className="absolute right-0 top-0">
+          <TouchableOpacity className="absolute right-0 top-0" onPress={handleEdit}>
             <SvgIcon name="editbox" size="lg" color="accent" />
           </TouchableOpacity>
         </View>
       )}
+      <OrganizationsForm isOpen={value} onClose={setFalse} form={form} />
     </View>
   )
 }

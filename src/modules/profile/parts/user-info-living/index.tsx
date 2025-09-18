@@ -5,6 +5,9 @@ import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { useProfileInfo } from '../../hooks/use-profile-info'
+import { LivingFormData, useLivingForm } from '../../hooks/use-living-form'
+import { useBoolean } from 'usehooks-ts'
+import LivingForm from '../dialogs/living-form'
 
 export function LivingInfo() {
   const {
@@ -17,11 +20,22 @@ export function LivingInfo() {
     listKey: 'location',
   })
 
+  const form = useLivingForm()
+  const { value, setFalse, setTrue } = useBoolean(false)
+
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
-      // TODO
+      form.reset({ location: '', start_age: undefined, end_age: undefined, about: '' })
+      setTrue()
     } else {
       setSelectedBadge(value)
+    }
+  }
+
+  const handleEdit = () => {
+    if (selectedLiving) {
+      form.reset(selectedLiving as LivingFormData)
+      setTrue()
     }
   }
 
@@ -45,11 +59,12 @@ export function LivingInfo() {
               Description: <Typography>{selectedLiving.about}</Typography>
             </Typography>
           )}
-          <TouchableOpacity className="absolute right-0 top-0">
+          <TouchableOpacity className="absolute right-0 top-0" onPress={handleEdit}>
             <SvgIcon name="editbox" size="lg" color="accent" />
           </TouchableOpacity>
         </View>
       )}
+      <LivingForm isOpen={value} form={form} onClose={setFalse} />
     </View>
   )
 }

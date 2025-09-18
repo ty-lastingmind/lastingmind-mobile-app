@@ -5,6 +5,9 @@ import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { useProfileInfo } from '../../hooks/use-profile-info'
+import { useBoolean } from 'usehooks-ts'
+import { CareerFormData, useCareerForm } from '../../hooks/use-career-form'
+import CareerForm from '../dialogs/career-form'
 
 export function CareerInfo() {
   const {
@@ -17,12 +20,24 @@ export function CareerInfo() {
     listKey: 'company',
   })
 
+  const form = useCareerForm()
+
+  const { value, setFalse, setTrue } = useBoolean(false)
+
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
-      // TODO: Trigger add career functionality here (e.g., open modal)
-      return
+      form.reset({ company: '', position: '', start_age: undefined, end_age: undefined, about: '' })
+      setTrue()
+    } else {
+      setSelectedBadge(value)
     }
-    setSelectedBadge(value)
+  }
+
+  const handleEdit = () => {
+    if (selectedCareer) {
+      form.reset(selectedCareer as CareerFormData)
+      setTrue()
+    }
   }
 
   return (
@@ -50,11 +65,12 @@ export function CareerInfo() {
               Description: <Typography>{selectedCareer.about}</Typography>
             </Typography>
           )}
-          <TouchableOpacity className="absolute right-0 top-0">
+          <TouchableOpacity className="absolute right-0 top-0" onPress={handleEdit}>
             <SvgIcon name="editbox" size="lg" color="accent" />
           </TouchableOpacity>
         </View>
       )}
+      <CareerForm isOpen={value} onClose={setFalse} form={form} />
     </View>
   )
 }

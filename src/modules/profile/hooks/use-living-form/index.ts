@@ -4,8 +4,8 @@ import z from 'zod'
 
 const livingFormSchema = z.object({
   location: z.string().min(1),
-  start_age: z.string().min(1),
-  end_age: z.string().min(1),
+  start_age: z.number(),
+  end_age: z.number(),
   about: z.string().optional(),
 })
 
@@ -20,8 +20,8 @@ export const useLivingForm = () => {
     resolver: zodResolver(livingFormSchema),
     defaultValues: {
       location: '',
-      start_age: '',
-      end_age: '',
+      start_age: undefined,
+      end_age: undefined,
       about: '',
     },
   })

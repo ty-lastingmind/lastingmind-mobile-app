@@ -5,6 +5,9 @@ import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { useProfileInfo } from '../../hooks/use-profile-info'
+import { FriendsFormData, useFriendsForm } from '../../hooks/use-friends-form'
+import { useBoolean } from 'usehooks-ts'
+import FriendsForm from '../dialogs/friends-form'
 
 export function FriendsInfo() {
   const {
@@ -17,11 +20,23 @@ export function FriendsInfo() {
     listKey: 'name',
   })
 
+  const { value, setFalse, setTrue } = useBoolean(false)
+
+  const form = useFriendsForm()
+
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
-      // TODO
+      form.reset({ name: '', you_call_them: '', about: '' })
+      setTrue()
     } else {
       setSelectedBadge(value)
+    }
+  }
+
+  const handleEdit = () => {
+    if (selectedFriend) {
+      form.reset(selectedFriend as FriendsFormData)
+      setTrue()
     }
   }
 
@@ -45,11 +60,12 @@ export function FriendsInfo() {
               About: <Typography>{selectedFriend.about}</Typography>
             </Typography>
           )}
-          <TouchableOpacity className="absolute right-0 top-0">
+          <TouchableOpacity className="absolute right-0 top-0" onPress={handleEdit}>
             <SvgIcon name="editbox" size="lg" color="accent" />
           </TouchableOpacity>
         </View>
       )}
+      <FriendsForm isOpen={value} onClose={setFalse} form={form} />
     </View>
   )
 }

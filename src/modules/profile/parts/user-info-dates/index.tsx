@@ -5,6 +5,9 @@ import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { useProfileInfo } from '../../hooks/use-profile-info'
+import { DatesFormData, useDatesForm } from '../../hooks/use-dates-form'
+import { useBoolean } from 'usehooks-ts'
+import DatesForm from '../dialogs/dates-form'
 
 export function DatesInfo() {
   const {
@@ -17,11 +20,23 @@ export function DatesInfo() {
     listKey: 'title',
   })
 
+  const form = useDatesForm()
+
+  const { value, setFalse, setTrue } = useBoolean(false)
+
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
-      // TODO
+      form.reset({ title: '', date: '', about: '' })
+      setTrue()
     } else {
       setSelectedBadge(value)
+    }
+  }
+
+  const handleEdit = () => {
+    if (selectedDate) {
+      form.reset(selectedDate as DatesFormData)
+      setTrue()
     }
   }
 
@@ -45,11 +60,12 @@ export function DatesInfo() {
               Description: <Typography>{selectedDate.about}</Typography>
             </Typography>
           )}
-          <TouchableOpacity className="absolute right-0 top-0">
+          <TouchableOpacity className="absolute right-0 top-0" onPress={handleEdit}>
             <SvgIcon name="editbox" size="lg" color="accent" />
           </TouchableOpacity>
         </View>
       )}
+      <DatesForm isOpen={value} onClose={setFalse} form={form} />
     </View>
   )
 }
