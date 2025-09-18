@@ -19,6 +19,7 @@ export default function BadgeList({ list, selectedBadge, onBadgePress, size = 'm
     <View>
       <FlatList
         horizontal={!isExpanded}
+        scrollEnabled={!isExpanded}
         data={list}
         keyExtractor={(item) => item}
         renderItem={({ item: label }) => (
@@ -36,7 +37,7 @@ export default function BadgeList({ list, selectedBadge, onBadgePress, size = 'm
       />
       {list.length > 5 && (
         <TouchableOpacity className="pt-4" onPress={toggleExpanded}>
-          <Typography color="secondary">View All</Typography>
+          <Typography color="secondary">{isExpanded ? 'View Less' : 'View All'}</Typography>
         </TouchableOpacity>
       )}
     </View>
