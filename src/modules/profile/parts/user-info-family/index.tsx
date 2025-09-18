@@ -7,6 +7,9 @@ import { Typography } from '~/modules/ui/typography'
 import { TypographyTyping } from '~/modules/ui/typography-typing'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { useProfileInfo } from '../../hooks/use-profile-info'
+import { useBoolean } from 'usehooks-ts'
+import FamilyForm from '../dialogs/family-form'
+import { FamilyFormData, useFamilyForm } from '../../hooks/use-family-form'
 
 export function FamilyInfo() {
   const {
@@ -20,13 +23,18 @@ export function FamilyInfo() {
     listKey: 'name',
   })
 
+  const form = useFamilyForm()
+
+  const { value, setFalse, setTrue } = useBoolean(false)
+
   const [aiAbout, setAiAbout] = useState('')
 
   const aiSummary = usePullAiAboutProfilePagePullAiAboutPost()
 
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
-      // TODO
+      form.reset({ name: '', relationship: '', you_call_them: '', they_call_you: '', about: '' })
+      setTrue()
     } else {
       setSelectedBadge(value)
       setAiAbout('')
@@ -48,6 +56,13 @@ export function FamilyInfo() {
         },
       }
     )
+  }
+
+  const handleEdit = () => {
+    if (selectedFamilyMember) {
+      form.reset(selectedFamilyMember as FamilyFormData)
+      setTrue()
+    }
   }
 
   return (
@@ -81,11 +96,12 @@ export function FamilyInfo() {
             </Typography>
           </TouchableOpacity>
           {aiAbout && <TypographyTyping>{aiAbout}</TypographyTyping>}
-          <TouchableOpacity className="absolute right-0 top-0" disabled={aiSummary.isPending}>
+          <TouchableOpacity className="absolute right-0 top-0" disabled={aiSummary.isPending} onPress={handleEdit}>
             <SvgIcon name="editbox" size="lg" color="accent" />
           </TouchableOpacity>
         </View>
       )}
+      <FamilyForm isOpen={value} onClose={setFalse} form={form} />
     </View>
   )
 }
