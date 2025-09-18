@@ -1,41 +1,21 @@
 import { View, TouchableOpacity } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet } from '~/services/api/generated'
+import React from 'react'
 import { CitiesLivedItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
+import { useProfileInfo } from '../../hooks/use-profile-info'
 
 export function LivingInfo() {
-  const [selectedBadge, setSelectedBadge] = useState('')
-  const { data } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
+  const {
+    selectedBadge,
+    setSelectedBadge,
+    selectedBadgeValue: selectedLiving,
+    list,
+  } = useProfileInfo<CitiesLivedItem>({
     topic: 'cities_lived',
+    listKey: 'location',
   })
-
-  useEffect(() => {
-    if (data?.personal_info_details?.length) {
-      const firstLocation = (data.personal_info_details[0] as CitiesLivedItem).location
-      if (firstLocation) {
-        setSelectedBadge(firstLocation)
-      }
-    }
-  }, [data])
-
-  const list = useMemo(
-    () =>
-      data?.personal_info_details
-        ?.map((i) => (i as CitiesLivedItem).location)
-        .filter((location): location is string => location !== undefined) || [],
-    [data]
-  )
-
-  const selectedLiving = useMemo(
-    () =>
-      data?.personal_info_details?.find((i) => (i as CitiesLivedItem).location === selectedBadge) as
-        | CitiesLivedItem
-        | undefined,
-    [data, selectedBadge]
-  )
 
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
@@ -55,7 +35,7 @@ export function LivingInfo() {
               Location: <Typography>{selectedLiving.location}</Typography>
             </Typography>
           )}
-          {!!selectedLiving.start_age && !!selectedLiving.end_age && (
+          {(selectedLiving.start_age === 0 || !!selectedLiving.start_age) && !!selectedLiving.end_age && (
             <Typography color="accent" weight="bold">
               Ages: <Typography>{`${selectedLiving.start_age} - ${selectedLiving.end_age}`}</Typography>
             </Typography>

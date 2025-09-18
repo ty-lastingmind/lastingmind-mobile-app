@@ -1,39 +1,21 @@
 import { View, TouchableOpacity } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet } from '~/services/api/generated'
+import React from 'react'
 import { FriendsItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
+import { useProfileInfo } from '../../hooks/use-profile-info'
 
 export function FriendsInfo() {
-  const [selectedBadge, setSelectedBadge] = useState('')
-  const { data } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
+  const {
+    selectedBadge,
+    setSelectedBadge,
+    selectedBadgeValue: selectedFriend,
+    list,
+  } = useProfileInfo<FriendsItem>({
     topic: 'friends',
+    listKey: 'name',
   })
-
-  useEffect(() => {
-    if (data?.personal_info_details?.length) {
-      const firstName = (data.personal_info_details[0] as FriendsItem).name
-      if (firstName) {
-        setSelectedBadge(firstName)
-      }
-    }
-  }, [data])
-
-  const list = useMemo(
-    () =>
-      data?.personal_info_details
-        ?.map((i) => (i as FriendsItem).name)
-        .filter((name): name is string => name !== undefined) || [],
-    [data]
-  )
-
-  const selectedFriend = useMemo(
-    () =>
-      data?.personal_info_details?.find((i) => (i as FriendsItem).name === selectedBadge) as FriendsItem | undefined,
-    [data, selectedBadge]
-  )
 
   const handleSelectBadge = (value: string) => {
     if (value === '+') {

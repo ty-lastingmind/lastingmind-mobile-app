@@ -1,39 +1,21 @@
 import { View, TouchableOpacity } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet } from '~/services/api/generated'
+import React from 'react'
 import { CareerItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
+import { useProfileInfo } from '../../hooks/use-profile-info'
 
 export function CareerInfo() {
-  const [selectedBadge, setSelectedBadge] = useState('')
-  const { data } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
+  const {
+    selectedBadge,
+    setSelectedBadge,
+    selectedBadgeValue: selectedCareer,
+    list,
+  } = useProfileInfo<CareerItem>({
     topic: 'career',
+    listKey: 'company',
   })
-
-  useEffect(() => {
-    if (data?.personal_info_details?.length) {
-      const firstCompany = (data.personal_info_details[0] as CareerItem).company
-      if (firstCompany) {
-        setSelectedBadge(firstCompany)
-      }
-    }
-  }, [data])
-
-  const list = useMemo(
-    () =>
-      data?.personal_info_details
-        ?.map((i) => (i as CareerItem).company)
-        .filter((company): company is string => company !== undefined) || [],
-    [data]
-  )
-
-  const selectedCareer = useMemo(
-    () =>
-      data?.personal_info_details?.find((i) => (i as CareerItem).company === selectedBadge) as CareerItem | undefined,
-    [data, selectedBadge]
-  )
 
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
@@ -58,7 +40,7 @@ export function CareerInfo() {
               Position: <Typography>{selectedCareer.position}</Typography>
             </Typography>
           )}
-          {!!selectedCareer.start_age && !!selectedCareer.end_age && (
+          {(selectedCareer.start_age === 0 || !!selectedCareer.start_age) && !!selectedCareer.end_age && (
             <Typography color="accent" weight="bold">
               Ages: <Typography>{`${selectedCareer.start_age} - ${selectedCareer.end_age}`}</Typography>
             </Typography>

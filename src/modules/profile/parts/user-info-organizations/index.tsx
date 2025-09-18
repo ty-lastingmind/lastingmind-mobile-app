@@ -1,41 +1,21 @@
 import { View, TouchableOpacity } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet } from '~/services/api/generated'
+import React from 'react'
 import { OrganizationsItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
+import { useProfileInfo } from '../../hooks/use-profile-info'
 
 export function OrganizationsInfo() {
-  const [selectedBadge, setSelectedBadge] = useState('')
-  const { data } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
+  const {
+    selectedBadge,
+    setSelectedBadge,
+    selectedBadgeValue: selectedOrganization,
+    list,
+  } = useProfileInfo<OrganizationsItem>({
     topic: 'organizations',
+    listKey: 'title',
   })
-
-  useEffect(() => {
-    if (data?.personal_info_details?.length) {
-      const firstTitle = (data.personal_info_details[0] as OrganizationsItem).title
-      if (firstTitle) {
-        setSelectedBadge(firstTitle)
-      }
-    }
-  }, [data])
-
-  const list = useMemo(
-    () =>
-      data?.personal_info_details
-        ?.map((i) => (i as OrganizationsItem).title)
-        .filter((title): title is string => title !== undefined) || [],
-    [data]
-  )
-
-  const selectedOrganization = useMemo(
-    () =>
-      data?.personal_info_details?.find((i) => (i as OrganizationsItem).title === selectedBadge) as
-        | OrganizationsItem
-        | undefined,
-    [data, selectedBadge]
-  )
 
   const handleSelectBadge = (value: string) => {
     if (value === '+') {

@@ -1,46 +1,28 @@
 import { View, TouchableOpacity } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
-import {
-  useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet,
-  usePullAiAboutProfilePagePullAiAboutPost,
-} from '~/services/api/generated'
+import React, { useState } from 'react'
+import { usePullAiAboutProfilePagePullAiAboutPost } from '~/services/api/generated'
 import { FamilyItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { TypographyTyping } from '~/modules/ui/typography-typing'
 import { SvgIcon } from '~/modules/ui/svg-icon'
+import { useProfileInfo } from '../../hooks/use-profile-info'
 
 export function FamilyInfo() {
-  const [selectedBadge, setSelectedBadge] = useState('')
-  const [aiAbout, setAiAbout] = useState('')
-
-  const { data } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
+  const {
+    selectedBadge,
+    setSelectedBadge,
+    selectedBadgeValue: selectedFamilyMember,
+    list,
+    selectedBadgeIndex,
+  } = useProfileInfo<FamilyItem>({
     topic: 'family',
+    listKey: 'name',
   })
 
-  useEffect(() => {
-    if (data?.personal_info_details?.length) {
-      const firstName = (data.personal_info_details[0] as FamilyItem).name
-      if (firstName) {
-        setSelectedBadge(firstName)
-      }
-    }
-  }, [data])
+  const [aiAbout, setAiAbout] = useState('')
 
   const aiSummary = usePullAiAboutProfilePagePullAiAboutPost()
-
-  const list = useMemo(
-    () =>
-      data?.personal_info_details
-        ?.map((i) => (i as FamilyItem).name)
-        .filter((name): name is string => name !== undefined) || [],
-    [data]
-  )
-
-  const selectedFamilyMember = useMemo(
-    () => data?.personal_info_details?.find((i) => (i as FamilyItem).name === selectedBadge) as FamilyItem | undefined,
-    [data, selectedBadge]
-  )
 
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
@@ -57,7 +39,7 @@ export function FamilyInfo() {
         data: {
           topic: 'family',
           name: selectedBadge,
-          index_of_entry: data?.personal_info_details?.findIndex((i) => (i as FamilyItem).name === selectedBadge) || 0,
+          index_of_entry: selectedBadgeIndex,
         },
       },
       {

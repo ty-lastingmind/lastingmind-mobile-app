@@ -1,38 +1,21 @@
 import { View, TouchableOpacity } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet } from '~/services/api/generated'
+import React from 'react'
 import { DatesItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
+import { useProfileInfo } from '../../hooks/use-profile-info'
 
 export function DatesInfo() {
-  const [selectedBadge, setSelectedBadge] = useState('')
-  const { data } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
+  const {
+    selectedBadge,
+    setSelectedBadge,
+    selectedBadgeValue: selectedDate,
+    list,
+  } = useProfileInfo<DatesItem>({
     topic: 'dates',
+    listKey: 'title',
   })
-
-  useEffect(() => {
-    if (data?.personal_info_details?.length) {
-      const firstTitle = (data.personal_info_details[0] as DatesItem).title
-      if (firstTitle) {
-        setSelectedBadge(firstTitle)
-      }
-    }
-  }, [data])
-
-  const list = useMemo(
-    () =>
-      data?.personal_info_details
-        ?.map((i) => (i as DatesItem).title)
-        .filter((title): title is string => title !== undefined) || [],
-    [data]
-  )
-
-  const selectedDate = useMemo(
-    () => data?.personal_info_details?.find((i) => (i as DatesItem).title === selectedBadge) as DatesItem | undefined,
-    [data, selectedBadge]
-  )
 
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
