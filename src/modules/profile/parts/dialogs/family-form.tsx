@@ -2,20 +2,23 @@ import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Dialog } from '~/modules/ui/dialog'
 import { SvgIcon } from '~/modules/ui/svg-icon'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '~/modules/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { UseFormReturn } from 'react-hook-form'
 import { FamilyFormData } from '../../hooks/use-family-form'
+import { Selector } from '~/modules/ui/selector'
+import { familyOptions } from '~/modules/basic-info/hooks/use-family-info-form'
 
 interface FamilyFormProps {
   isOpen?: boolean
   onClose: () => void
   form: UseFormReturn<FamilyFormData>
+  onSubmit: (data: FamilyFormData) => void
 }
 
-export default function FamilyForm({ isOpen = false, onClose, form }: FamilyFormProps) {
+export default function FamilyForm({ isOpen = false, onClose, form, onSubmit }: FamilyFormProps) {
   return (
     <Dialog isOpen={isOpen} className="w-full">
       <View className="px-4 gap-4">
@@ -43,6 +46,7 @@ export default function FamilyForm({ isOpen = false, onClose, form }: FamilyForm
                     value={field.value}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -53,14 +57,15 @@ export default function FamilyForm({ isOpen = false, onClose, form }: FamilyForm
               <FormItem>
                 <FormLabel>Relationship</FormLabel>
                 <FormControl>
-                  <Input
+                  <Selector
                     isError={!!fieldState.error?.message}
-                    onBlur={field.onBlur}
+                    options={familyOptions}
                     placeholder="Relationship (required)"
-                    onChangeText={field.onChange}
-                    value={field.value}
+                    onSelect={field.onChange}
+                    initialIndex={familyOptions.findIndex((option) => option === field.value)}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -119,7 +124,7 @@ export default function FamilyForm({ isOpen = false, onClose, form }: FamilyForm
             )}
           />
           <View className="pt-8">
-            <Button>Save</Button>
+            <Button onPress={form.handleSubmit(onSubmit)}>Save</Button>
           </View>
         </Form>
       </View>

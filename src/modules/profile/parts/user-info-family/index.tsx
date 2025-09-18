@@ -1,6 +1,10 @@
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React, { useState } from 'react'
-import { usePullAiAboutProfilePagePullAiAboutPost } from '~/services/api/generated'
+import {
+  useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
+  useEditPersonalInfoProfilePageEditPersonalInfoPost,
+  usePullAiAboutProfilePagePullAiAboutPost,
+} from '~/services/api/generated'
 import { FamilyItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
@@ -19,25 +23,29 @@ export function FamilyInfo() {
     list,
     selectedBadgeIndex,
     isPending,
+    refetch,
   } = useProfileInfo<FamilyItem>({
     topic: 'family',
     listKey: 'name',
   })
 
   const form = useFamilyForm()
-
   const { value, setFalse, setTrue } = useBoolean(false)
+  const { value: isNewEntry, setFalse: setFalseIsNewEntry, setTrue: setTrueIsNewEntry } = useBoolean(false)
+  const submitNew = useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost()
+  const submitEdit = useEditPersonalInfoProfilePageEditPersonalInfoPost()
 
   const [aiAbout, setAiAbout] = useState('')
-
   const aiSummary = usePullAiAboutProfilePagePullAiAboutPost()
 
   const handleSelectBadge = (value: string) => {
     if (value === '+') {
+      setTrueIsNewEntry()
       form.reset({ name: '', relationship: '', you_call_them: '', they_call_you: '', about: '' })
       setTrue()
     } else {
       setSelectedBadge(value)
+      setFalseIsNewEntry()
       setAiAbout('')
     }
   }
@@ -64,6 +72,49 @@ export function FamilyInfo() {
       form.reset(selectedFamilyMember as FamilyFormData)
       setTrue()
     }
+  }
+
+  const handleSubmitNew = (data: FamilyFormData) => {
+    submitNew.mutate(
+      {
+        data: {
+          topic: 'family',
+          personal_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          setSelectedBadge(data.name)
+          refetch()
+          setFalse()
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
+  }
+
+  const handleSubmitEdit = (data: FamilyFormData) => {
+    submitEdit.mutate(
+      {
+        data: {
+          topic: 'family',
+          index_of_entry: selectedBadgeIndex,
+          updated_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          setSelectedBadge(data.name)
+          refetch()
+          setFalse()
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
   }
 
   if (isPending) {
@@ -110,7 +161,12 @@ export function FamilyInfo() {
           </TouchableOpacity>
         </View>
       )}
-      <FamilyForm isOpen={value} onClose={setFalse} form={form} />
+      <FamilyForm
+        isOpen={value}
+        onClose={setFalse}
+        form={form}
+        onSubmit={isNewEntry ? handleSubmitNew : handleSubmitEdit}
+      />
     </View>
   )
 }

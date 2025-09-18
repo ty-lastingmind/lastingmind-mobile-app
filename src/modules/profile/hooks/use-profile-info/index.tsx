@@ -12,7 +12,7 @@ export const useProfileInfo = <T extends PersonalInfoDetailsPersonalInfoDetailsA
   listKey,
 }: UseProfileInfoProps) => {
   const [selectedBadge, setSelectedBadge] = useState('')
-  const { data, isPending } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
+  const { data, isPending, refetch } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
     topic,
   })
 
@@ -49,5 +49,5 @@ export const useProfileInfo = <T extends PersonalInfoDetailsPersonalInfoDetailsA
     [data, selectedBadge]
   )
 
-  return { selectedBadge, setSelectedBadge, selectedBadgeValue, list, selectedBadgeIndex, isPending }
+  return { selectedBadge, setSelectedBadge, selectedBadgeValue, list, selectedBadgeIndex, isPending, refetch }
 }
