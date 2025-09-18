@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { CitiesLivedItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
@@ -15,6 +15,7 @@ export function LivingInfo() {
     setSelectedBadge,
     selectedBadgeValue: selectedLiving,
     list,
+    isPending,
   } = useProfileInfo<CitiesLivedItem>({
     topic: 'cities_lived',
     listKey: 'location',
@@ -37,6 +38,14 @@ export function LivingInfo() {
       form.reset(selectedLiving as LivingFormData)
       setTrue()
     }
+  }
+
+  if (isPending) {
+    return (
+      <View className="p-6 bg-bg-secondary rounded-xl gap-4">
+        <ActivityIndicator />
+      </View>
+    )
   }
 
   return (

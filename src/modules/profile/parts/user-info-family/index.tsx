@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { usePullAiAboutProfilePagePullAiAboutPost } from '~/services/api/generated'
 import { FamilyItem } from '~/services/api/model'
@@ -18,6 +18,7 @@ export function FamilyInfo() {
     selectedBadgeValue: selectedFamilyMember,
     list,
     selectedBadgeIndex,
+    isPending,
   } = useProfileInfo<FamilyItem>({
     topic: 'family',
     listKey: 'name',
@@ -63,6 +64,14 @@ export function FamilyInfo() {
       form.reset(selectedFamilyMember as FamilyFormData)
       setTrue()
     }
+  }
+
+  if (isPending) {
+    return (
+      <View className="p-6 bg-bg-secondary rounded-xl gap-4">
+        <ActivityIndicator />
+      </View>
+    )
   }
 
   return (

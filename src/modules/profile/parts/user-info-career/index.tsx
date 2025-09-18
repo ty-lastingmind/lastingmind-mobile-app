@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { CareerItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
@@ -15,6 +15,7 @@ export function CareerInfo() {
     setSelectedBadge,
     selectedBadgeValue: selectedCareer,
     list,
+    isPending,
   } = useProfileInfo<CareerItem>({
     topic: 'career',
     listKey: 'company',
@@ -38,6 +39,14 @@ export function CareerInfo() {
       form.reset(selectedCareer as CareerFormData)
       setTrue()
     }
+  }
+
+  if (isPending) {
+    return (
+      <View className="p-6 bg-bg-secondary rounded-xl gap-4">
+        <ActivityIndicator />
+      </View>
+    )
   }
 
   return (

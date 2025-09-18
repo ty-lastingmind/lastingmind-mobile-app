@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { OrganizationsItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
@@ -15,6 +15,7 @@ export function OrganizationsInfo() {
     setSelectedBadge,
     selectedBadgeValue: selectedOrganization,
     list,
+    isPending,
   } = useProfileInfo<OrganizationsItem>({
     topic: 'organizations',
     listKey: 'title',
@@ -38,6 +39,14 @@ export function OrganizationsInfo() {
       form.reset(selectedOrganization as OrganizationsFormData)
       setTrue()
     }
+  }
+
+  if (isPending) {
+    return (
+      <View className="p-6 bg-bg-secondary rounded-xl gap-4">
+        <ActivityIndicator />
+      </View>
+    )
   }
 
   return (

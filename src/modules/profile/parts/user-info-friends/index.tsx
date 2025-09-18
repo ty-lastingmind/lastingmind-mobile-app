@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { FriendsItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
@@ -15,6 +15,7 @@ export function FriendsInfo() {
     setSelectedBadge,
     selectedBadgeValue: selectedFriend,
     list,
+    isPending,
   } = useProfileInfo<FriendsItem>({
     topic: 'friends',
     listKey: 'name',
@@ -38,6 +39,14 @@ export function FriendsInfo() {
       form.reset(selectedFriend as FriendsFormData)
       setTrue()
     }
+  }
+
+  if (isPending) {
+    return (
+      <View className="p-6 bg-bg-secondary rounded-xl gap-4">
+        <ActivityIndicator />
+      </View>
+    )
   }
 
   return (
