@@ -33,19 +33,18 @@ export function FriendsInfo() {
   const submitEdit = useEditPersonalInfoProfilePageEditPersonalInfoPost()
 
   const handleSelectBadge = (index: number) => {
-    console.log({ index })
     if (index === 0) {
       setTrueIsNewEntry()
       form.reset({ name: '', you_call_them: '', about: '' })
       setTrue()
     } else {
-      setFalseIsNewEntry()
       setSelectedBadge(index)
     }
   }
 
   const handleEdit = () => {
     if (selectedFriend) {
+      setFalseIsNewEntry()
       form.reset(selectedFriend as FriendsFormData)
       setTrue()
     }

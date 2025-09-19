@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
 import { EducationItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
@@ -8,6 +8,10 @@ import { useProfileInfo } from '../../hooks/use-profile-info'
 import { EducationFormData, useEducationForm } from '../../hooks/use-education-form'
 import { useBoolean } from 'usehooks-ts'
 import EducationForm from '../dialogs/education-form'
+import {
+  useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
+  useEditPersonalInfoProfilePageEditPersonalInfoPost,
+} from '~/services/api/generated'
 
 export function EducationInfo() {
   const {
@@ -16,17 +20,21 @@ export function EducationInfo() {
     selectedBadgeValue: selectedEducation,
     list,
     isPending,
+    refetch,
   } = useProfileInfo<EducationItem>({
     topic: 'education',
     listKey: 'school',
   })
 
   const form = useEducationForm()
-
   const { value, setFalse, setTrue } = useBoolean(false)
+  const { value: isNewEntry, setFalse: setFalseIsNewEntry, setTrue: setTrueIsNewEntry } = useBoolean(false)
+  const submitNew = useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost()
+  const submitEdit = useEditPersonalInfoProfilePageEditPersonalInfoPost()
 
   const handleSelectBadge = (index: number) => {
     if (index === 0) {
+      setTrueIsNewEntry()
       form.reset({ school: '', level: '', about: '' })
       setTrue()
     } else {
@@ -36,9 +44,54 @@ export function EducationInfo() {
 
   const handleEdit = () => {
     if (selectedEducation) {
+      setFalseIsNewEntry()
       form.reset(selectedEducation as EducationFormData)
       setTrue()
     }
+  }
+
+  const handleSubmitNew = (data: EducationFormData) => {
+    submitNew.mutate(
+      {
+        data: {
+          topic: 'education',
+          personal_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setSelectedBadge(list.length + 1)
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
+  }
+
+  const handleSubmitEdit = (data: EducationFormData) => {
+    submitEdit.mutate(
+      {
+        data: {
+          topic: 'education',
+          index_of_entry: selectedBadge,
+          updated_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
   }
 
   if (isPending) {
@@ -74,7 +127,12 @@ export function EducationInfo() {
           </TouchableOpacity>
         </View>
       )}
-      <EducationForm isOpen={value} onClose={setFalse} form={form} />
+      <EducationForm
+        isOpen={value}
+        onClose={setFalse}
+        form={form}
+        onSubmit={isNewEntry ? handleSubmitNew : handleSubmitEdit}
+      />
     </View>
   )
 }
