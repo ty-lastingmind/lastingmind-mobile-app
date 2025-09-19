@@ -21,7 +21,7 @@ export default function UserDiscussedTopics() {
           list={discussedTopics?.topics_discussed}
           size="lg"
           badgeContainerClassName="bg-bg-tertiary border-0"
-          badgeTextClassName="text-primary"
+          badgeTextClassName="text-typography-primary"
           rows={3}
         />
       )}

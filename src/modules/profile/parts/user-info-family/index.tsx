@@ -127,7 +127,12 @@ export function FamilyInfo() {
 
   return (
     <View className="p-6 bg-bg-secondary rounded-xl gap-4">
-      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge + 1} onBadgePress={handleSelectBadge} />
+      <BadgeList
+        list={['+', ...list]}
+        selectedBadge={selectedBadge + 1}
+        onBadgePress={handleSelectBadge}
+        badgeTextClassName="text-typography-primary"
+      />
       {selectedFamilyMember && (
         <View className="gap-4 relative">
           {selectedFamilyMember.name && (

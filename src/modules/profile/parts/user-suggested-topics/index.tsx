@@ -21,7 +21,7 @@ export default function UserSuggestedTopics() {
           list={suggestedTopics?.suggested_topics}
           size="lg"
           badgeContainerClassName="bg-bg-tertiary border-0"
-          badgeTextClassName="text-primary"
+          badgeTextClassName="text-typography-primary"
           rows={3}
         />
       )}

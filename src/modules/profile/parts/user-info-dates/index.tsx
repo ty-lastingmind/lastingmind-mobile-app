@@ -104,7 +104,12 @@ export function DatesInfo() {
 
   return (
     <View className="p-6 bg-bg-secondary rounded-xl gap-4">
-      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge + 1} onBadgePress={handleSelectBadge} />
+      <BadgeList
+        list={['+', ...list]}
+        selectedBadge={selectedBadge + 1}
+        onBadgePress={handleSelectBadge}
+        badgeTextClassName="text-typography-primary"
+      />
       {selectedDate && (
         <View className="gap-4 relative">
           {selectedDate.title && (

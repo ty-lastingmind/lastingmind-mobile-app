@@ -46,7 +46,7 @@ export default function BadgeList({
                   label={label}
                   size={size}
                   containerClassName={containerClassName}
-                  textClassName={badgeTextClassName}
+                  textClassName={selectedBadge === index ? '' : badgeTextClassName}
                 />
               </TouchableOpacity>
             )}

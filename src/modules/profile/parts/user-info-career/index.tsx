@@ -104,7 +104,12 @@ export function CareerInfo() {
 
   return (
     <View className="p-6 bg-bg-secondary rounded-xl gap-4">
-      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge + 1} onBadgePress={handleSelectBadge} />
+      <BadgeList
+        list={['+', ...list]}
+        selectedBadge={selectedBadge + 1}
+        onBadgePress={handleSelectBadge}
+        badgeTextClassName="text-typography-primary"
+      />
       {selectedCareer && (
         <View className="gap-4 relative">
           {selectedCareer.company && (
