@@ -27,6 +27,17 @@ import { EducationOutline } from './svg/education-outline'
 import { Person } from './svg/person'
 import { Calendar } from './svg/calendar'
 import { WorkOutline } from './svg/work-outline'
+import { CuratedQuestions } from './svg/curated-questions'
+import { Mic } from './svg/mic'
+import { WriteAnswer } from './svg/write-answer'
+import { Stop } from './svg/stop'
+import { Pause } from './svg/pause'
+import { CheckMark } from './svg/check-mark'
+import { Refresh } from './svg/refresh'
+import { Play } from './svg/play'
+import { ArrowRight } from './svg/arrow-right'
+import { AudioWave } from './svg/audio-wave'
+import { Trash } from './svg/trash'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -58,4 +69,15 @@ export const iconNameToSvg = {
   'home-outline': HomeOutline,
   'education-outline': EducationOutline,
   'work-outline': WorkOutline,
+  curated_questions: CuratedQuestions,
+  mic: Mic,
+  write_answer: WriteAnswer,
+  stop: Stop,
+  pause: Pause,
+  check_mark: CheckMark,
+  refresh: Refresh,
+  play: Play,
+  arrow_right: ArrowRight,
+  audio_wave: AudioWave,
+  trash: Trash,
 } as const

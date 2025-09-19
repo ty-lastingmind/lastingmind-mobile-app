@@ -1,15 +1,17 @@
-import { useCallback } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
 import type { QuickAction } from '~/services/api/model'
-import { defaultQuickActionConfig, quickActionToData } from './index.static'
+import { quickActionToData, defaultQuickActionConfig } from './index.static'
+import { useCallback } from 'react'
+import { useRouter } from 'expo-router'
 
 interface QuickActionItemProps {
   action: QuickAction
 }
 
 export const QuickActionItem = ({ action }: QuickActionItemProps) => {
+  const router = useRouter()
   const actionProps = quickActionToData[action.action] ?? {
     ...defaultQuickActionConfig,
     title: `${defaultQuickActionConfig.title} (${action.action})`,
@@ -19,13 +21,13 @@ export const QuickActionItem = ({ action }: QuickActionItemProps) => {
   const handleActionPress = useCallback(() => {
     switch (action.action) {
       case 'curated_question_action':
-        // - run /curated-questions/generate-starting-questions with topic field empty.
+        router.push('/questions/curated-questions')
         break
       default:
         console.log('Unknown action:', action.action)
         break
     }
-  }, [action.action])
+  }, [action.action, router])
 
   return (
     <TouchableOpacity

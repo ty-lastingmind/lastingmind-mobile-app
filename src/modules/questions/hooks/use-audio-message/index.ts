@@ -3,7 +3,10 @@ import { useRecordingControls } from '~/modules/questions/hooks/use-recording-co
 import { useUploadAndTranscribeAudioMessage } from '../use-upload-and-transcribe-audio-message'
 
 export function useAudioMessage(folderName: string) {
-  const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY)
+  const audioRecorder = useAudioRecorder({
+    ...RecordingPresets.HIGH_QUALITY,
+    isMeteringEnabled: true,
+  })
   const recordingControls = useRecordingControls(audioRecorder)
   const uploader = useUploadAndTranscribeAudioMessage(folderName)
 
