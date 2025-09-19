@@ -2,7 +2,7 @@ import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Dialog } from '~/modules/ui/dialog'
 import { SvgIcon } from '~/modules/ui/svg-icon'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '~/modules/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
@@ -13,9 +13,10 @@ interface DatesFormProps {
   isOpen?: boolean
   onClose: () => void
   form: UseFormReturn<DatesFormData>
+  onSubmit: (data: DatesFormData) => void
 }
 
-export default function DatesForm({ isOpen = false, onClose, form }: DatesFormProps) {
+export default function DatesForm({ isOpen = false, onClose, form, onSubmit }: DatesFormProps) {
   return (
     <Dialog isOpen={isOpen} className="w-full">
       <View className="px-4 gap-4">
@@ -43,6 +44,7 @@ export default function DatesForm({ isOpen = false, onClose, form }: DatesFormPr
                     value={field.value}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -61,6 +63,7 @@ export default function DatesForm({ isOpen = false, onClose, form }: DatesFormPr
                     value={field.value}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -83,7 +86,7 @@ export default function DatesForm({ isOpen = false, onClose, form }: DatesFormPr
             )}
           />
           <View className="pt-8">
-            <Button>Save</Button>
+            <Button onPress={form.handleSubmit(onSubmit)}>Save</Button>
           </View>
         </Form>
       </View>

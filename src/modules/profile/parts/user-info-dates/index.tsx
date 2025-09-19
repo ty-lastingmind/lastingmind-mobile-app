@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
 import { DatesItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
@@ -8,6 +8,10 @@ import { useProfileInfo } from '../../hooks/use-profile-info'
 import { DatesFormData, useDatesForm } from '../../hooks/use-dates-form'
 import { useBoolean } from 'usehooks-ts'
 import DatesForm from '../dialogs/dates-form'
+import {
+  useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
+  useEditPersonalInfoProfilePageEditPersonalInfoPost,
+} from '~/services/api/generated'
 
 export function DatesInfo() {
   const {
@@ -16,17 +20,21 @@ export function DatesInfo() {
     selectedBadgeValue: selectedDate,
     list,
     isPending,
+    refetch,
   } = useProfileInfo<DatesItem>({
     topic: 'dates',
     listKey: 'title',
   })
 
   const form = useDatesForm()
-
   const { value, setFalse, setTrue } = useBoolean(false)
+  const { value: isNewEntry, setFalse: setFalseIsNewEntry, setTrue: setTrueIsNewEntry } = useBoolean(false)
+  const submitNew = useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost()
+  const submitEdit = useEditPersonalInfoProfilePageEditPersonalInfoPost()
 
   const handleSelectBadge = (index: number) => {
     if (index === 0) {
+      setTrueIsNewEntry()
       form.reset({ title: '', date: '', about: '' })
       setTrue()
     } else {
@@ -36,9 +44,54 @@ export function DatesInfo() {
 
   const handleEdit = () => {
     if (selectedDate) {
+      setFalseIsNewEntry()
       form.reset(selectedDate as DatesFormData)
       setTrue()
     }
+  }
+
+  const handleSubmitNew = (data: DatesFormData) => {
+    submitNew.mutate(
+      {
+        data: {
+          topic: 'dates',
+          personal_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setSelectedBadge(list.length + 1)
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
+  }
+
+  const handleSubmitEdit = (data: DatesFormData) => {
+    submitEdit.mutate(
+      {
+        data: {
+          topic: 'dates',
+          index_of_entry: selectedBadge,
+          updated_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
   }
 
   if (isPending) {
@@ -74,7 +127,12 @@ export function DatesInfo() {
           </TouchableOpacity>
         </View>
       )}
-      <DatesForm isOpen={value} onClose={setFalse} form={form} />
+      <DatesForm
+        isOpen={value}
+        onClose={setFalse}
+        form={form}
+        onSubmit={isNewEntry ? handleSubmitNew : handleSubmitEdit}
+      />
     </View>
   )
 }
