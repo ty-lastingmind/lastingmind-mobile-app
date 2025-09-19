@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
 import { CareerItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
@@ -8,6 +8,10 @@ import { useProfileInfo } from '../../hooks/use-profile-info'
 import { useBoolean } from 'usehooks-ts'
 import { CareerFormData, useCareerForm } from '../../hooks/use-career-form'
 import CareerForm from '../dialogs/career-form'
+import {
+  useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
+  useEditPersonalInfoProfilePageEditPersonalInfoPost,
+} from '~/services/api/generated'
 
 export function CareerInfo() {
   const {
@@ -16,17 +20,21 @@ export function CareerInfo() {
     selectedBadgeValue: selectedCareer,
     list,
     isPending,
+    refetch,
   } = useProfileInfo<CareerItem>({
     topic: 'career',
     listKey: 'company',
   })
 
   const form = useCareerForm()
-
   const { value, setFalse, setTrue } = useBoolean(false)
+  const { value: isNewEntry, setFalse: setFalseIsNewEntry, setTrue: setTrueIsNewEntry } = useBoolean(false)
+  const submitNew = useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost()
+  const submitEdit = useEditPersonalInfoProfilePageEditPersonalInfoPost()
 
   const handleSelectBadge = (index: number) => {
     if (index === 0) {
+      setTrueIsNewEntry()
       form.reset({ company: '', position: '', start_age: undefined, end_age: undefined, about: '' })
       setTrue()
     } else {
@@ -36,9 +44,54 @@ export function CareerInfo() {
 
   const handleEdit = () => {
     if (selectedCareer) {
+      setFalseIsNewEntry()
       form.reset(selectedCareer as CareerFormData)
       setTrue()
     }
+  }
+
+  const handleSubmitNew = (data: CareerFormData) => {
+    submitNew.mutate(
+      {
+        data: {
+          topic: 'career',
+          personal_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setSelectedBadge(list.length + 1)
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
+  }
+
+  const handleSubmitEdit = (data: CareerFormData) => {
+    submitEdit.mutate(
+      {
+        data: {
+          topic: 'career',
+          index_of_entry: selectedBadge,
+          updated_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
   }
 
   if (isPending) {
@@ -79,7 +132,12 @@ export function CareerInfo() {
           </TouchableOpacity>
         </View>
       )}
-      <CareerForm isOpen={value} onClose={setFalse} form={form} />
+      <CareerForm
+        isOpen={value}
+        onClose={setFalse}
+        form={form}
+        onSubmit={isNewEntry ? handleSubmitNew : handleSubmitEdit}
+      />
     </View>
   )
 }

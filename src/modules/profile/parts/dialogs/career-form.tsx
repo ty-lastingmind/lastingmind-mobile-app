@@ -2,7 +2,7 @@ import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Dialog } from '~/modules/ui/dialog'
 import { SvgIcon } from '~/modules/ui/svg-icon'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '~/modules/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
@@ -13,9 +13,10 @@ interface CareerFormProps {
   isOpen?: boolean
   onClose: () => void
   form: UseFormReturn<CareerFormData>
+  onSubmit: (data: CareerFormData) => void
 }
 
-export default function CareerForm({ isOpen = false, onClose, form }: CareerFormProps) {
+export default function CareerForm({ isOpen = false, onClose, form, onSubmit }: CareerFormProps) {
   return (
     <Dialog isOpen={isOpen} className="w-full">
       <View className="px-4 gap-4">
@@ -43,6 +44,7 @@ export default function CareerForm({ isOpen = false, onClose, form }: CareerForm
                     value={field.value}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -61,6 +63,7 @@ export default function CareerForm({ isOpen = false, onClose, form }: CareerForm
                     value={field.value}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -72,13 +75,15 @@ export default function CareerForm({ isOpen = false, onClose, form }: CareerForm
                 <FormLabel>Start Age</FormLabel>
                 <FormControl>
                   <Input
+                    keyboardType="number-pad"
                     isError={!!fieldState.error?.message}
                     onBlur={field.onBlur}
                     placeholder="Start Age (required)"
-                    onChangeText={field.onChange}
+                    onChangeText={(text) => field.onChange(Number(text) || '')}
                     value={field.value?.toString()}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -90,13 +95,15 @@ export default function CareerForm({ isOpen = false, onClose, form }: CareerForm
                 <FormLabel>End Age</FormLabel>
                 <FormControl>
                   <Input
+                    keyboardType="number-pad"
                     isError={!!fieldState.error?.message}
                     onBlur={field.onBlur}
                     placeholder="End Age (required)"
-                    onChangeText={field.onChange}
+                    onChangeText={(text) => field.onChange(Number(text) || '')}
                     value={field.value?.toString()}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -119,7 +126,7 @@ export default function CareerForm({ isOpen = false, onClose, form }: CareerForm
             )}
           />
           <View className="pt-8">
-            <Button>Save</Button>
+            <Button onPress={form.handleSubmit(onSubmit)}>Save</Button>
           </View>
         </Form>
       </View>
