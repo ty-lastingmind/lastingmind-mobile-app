@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from 'react-native'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { FlatList } from 'react-native'
 import { Badge } from '../badge'
@@ -13,6 +13,7 @@ interface BadgeListProps {
   size?: 'sm' | 'md' | 'lg'
   badgeContainerClassName?: string
   badgeTextClassName?: string
+  rows?: number
 }
 
 export default function BadgeList({
@@ -22,33 +23,60 @@ export default function BadgeList({
   size = 'md',
   badgeContainerClassName,
   badgeTextClassName,
+  rows = 1,
 }: BadgeListProps) {
   const { value: isExpanded, toggle: toggleExpanded } = useBoolean(false)
 
-  const containerClassName = cn('rounded-full', badgeContainerClassName)
-  const textClassName = cn('', badgeTextClassName)
+  const containerClassName = cn('rounded-full', !isExpanded && rows > 1 && 'mr-2', badgeContainerClassName)
+  const flatListRows = Math.ceil(list.length / rows)
 
   return (
     <View>
-      <FlatList
-        horizontal={!isExpanded}
-        scrollEnabled={!isExpanded}
-        data={list}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item: label, index }) => (
-          <TouchableOpacity onPress={() => onBadgePress?.(index)}>
-            <Badge
-              variant={selectedBadge === index ? 'primary' : 'outlined'}
-              label={label}
-              size={size}
-              containerClassName={containerClassName}
-              textClassName={textClassName}
-            />
-          </TouchableOpacity>
-        )}
-        contentContainerClassName="gap-2 flex-row flex-wrap"
-        showsHorizontalScrollIndicator={false}
-      />
+      {isExpanded || rows <= 1 ? (
+        <View>
+          <FlatList
+            horizontal={!isExpanded}
+            scrollEnabled={!isExpanded}
+            data={list}
+            keyExtractor={(item, index) => item + index}
+            renderItem={({ item: label, index }) => (
+              <TouchableOpacity onPress={() => onBadgePress?.(index)}>
+                <Badge
+                  variant={selectedBadge === index ? 'primary' : 'outlined'}
+                  label={label}
+                  size={size}
+                  containerClassName={containerClassName}
+                  textClassName={badgeTextClassName}
+                />
+              </TouchableOpacity>
+            )}
+            contentContainerClassName="gap-2 flex-row flex-wrap"
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+      ) : (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <FlatList
+            scrollEnabled={false}
+            contentContainerClassName="gap-2"
+            numColumns={flatListRows}
+            data={list}
+            keyExtractor={(item, index) => item + index}
+            renderItem={({ item: label, index }) => (
+              <TouchableOpacity onPress={() => onBadgePress?.(index)}>
+                <Badge
+                  variant={selectedBadge === index ? 'primary' : 'outlined'}
+                  label={label}
+                  size={size}
+                  containerClassName={containerClassName}
+                  textClassName={badgeTextClassName}
+                />
+              </TouchableOpacity>
+            )}
+          />
+        </ScrollView>
+      )}
+
       {list.length > 5 && (
         <TouchableOpacity className="pt-4" onPress={toggleExpanded}>
           <Typography color="secondary">{isExpanded ? 'View Less' : 'View All'}</Typography>

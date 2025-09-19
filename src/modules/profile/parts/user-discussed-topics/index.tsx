@@ -1,8 +1,8 @@
 import { View } from 'react-native'
 import React from 'react'
-import { TopicsList } from '~/modules/onboarding/parts/TopicsList'
 import { Typography } from '~/modules/ui/typography'
 import { usePullTopicsDiscussedProfilePagePullDiscussedTopicsGet } from '~/services/api/generated'
+import BadgeList from '~/modules/ui/badge-list'
 
 export default function UserDiscussedTopics() {
   const { data: discussedTopics, isLoading } = usePullTopicsDiscussedProfilePagePullDiscussedTopicsGet()
@@ -17,9 +17,13 @@ export default function UserDiscussedTopics() {
         Topics Discussed
       </Typography>
       {discussedTopics && (
-        <View className="h-36">
-          <TopicsList topics={discussedTopics?.topics_discussed} className="justify-start" />
-        </View>
+        <BadgeList
+          list={discussedTopics?.topics_discussed}
+          size="lg"
+          badgeContainerClassName="bg-bg-tertiary border-0"
+          badgeTextClassName="text-primary"
+          rows={3}
+        />
       )}
     </View>
   )

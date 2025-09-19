@@ -61,7 +61,7 @@ export function FriendsInfo() {
       {
         onSuccess: () => {
           refetch().then(() => {
-            setSelectedBadge(list.length)
+            setSelectedBadge(list.length + 1)
             setFalse()
           })
         },
