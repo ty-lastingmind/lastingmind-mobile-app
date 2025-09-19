@@ -15,7 +15,7 @@ export function Item({ item }: ItemProps) {
   const { chattingWithViewId } = useMessagesListContext()
   const explanationDetail = usePullQuestionInfoChatPullQuestionInfoGet({
     chattingWithViewId,
-    responseId: item.question_info.questionId,
+    responseId: `${item.question_info?.questionId}`,
   })
   const firstAudio = explanationDetail.data?.question_details.audio_files?.at(0)
 
@@ -31,9 +31,11 @@ export function Item({ item }: ItemProps) {
       </Typography>
       <ScrollView contentContainerClassName="pb-2" showsVerticalScrollIndicator={false} className="gap-4">
         <View className="gap-4 flex-1">
-          <Typography color="secondary" level="label-1">
-            {formatDate(item.question_info.submitted_at)}
-          </Typography>
+          {item.question_info && (
+            <Typography color="secondary" level="label-1">
+              {formatDate(item.question_info.submitted_at)}
+            </Typography>
+          )}
           <View className="gap-1">
             <Typography color="secondary" weight="bold" level="caption-1">
               Question
