@@ -11,6 +11,7 @@ interface SelectorProps extends React.ComponentProps<typeof TouchableOpacity> {
   options: string[]
   onSelect?: (value: string) => void
   initialIndex?: number
+  isError?: boolean
 }
 
 export function Selector({
@@ -21,15 +22,21 @@ export function Selector({
   leftAdornment,
   onSelect,
   initialIndex,
+  isError,
 }: SelectorProps) {
   const [selectedOption, setSelectedOption] = useState(options[initialIndex || 0] || '')
 
   const containerClassName = cn(
     'gap-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between bg-bg-secondary',
+    isError && 'border-input-border--error',
     className
   )
 
-  const textClassName = cn('flex-1', !selectedOption && 'text-input-placeholder')
+  const textClassName = cn(
+    'flex-1',
+    !selectedOption && 'text-input-placeholder',
+    isError && 'text-input-placeholder--error'
+  )
 
   const handlePress = () => {
     ActionSheetIOS.showActionSheetWithOptions(
@@ -47,7 +54,7 @@ export function Selector({
     <TouchableOpacity className={containerClassName} onPress={handlePress}>
       {leftAdornment}
       <Typography className={textClassName}>{selectedOption || placeholder}</Typography>
-      <Icon name="caret-down" />
+      <Icon name="caret-down" color={isError ? 'red' : 'primary'} />
       {rightAdornment}
     </TouchableOpacity>
   )

@@ -16,6 +16,17 @@ import { Family } from './svg/family'
 import { Work } from './svg/work'
 import { Education } from './svg/education'
 import { Home } from './svg/home'
+import { Trophy } from './svg/trophy'
+import { ChatBubbles } from './svg/chatbubbles'
+import { Time } from './svg/time'
+import { Noteblock } from './svg/noteblock'
+import { HomeOutline } from './svg/home-outline'
+import { EditBox } from './svg/editbox'
+import { Sparks } from './svg/sparks'
+import { EducationOutline } from './svg/education-outline'
+import { Person } from './svg/person'
+import { Calendar } from './svg/calendar'
+import { WorkOutline } from './svg/work-outline'
 import { CuratedQuestions } from './svg/curated-questions'
 import { Mic } from './svg/mic'
 import { WriteAnswer } from './svg/write-answer'
@@ -47,6 +58,17 @@ export const iconNameToSvg = {
   work: Work,
   education: Education,
   home: Home,
+  trophy: Trophy,
+  chatbubbles: ChatBubbles,
+  time: Time,
+  noteblock: Noteblock,
+  editbox: EditBox,
+  sparks: Sparks,
+  person: Person,
+  calendar: Calendar,
+  'home-outline': HomeOutline,
+  'education-outline': EducationOutline,
+  'work-outline': WorkOutline,
   curated_questions: CuratedQuestions,
   mic: Mic,
   write_answer: WriteAnswer,

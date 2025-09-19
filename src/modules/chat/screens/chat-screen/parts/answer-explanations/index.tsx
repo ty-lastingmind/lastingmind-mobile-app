@@ -35,9 +35,11 @@ export function AnswerExplanations({ explanations }: AnswerExplanationsProps) {
             >
               <View className="gap-2 flex-1">
                 <Typography>{explanation.headline}</Typography>
-                <Typography color="secondary">
-                  {[formatDate(explanation.question_info.submitted_at)].join(' - ')}
-                </Typography>
+                {explanation.question_info && (
+                  <Typography color="secondary">
+                    {[formatDate(explanation.question_info.submitted_at)].join(' - ')}
+                  </Typography>
+                )}
               </View>
               <View className="bg-bg-secondary rounded-full p-1">
                 <Icon name="expand" />
