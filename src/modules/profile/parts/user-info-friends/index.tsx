@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
 import { FriendsItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
@@ -8,6 +8,10 @@ import { useProfileInfo } from '../../hooks/use-profile-info'
 import { FriendsFormData, useFriendsForm } from '../../hooks/use-friends-form'
 import { useBoolean } from 'usehooks-ts'
 import FriendsForm from '../dialogs/friends-form'
+import {
+  useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
+  useEditPersonalInfoProfilePageEditPersonalInfoPost,
+} from '~/services/api/generated'
 
 export function FriendsInfo() {
   const {
@@ -16,21 +20,27 @@ export function FriendsInfo() {
     selectedBadgeValue: selectedFriend,
     list,
     isPending,
+    refetch,
   } = useProfileInfo<FriendsItem>({
     topic: 'friends',
     listKey: 'name',
   })
 
-  const { value, setFalse, setTrue } = useBoolean(false)
-
   const form = useFriendsForm()
+  const { value, setFalse, setTrue } = useBoolean(false)
+  const { value: isNewEntry, setFalse: setFalseIsNewEntry, setTrue: setTrueIsNewEntry } = useBoolean(false)
+  const submitNew = useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost()
+  const submitEdit = useEditPersonalInfoProfilePageEditPersonalInfoPost()
 
-  const handleSelectBadge = (value: string) => {
-    if (value === '+') {
+  const handleSelectBadge = (index: number) => {
+    console.log({ index })
+    if (index === 0) {
+      setTrueIsNewEntry()
       form.reset({ name: '', you_call_them: '', about: '' })
       setTrue()
     } else {
-      setSelectedBadge(value)
+      setFalseIsNewEntry()
+      setSelectedBadge(index)
     }
   }
 
@@ -39,6 +49,50 @@ export function FriendsInfo() {
       form.reset(selectedFriend as FriendsFormData)
       setTrue()
     }
+  }
+
+  const handleSubmitNew = (data: FriendsFormData) => {
+    submitNew.mutate(
+      {
+        data: {
+          topic: 'friends',
+          personal_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setSelectedBadge(list.length)
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
+  }
+
+  const handleSubmitEdit = (data: FriendsFormData) => {
+    submitEdit.mutate(
+      {
+        data: {
+          topic: 'friends',
+          index_of_entry: selectedBadge,
+          updated_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
   }
 
   if (isPending) {
@@ -51,7 +105,7 @@ export function FriendsInfo() {
 
   return (
     <View className="p-6 bg-bg-secondary rounded-xl gap-4">
-      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge} onBadgePress={handleSelectBadge} />
+      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge + 1} onBadgePress={handleSelectBadge} />
       {selectedFriend && (
         <View className="gap-4 relative">
           {selectedFriend.name && (
@@ -74,7 +128,12 @@ export function FriendsInfo() {
           </TouchableOpacity>
         </View>
       )}
-      <FriendsForm isOpen={value} onClose={setFalse} form={form} />
+      <FriendsForm
+        isOpen={value}
+        onClose={setFalse}
+        form={form}
+        onSubmit={isNewEntry ? handleSubmitNew : handleSubmitEdit}
+      />
     </View>
   )
 }

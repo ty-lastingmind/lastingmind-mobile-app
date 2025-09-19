@@ -21,7 +21,6 @@ export function FamilyInfo() {
     setSelectedBadge,
     selectedBadgeValue: selectedFamilyMember,
     list,
-    selectedBadgeIndex,
     isPending,
     refetch,
   } = useProfileInfo<FamilyItem>({
@@ -38,14 +37,13 @@ export function FamilyInfo() {
   const [aiAbout, setAiAbout] = useState('')
   const aiSummary = usePullAiAboutProfilePagePullAiAboutPost()
 
-  const handleSelectBadge = (value: string) => {
-    if (value === '+') {
+  const handleSelectBadge = (index: number) => {
+    if (index === 0) {
       setTrueIsNewEntry()
       form.reset({ name: '', relationship: '', you_call_them: '', they_call_you: '', about: '' })
       setTrue()
     } else {
-      setSelectedBadge(value)
-      setFalseIsNewEntry()
+      setSelectedBadge(index)
       setAiAbout('')
     }
   }
@@ -55,8 +53,8 @@ export function FamilyInfo() {
       {
         data: {
           topic: 'family',
-          name: selectedBadge,
-          index_of_entry: selectedBadgeIndex,
+          name: list[selectedBadge],
+          index_of_entry: selectedBadge,
         },
       },
       {
@@ -68,6 +66,7 @@ export function FamilyInfo() {
   }
 
   const handleEdit = () => {
+    setFalseIsNewEntry()
     if (selectedFamilyMember) {
       form.reset(selectedFamilyMember as FamilyFormData)
       setTrue()
@@ -84,9 +83,10 @@ export function FamilyInfo() {
       },
       {
         onSuccess: () => {
-          setSelectedBadge(data.name)
-          refetch()
-          setFalse()
+          refetch().then(() => {
+            setSelectedBadge(list.length + 1)
+            setFalse()
+          })
         },
         onError: () => {
           Alert.alert('An error occurred when submitting the form')
@@ -100,15 +100,15 @@ export function FamilyInfo() {
       {
         data: {
           topic: 'family',
-          index_of_entry: selectedBadgeIndex,
+          index_of_entry: selectedBadge,
           updated_data: data,
         },
       },
       {
         onSuccess: () => {
-          setSelectedBadge(data.name)
-          refetch()
-          setFalse()
+          refetch().then(() => {
+            setFalse()
+          })
         },
         onError: () => {
           Alert.alert('An error occurred when submitting the form')
@@ -127,7 +127,7 @@ export function FamilyInfo() {
 
   return (
     <View className="p-6 bg-bg-secondary rounded-xl gap-4">
-      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge} onBadgePress={handleSelectBadge} />
+      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge + 1} onBadgePress={handleSelectBadge} />
       {selectedFamilyMember && (
         <View className="gap-4 relative">
           {selectedFamilyMember.name && (

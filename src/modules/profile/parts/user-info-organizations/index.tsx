@@ -25,12 +25,12 @@ export function OrganizationsInfo() {
 
   const { value, setFalse, setTrue } = useBoolean(false)
 
-  const handleSelectBadge = (value: string) => {
-    if (value === '+') {
+  const handleSelectBadge = (index: number) => {
+    if (index === 0) {
       form.reset({ title: '', about: '' })
       setTrue()
     } else {
-      setSelectedBadge(value)
+      setSelectedBadge(index)
     }
   }
 
@@ -51,7 +51,7 @@ export function OrganizationsInfo() {
 
   return (
     <View className="p-6 bg-bg-secondary rounded-xl gap-4">
-      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge} onBadgePress={handleSelectBadge} />
+      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge + 1} onBadgePress={handleSelectBadge} />
       {selectedOrganization && (
         <View className="gap-4 relative">
           {selectedOrganization.title && (

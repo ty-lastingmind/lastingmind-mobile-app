@@ -8,8 +8,8 @@ import { cn } from '~/utils/cn'
 
 interface BadgeListProps {
   list: string[]
-  selectedBadge?: string
-  onBadgePress?: (label: string) => void
+  selectedBadge?: number
+  onBadgePress?: (index: number) => void
   size?: 'sm' | 'md' | 'lg'
   badgeContainerClassName?: string
   badgeTextClassName?: string
@@ -34,11 +34,11 @@ export default function BadgeList({
         horizontal={!isExpanded}
         scrollEnabled={!isExpanded}
         data={list}
-        keyExtractor={(item) => item}
-        renderItem={({ item: label }) => (
-          <TouchableOpacity onPress={() => onBadgePress?.(label)}>
+        keyExtractor={(item, index) => item + index}
+        renderItem={({ item: label, index }) => (
+          <TouchableOpacity onPress={() => onBadgePress?.(index)}>
             <Badge
-              variant={selectedBadge === label ? 'primary' : 'outlined'}
+              variant={selectedBadge === index ? 'primary' : 'outlined'}
               label={label}
               size={size}
               containerClassName={containerClassName}

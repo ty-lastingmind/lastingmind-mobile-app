@@ -25,12 +25,12 @@ export function CareerInfo() {
 
   const { value, setFalse, setTrue } = useBoolean(false)
 
-  const handleSelectBadge = (value: string) => {
-    if (value === '+') {
+  const handleSelectBadge = (index: number) => {
+    if (index === 0) {
       form.reset({ company: '', position: '', start_age: undefined, end_age: undefined, about: '' })
       setTrue()
     } else {
-      setSelectedBadge(value)
+      setSelectedBadge(index)
     }
   }
 
@@ -51,7 +51,7 @@ export function CareerInfo() {
 
   return (
     <View className="p-6 bg-bg-secondary rounded-xl gap-4">
-      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge} onBadgePress={handleSelectBadge} />
+      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge + 1} onBadgePress={handleSelectBadge} />
       {selectedCareer && (
         <View className="gap-4 relative">
           {selectedCareer.company && (

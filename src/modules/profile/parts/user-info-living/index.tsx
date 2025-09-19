@@ -24,12 +24,12 @@ export function LivingInfo() {
   const form = useLivingForm()
   const { value, setFalse, setTrue } = useBoolean(false)
 
-  const handleSelectBadge = (value: string) => {
-    if (value === '+') {
+  const handleSelectBadge = (index: number) => {
+    if (index === 0) {
       form.reset({ location: '', start_age: undefined, end_age: undefined, about: '' })
       setTrue()
     } else {
-      setSelectedBadge(value)
+      setSelectedBadge(index)
     }
   }
 
@@ -50,7 +50,7 @@ export function LivingInfo() {
 
   return (
     <View className="p-6 bg-bg-secondary rounded-xl gap-4">
-      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge} onBadgePress={handleSelectBadge} />
+      <BadgeList list={['+', ...list]} selectedBadge={selectedBadge + 1} onBadgePress={handleSelectBadge} />
       {selectedLiving && (
         <View className="gap-4 relative">
           {selectedLiving.location && (

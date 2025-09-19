@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet } from '~/services/api/generated'
 import { PersonalInfoDetailsPersonalInfoDetailsAnyOfItem, TopicEnum } from '~/services/api/model'
 
@@ -11,19 +11,10 @@ export const useProfileInfo = <T extends PersonalInfoDetailsPersonalInfoDetailsA
   topic,
   listKey,
 }: UseProfileInfoProps) => {
-  const [selectedBadge, setSelectedBadge] = useState('')
+  const [selectedBadge, setSelectedBadge] = useState(1)
   const { data, isPending, refetch } = useGetPersonInfoDetailsProfilePageGetPersonalInfoDetailsGet({
     topic,
   })
-
-  useEffect(() => {
-    if (data?.personal_info_details?.length) {
-      const defaultValue = (data.personal_info_details[0] as Record<string, string>)[listKey]
-      if (defaultValue) {
-        setSelectedBadge(defaultValue)
-      }
-    }
-  }, [data, listKey])
 
   const list = useMemo(
     () =>
@@ -34,20 +25,9 @@ export const useProfileInfo = <T extends PersonalInfoDetailsPersonalInfoDetailsA
   )
 
   const selectedBadgeValue = useMemo(
-    () =>
-      data?.personal_info_details?.find((i) => (i as Record<string, string | number>)[listKey] === selectedBadge) as
-        | T
-        | undefined,
+    () => data?.personal_info_details?.[selectedBadge - 1] as T | undefined,
     [data, selectedBadge, listKey]
   )
 
-  const selectedBadgeIndex = useMemo(
-    () =>
-      data?.personal_info_details?.findIndex(
-        (i) => (i as Record<string, string | number>)[listKey] === selectedBadge
-      ) || 0,
-    [data, selectedBadge]
-  )
-
-  return { selectedBadge, setSelectedBadge, selectedBadgeValue, list, selectedBadgeIndex, isPending, refetch }
+  return { selectedBadge: selectedBadge - 1, setSelectedBadge, selectedBadgeValue, list, isPending, refetch }
 }
