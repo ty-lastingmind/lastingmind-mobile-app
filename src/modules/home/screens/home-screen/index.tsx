@@ -23,11 +23,6 @@ export function Home() {
     return null
   }, [data])
 
-  const progressText = useMemo(() => {
-    const percent = progressData?.progress_percent ?? 0
-    return `Pick up where you left off! You're already ${percent}% towards Platinum.`
-  }, [progressData])
-
   const handleContinueWhereLeftOff = useCallback(() => {
     router.navigate('/questions/curated-questions')
   }, [router])
@@ -47,8 +42,8 @@ export function Home() {
       keyExtractor={(item, index) => `${item.action}-${index}`}
       ListHeaderComponent={
         <HomeHeader
+          topContainer={data?.top_container ?? null}
           progressPercent={progressData?.progress_percent ?? 0}
-          progressText={progressText}
           onContinuePress={handleContinueWhereLeftOff}
         />
       }
