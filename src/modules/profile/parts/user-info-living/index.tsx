@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
 import { CitiesLivedItem } from '~/services/api/model'
 import BadgeList from '~/modules/ui/badge-list'
@@ -8,6 +8,10 @@ import { useProfileInfo } from '../../hooks/use-profile-info'
 import { LivingFormData, useLivingForm } from '../../hooks/use-living-form'
 import { useBoolean } from 'usehooks-ts'
 import LivingForm from '../dialogs/living-form'
+import {
+  useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
+  useEditPersonalInfoProfilePageEditPersonalInfoPost,
+} from '~/services/api/generated'
 
 export function LivingInfo() {
   const {
@@ -16,6 +20,7 @@ export function LivingInfo() {
     selectedBadgeValue: selectedLiving,
     list,
     isPending,
+    refetch,
   } = useProfileInfo<CitiesLivedItem>({
     topic: 'cities_lived',
     listKey: 'location',
@@ -23,9 +28,13 @@ export function LivingInfo() {
 
   const form = useLivingForm()
   const { value, setFalse, setTrue } = useBoolean(false)
+  const { value: isNewEntry, setFalse: setFalseIsNewEntry, setTrue: setTrueIsNewEntry } = useBoolean(false)
+  const submitNew = useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost()
+  const submitEdit = useEditPersonalInfoProfilePageEditPersonalInfoPost()
 
   const handleSelectBadge = (index: number) => {
     if (index === 0) {
+      setTrueIsNewEntry()
       form.reset({ location: '', start_age: undefined, end_age: undefined, about: '' })
       setTrue()
     } else {
@@ -35,9 +44,54 @@ export function LivingInfo() {
 
   const handleEdit = () => {
     if (selectedLiving) {
+      setFalseIsNewEntry()
       form.reset(selectedLiving as LivingFormData)
       setTrue()
     }
+  }
+
+  const handleSubmitNew = (data: LivingFormData) => {
+    submitNew.mutate(
+      {
+        data: {
+          topic: 'cities_lived',
+          personal_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setSelectedBadge(list.length + 1)
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
+  }
+
+  const handleSubmitEdit = (data: LivingFormData) => {
+    submitEdit.mutate(
+      {
+        data: {
+          topic: 'cities_lived',
+          index_of_entry: selectedBadge,
+          updated_data: data,
+        },
+      },
+      {
+        onSuccess: () => {
+          refetch().then(() => {
+            setFalse()
+          })
+        },
+        onError: () => {
+          Alert.alert('An error occurred when submitting the form')
+        },
+      }
+    )
   }
 
   if (isPending) {
@@ -73,7 +127,12 @@ export function LivingInfo() {
           </TouchableOpacity>
         </View>
       )}
-      <LivingForm isOpen={value} form={form} onClose={setFalse} />
+      <LivingForm
+        isOpen={value}
+        form={form}
+        onClose={setFalse}
+        onSubmit={isNewEntry ? handleSubmitNew : handleSubmitEdit}
+      />
     </View>
   )
 }

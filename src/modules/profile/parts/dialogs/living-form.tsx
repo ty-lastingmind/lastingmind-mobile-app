@@ -8,14 +8,16 @@ import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { UseFormReturn } from 'react-hook-form'
 import { LivingFormData } from '../../hooks/use-living-form'
+import { parseToNumber } from '~/utils/numberFilter'
 
 interface LivingFormProps {
   isOpen?: boolean
   onClose: () => void
   form: UseFormReturn<LivingFormData>
+  onSubmit: (data: LivingFormData) => void
 }
 
-export default function LivingForm({ isOpen = false, onClose, form }: LivingFormProps) {
+export default function LivingForm({ isOpen = false, onClose, form, onSubmit }: LivingFormProps) {
   return (
     <Dialog isOpen={isOpen} className="w-full">
       <View className="px-4 gap-4">
@@ -54,10 +56,11 @@ export default function LivingForm({ isOpen = false, onClose, form }: LivingForm
                 <FormLabel>Start Age</FormLabel>
                 <FormControl>
                   <Input
+                    keyboardType="number-pad"
                     isError={!!fieldState.error?.message}
                     onBlur={field.onBlur}
                     placeholder="Start Age (required)"
-                    onChangeText={field.onChange}
+                    onChangeText={(text) => field.onChange(parseToNumber(text))}
                     value={field.value?.toString()}
                   />
                 </FormControl>
@@ -72,10 +75,11 @@ export default function LivingForm({ isOpen = false, onClose, form }: LivingForm
                 <FormLabel>End Age</FormLabel>
                 <FormControl>
                   <Input
+                    keyboardType="number-pad"
                     isError={!!fieldState.error?.message}
                     onBlur={field.onBlur}
                     placeholder="End Age (required)"
-                    onChangeText={field.onChange}
+                    onChangeText={(text) => field.onChange(parseToNumber(text))}
                     value={field.value?.toString()}
                   />
                 </FormControl>
@@ -101,7 +105,7 @@ export default function LivingForm({ isOpen = false, onClose, form }: LivingForm
             )}
           />
           <View className="pt-8">
-            <Button>Save</Button>
+            <Button onPress={form.handleSubmit(onSubmit)}>Save</Button>
           </View>
         </Form>
       </View>

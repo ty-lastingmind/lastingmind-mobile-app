@@ -8,6 +8,7 @@ import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { UseFormReturn } from 'react-hook-form'
 import { CareerFormData } from '../../hooks/use-career-form'
+import { parseToNumber } from '~/utils/numberFilter'
 
 interface CareerFormProps {
   isOpen?: boolean
@@ -79,7 +80,7 @@ export default function CareerForm({ isOpen = false, onClose, form, onSubmit }: 
                     isError={!!fieldState.error?.message}
                     onBlur={field.onBlur}
                     placeholder="Start Age (required)"
-                    onChangeText={(text) => field.onChange(Number(text) || '')}
+                    onChangeText={(text) => field.onChange(parseToNumber(text))}
                     value={field.value?.toString()}
                   />
                 </FormControl>
@@ -99,7 +100,7 @@ export default function CareerForm({ isOpen = false, onClose, form, onSubmit }: 
                     isError={!!fieldState.error?.message}
                     onBlur={field.onBlur}
                     placeholder="End Age (required)"
-                    onChangeText={(text) => field.onChange(Number(text) || '')}
+                    onChangeText={(text) => field.onChange(parseToNumber(text))}
                     value={field.value?.toString()}
                   />
                 </FormControl>
