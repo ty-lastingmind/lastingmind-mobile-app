@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { FlatList, View } from 'react-native'
 import { HomeHeader } from '~/modules/home/parts/header'
 import { QuickActionItem } from '~/modules/home/parts/quick-action-item'
@@ -8,10 +8,8 @@ import {
   useGetHomeElementsHomePullHomeElementsGet,
 } from '~/services/api/generated'
 import type { ProgressData } from '~/services/api/model'
-import { useRouter } from 'expo-router'
 
 export function Home() {
-  const router = useRouter()
   const { data } = useGetHomeElementsHomePullHomeElementsGet()
   const onboarding = useCheckOnboardingCompleteLoginCompletedOnboardingGet()
 
@@ -22,15 +20,6 @@ export function Home() {
     }
     return null
   }, [data])
-
-  const progressText = useMemo(() => {
-    const percent = progressData?.progress_percent ?? 0
-    return `Pick up where you left off! You're already ${percent}% towards Platinum.`
-  }, [progressData])
-
-  const handleContinueWhereLeftOff = useCallback(() => {
-    router.navigate('/questions/curated-questions')
-  }, [router])
 
   if (onboarding.isLoading) {
     return null
@@ -46,11 +35,7 @@ export function Home() {
       renderItem={({ item }) => <QuickActionItem action={item} />}
       keyExtractor={(item, index) => `${item.action}-${index}`}
       ListHeaderComponent={
-        <HomeHeader
-          progressPercent={progressData?.progress_percent ?? 0}
-          progressText={progressText}
-          onContinuePress={handleContinueWhereLeftOff}
-        />
+        <HomeHeader topContainer={data?.top_container ?? null} progressPercent={progressData?.progress_percent ?? 0} />
       }
       numColumns={2}
       showsVerticalScrollIndicator={false}

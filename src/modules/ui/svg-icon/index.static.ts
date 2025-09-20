@@ -38,6 +38,12 @@ import { Play } from './svg/play'
 import { ArrowRight } from './svg/arrow-right'
 import { AudioWave } from './svg/audio-wave'
 import { Trash } from './svg/trash'
+import { TodoList } from './svg/todo-list'
+import { Audience } from './svg/audience'
+import { InterviewTable } from './svg/interview-table'
+import { MicFilled } from './svg/mic-filled'
+import { ChatText } from './svg/chat-text'
+import { ChatBubbleOutline } from './svg/chat-bubble-outline'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -80,4 +86,11 @@ export const iconNameToSvg = {
   arrow_right: ArrowRight,
   audio_wave: AudioWave,
   trash: Trash,
+  todo_list: TodoList,
+  chat_bubbles: ChatBubbles,
+  audience: Audience,
+  interview_table: InterviewTable,
+  mic_filled: MicFilled,
+  chat_text: ChatText,
+  chat_bubble_outline: ChatBubbleOutline,
 } as const
