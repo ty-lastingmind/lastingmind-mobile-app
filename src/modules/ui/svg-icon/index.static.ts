@@ -42,6 +42,8 @@ import { TodoList } from './svg/todo-list'
 import { ChatBubbles } from './svg/chat-bubbles'
 import { Audience } from './svg/audience'
 import { InterviewTable } from './svg/interview-table'
+import { MicFilled } from './svg/mic-filled'
+import { ChatText } from './svg/chat-text'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -88,4 +90,6 @@ export const iconNameToSvg = {
   chat_bubbles: ChatBubbles,
   audience: Audience,
   interview_table: InterviewTable,
+  mic_filled: MicFilled,
+  chat_text: ChatText,
 } as const

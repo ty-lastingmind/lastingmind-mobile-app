@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { View } from 'react-native'
 import { Button } from '~/modules/ui/button'
 import { CircularProgress } from '~/modules/ui/circular-progress'
@@ -6,18 +6,19 @@ import { Typography } from '~/modules/ui/typography'
 import { SentInvitationData, TopContainer } from '~/services/api/model'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Avatar } from '~/modules/ui/avatar'
-import { BANNER_CONFIG } from '../../constants/banner-config'
+import { bannerConfigToData } from '../../constants/banner-config'
+import { useRouter } from 'expo-router'
 
 interface BannerProps {
   topContainer: TopContainer | null
   progressPercent: number
-  onContinuePress: () => void
 }
 
-export const Banner = ({ topContainer, progressPercent, onContinuePress }: BannerProps) => {
+export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
+  const router = useRouter()
   const config = useMemo(() => {
     const containerType = topContainer?.top_container
-    return containerType ? BANNER_CONFIG[containerType] : null
+    return containerType ? bannerConfigToData[containerType] : null
   }, [topContainer?.top_container])
 
   const sender = useMemo(() => {
@@ -54,6 +55,16 @@ export const Banner = ({ topContainer, progressPercent, onContinuePress }: Banne
     }
   }, [progressPercent, sender?.profile_image])
 
+  const handleContinuePress = useCallback(() => {
+    const route = config?.route
+
+    if (!route) {
+      return
+    }
+
+    router.navigate(route)
+  }, [config?.route, router])
+
   return (
     <View className="bg-fill-accent rounded-md p-4 pt-8 gap-8">
       <View className="flex flex-row items-center gap-4 overflow-hidden">
@@ -64,8 +75,10 @@ export const Banner = ({ topContainer, progressPercent, onContinuePress }: Banne
         </Typography>
       </View>
       <View>
-        <Button variant="white" size="lg" onPress={onContinuePress}>
-          Continue
+        <Button variant="white" size="lg" onPress={handleContinuePress}>
+          {typeof config?.buttonText === 'function'
+            ? config.buttonText(sender?.who_sent_name ?? '')
+            : config?.buttonText}
         </Button>
       </View>
     </View>

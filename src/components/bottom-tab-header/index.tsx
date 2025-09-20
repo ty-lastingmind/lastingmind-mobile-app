@@ -1,11 +1,12 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
+import { DrawerHeaderProps } from '@react-navigation/drawer'
 import { View } from 'react-native'
 import { Logo } from '~/modules/components/logo'
 import { Avatar } from '~/modules/ui/avatar'
 import { Typography } from '~/modules/ui/typography'
 import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
 
-export function BottomTabHeader(props: BottomTabHeaderProps) {
+export function BottomTabHeader(props: BottomTabHeaderProps | DrawerHeaderProps) {
   const userInfoQuery = usePullUserInfoHomePullUserInfoGet()
 
   const userAvatar = { uri: userInfoQuery?.data?.profile_image }

@@ -1,10 +1,11 @@
 import { TouchableOpacity } from 'react-native'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
-import type { QuickAction } from '~/services/api/model'
+import { QuickActionAction, type QuickAction } from '~/services/api/model'
 import { quickActionToData, defaultQuickActionConfig } from './index.static'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useRouter } from 'expo-router'
+import { Avatar } from '~/modules/ui/avatar'
 
 interface QuickActionItemProps {
   action: QuickAction
@@ -17,17 +18,21 @@ export const QuickActionItem = ({ action }: QuickActionItemProps) => {
     title: `${defaultQuickActionConfig.title} (${action.action})`,
   }
 
-  // TODO: Add other actions when we have them
-  const handleActionPress = useCallback(() => {
-    switch (action.action) {
-      case 'curated_question_action':
-        router.push('/questions/curated-questions')
-        break
-      default:
-        console.log('Unknown action:', action.action)
-        break
+  const actionTitle = useMemo(() => {
+    if (action.action === QuickActionAction.chat_with_other_action) {
+      return `Chat with ${action.action_data?.full_user_name ?? ''}`
     }
-  }, [action.action, router])
+
+    return actionProps.title
+  }, [actionProps.title, action.action, action.action_data?.full_user_name])
+
+  const handleActionPress = useCallback(() => {
+    const route = actionProps.route
+    if (!route) {
+      return
+    }
+    router.navigate(route)
+  }, [actionProps.route, router])
 
   return (
     <TouchableOpacity
@@ -36,9 +41,13 @@ export const QuickActionItem = ({ action }: QuickActionItemProps) => {
       activeOpacity={0.7}
     >
       <Typography level="label-1" color="primary" className="text-center px-2">
-        {actionProps.title}
+        {actionTitle}
       </Typography>
-      <SvgIcon name={actionProps.icon} size="3xl" color="primary" />
+      {action.action === QuickActionAction.chat_with_other_action ? (
+        <Avatar source={action.action_data?.profile_image} className="h-[48px] w-[48px]" />
+      ) : (
+        <SvgIcon name={actionProps.icon} size="3xl" color="primary" />
+      )}
     </TouchableOpacity>
   )
 }
