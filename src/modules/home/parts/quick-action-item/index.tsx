@@ -44,7 +44,7 @@ export const QuickActionItem = ({ action }: QuickActionItemProps) => {
         {actionTitle}
       </Typography>
       {action.action === QuickActionAction.chat_with_other_action ? (
-        <Avatar source={action.action_data?.profile_image} className="h-[48px] w-[48px]" />
+        <Avatar source={action.action_data?.profile_image} size="sm" />
       ) : (
         <SvgIcon name={actionProps.icon} size="3xl" color="primary" />
       )}

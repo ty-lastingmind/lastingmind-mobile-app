@@ -47,8 +47,8 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
     return {
       progress: <CircularProgress value={progressPercent} />,
       todo_list: <SvgIcon name="todo_list" size="4xl" color="white" />,
-      avatar: <Avatar source={sender?.profile_image} className="h-[80px] w-[80px]" />,
-      chat_bubbles: <SvgIcon name="chat_bubbles" size="4xl" color="white" />,
+      avatar: <Avatar source={sender?.profile_image} size="md" />,
+      chat_bubble_outline: <SvgIcon name="chat_bubble_outline" size="4xl" color="white" />,
       audience: <SvgIcon name="audience" size="4xl" color="white" />,
       interview_table: <SvgIcon name="interview_table" size="4xl" color="white" />,
       journal: <SvgIcon name="journal" size="4xl" color="white" />,

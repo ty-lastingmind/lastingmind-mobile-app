@@ -60,7 +60,7 @@ export const bannerConfigToData: Record<TopContainerTopContainer, BannerConfig> 
 
   // Feature banners
   [TopContainerTopContainer.chat_self_page_1]: {
-    icon: 'chat_bubbles',
+    icon: 'chat_bubble_outline',
     text: 'Your LastingMind continues to get better! Go try it out!',
     buttonText: 'Continue',
   },

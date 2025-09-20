@@ -4,7 +4,7 @@ export type BannerIconType =
   | 'progress'
   | 'todo_list'
   | 'avatar'
-  | 'chat_bubbles'
+  | 'chat_bubble_outline'
   | 'audience'
   | 'interview_table'
   | 'journal'
