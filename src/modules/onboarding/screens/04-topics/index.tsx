@@ -9,6 +9,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { useRouter } from 'expo-router'
 import { useInitializeUserOnboardingInitializeUserPost } from '~/services/api/generated'
 import { useBoolean } from 'usehooks-ts'
+import { useFirebaseNotificationToken } from '~/hooks/use-firebase-notification-token'
 
 const initialTopics = [
   '🧓 Growing Up',
@@ -29,6 +30,7 @@ export function TopicsPage() {
   const form = useOnboardingFormContext()
   const selectedTopics = form.watch('topics')
   const router = useRouter()
+  const { moveFcmToken } = useFirebaseNotificationToken()
 
   const initializeUser = useInitializeUserOnboardingInitializeUserPost()
 
@@ -61,6 +63,7 @@ export function TopicsPage() {
       },
       {
         onSuccess: () => {
+          moveFcmToken()
           router.push('/(protected)/onboarding/05-congrats')
         },
         onError: () => {
