@@ -10,10 +10,11 @@ import { cn } from '~/utils/cn'
 
 interface DropdownProps extends React.ComponentProps<typeof TouchableOpacity> {
   iconName?: SvgIconName
+  titleWeight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold'
   title: string
 }
 
-export default function Dropdown({ iconName, title, children, className }: DropdownProps) {
+export default function Dropdown({ iconName, title, children, className, titleWeight = 'bold' }: DropdownProps) {
   const { value: isOpen, toggle: toggleOpen } = useBoolean(false)
 
   const containerClassName = cn('flex-row gap-4 p-6 bg-bg-secondary rounded-xl items-center', className)
@@ -22,7 +23,7 @@ export default function Dropdown({ iconName, title, children, className }: Dropd
     <>
       <TouchableOpacity className={containerClassName} onPress={toggleOpen}>
         {iconName && <SvgIcon name={iconName} size="xl" color="accent" />}
-        <Typography level="h5" className="flex-1" weight="bold">
+        <Typography level="h5" className="flex-1" weight={titleWeight}>
           {title}
         </Typography>
         {!isOpen ? <Icon name="chevron-forward" color="secondary" /> : <Icon name="chevron-down" color="secondary" />}
