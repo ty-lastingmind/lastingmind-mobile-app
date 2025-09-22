@@ -10,8 +10,9 @@ import {
   usePullCanChatWithChatPullCanChatWithGet,
   usePullFilteredResponsesViewAnswerPullFilteredAnswersPost,
 } from '~/services/api/generated'
-import { formatDate } from '~/utils/date'
 import { ScrollView } from 'react-native-gesture-handler'
+import { format } from 'date-fns'
+import { FilterBadge } from '../../parts/past-responses/filter-badge'
 
 const types = [
   { name: 'Curated Questions', value: 'curated_question' },
@@ -60,9 +61,9 @@ export function PastResponsesPage() {
   return (
     <>
       <Header />
-      <ScrollView className="px-8 pt-4">
+      <ScrollView className="px-8">
         <View className="gap-4 bg-icon-white pb-4">
-          <Dropdown title="Filters" titleWeight="normal" className="bg-button-white-bg pt-2 pb-0 px-2">
+          <Dropdown title="Filters" titleWeight="normal" className="bg-button-white-bg pt-0 pb-0 px-2">
             <View className="gap-2">
               <Selector
                 placeholder="Choose a Person"
@@ -79,6 +80,15 @@ export function PastResponsesPage() {
               <Selector placeholder="Date Range" options={[]} />
             </View>
           </Dropdown>
+          <ScrollView horizontal contentContainerClassName="flex-wrap flex-row gap-2" bounces={false}>
+            {people.data && (
+              <FilterBadge
+                label={people.data.can_chat_with[selectedPerson].chattingWithName}
+                avatarUrl={people.data.can_chat_with[selectedPerson].chattingWithImage || undefined}
+              />
+            )}
+            {selectedType !== undefined && <FilterBadge label={types[selectedType].name} />}
+          </ScrollView>
           <Input placeholder="Type Your Own..." leftAdornment={<Icon name="search" color="secondary" />} />
         </View>
         <FlatList
@@ -89,7 +99,7 @@ export function PastResponsesPage() {
           renderItem={({ item }) => (
             <TouchableOpacity className="rounded-2xl border border-miscellaneous-topic-stroke px-4 py-2 gap-2">
               <Typography>{item.question_title}</Typography>
-              <Typography color="secondary">{formatDate(item.submitted_at)}</Typography>
+              <Typography color="secondary">{format(item.submitted_at, 'mm/dd/yyyy')}</Typography>
             </TouchableOpacity>
           )}
         />

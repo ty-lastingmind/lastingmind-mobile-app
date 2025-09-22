@@ -8,6 +8,7 @@ import { ImageSrc } from '~/types/images'
 const variants = cva('rounded-full flex items-center justify-center bg-bg-secondary', {
   variants: {
     size: {
+      xs: 'h-[24px] w-[24px]',
       sm: 'h-[40px] w-[40px]',
       md: 'h-[80px] w-[80px]',
       lg: 'h-[132px] w-[132px]',
@@ -17,7 +18,7 @@ const variants = cva('rounded-full flex items-center justify-center bg-bg-second
 
 interface AvatarProps {
   source?: ImageSrc
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'xs'
 }
 
 export function Avatar({ source, size = 'sm' }: AvatarProps) {
