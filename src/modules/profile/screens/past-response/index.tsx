@@ -28,9 +28,9 @@ export function PastResponsesPage() {
   const [selectedType, setSelectedType] = useState<number>()
 
   const responses = usePullFilteredResponsesViewAnswerPullFilteredAnswersPost()
-  const people = usePullCanChatWithChatPullCanChatWithGet()
+  const { data: people } = usePullCanChatWithChatPullCanChatWithGet()
 
-  const peopleList = useMemo(() => people.data?.can_chat_with.map((person) => person.chattingWithName), [people])
+  const peopleList = useMemo(() => people?.can_chat_with.map((person) => person.chattingWithName), [people])
   const typeList = useMemo(() => types.map((type) => type.name), [types])
 
   const handleSelectPerson = (value: string) => {
@@ -46,17 +46,17 @@ export function PastResponsesPage() {
   }
 
   useEffect(() => {
-    if (people.data) {
+    if (people?.can_chat_with) {
       responses.mutate({
         data: {
           filters: {
-            users: people.data.can_chat_with[selectedPerson].chattingWithViewId,
-            response_type: selectedType ? [types[selectedType].value] : undefined,
+            users: people.can_chat_with[selectedPerson].chattingWithViewId,
+            response_type: selectedType !== undefined ? [types[selectedType].value] : undefined,
           },
         },
       })
     }
-  }, [selectedPerson, selectedType])
+  }, [selectedPerson, selectedType, people?.can_chat_with])
 
   return (
     <>
@@ -71,20 +71,15 @@ export function PastResponsesPage() {
                 onSelect={handleSelectPerson}
                 initialIndex={selectedPerson}
               />
-              <Selector
-                placeholder="Enter Type"
-                options={typeList}
-                onSelect={handleSelectType}
-                initialIndex={selectedType}
-              />
+              <Selector placeholder="Enter Type" options={typeList} onSelect={handleSelectType} />
               <Selector placeholder="Date Range" options={[]} />
             </View>
           </Dropdown>
           <ScrollView horizontal contentContainerClassName="flex-wrap flex-row gap-2" bounces={false}>
-            {people.data && (
+            {people && (
               <FilterBadge
-                label={people.data.can_chat_with[selectedPerson].chattingWithName}
-                avatarUrl={people.data.can_chat_with[selectedPerson].chattingWithImage || undefined}
+                label={people.can_chat_with[selectedPerson].chattingWithName}
+                avatarUrl={people.can_chat_with[selectedPerson].chattingWithImage || undefined}
               />
             )}
             {selectedType !== undefined && <FilterBadge label={types[selectedType].name} />}

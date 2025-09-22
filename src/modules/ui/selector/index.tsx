@@ -24,7 +24,7 @@ export function Selector({
   initialIndex,
   isError,
 }: SelectorProps) {
-  const [selectedOption, setSelectedOption] = useState(options[initialIndex || 0] || '')
+  const [selectedOption, setSelectedOption] = useState(initialIndex !== undefined ? options[initialIndex] : '')
 
   const containerClassName = cn(
     'gap-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between bg-bg-secondary',
