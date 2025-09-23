@@ -18,8 +18,7 @@ export const CanChatWithList = ({ navigation }: CanChatWithListProps) => {
       canChatWith?.can_chat_with.map((chatUser) => ({
         title: chatUser.chattingWithName,
         icon: 'person',
-        // todo: change href
-        href: '/chats',
+        href: `/chats?chattingWithViewId=${chatUser.chattingWithViewId}`,
         avatarSource: { uri: chatUser.chattingWithImage || undefined },
       })) ?? []
     )

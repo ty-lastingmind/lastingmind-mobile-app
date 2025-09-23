@@ -1,10 +1,15 @@
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { DrawerActions } from '@react-navigation/routers'
-import { Link } from 'expo-router'
-import { useCallback, useState } from 'react'
+import { Link, usePathname } from 'expo-router'
+import { useCallback, useEffect, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Typography } from '~/modules/ui/typography'
-import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
+import {
+  usePullPastInterviewsInterviewPullPastInterviewsGet,
+  usePullPastJournalJournalPullPastJournalEntriesGet,
+  usePullPastConvosChatPullPastConvosPost,
+  usePullUserInfoHomePullUserInfoGet,
+} from '~/services/api/generated'
 import { Avatar } from '~/modules/ui/avatar'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { useBoolean } from 'usehooks-ts'
@@ -12,6 +17,7 @@ import { DrawerJournalItem as DrawerJournalItemType } from '~/modules/components
 import { DrawerJournalItem } from '../drawer-journal-item'
 import { CanChatWithList } from '../can-chat-with-list'
 import { TrophyModal } from '../trophy-modal'
+import { PastEntriesList } from '../past-entries-list'
 
 const items: DrawerJournalItemType[] = [
   {
@@ -23,8 +29,8 @@ const items: DrawerJournalItemType[] = [
         icon: 'curated_questions',
         href: '/questions/curated-questions',
       },
-      { title: 'Guided Interview', icon: 'interview', href: '/questions' },
-      { title: 'Journal Entry', icon: 'journal', href: '/profile' },
+      { title: 'Guided Interview', icon: 'interview', href: '/questions/interview/add/01-select-topic' },
+      { title: 'Journal Entry', icon: 'journal', href: '/questions/journal/add/01-select-topic' },
     ],
   },
   { title: 'View Past Answers', icon: 'chat_bubbles', href: '/questions' },
@@ -33,6 +39,7 @@ const items: DrawerJournalItemType[] = [
     title: 'More Features',
     icon: 'view_more',
     subItems: [
+      // TODO: handle these links
       { title: 'Your Voice Clone', icon: 'mic_filled', href: '/profile' },
       { title: 'Upload Your Data', icon: 'upload', href: '/profile' },
       { title: 'Your Audience', icon: 'people', href: '/profile' },
@@ -42,9 +49,30 @@ const items: DrawerJournalItemType[] = [
 ]
 
 export function DrawerJournal(props: DrawerContentComponentProps) {
-  const { data: userInfo } = usePullUserInfoHomePullUserInfoGet()
-  const userAvatar = { uri: userInfo?.profile_image }
+  const currentRouteName = usePathname()
+  const currentRoute = props.navigation.getState().routes[props.navigation.getState().index]
+  const chattingWithViewId = (currentRoute?.params as { chattingWithViewId?: string })?.chattingWithViewId
 
+  const isJournalRoute = currentRouteName.includes('journal')
+  const isInterviewRoute = currentRouteName.includes('interview')
+  const isConversationRoute = currentRouteName.includes('chat')
+
+  const { data: userInfo } = usePullUserInfoHomePullUserInfoGet()
+  const { data: pastJournalEntries } = usePullPastJournalJournalPullPastJournalEntriesGet({
+    query: {
+      enabled: isJournalRoute,
+    },
+  })
+
+  const { data: pastInterviews } = usePullPastInterviewsInterviewPullPastInterviewsGet({
+    query: {
+      enabled: isInterviewRoute,
+    },
+  })
+
+  const { data: pastConversations, mutate: pullPastConversations } = usePullPastConvosChatPullPastConvosPost()
+
+  const userAvatar = { uri: userInfo?.profile_image }
   const showChats = useBoolean(false)
   const showTrophyModal = useBoolean(false)
   const [activeSubItems, setActiveSubItems] = useState<DrawerJournalItemType[] | null>(null)
@@ -95,6 +123,16 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
     [handleItemPress]
   )
 
+  useEffect(() => {
+    if (isConversationRoute && chattingWithViewId) {
+      pullPastConversations({
+        data: {
+          chattingWithViewId,
+        },
+      })
+    }
+  }, [chattingWithViewId, isConversationRoute, pullPastConversations])
+
   return (
     <View className="pt-safe bg-bg-primary flex-1">
       <View className="px-10 pb-10 flex-1">
@@ -134,6 +172,12 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
           </>
         )}
       </View>
+      {(isJournalRoute || isInterviewRoute || isConversationRoute) && (
+        <PastEntriesList
+          type={isJournalRoute ? 'journal' : isInterviewRoute ? 'interview' : 'conversation'}
+          entries={pastJournalEntries?.entries || pastInterviews?.entries || pastConversations?.past_convos || []}
+        />
+      )}
 
       <View className="pb-safe">
         <View className="h-px bg-miscellaneous-topic-stroke mb-4" />
