@@ -13,6 +13,7 @@ import {
 import { ScrollView } from 'react-native-gesture-handler'
 import { format } from 'date-fns'
 import { FilterBadge } from '../../parts/past-responses/filter-badge'
+import { useDebounceCallback } from 'usehooks-ts'
 
 const types = [
   { name: 'Curated Questions', value: 'curated_question' },
@@ -26,12 +27,17 @@ const types = [
 export function PastResponsesPage() {
   const [selectedPerson, setSelectedPerson] = useState<number>(0)
   const [selectedType, setSelectedType] = useState<number>()
+  const [searchText, setSearchText] = useState<string>('')
 
   const responses = usePullFilteredResponsesViewAnswerPullFilteredAnswersPost()
   const { data: people } = usePullCanChatWithChatPullCanChatWithGet()
 
   const peopleList = useMemo(() => people?.can_chat_with.map((person) => person.chattingWithName), [people])
   const typeList = useMemo(() => types.map((type) => type.name), [types])
+
+  const debouncedSetSearchText = useDebounceCallback((text: string) => {
+    setSearchText(text)
+  }, 500)
 
   const handleSelectPerson = (value: string) => {
     if (peopleList) {
@@ -49,6 +55,7 @@ export function PastResponsesPage() {
     if (people?.can_chat_with) {
       responses.mutate({
         data: {
+          search: searchText,
           filters: {
             users: people.can_chat_with[selectedPerson].chattingWithViewId,
             response_type: selectedType !== undefined ? [types[selectedType].value] : undefined,
@@ -56,7 +63,7 @@ export function PastResponsesPage() {
         },
       })
     }
-  }, [selectedPerson, selectedType, people?.can_chat_with])
+  }, [selectedPerson, selectedType, searchText, people?.can_chat_with])
 
   return (
     <>
@@ -84,7 +91,11 @@ export function PastResponsesPage() {
             )}
             {selectedType !== undefined && <FilterBadge label={types[selectedType].name} />}
           </ScrollView>
-          <Input placeholder="Type Your Own..." leftAdornment={<Icon name="search" color="secondary" />} />
+          <Input
+            placeholder="Type Your Own..."
+            leftAdornment={<Icon name="search" color="secondary" />}
+            onChange={(e) => debouncedSetSearchText(e.nativeEvent.text)}
+          />
         </View>
         <FlatList
           scrollEnabled={false}
