@@ -1,6 +1,5 @@
 import { Tabs, usePathname } from 'expo-router'
 import { useMemo } from 'react'
-import { BottomTabHeader } from '~/components/bottom-tab-header'
 import { hideTabBar } from '~/modules/components/tab-bar/index.utils'
 import { TabBarIcon } from '~/modules/components/tab-bar/parts/tab-bar-icon'
 
@@ -35,10 +34,9 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="home/index"
+        name="home"
         options={{
-          headerShown: true,
-          header: (props) => <BottomTabHeader {...props} />,
+          headerShown: false,
           title: 'Home',
           tabBarIcon: ({ focused }) => <TabBarIcon name="home" focused={focused} />,
         }}
