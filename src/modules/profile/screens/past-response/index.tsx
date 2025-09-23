@@ -13,7 +13,8 @@ import {
 import { ScrollView } from 'react-native-gesture-handler'
 import { format } from 'date-fns'
 import { FilterBadge } from '../../parts/past-responses/filter-badge'
-import { useDebounceCallback } from 'usehooks-ts'
+import { useBoolean, useDebounceCallback } from 'usehooks-ts'
+import { ResponseDialog } from '../../parts/past-responses/response-dialog'
 
 const types = [
   { name: 'Curated Questions', value: 'curated_question' },
@@ -28,6 +29,8 @@ export function PastResponsesPage() {
   const [selectedPerson, setSelectedPerson] = useState<number>(0)
   const [selectedType, setSelectedType] = useState<number>()
   const [searchText, setSearchText] = useState<string>('')
+  const [selectedResponse, setSelectedResponse] = useState<string>('')
+  const { value: isDialogOpen, setTrue, setFalse } = useBoolean(false)
 
   const responses = usePullFilteredResponsesViewAnswerPullFilteredAnswersPost()
   const { data: people } = usePullCanChatWithChatPullCanChatWithGet()
@@ -49,6 +52,11 @@ export function PastResponsesPage() {
   const handleSelectType = (value: string) => {
     const index = typeList.indexOf(value)
     setSelectedType(index !== -1 ? index : undefined)
+  }
+
+  const handleResponse = (responseId: string) => {
+    setSelectedResponse(responseId)
+    setTrue()
   }
 
   useEffect(() => {
@@ -118,7 +126,10 @@ export function PastResponsesPage() {
             keyExtractor={(item) => item.responseId.toString()}
             contentContainerClassName=" gap-4"
             renderItem={({ item }) => (
-              <TouchableOpacity className="rounded-2xl border border-miscellaneous-topic-stroke px-4 py-2 gap-2">
+              <TouchableOpacity
+                className="rounded-2xl border border-miscellaneous-topic-stroke px-4 py-2 gap-2"
+                onPress={() => handleResponse(item.responseId)}
+              >
                 <Typography>{item.question_title}</Typography>
                 <Typography color="secondary">{format(item.submitted_at, 'mm/dd/yyyy')}</Typography>
               </TouchableOpacity>
@@ -126,6 +137,14 @@ export function PastResponsesPage() {
           />
         )}
       </ScrollView>
+      {people?.can_chat_with && responses.data && (
+        <ResponseDialog
+          isOpen={isDialogOpen}
+          onClose={setFalse}
+          chattingWithViewId={people?.can_chat_with[selectedPerson].chattingWithViewId}
+          responseId={selectedResponse}
+        />
+      )}
     </>
   )
 }
