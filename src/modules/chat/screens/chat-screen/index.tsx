@@ -4,6 +4,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
+import { useUid } from '~/hooks/auth/use-uid'
 import { SearchParams } from '~/modules/chat/index.types'
 import { useConversationId } from '~/modules/chat/screens/chat-screen/hooks/use-conversaion-id'
 import { useStartConversation } from '~/modules/chat/screens/chat-screen/hooks/use-start-conversation'
@@ -16,6 +17,8 @@ import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import {
   usePullCanChatWithChatPullCanChatWithGet,
   usePullExplanationAndButtonChatPullExplanationAndButtonPost,
+  usePullUserInfoHomePullUserInfoGet,
+  useRefineTextUtilsRefineTextPost,
   useSendUserQueryChatSendUserQueryPost,
 } from '~/services/api/generated'
 
@@ -29,6 +32,9 @@ export function ChatScreen() {
   const { addLoadingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
   const conversationId = useConversationId()
+  const uid = useUid()
+  const userQuery = usePullUserInfoHomePullUserInfoGet()
+  const refineText = useRefineTextUtilsRefineTextPost()
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
   const getExplanations = usePullExplanationAndButtonChatPullExplanationAndButtonPost()
   const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === chattingWithViewId)
@@ -97,44 +103,51 @@ export function ChatScreen() {
 
   const handleSendAudioMessage = useCallback(async () => {
     await recordingControls.stopRecording()
-    const recordingUri = audioRecorder.uri
 
-    if (!recordingUri) return
+    if (!userQuery.data || !uid) return
 
     addLoadingMessage()
 
-    uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
-      onSuccess: ({ transcript, url }) => {
-        updateLastMessage({
-          audioUrl: url,
-          text: transcript,
-          isIncoming: false,
-          isLoading: false,
-        })
+    refineText.mutate(
+      {
+        data: {
+          text: recordingControls.transcriptRef.current,
+          userFullName: userQuery.data.full_user_name,
+        },
+      },
+      {
+        onSuccess: ({ text }) => {
+          updateLastMessage({
+            text: text,
+            isIncoming: false,
+            isLoading: false,
+          })
 
-        sendMessage.mutate({
-          data: {
-            chattingWithViewId: chattingWithViewId,
-            query: transcript,
-            convoId: conversationId,
-          },
-        })
-      },
-      onError: () => {
-        Alert.alert('Error', 'Failed to upload and transcribe audio message')
-        removeLastMessage()
-      },
-    })
+          sendMessage.mutate({
+            data: {
+              chattingWithViewId: chattingWithViewId,
+              query: text,
+              convoId: conversationId,
+            },
+          })
+        },
+        onError: () => {
+          Alert.alert('Error', 'Failed to send message')
+          removeLastMessage()
+        },
+      }
+    )
   }, [
-    addLoadingMessage,
-    audioRecorder.uri,
-    conversationId,
     recordingControls,
-    removeLastMessage,
+    userQuery.data,
+    uid,
+    addLoadingMessage,
+    refineText,
+    updateLastMessage,
     sendMessage,
     chattingWithViewId,
-    updateLastMessage,
-    uploader.uploadAndTranscribeAudioMessage,
+    conversationId,
+    removeLastMessage,
   ])
 
   return (
@@ -174,7 +187,7 @@ export function ChatScreen() {
                   onSendAudioMessage={handleSendAudioMessage}
                   onChangeText={field.onChange}
                   value={field.value}
-                  onCancelRecording={recordingControls.stopRecording}
+                  onCancelRecording={recordingControls.cancelRecording}
                   onStartRecording={recordingControls.startRecording}
                 />
               )}

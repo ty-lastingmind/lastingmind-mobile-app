@@ -8,6 +8,7 @@ import { Dialog, DialogClose, DialogTitle } from '~/modules/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
 import { Textarea } from '~/modules/ui/textarea'
+import { usePullUserInfoHomePullUserInfoGet, useRefineTextUtilsRefineTextPost } from '~/services/api/generated'
 import { AnswerFormData, useAnswerForm } from './hooks/use-answer-form'
 
 interface AnswerFormDialogProps {
@@ -19,7 +20,9 @@ interface AnswerFormDialogProps {
 
 export function AnswerFormDialog({ title, onClose, onSave, defaultValues }: AnswerFormDialogProps) {
   const form = useAnswerForm(defaultValues)
-  const { uploader, recordingControls, audioRecorder } = useAudioMessage(ANSWER_FORM_AUDIO_FOLDER_NAME)
+  const refineText = useRefineTextUtilsRefineTextPost()
+  const userQuery = usePullUserInfoHomePullUserInfoGet()
+  const { recordingControls, audioRecorder } = useAudioMessage(ANSWER_FORM_AUDIO_FOLDER_NAME)
 
   function handleSubmit(data: AnswerFormData) {
     onSave(data)
@@ -27,19 +30,26 @@ export function AnswerFormDialog({ title, onClose, onSave, defaultValues }: Answ
 
   async function handleStopRecording() {
     await recordingControls.stopRecording()
-    const recordingUri = audioRecorder.uri
 
-    if (!recordingUri) return
+    if (!userQuery.data) return
 
-    uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
-      onSuccess: ({ transcript }) => {
-        const answer = form.getValues('answer')
-        form.setValue('answer', `${answer}\n${transcript}`)
+    refineText.mutate(
+      {
+        data: {
+          text: recordingControls.transcriptRef.current,
+          userFullName: userQuery.data.full_user_name,
+        },
       },
-      onError: () => {
-        Alert.alert('Error', 'Failed to upload and transcribe audio message')
-      },
-    })
+      {
+        onSuccess: ({ text }) => {
+          const answer = form.getValues('answer')
+          form.setValue('answer', `${answer}\n${text}`)
+        },
+        onError: () => {
+          Alert.alert('Error', 'Failed to send message')
+        },
+      }
+    )
   }
 
   return (
@@ -85,7 +95,7 @@ export function AnswerFormDialog({ title, onClose, onSave, defaultValues }: Answ
                       <View className="border-t border-miscellaneous-topic-stroke px-3.5 pt-3">
                         <AudioRecorder
                           audioRecorder={audioRecorder}
-                          uploaderStatus={uploader.status}
+                          uploaderStatus={refineText.isPending ? 'transcribing' : 'idle'}
                           onStartRecording={recordingControls.startRecording}
                           onStopRecording={handleStopRecording}
                         />
