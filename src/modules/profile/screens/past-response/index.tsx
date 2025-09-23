@@ -78,7 +78,13 @@ export function PastResponsesPage() {
                 onSelect={handleSelectPerson}
                 initialIndex={selectedPerson}
               />
-              <Selector placeholder="Enter Type" options={typeList} onSelect={handleSelectType} />
+              <Selector
+                key={selectedType}
+                placeholder="Enter Type"
+                options={typeList}
+                onSelect={handleSelectType}
+                initialIndex={selectedType}
+              />
               <Selector placeholder="Date Range" options={[]} />
             </View>
           </Dropdown>
@@ -89,7 +95,9 @@ export function PastResponsesPage() {
                 avatarUrl={people.can_chat_with[selectedPerson].chattingWithImage || undefined}
               />
             )}
-            {selectedType !== undefined && <FilterBadge label={types[selectedType].name} />}
+            {selectedType !== undefined && (
+              <FilterBadge showCloseIcon label={types[selectedType].name} onPress={() => setSelectedType(undefined)} />
+            )}
           </ScrollView>
           <Input
             placeholder="Type Your Own..."
@@ -97,18 +105,26 @@ export function PastResponsesPage() {
             onChange={(e) => debouncedSetSearchText(e.nativeEvent.text)}
           />
         </View>
-        <FlatList
-          scrollEnabled={false}
-          data={responses.data?.questions}
-          keyExtractor={(item) => item.responseId.toString()}
-          contentContainerClassName=" gap-4"
-          renderItem={({ item }) => (
-            <TouchableOpacity className="rounded-2xl border border-miscellaneous-topic-stroke px-4 py-2 gap-2">
-              <Typography>{item.question_title}</Typography>
-              <Typography color="secondary">{format(item.submitted_at, 'mm/dd/yyyy')}</Typography>
-            </TouchableOpacity>
-          )}
-        />
+        {responses.data?.questions.length === 0 ? (
+          <View className="flex-1 items-center justify-center mt-10">
+            <Typography brand color="accent" level="h4" weight="light">
+              No Matching Responses
+            </Typography>
+          </View>
+        ) : (
+          <FlatList
+            scrollEnabled={false}
+            data={responses.data?.questions}
+            keyExtractor={(item) => item.responseId.toString()}
+            contentContainerClassName=" gap-4"
+            renderItem={({ item }) => (
+              <TouchableOpacity className="rounded-2xl border border-miscellaneous-topic-stroke px-4 py-2 gap-2">
+                <Typography>{item.question_title}</Typography>
+                <Typography color="secondary">{format(item.submitted_at, 'mm/dd/yyyy')}</Typography>
+              </TouchableOpacity>
+            )}
+          />
+        )}
       </ScrollView>
     </>
   )
