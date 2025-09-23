@@ -5,6 +5,7 @@ import { AnswerFormDialog } from '~/modules/components/chat/messages-list/parts/
 import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-of-time-dialog'
 import { TranscriptDialog } from '~/modules/interview/screens/04-chat/parts/transcript-dialog'
 import { Button } from '~/modules/ui/button'
+import { DatePickerDialog } from '~/modules/ui/date-picker'
 import { Typography } from '~/modules/ui/typography'
 
 function OutOfTimeDialogShowcase() {
@@ -69,6 +70,20 @@ export function ConfirmDialogShowcase() {
   )
 }
 
+export function DatePickerDialogShowcase() {
+  const { setFalse, setTrue, value } = useBoolean(false)
+  const { setFalse: setFalseSingle, setTrue: setTrueSingle, value: valueSingle } = useBoolean(false)
+
+  return (
+    <>
+      <Button onPress={setTrue}>Date Picker Dialog (period)</Button>
+      <DatePickerDialog periodPicking isOpen={value} onClose={setFalse} onSave={setFalse} />
+      <Button onPress={setTrueSingle}>Date Picker Dialog (single)</Button>
+      <DatePickerDialog isOpen={valueSingle} onClose={setFalseSingle} onSave={setFalseSingle} />
+    </>
+  )
+}
+
 export function DialogShowcase() {
   return (
     <View className="flex gap-4">
@@ -78,6 +93,7 @@ export function DialogShowcase() {
         <OutOfTimeDialogShowcase />
         <AnswerFormDialogShowcase />
         <ConfirmDialogShowcase />
+        <DatePickerDialogShowcase />
       </View>
     </View>
   )

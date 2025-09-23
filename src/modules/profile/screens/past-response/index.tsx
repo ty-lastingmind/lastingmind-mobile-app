@@ -15,6 +15,7 @@ import { format } from 'date-fns'
 import { FilterBadge } from '../../parts/past-responses/filter-badge'
 import { useBoolean, useDebounceCallback } from 'usehooks-ts'
 import { ResponseDialog } from '../../parts/past-responses/response-dialog'
+import { Button } from '~/modules/ui/button'
 
 const types = [
   { name: 'Curated Questions', value: 'curated_question' },
@@ -93,7 +94,7 @@ export function PastResponsesPage() {
                 onSelect={handleSelectType}
                 initialIndex={selectedType}
               />
-              <Selector placeholder="Date Range" options={[]} />
+              <Button>Date Range</Button>
             </View>
           </Dropdown>
           <ScrollView horizontal contentContainerClassName="flex-wrap flex-row gap-2" bounces={false}>
