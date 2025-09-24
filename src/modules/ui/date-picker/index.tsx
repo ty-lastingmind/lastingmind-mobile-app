@@ -1,18 +1,22 @@
-import { View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import React, { useMemo, useState } from 'react'
 import { Dialog } from '../dialog'
 import { Calendar } from 'react-native-calendars'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 import { Button } from '../button'
 import { MarkingProps } from 'react-native-calendars/src/calendar/day/marking'
+import { Typography } from '../typography'
+import { cn } from '~/utils/cn'
+import { Icon } from '../icon'
+import { formatToMMDDYYYY } from '~/utils/date'
 
 interface DatePickerDialogProps {
   isOpen: boolean
   periodPicking?: boolean
-  initialStartDate?: string | null
-  initialEndDate?: string | null
+  startDateValue?: string
+  endDateValue?: string
   onClose: () => void
-  onSave?: (params: { startDate: string | null; endDate: string | null }) => void
+  onSave?: (params: { startDate?: string; endDate?: string }) => void
 }
 
 export function DatePickerDialog({
@@ -20,19 +24,19 @@ export function DatePickerDialog({
   onClose,
   periodPicking,
   onSave,
-  initialStartDate,
-  initialEndDate,
+  startDateValue,
+  endDateValue,
 }: DatePickerDialogProps) {
   const colors = useTailwindColors()
-  const [startDate, setStartDate] = useState<string | null>(initialStartDate ? initialStartDate : null)
-  const [endDate, setEndDate] = useState<string | null>(initialEndDate ? initialEndDate : null)
+  const [startDate, setStartDate] = useState<string | undefined>(startDateValue ? startDateValue : undefined)
+  const [endDate, setEndDate] = useState<string | undefined>(endDateValue ? endDateValue : undefined)
 
-  function getMarkedDates(startDate: string | null, endDate: string | null) {
+  function getMarkedDates(startDate: string | undefined, endDate: string | undefined) {
     if (!startDate) return undefined
 
     const currentDate = new Date(startDate)
 
-    if (!endDate || !periodPicking) {
+    if (!endDate || !periodPicking || startDate === endDate) {
       return {
         [currentDate.toISOString().split('T')[0]]: {
           selected: true,
@@ -65,7 +69,7 @@ export function DatePickerDialog({
   const handleDayPress = (day: { dateString: string }) => {
     if (!periodPicking || !startDate || (startDate && endDate)) {
       setStartDate(day.dateString)
-      setEndDate(null)
+      setEndDate(undefined)
     } else if (startDate && !endDate) {
       if (new Date(day.dateString) < new Date(startDate)) {
         setStartDate(day.dateString)
@@ -73,6 +77,12 @@ export function DatePickerDialog({
         setEndDate(day.dateString)
       }
     }
+  }
+
+  const handleClose = () => {
+    onClose()
+    setStartDate(startDateValue)
+    setEndDate(endDateValue)
   }
 
   const handleSave = () => {
@@ -90,17 +100,74 @@ export function DatePickerDialog({
             arrowColor: colors.accent,
             todayTextColor: colors.accent,
           }}
-          markingType={endDate ? 'period' : 'dot'}
+          markingType={endDate || startDate === endDate ? 'period' : 'dot'}
           markedDates={markedDates}
           onDayPress={handleDayPress}
         />
         <View className="gap-2">
-          <Button variant="outlined" onPress={onClose}>
+          <Button variant="outlined" onPress={handleClose}>
             Cancel
           </Button>
           <Button onPress={handleSave}>Save</Button>
         </View>
       </View>
     </Dialog>
+  )
+}
+
+interface DatePickerProps {
+  placeholder?: string
+  periodPicking?: boolean
+  startDateValue?: string
+  endDateValue?: string
+  className?: string
+  isError?: boolean
+  onSave?: (params: { startDate?: string; endDate?: string }) => void
+}
+
+export function DatePicker({
+  startDateValue,
+  endDateValue,
+  onSave,
+  placeholder = '',
+  periodPicking,
+  className,
+  isError,
+}: DatePickerProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const containerClassName = cn(
+    'gap-2 rounded-md px-3.5 min-h-md py-2 flex flex-row items-center justify-between bg-bg-secondary',
+    isError && 'border-input-border--error',
+    className
+  )
+
+  const textClassName = cn(
+    'flex-1 text-primary',
+    !startDateValue && !endDateValue && placeholder && 'text-input-placeholder',
+    isError && 'text-input-placeholder--error'
+  )
+
+  const text = startDateValue
+    ? `${formatToMMDDYYYY(startDateValue)}${endDateValue ? ' - ' + formatToMMDDYYYY(endDateValue) : ''}`
+    : placeholder
+
+  return (
+    <>
+      <TouchableOpacity onPress={() => setIsOpen(true)}>
+        <View className={containerClassName}>
+          <Typography className={textClassName}>{text}</Typography>
+          <Icon name="caret-forward" color={isError ? 'red' : 'primary'} />
+        </View>
+      </TouchableOpacity>
+      <DatePickerDialog
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        periodPicking={periodPicking}
+        startDateValue={startDateValue}
+        endDateValue={endDateValue}
+        onSave={onSave}
+      />
+    </>
   )
 }
