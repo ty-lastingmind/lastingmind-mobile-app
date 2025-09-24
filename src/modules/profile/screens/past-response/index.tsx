@@ -15,8 +15,8 @@ import { format } from 'date-fns'
 import { FilterBadge } from '../../parts/past-responses/filter-badge'
 import { useBoolean, useDebounceCallback } from 'usehooks-ts'
 import { ResponseDialog } from '../../parts/past-responses/response-dialog'
-import { DatePicker } from '~/modules/ui/date-picker'
-import { formatToMMDDYYYY } from '~/utils/date'
+// import { DatePicker } from '~/modules/ui/date-picker'
+// import { formatToMMDDYYYY } from '~/utils/date'
 
 const types = [
   { name: 'Curated Questions', value: 'curated_question' },
@@ -30,10 +30,10 @@ const types = [
 export function PastResponsesPage() {
   const [selectedPerson, setSelectedPerson] = useState<number>(0)
   const [selectedType, setSelectedType] = useState<number>()
-  const [dateRange, setDateRange] = useState<{ startDate?: string; endDate?: string }>({
-    startDate: undefined,
-    endDate: undefined,
-  })
+  // const [dateRange, setDateRange] = useState<{ startDate?: string; endDate?: string }>({
+  //   startDate: undefined,
+  //   endDate: undefined,
+  // })
   const [searchText, setSearchText] = useState<string>('')
   const [selectedResponse, setSelectedResponse] = useState<string>('')
   const { value: isDialogOpen, setTrue, setFalse } = useBoolean(false)
@@ -73,24 +73,24 @@ export function PastResponsesPage() {
           filters: {
             users: people.can_chat_with[selectedPerson].chattingWithViewId,
             response_type: selectedType !== undefined ? [types[selectedType].value] : undefined,
-            date_range:
-              dateRange.startDate && dateRange.endDate
-                ? {
-                    start: dateRange.startDate + 'T00:00:00Z',
-                    end: dateRange.endDate + 'T23:59:59Z',
-                  }
-                : undefined,
+            // date_range:
+            //   dateRange.startDate && dateRange.endDate
+            //     ? {
+            //         start: dateRange.startDate + 'T00:00:00Z',
+            //         end: dateRange.endDate + 'T23:59:59Z',
+            //       }
+            //     : undefined,
           },
         },
       })
     }
-  }, [selectedPerson, selectedType, searchText, people?.can_chat_with, dateRange])
+  }, [selectedPerson, selectedType, searchText, people?.can_chat_with])
 
-  const dateFilterBadgeLabel = useMemo(() => {
-    return dateRange.startDate
-      ? `${dateRange.endDate ? `${formatToMMDDYYYY(dateRange.startDate)} - ${formatToMMDDYYYY(dateRange.endDate)}` : formatToMMDDYYYY(dateRange.startDate)}`
-      : ''
-  }, [dateRange.startDate, dateRange.endDate])
+  // const dateFilterBadgeLabel = useMemo(() => {
+  //   return dateRange.startDate
+  //     ? `${dateRange.endDate ? `${formatToMMDDYYYY(dateRange.startDate)} - ${formatToMMDDYYYY(dateRange.endDate)}` : formatToMMDDYYYY(dateRange.startDate)}`
+  //     : ''
+  // }, [dateRange.startDate, dateRange.endDate])
 
   return (
     <>
@@ -112,13 +112,13 @@ export function PastResponsesPage() {
                 onSelect={handleSelectType}
                 initialIndex={selectedType}
               />
-              <DatePicker
+              {/* <DatePicker
                 startDateValue={dateRange.startDate}
                 endDateValue={dateRange.endDate}
                 placeholder="Date Range"
                 periodPicking
                 onSave={setDateRange}
-              />
+              /> */}
             </View>
           </Dropdown>
           <ScrollView
@@ -136,13 +136,13 @@ export function PastResponsesPage() {
             {selectedType !== undefined && (
               <FilterBadge showCloseIcon label={types[selectedType].name} onPress={() => setSelectedType(undefined)} />
             )}
-            {dateRange.startDate && (
+            {/* {dateRange.startDate && (
               <FilterBadge
                 showCloseIcon
                 label={dateFilterBadgeLabel}
                 onPress={() => setDateRange({ startDate: undefined, endDate: undefined })}
               />
-            )}
+            )} */}
           </ScrollView>
           <Input
             placeholder="Type Your Own..."
