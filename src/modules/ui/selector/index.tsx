@@ -54,7 +54,7 @@ export function Selector({
     <TouchableOpacity className={containerClassName} onPress={handlePress}>
       {leftAdornment}
       <Typography className={textClassName}>{selectedOption || placeholder}</Typography>
-      <Icon name="caret-down" color={isError ? 'red' : 'primary'} />
+      <Icon name="chevron-down" color={isError ? 'red' : 'primary'} />
       {rightAdornment}
     </TouchableOpacity>
   )

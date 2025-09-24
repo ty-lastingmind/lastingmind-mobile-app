@@ -157,7 +157,7 @@ export function DatePicker({
       <TouchableOpacity onPress={() => setIsOpen(true)}>
         <View className={containerClassName}>
           <Typography className={textClassName}>{text}</Typography>
-          <Icon name="caret-forward" color={isError ? 'red' : 'primary'} />
+          <Icon name="chevron-forward" color={isError ? 'red' : 'primary'} />
         </View>
       </TouchableOpacity>
       <DatePickerDialog
