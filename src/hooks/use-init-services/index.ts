@@ -7,7 +7,7 @@ export function useInitServices() {
 
   const initServices = useCallback(async () => {
     await Notifications.initMessaging()
-    updateFcmToken()
+    await updateFcmToken()
     initTokenRefresh()
   }, [])
 

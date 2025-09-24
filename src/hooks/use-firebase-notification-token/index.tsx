@@ -46,21 +46,25 @@ export const useFirebaseNotificationToken = () => {
   }
 
   const moveFcmToken = () => {
-    if (deviceId) {
+    if (fcmToken && deviceId) {
       postOnboarding.mutate({
         data: {
+          fcm_token: fcmToken,
           device_id: deviceId,
           platform,
+          timezone,
         },
       })
     }
   }
 
-  const updateFcmToken = (newToken?: string) => {
+  const updateFcmToken = async (newToken?: string) => {
     if (fcmToken) {
-      updateToken.mutate({
+      await updateToken.mutateAsync({
         data: {
           fcm_token: newToken || fcmToken,
+          platform,
+          timezone,
         },
       })
     }
