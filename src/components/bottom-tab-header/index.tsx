@@ -5,19 +5,19 @@ import { TouchableOpacity, View } from 'react-native'
 import { Logo } from '~/modules/components/logo'
 import { Avatar } from '~/modules/ui/avatar'
 import { Typography } from '~/modules/ui/typography'
-import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
+import { ImageSrc } from '~/types/images'
 
-export function BottomTabHeader(props: BottomTabHeaderProps | DrawerHeaderProps) {
-  const userInfoQuery = usePullUserInfoHomePullUserInfoGet()
+type Props = (BottomTabHeaderProps | DrawerHeaderProps) & {
+  userAvatar: ImageSrc
+}
 
-  const userAvatar = { uri: userInfoQuery?.data?.profile_image }
-
+export function BottomTabHeader({ navigation, userAvatar, options }: Props) {
   const handleOpenDrawer = useCallback(() => {
-    if (!('openDrawer' in props.navigation)) {
+    if (!('openDrawer' in navigation)) {
       return
     }
-    props.navigation.openDrawer()
-  }, [props.navigation])
+    navigation.openDrawer()
+  }, [navigation])
 
   return (
     <View className="pt-safe px-8">
@@ -27,7 +27,7 @@ export function BottomTabHeader(props: BottomTabHeaderProps | DrawerHeaderProps)
         </TouchableOpacity>
         <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
           <Typography level="h5" brand color="accent">
-            {String(props.options.title)}
+            {String(options.title)}
           </Typography>
         </View>
         <Logo />
