@@ -54,6 +54,10 @@ export async function deleteToken() {
   await Messaging.deleteToken(messaging)
 }
 
+export function onTokenRefresh(listener: (newToken: string) => void) {
+  Messaging.onTokenRefresh(messaging, listener)
+}
+
 /**
  * Schedule local notification
  *
