@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import { Platform } from 'react-native'
 import { Notifications } from '~/services'
 import {
   useMoveFcmTokenOnboardingMoveFcmTokenPost,
@@ -25,7 +24,6 @@ export const useFirebaseNotificationToken = () => {
   }, [])
 
   const fcmToken = notificationTokenQuery.data
-  const platform = Platform.OS === 'ios' ? 'ios' : 'android'
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   const preSignUp = useUpdatePresignupFcmTokenUtilsUpdatePresignupFcmTokenPost()
@@ -38,7 +36,7 @@ export const useFirebaseNotificationToken = () => {
         data: {
           fcm_token: newToken || fcmToken,
           device_id: deviceId,
-          platform,
+          platform: 'ios',
           timezone,
         },
       })
@@ -51,7 +49,7 @@ export const useFirebaseNotificationToken = () => {
         data: {
           fcm_token: fcmToken,
           device_id: deviceId,
-          platform,
+          platform: 'ios',
           timezone,
         },
       })
@@ -63,7 +61,7 @@ export const useFirebaseNotificationToken = () => {
       await updateToken.mutateAsync({
         data: {
           fcm_token: newToken || fcmToken,
-          platform,
+          platform: 'ios',
           timezone,
         },
       })
