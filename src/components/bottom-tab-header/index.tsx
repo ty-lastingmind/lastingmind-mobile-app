@@ -1,22 +1,33 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
-import { View } from 'react-native'
+import { DrawerHeaderProps } from '@react-navigation/drawer'
+import { useCallback } from 'react'
+import { TouchableOpacity, View } from 'react-native'
 import { Logo } from '~/modules/components/logo'
 import { Avatar } from '~/modules/ui/avatar'
 import { Typography } from '~/modules/ui/typography'
-import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
+import { ImageSrc } from '~/types/images'
 
-export function BottomTabHeader(props: BottomTabHeaderProps) {
-  const userInfoQuery = usePullUserInfoHomePullUserInfoGet()
+type Props = (BottomTabHeaderProps | DrawerHeaderProps) & {
+  userAvatar: ImageSrc
+}
 
-  const userAvatar = { uri: userInfoQuery?.data?.profile_image }
+export function BottomTabHeader({ navigation, userAvatar, options }: Props) {
+  const handleOpenDrawer = useCallback(() => {
+    if (!('openDrawer' in navigation)) {
+      return
+    }
+    navigation.openDrawer()
+  }, [navigation])
 
   return (
     <View className="pt-safe px-8">
-      <View className="h-[72px] relative flex flex-row items-center justify-between">
-        <Avatar source={userAvatar} />
-        <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
+      <View className="h-[72px] relative flex-row items-center justify-between">
+        <TouchableOpacity onPress={handleOpenDrawer}>
+          <Avatar source={userAvatar} />
+        </TouchableOpacity>
+        <View className="absolute left-0 top-0 items-center justify-center right-0 bottom-0">
           <Typography level="h5" brand color="accent">
-            {String(props.options.title)}
+            {String(options.title)}
           </Typography>
         </View>
         <Logo />

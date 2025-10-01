@@ -13,6 +13,8 @@ import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import {
   usePullCanChatWithChatPullCanChatWithGet,
   usePullStartingPromptsChatPullStartingPromptsGet,
+  usePullUserInfoHomePullUserInfoGet,
+  useRefineTextUtilsRefineTextPost,
 } from '~/services/api/generated'
 import { SearchParams } from '../../index.types'
 
@@ -24,7 +26,9 @@ export function ChatsScreen() {
     },
   })
   const { chattingWithViewId } = useLocalSearchParams<{ chattingWithViewId?: string }>()
-  const { audioRecorder, uploader, recordingControls } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
+  const { audioRecorder, recordingControls } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
+  const userQuery = usePullUserInfoHomePullUserInfoGet()
+  const refineText = useRefineTextUtilsRefineTextPost()
   const showPrompts = useBoolean(true)
   const startingPrompts = usePullStartingPromptsChatPullStartingPromptsGet(
     {
@@ -58,20 +62,25 @@ export function ChatsScreen() {
 
   async function handleSendAudioMessage() {
     await recordingControls.stopRecording()
-    const fileUri = audioRecorder.uri
 
-    if (!fileUri) {
-      return
-    }
+    if (!userQuery.data) return
 
-    uploader.uploadAndTranscribeAudioMessage.mutate(fileUri, {
-      onSuccess: ({ transcript }) => {
-        form.setValue('question', transcript)
+    refineText.mutate(
+      {
+        data: {
+          text: recordingControls.transcriptRef.current,
+          userFullName: userQuery.data.full_user_name,
+        },
       },
-      onError: () => {
-        Alert.alert('Error', 'Something went wrong')
-      },
-    })
+      {
+        onSuccess: ({ text }) => {
+          form.setValue('question', text)
+        },
+        onError: () => {
+          Alert.alert('Error', 'Failed to send message')
+        },
+      }
+    )
   }
 
   function handleSendTextMessage() {

@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react'
 import { Controller } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 import { JOURNAL_AUDIO_FOLDER_NAME } from '~/constants/storage'
+import { useUid } from '~/hooks/auth/use-uid'
 import { AudioRecorder } from '~/modules/components/audio-recorder'
 import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
 import { AudioTracksList } from '~/modules/journal/screens/add-journal-entry/parts/audio-tracks-list'
@@ -10,6 +11,7 @@ import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import { Textarea } from '~/modules/ui/textarea'
 import { Typography } from '~/modules/ui/typography'
 import { Logger } from '~/services'
+import { usePullUserInfoHomePullUserInfoGet, useRefineTextUtilsRefineTextPost } from '~/services/api/generated'
 import { formatDate } from '~/utils/date'
 import { SubmitButton } from './parts/submit-button'
 
@@ -17,6 +19,9 @@ export function AddJournalEntryScreen() {
   const form = useAddJournalEntryFormContext()
   const router = useRouter()
   const formattedDate = useMemo(() => formatDate(new Date()), [])
+  const refineText = useRefineTextUtilsRefineTextPost()
+  const userQuery = usePullUserInfoHomePullUserInfoGet()
+  const uid = useUid()
 
   const topicName = form.getValues('topicName')
   const customTopicName = form.getValues('customTopicName')
@@ -42,26 +47,43 @@ export function AddJournalEntryScreen() {
 
     const recordingUri = audioRecorder.uri
 
-    if (!recordingUri) {
-      Alert.alert('Error', 'Failed to get recording')
+    if (!recordingUri || !userQuery.data || !uid) {
       return
     }
 
-    uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
-      onSuccess: async (data) => {
-        const audioFiles = form.getValues('audioFiles')
-        const text = form.getValues('text')
-
-        form.setValue('text', text.concat('\n\n', data.transcript))
-        form.setValue('audioFiles', audioFiles.concat(data.url))
-
-        await recordingControls.cleanupRecording()
+    refineText.mutate(
+      {
+        data: {
+          text: recordingControls.transcriptRef.current,
+          userFullName: userQuery.data.full_user_name,
+        },
       },
-      onError: (error) => {
-        Logger.logError(error)
-        Alert.alert('Error', 'Failed to proceed audio')
-      },
-    })
+      {
+        onSuccess: async ({ text }) => {
+          const currentText = form.getValues('text')
+
+          form.setValue('text', currentText.concat('\n\n', text))
+
+          uploader.upload.mutate(
+            {
+              recordingUri,
+              uid,
+            },
+            {
+              onSuccess: async (url) => {
+                const audioFiles = form.getValues('audioFiles')
+                form.setValue('audioFiles', audioFiles.concat(url))
+                await recordingControls.cleanupRecording()
+              },
+            }
+          )
+        },
+        onError: (error) => {
+          Logger.logError(error)
+          Alert.alert('Error', 'Failed to proceed audio')
+        },
+      }
+    )
   }
 
   return (
@@ -96,7 +118,7 @@ export function AddJournalEntryScreen() {
                 <View className="border-t border-miscellaneous-topic-stroke px-2.5 pt-3">
                   <AudioRecorder
                     audioRecorder={audioRecorder}
-                    uploaderStatus={uploader.status}
+                    uploaderStatus={refineText.isPending ? 'transcribing' : 'idle'}
                     onStartRecording={recordingControls.startRecording}
                     onStopRecording={handleStopRecording}
                   />

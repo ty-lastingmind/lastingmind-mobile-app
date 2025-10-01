@@ -12,14 +12,19 @@ import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-o
 import { TranscriptDialog } from '~/modules/interview/screens/04-chat/parts/transcript-dialog'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import { Typography } from '~/modules/ui/typography'
-import { Logger } from '~/services'
-import { useGenerateNextQuestionInterviewGenerateNextQuestionPost } from '~/services/api/generated'
+import {
+  useGenerateNextQuestionInterviewGenerateNextQuestionPost,
+  usePullUserInfoHomePullUserInfoGet,
+  useRefineTextUtilsRefineTextPost,
+} from '~/services/api/generated'
 
 export function ChatScreen() {
   const router = useRouter()
   const [viewMessage, setViewMessage] = useState<ChatMessage | null>(null)
   const [text, setText] = useState('')
   const form = useInterviewFormContext()
+  const refineText = useRefineTextUtilsRefineTextPost()
+  const user = usePullUserInfoHomePullUserInfoGet()
   const { addLoadingMessage, messages, updateMessageAtIndex, addNewMessage, removeLastMessage, updateLastMessage } =
     useMessages()
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost({
@@ -42,7 +47,7 @@ export function ChatScreen() {
     },
   })
 
-  const { recordingControls, audioRecorder, uploader } = useAudioMessage(INTERVIEW_AUDIO_FOLDER_NAME)
+  const { recordingControls, audioRecorder } = useAudioMessage(INTERVIEW_AUDIO_FOLDER_NAME)
   const duration = form.getValues('interviewDurationInMinutes') ?? 30 // Default to 30 minutes if not set
   const { extendTime, isOutOfTime } = useInterviewTimer(duration)
   const { firstMessage } = useLocalSearchParams<{ firstMessage: string }>()
@@ -58,12 +63,14 @@ export function ChatScreen() {
   )
 
   function handleGenerateNextQuestion(message: string) {
+    if (!user.data) return
+
     const { topicName, customTopicName, responseId, interviewDurationInMinutes } = form.getValues()
 
     generateNextQuestion.mutate({
       data: {
         answer: message,
-        userFullName: 'zarif abdalimov', // todo - add user full name
+        userFullName: user.data.full_user_name,
         topic: topicName ?? customTopicName,
         duration: interviewDurationInMinutes,
         responseId,
@@ -84,35 +91,34 @@ export function ChatScreen() {
   async function handleSendAudioMessage() {
     await recordingControls.stopRecording()
 
-    const recordingUri = audioRecorder.uri
-
-    if (!recordingUri) {
-      Alert.alert('Error', 'Failed to get recording or user not authenticated')
-      return
-    }
+    if (!user.data) return
 
     addLoadingMessage()
 
-    uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
-      onSuccess: ({ transcript, url }) => {
-        updateLastMessage({
-          audioUrl: url,
-          text: transcript,
-          isLoading: false,
-        })
+    refineText.mutate(
+      {
+        data: {
+          text: recordingControls.transcriptRef.current,
+          userFullName: user.data.full_user_name,
+        },
+      },
+      {
+        onSuccess: ({ text }) => {
+          updateLastMessage({
+            text,
+            isIncoming: false,
+            isLoading: false,
+          })
 
-        handleGenerateNextQuestion(transcript)
-      },
-      onError: (e) => {
-        Logger.logError(e)
-        Alert.alert('Error', 'Failed to proceed audio')
+          handleGenerateNextQuestion(text)
+        },
+        onError: () => {
+          Alert.alert('Error', 'Failed to send message')
 
-        removeLastMessage()
-      },
-      onSettled: async () => {
-        await recordingControls.cleanupRecording()
-      },
-    })
+          removeLastMessage()
+        },
+      }
+    )
   }
 
   function handleStopInterview() {

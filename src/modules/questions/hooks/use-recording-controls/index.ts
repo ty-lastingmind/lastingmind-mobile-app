@@ -1,9 +1,16 @@
 import { AudioModule, AudioRecorder, setAudioModeAsync } from 'expo-audio'
 import * as FileSystem from 'expo-file-system'
-import { useCallback } from 'react'
+import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition'
+import { useCallback, useRef } from 'react'
 import { Alert } from 'react-native'
 
 export function useRecordingControls(audioRecorder: AudioRecorder) {
+  const transcriptRef = useRef('')
+
+  useSpeechRecognitionEvent('result', (event) => {
+    transcriptRef.current = event.results[0]?.transcript
+  })
+
   const startRecording = async () => {
     const status = await AudioModule.requestRecordingPermissionsAsync()
 
@@ -18,10 +25,16 @@ export function useRecordingControls(audioRecorder: AudioRecorder) {
     })
     await audioRecorder.prepareToRecordAsync()
     audioRecorder.record()
+    ExpoSpeechRecognitionModule.start({
+      lang: 'en-US',
+      interimResults: true,
+      continuous: true,
+    })
   }
 
   const stopRecording = useCallback(async () => {
     await audioRecorder.stop()
+    ExpoSpeechRecognitionModule.stop()
   }, [audioRecorder])
 
   const cleanupRecording = useCallback(async () => {
@@ -49,5 +62,6 @@ export function useRecordingControls(audioRecorder: AudioRecorder) {
     cancelRecording,
     cleanupRecording,
     pauseRecording,
+    transcriptRef,
   }
 }

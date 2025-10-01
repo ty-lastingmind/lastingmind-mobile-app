@@ -13,8 +13,16 @@ export function useUploadAndTranscribeAudioMessage(folderName: string) {
   const transcribeAudio = useTranscribeAudioUtilsTranscribeAudioPost()
   const [status, setStatus] = useState<UploadStatus>('idle')
 
+  const upload = useMutation({
+    mutationFn: async ({ recordingUri, uid }: { recordingUri: string; uid: string }) => {
+      const uploadResponse = await uploadAudio.mutateAsync({ recordingUri, uid })
+      return await Storage.getDownloadURL(uploadResponse.metadata.fullPath)
+    },
+  })
+
   return {
     status,
+    upload,
     uploadAndTranscribeAudioMessage: useMutation({
       mutationFn: async (recordingUri: string) => {
         if (!uid) {
@@ -22,8 +30,8 @@ export function useUploadAndTranscribeAudioMessage(folderName: string) {
         }
 
         setStatus('uploading')
-        const uploadResponse = await uploadAudio.mutateAsync({ recordingUri, uid })
-        const downloadURL = await Storage.getDownloadURL(uploadResponse.metadata.fullPath)
+
+        const downloadURL = await upload.mutateAsync({ recordingUri, uid })
 
         setStatus('transcribing')
         const transcribeResponse = await transcribeAudio.mutateAsync({
