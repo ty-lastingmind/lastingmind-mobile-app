@@ -15,6 +15,8 @@ import { format } from 'date-fns'
 import { FilterBadge } from '../../parts/past-responses/filter-badge'
 import { useBoolean, useDebounceCallback } from 'usehooks-ts'
 import { ResponseDialog } from '../../parts/past-responses/response-dialog'
+
+// TODO: Re-enable date picker filter once backend is fixed
 // import { DatePicker } from '~/modules/ui/date-picker'
 // import { formatToMMDDYYYY } from '~/utils/date'
 
