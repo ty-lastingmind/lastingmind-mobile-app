@@ -1,4 +1,5 @@
 import { Link } from 'expo-router'
+import { useMemo } from 'react'
 import { FlatList, TouchableOpacity, View } from 'react-native'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
@@ -11,7 +12,12 @@ type PastEntriesListProps = {
 }
 
 export function PastEntriesList({ entries, type }: PastEntriesListProps) {
-  const title = type === 'journal' ? 'Past Entries' : type === 'interview' ? 'Past Interviews' : 'Past Conversations'
+  const title = useMemo(() => {
+    if (type === 'journal') return 'Past Entries'
+    if (type === 'interview') return 'Past Interviews'
+    if (type === 'conversation') return 'Past Conversations'
+    return 'Past Entries'
+  }, [type])
 
   return (
     <View className="flex-1">

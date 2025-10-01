@@ -12,7 +12,7 @@ type DrawerJournalItemProps = {
 
 export const DrawerJournalItem = ({ item, onPress, showArrow }: DrawerJournalItemProps) => {
   return (
-    <TouchableOpacity className="flex flex-row gap-4 items-center h-[64px]" onPress={onPress}>
+    <TouchableOpacity className="flex-row gap-4 items-center h-[64px]" onPress={onPress}>
       {item.avatarSource ? (
         <Avatar source={item.avatarSource} size="sm" />
       ) : (

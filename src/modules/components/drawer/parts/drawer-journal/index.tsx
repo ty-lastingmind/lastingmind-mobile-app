@@ -152,7 +152,7 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
         ) : (
           <>
             {(activeSubItems || showChats.value) && (
-              <TouchableOpacity className="flex flex-row gap-3 items-center h-[48px] mb-4" onPress={handleBackPress}>
+              <TouchableOpacity className="flex-row gap-3 items-center h-[48px] mb-4" onPress={handleBackPress}>
                 <View style={{ transform: [{ rotate: '180deg' }] }}>
                   <SvgIcon name="arrow_right" color="secondary" size="lg" />
                 </View>
@@ -181,7 +181,7 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
 
       <View className="pb-safe">
         <View className="h-px bg-miscellaneous-topic-stroke mb-4" />
-        <View className="flex flex-row gap-4 items-center px-10 pt-2">
+        <View className="flex-row gap-4 items-center px-10 pt-2">
           <SvgIcon name="settings" size="lg" color="miscellaneous" />
           <Typography color="secondary" level="body-1">
             Settings & Help
