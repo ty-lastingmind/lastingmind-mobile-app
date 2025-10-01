@@ -21,11 +21,11 @@ export function BottomTabHeader({ navigation, userAvatar, options }: Props) {
 
   return (
     <View className="pt-safe px-8">
-      <View className="h-[72px] relative flex flex-row items-center justify-between">
+      <View className="h-[72px] relative flex-row items-center justify-between">
         <TouchableOpacity onPress={handleOpenDrawer}>
           <Avatar source={userAvatar} />
         </TouchableOpacity>
-        <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
+        <View className="absolute left-0 top-0 items-center justify-center right-0 bottom-0">
           <Typography level="h5" brand color="accent">
             {String(options.title)}
           </Typography>

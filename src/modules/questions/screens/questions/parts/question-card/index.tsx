@@ -8,7 +8,7 @@ type QuestionCardProps = {
 
 export function QuestionCard({ question }: QuestionCardProps) {
   return (
-    <View className="flex flex-col h[155px] gap-4 border border-miscellaneous-topic-stroke rounded-md p-4">
+    <View className="flex-col h-[155px] gap-4 border border-miscellaneous-topic-stroke rounded-md p-4">
       <Typography level="body-lg" color="accent" brand>
         {question.question_title}
       </Typography>

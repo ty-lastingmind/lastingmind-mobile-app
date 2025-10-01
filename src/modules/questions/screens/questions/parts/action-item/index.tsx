@@ -11,9 +11,9 @@ type ActionItemProps = {
 export function ActionItem({ action }: ActionItemProps) {
   return (
     <Link href={action.href} asChild>
-      <TouchableOpacity className="flex flex-row items-center gap-6 px-8 py-4 bg-button-secondary-bg rounded-md">
+      <TouchableOpacity className="flex-row items-center gap-6 px-8 py-4 bg-button-secondary-bg rounded-md">
         <SvgIcon name={action.icon} size="3xl" color="primary" />
-        <View className="flex flex-col gap-2 flex-1">
+        <View className="flex-col gap-2 flex-1">
           <Typography level="body-lg" color="accent" brand>
             {action.title}
           </Typography>

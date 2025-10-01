@@ -25,7 +25,7 @@ const actions: ActionItemType[] = [
 
 export function ActionList() {
   return (
-    <View className="flex flex-col gap-4">
+    <View className="flex-col gap-4">
       {actions.map((action) => (
         <ActionItem key={action.title} action={action} />
       ))}

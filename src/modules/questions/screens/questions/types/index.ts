@@ -1,9 +1,9 @@
 import { Href } from 'expo-router'
-import { SvgIconProps } from '~/modules/ui/svg-icon/index.types'
+import { SvgIconName } from '~/modules/ui/svg-icon/index.types'
 
 export type ActionItem = {
   title: string
   description: string
   href: Href
-  icon: SvgIconProps['name']
+  icon: SvgIconName
 }

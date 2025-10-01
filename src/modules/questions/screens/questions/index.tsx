@@ -19,7 +19,7 @@ export function QuestionsScreen() {
     <FlatList
       data={recentQuestionsData?.recent_questions}
       ListHeaderComponent={
-        <View className="flex flex-col gap-4">
+        <View className="flex-col gap-4">
           <ActionList />
           <Typography level="h6" color="primary" weight="bold">
             Recent Questions
