@@ -10,6 +10,7 @@ import {
   usePullUserStatsProfilePagePullUserStatsGet,
   usePullUserInfoHomePullUserInfoGet,
 } from '~/services/api/generated'
+import { Link } from 'expo-router'
 
 export default function UserInfo() {
   const { data: userStats, isLoading: isLoadingUserStats } = usePullUserStatsProfilePagePullUserStatsGet()
@@ -40,11 +41,13 @@ export default function UserInfo() {
           label={progressLabel}
         />
       )}
-      <TouchableOpacity className="flex-row gap-4 px-4 py-2">
-        <SvgIcon name="chatbubbles" size="lg" color="accent" />
-        <Typography className="flex-1">View all past responses</Typography>
-        <Icon name="chevron-forward" color="secondary" />
-      </TouchableOpacity>
+      <Link asChild href="/(protected)/(tabs)/profile/past-responses">
+        <TouchableOpacity className="flex-row gap-4 px-4 py-2">
+          <SvgIcon name="chatbubbles" size="lg" color="accent" />
+          <Typography className="flex-1">View all past responses</Typography>
+          <Icon name="chevron-forward" color="secondary" />
+        </TouchableOpacity>
+      </Link>
       <InfoCard
         title={`${userInfo?.stats.num_questions_answered}`}
         subtitle="Questions Answered"
