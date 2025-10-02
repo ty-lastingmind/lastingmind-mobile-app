@@ -4,7 +4,7 @@ import { auth } from '../firebase'
 
 export const AXIOS_INSTANCE = Axios.create({
   // todo - replace with env variable
-  baseURL: 'https://mobile-backend-dot-decisive-talon-457821-g4.uc.r.appspot.com',
+  baseURL: 'https://lastingmind-backend-229649325019.us-central1.run.app',
   timeout: 10000,
 })
 

@@ -1,18 +1,48 @@
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
 import { ProfilePicSelector } from '../../parts/ProfilePicSelector'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
+import { useUploadProfilePicture } from '../../hooks/use-upload-profile-picture'
+import { useUid } from '~/hooks/auth/use-uid'
+import { Storage } from '~/services'
+import { useBoolean } from 'usehooks-ts'
 
 export function ProfilePictureScreen() {
   const form = useOnboardingFormContext()
+  const uploadPicture = useUploadProfilePicture()
+  const uid = useUid()
+  const router = useRouter()
 
-  const disableContinue = !form.watch('profilePicture')
+  const { value: isLoading, setTrue, setFalse } = useBoolean(false)
+  const pictureUri = form.watch('profilePicture')
+
+  const disableContinue = !pictureUri && isLoading
 
   const handleProfilePicChange = (uri: string) => {
     form.setValue('profilePicture', uri)
+  }
+
+  const handleContinue = () => {
+    if (pictureUri && uid) {
+      setTrue()
+      uploadPicture.mutate(
+        { pictureUri, uid },
+        {
+          onSuccess(picture) {
+            Storage.getDownloadURL(picture.metadata.fullPath)
+              .then((value) => form.setValue('profilePicture', value))
+              .then(() => router.navigate('/(protected)/onboarding/03-age'))
+          },
+          onError() {
+            Alert.alert('Error', 'Failed to save profile picture.')
+          },
+        }
+      )
+      setFalse()
+    }
   }
 
   return (
@@ -22,9 +52,9 @@ export function ProfilePictureScreen() {
         <ProfilePicSelector onProfilePicChange={handleProfilePicChange} picture={form.watch('profilePicture')} />
       </View>
       <View className="gap-4">
-        <Link href="/(protected)/onboarding/03-age" asChild>
-          <Button disabled={disableContinue}>Continue</Button>
-        </Link>
+        <Button disabled={disableContinue} onPress={handleContinue}>
+          Continue
+        </Button>
         <Link href="/(protected)/onboarding/03-age" asChild>
           <Button variant="outlined">Skip</Button>
         </Link>
