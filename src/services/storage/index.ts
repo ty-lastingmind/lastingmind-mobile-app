@@ -10,3 +10,7 @@ export async function getDownloadURL(path: string) {
   const fileRef = ref(storage, path)
   return getDownloadURLFirebase(fileRef)
 }
+
+export function getGCSUri(path: string): string {
+  return `gs://${storage.app.options.storageBucket}/${path}`
+}
