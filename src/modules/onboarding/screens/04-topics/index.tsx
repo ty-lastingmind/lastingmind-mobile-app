@@ -8,6 +8,9 @@ import CustomTopicModal from '../../parts/CustomTopicModal'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useRouter } from 'expo-router'
 import { useInitializeUserOnboardingInitializeUserPost } from '~/services/api/generated'
+import { useUploadProfilePicture } from '../../hooks/use-upload-profile-picture'
+import { useUid } from '~/hooks/auth/use-uid'
+import { Storage } from '~/services'
 import { useBoolean } from 'usehooks-ts'
 import { useFirebaseNotificationToken } from '~/hooks/use-firebase-notification-token'
 
@@ -33,6 +36,9 @@ export function TopicsPage() {
   const { moveFcmToken } = useFirebaseNotificationToken()
 
   const initializeUser = useInitializeUserOnboardingInitializeUserPost()
+  const uploadPicture = useUploadProfilePicture()
+  const uid = useUid()
+  const { value: isLoading, setTrue: setLoadingTrue, setFalse: setLoadingFalse } = useBoolean(false)
 
   const handleTopicChange = (topic: string) => {
     form.setValue(
@@ -51,13 +57,30 @@ export function TopicsPage() {
     closeDialog()
   }
 
-  const handleSubmit = (data: OnboardingFormData) => {
-    initializeUser.mutate(
+  const handleSubmit = async (data: OnboardingFormData) => {
+    setLoadingTrue()
+    let profileImageUri: string = data.profilePicture || ''
+    if (profileImageUri && uid) {
+      await uploadPicture.mutateAsync(
+        { pictureUri: profileImageUri as string, uid },
+        {
+          onSuccess: (picture) => {
+            profileImageUri = Storage.getGCSUri(picture.metadata.fullPath)
+          },
+          onError: () => {
+            Alert.alert('Error', 'Failed to save profile picture.')
+            setLoadingFalse()
+            return
+          },
+        }
+      )
+    }
+    await initializeUser.mutateAsync(
       {
         data: {
           name: `${data.firstName} ${data.lastName}`,
           age: data.age,
-          profile_image: data.profilePicture,
+          profile_image: profileImageUri,
           chosen_topics: data.topics,
         },
       },
@@ -65,9 +88,11 @@ export function TopicsPage() {
         onSuccess: () => {
           moveFcmToken()
           router.push('/(protected)/onboarding/05-congrats')
+          setLoadingFalse()
         },
         onError: () => {
           Alert.alert('Error', 'Failed to save profile.')
+          setLoadingFalse()
         },
       }
     )
@@ -91,7 +116,11 @@ export function TopicsPage() {
         </ScrollView>
 
         <View className="pt-2">
-          <Button disabled={selectedTopics.length < 3} onPress={form.handleSubmit(handleSubmit)}>
+          <Button
+            disabled={selectedTopics.length < 3 || isLoading}
+            onPress={form.handleSubmit(handleSubmit)}
+            loading={isLoading}
+          >
             Continue
           </Button>
         </View>

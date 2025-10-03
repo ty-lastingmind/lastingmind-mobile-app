@@ -3,7 +3,7 @@ import { defineConfig } from 'orval'
 export default defineConfig({
   api: {
     input: {
-      target: 'https://mobile-backend-dot-decisive-talon-457821-g4.uc.r.appspot.com/openapi.json',
+      target: 'https://lastingmind-backend-229649325019.us-central1.run.app/openapi.json',
     },
     output: {
       target: './src/services/api/generated.ts',
