@@ -2,9 +2,13 @@ import { getIdToken } from '@react-native-firebase/auth'
 import Axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { auth } from '../firebase'
 
+const serverBaseUrl = 'lastingmind-backend-229649325019.us-central1.run.app'
+export const serverHttpsUrl = `https://${serverBaseUrl}`
+export const serverWebsocketUrl = `wss://${serverBaseUrl}`
+
 export const AXIOS_INSTANCE = Axios.create({
   // todo - replace with env variable
-  baseURL: 'https://lastingmind-backend-229649325019.us-central1.run.app',
+  baseURL: serverHttpsUrl,
   timeout: 10000,
 })
 

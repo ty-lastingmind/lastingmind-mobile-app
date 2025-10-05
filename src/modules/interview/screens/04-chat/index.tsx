@@ -3,9 +3,11 @@ import React, { useCallback, useState } from 'react'
 import { Alert, TouchableOpacity, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
-import { ChatMessage, useMessages } from '~/modules/components/chat/hooks/use-messages'
-import { MessageInput } from '~/modules/components/chat/message-input'
-import { MessagesList } from '~/modules/components/chat/messages-list'
+import { IncomingMessage } from '~/modules/components/chat/composers/incoming-message'
+import { IncomingMessageLoading } from '~/modules/components/chat/composers/incoming-message-loading'
+import { OutgoingMessageLoading } from '~/modules/components/chat/composers/outgoing-message-loading'
+import { useChat } from '~/modules/components/chat/hooks/use-chat'
+import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { useInterviewTimer } from '~/modules/interview/screens/04-chat/hooks/use-interview-timer'
 import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-of-time-dialog'
@@ -17,6 +19,9 @@ import {
   usePullUserInfoHomePullUserInfoGet,
   useRefineTextUtilsRefineTextPost,
 } from '~/services/api/generated'
+import { ChatMessage } from '~/modules/components/chat/index.types'
+import { Chat } from '~/modules/components/chat'
+import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
 
 export function ChatScreen() {
   const router = useRouter()
@@ -25,24 +30,14 @@ export function ChatScreen() {
   const form = useInterviewFormContext()
   const refineText = useRefineTextUtilsRefineTextPost()
   const user = usePullUserInfoHomePullUserInfoGet()
-  const { addLoadingMessage, messages, updateMessageAtIndex, addNewMessage, removeLastMessage, updateLastMessage } =
-    useMessages()
+  const { actions, state } = useChat()
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost({
     mutation: {
-      onMutate: () => {
-        addLoadingMessage({
-          isIncoming: true,
-        })
-      },
       onSuccess: (incomingMessage) => {
-        updateLastMessage({
+        actions.add({
           text: incomingMessage as string, // todo fix type
           isIncoming: true,
-          isLoading: false,
         })
-      },
-      onError: () => {
-        removeLastMessage()
       },
     },
   })
@@ -54,10 +49,9 @@ export function ChatScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      addNewMessage({
+      actions.add({
         text: firstMessage,
         isIncoming: true,
-        isLoading: false,
       })
     }, [])
   )
@@ -79,10 +73,9 @@ export function ChatScreen() {
   }
 
   function handleSendTextMessage() {
-    addNewMessage({
+    actions.add({
       text: text,
       isIncoming: false,
-      isLoading: false,
     })
     handleGenerateNextQuestion(text)
     setText('')
@@ -93,8 +86,6 @@ export function ChatScreen() {
 
     if (!user.data) return
 
-    addLoadingMessage()
-
     refineText.mutate(
       {
         data: {
@@ -104,18 +95,15 @@ export function ChatScreen() {
       },
       {
         onSuccess: ({ text }) => {
-          updateLastMessage({
+          actions.add({
             text,
             isIncoming: false,
-            isLoading: false,
           })
 
           handleGenerateNextQuestion(text)
         },
         onError: () => {
           Alert.alert('Error', 'Failed to send message')
-
-          removeLastMessage()
         },
       }
     )
@@ -142,7 +130,25 @@ export function ChatScreen() {
   return (
     <>
       <View className="flex-1 pb-safe px-4">
-        <MessagesList messages={messages} onViewTranscript={setViewMessage} />
+        <Chat.Provider
+          meta={{
+            chattingWithViewId: '',
+            conversationId: '',
+            uid: '',
+          }}
+          state={state}
+          actions={actions}
+        >
+          <Chat.Scroll contentContainerClassName="px-4">
+            {state.messages.map((message) => (
+              <React.Fragment key={message.index}>
+                {message.isIncoming ? <IncomingMessage message={message} /> : <OutgoingMessage message={message} />}
+              </React.Fragment>
+            ))}
+            {generateNextQuestion.isPending && <IncomingMessageLoading />}
+            {refineText.isPending && <OutgoingMessageLoading />}
+          </Chat.Scroll>
+        </Chat.Provider>
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-11 pt-2">
           <TouchableOpacity onPress={handleConfirmStopInterview}>
             <Typography color="red">Stop interview</Typography>
@@ -164,9 +170,7 @@ export function ChatScreen() {
           message={viewMessage}
           onClose={() => setViewMessage(null)}
           onSaveChanges={(text) => {
-            updateMessageAtIndex(viewMessage.index, {
-              text,
-            })
+            actions.update(viewMessage.index, { text })
             setViewMessage(null)
           }}
         />

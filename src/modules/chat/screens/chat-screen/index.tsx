@@ -1,53 +1,55 @@
-import { useLocalSearchParams } from 'expo-router'
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
+import { OutgoingMessageLoading } from '~/modules/components/chat/composers/outgoing-message-loading'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
-import { useUid } from '~/hooks/auth/use-uid'
-import { SearchParams } from '~/modules/chat/index.types'
-import { useConversationId } from '~/modules/chat/screens/chat-screen/hooks/use-conversaion-id'
 import { useStartConversation } from '~/modules/chat/screens/chat-screen/hooks/use-start-conversation'
-import { AnswerExplanations } from '~/modules/chat/screens/chat-screen/parts/answer-explanations'
-import { useMessages } from '~/modules/components/chat/hooks/use-messages'
-import { MessageInput } from '~/modules/components/chat/message-input'
-import { MessagesList } from '~/modules/components/chat/messages-list'
-import { MessagesListContextProvider } from '~/modules/components/chat/messages-list/parts/messages-list-context'
+import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
+import { Chat } from 'src/modules/components/chat'
+import { ChatWithUserIncomingMessage } from '~/modules/components/chat/composers/chat-with-user-incoming-message'
+import { IncomingMessageLoading } from '~/modules/components/chat/composers/incoming-message-loading'
+import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
+import { useChat } from '~/modules/components/chat/hooks/use-chat'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import {
-  usePullCanChatWithChatPullCanChatWithGet,
   usePullExplanationAndButtonChatPullExplanationAndButtonPost,
   usePullUserInfoHomePullUserInfoGet,
   useRefineTextUtilsRefineTextPost,
   useSendUserQueryChatSendUserQueryPost,
 } from '~/services/api/generated'
+import { CanChatWithItem } from '~/services/api/model'
 
-export function ChatScreen() {
+interface ChatScreenProps {
+  chattingWithViewId: string
+  firstMessage: string
+  conversationId: string
+  chatWithUser: CanChatWithItem
+  uid: string
+}
+
+export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, firstMessage, uid }: ChatScreenProps) {
   const form = useForm({
     defaultValues: {
       question: '',
     },
   })
-  const { firstMessage, chattingWithViewId } = useLocalSearchParams<SearchParams>()
-  const { addLoadingMessage, messages, addNewMessage, removeLastMessage, updateLastMessage } = useMessages()
+  const { actions, state } = useChat()
   const { recordingControls, audioRecorder, uploader } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
-  const conversationId = useConversationId()
-  const uid = useUid()
   const userQuery = usePullUserInfoHomePullUserInfoGet()
   const refineText = useRefineTextUtilsRefineTextPost()
-  const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
   const getExplanations = usePullExplanationAndButtonChatPullExplanationAndButtonPost()
-  const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === chattingWithViewId)
+
   const sendMessage = useSendUserQueryChatSendUserQueryPost({
     mutation: {
-      onMutate: () => {
+      onMutate: ({ data }) => {
         getExplanations.reset()
-        addLoadingMessage({ isIncoming: true })
+        actions.add({ text: data.query, isIncoming: false })
       },
       onSuccess: (data) => {
-        updateLastMessage({
-          text: data as string, // todo fix type
-          isLoading: false,
+        actions.add({
+          text: data as string, // todo fix type,
+          isIncoming: true,
         })
 
         setTimeout(() => {
@@ -61,18 +63,11 @@ export function ChatScreen() {
       },
       onError: () => {
         Alert.alert('Error', 'Failed to send message')
-        removeLastMessage()
       },
     },
   })
 
   useStartConversation(() => {
-    addNewMessage({
-      text: firstMessage,
-      isIncoming: false,
-      isLoading: false,
-    })
-
     sendMessage.mutate({
       data: {
         chattingWithViewId: chattingWithViewId,
@@ -86,12 +81,6 @@ export function ChatScreen() {
     const question = form.getValues('question')
     form.reset()
 
-    addNewMessage({
-      text: question,
-      isIncoming: false,
-      isLoading: false,
-    })
-
     sendMessage.mutate({
       data: {
         chattingWithViewId: chattingWithViewId,
@@ -99,14 +88,12 @@ export function ChatScreen() {
         convoId: conversationId,
       },
     })
-  }, [form, addNewMessage, sendMessage, chattingWithViewId, conversationId])
+  }, [form, sendMessage, chattingWithViewId, conversationId])
 
   const handleSendAudioMessage = useCallback(async () => {
     await recordingControls.stopRecording()
 
-    if (!userQuery.data || !uid) return
-
-    addLoadingMessage()
+    if (!userQuery.data) return
 
     refineText.mutate(
       {
@@ -117,12 +104,6 @@ export function ChatScreen() {
       },
       {
         onSuccess: ({ text }) => {
-          updateLastMessage({
-            text: text,
-            isIncoming: false,
-            isLoading: false,
-          })
-
           sendMessage.mutate({
             data: {
               chattingWithViewId: chattingWithViewId,
@@ -133,68 +114,66 @@ export function ChatScreen() {
         },
         onError: () => {
           Alert.alert('Error', 'Failed to send message')
-          removeLastMessage()
         },
       }
     )
-  }, [
-    recordingControls,
-    userQuery.data,
-    uid,
-    addLoadingMessage,
-    refineText,
-    updateLastMessage,
-    sendMessage,
-    chattingWithViewId,
-    conversationId,
-    removeLastMessage,
-  ])
+  }, [recordingControls, userQuery.data, refineText, sendMessage, chattingWithViewId, conversationId])
 
   return (
-    <>
-      <View className="flex-1 pb-safe">
-        <MessagesListContextProvider
-          value={{
-            chattingWithViewId: chatWithUser?.chattingWithViewId ?? '',
-            chattingWithRealId: chatWithUser?.chattingWithRealId ?? '',
-            conversationId: conversationId,
-          }}
-        >
-          <MessagesList
-            messages={messages}
-            showActions
-            contentContainerClassName="px-4"
-            showAddAnswerButton={getExplanations.data?.button === 'add_answer'}
-            showSendQuestionButton={getExplanations.data?.button === 'send_question'}
-            avatarUrl={chatWithUser?.chattingWithImage}
-            listFooterComponent={
-              getExplanations.data?.explanation ? (
-                <AnswerExplanations explanations={getExplanations.data.explanation} />
-              ) : null
-            }
-          />
-        </MessagesListContextProvider>
-        <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
-          <View className="pb-3">
-            <Controller
-              name="question"
-              control={form.control}
-              render={({ field }) => (
-                <MessageInput
-                  audioRecorder={audioRecorder}
-                  disabled={sendMessage.isPending || uploader.uploadAndTranscribeAudioMessage.isPending}
-                  onSendTextMessage={handleSendTextMessage}
-                  onSendAudioMessage={handleSendAudioMessage}
-                  onChangeText={field.onChange}
-                  value={field.value}
-                  onCancelRecording={recordingControls.cancelRecording}
-                  onStartRecording={recordingControls.startRecording}
+    <View className="flex-1 pb-safe">
+      <Chat.Provider
+        state={state}
+        actions={actions}
+        meta={{
+          avatarSrc: chatWithUser?.chattingWithImage ?? undefined,
+          chattingWithViewId,
+          conversationId,
+          uid,
+        }}
+      >
+        <Chat.Scroll contentContainerClassName="px-4">
+          {state.messages.map((message) => (
+            <React.Fragment key={message.index}>
+              {message.isIncoming ? (
+                <ChatWithUserIncomingMessage
+                  explanations={getExplanations.data?.explanation ?? undefined}
+                  message={message}
                 />
+              ) : (
+                <OutgoingMessage message={message} />
               )}
-            />
-          </View>
-        </KeyboardAvoidingView>
-      </View>
-    </>
+            </React.Fragment>
+          ))}
+          {sendMessage.isPending && <IncomingMessageLoading />}
+          {refineText.isPending && <OutgoingMessageLoading />}
+          {getExplanations.data?.button === 'add_answer' && (
+            <Chat.AddAnswerButton question={state.messages.at(-1)?.text ?? ''} />
+          )}
+          {getExplanations.data?.button === 'send_question' && (
+            <Chat.SendQuestionButton question={state.messages.at(-1)?.text ?? ''} />
+          )}
+        </Chat.Scroll>
+      </Chat.Provider>
+      <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
+        <View className="pb-3">
+          <Controller
+            name="question"
+            control={form.control}
+            render={({ field }) => (
+              <MessageInput
+                audioRecorder={audioRecorder}
+                disabled={sendMessage.isPending || uploader.uploadAndTranscribeAudioMessage.isPending}
+                onSendTextMessage={handleSendTextMessage}
+                onSendAudioMessage={handleSendAudioMessage}
+                onChangeText={field.onChange}
+                value={field.value}
+                onCancelRecording={recordingControls.cancelRecording}
+                onStartRecording={recordingControls.startRecording}
+              />
+            )}
+          />
+        </View>
+      </KeyboardAvoidingView>
+    </View>
   )
 }
