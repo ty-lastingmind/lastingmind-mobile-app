@@ -18,7 +18,7 @@ export function SavedAnswer({ title, caption, shouldRedirect }: SavedAnswerProps
       }
 
       const timeout = setTimeout(() => {
-        router.replace('/questions/journal/add/01-select-topic')
+        router.replace('/(protected)/(tabs)/home')
       }, 3000)
 
       return () => {

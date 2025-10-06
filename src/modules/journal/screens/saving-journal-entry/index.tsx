@@ -56,6 +56,7 @@ export function SavingJournalEntryScreen() {
     <SaveResult
       data={submitJournalEntry.data.next_page_info.next_page_data}
       type={submitJournalEntry.data.next_page_info.next_page}
+      shouldRedirect
     />
   )
 }

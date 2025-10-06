@@ -18,9 +18,10 @@ import { SavedAnswer } from './parts/saved-answer'
 interface SaveResultProps {
   type: NextPageType
   data: NextPageResponseNextPageData
+  shouldRedirect?: boolean
 }
 
-export function SaveResult({ data, type }: SaveResultProps) {
+export function SaveResult({ data, type, shouldRedirect }: SaveResultProps) {
   const router = useRouter()
 
   if (dataIsLevelUpData(type, data)) {
@@ -104,7 +105,13 @@ export function SaveResult({ data, type }: SaveResultProps) {
     )
   }
   if (dataIsSavedAnswerData(type, data)) {
-    return <SavedAnswer title="Entry Saved!" caption="Keep adding more responses to improve your LastingMind!" />
+    return (
+      <SavedAnswer
+        title="Entry Saved!"
+        caption="Keep adding more responses to improve your LastingMind!"
+        shouldRedirect={shouldRedirect}
+      />
+    )
   }
 
   return null
