@@ -6,6 +6,7 @@ import { DialogOverlay } from '../dialog'
 interface PopoverProps {
   measurements: Measurements
   isOpen: boolean
+  onClose?: () => void
   height?: number
   width?: number
 }
@@ -16,9 +17,10 @@ export function Popover({
   isOpen,
   height = 182,
   width = 282,
+  onClose,
 }: PropsWithChildren<PopoverProps>) {
   return (
-    <DialogOverlay isOpen={isOpen}>
+    <DialogOverlay isOpen={isOpen} onClose={onClose}>
       <Animated.View
         entering={FadeInUp}
         className="bg-bg-primary rounded-md"

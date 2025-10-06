@@ -74,7 +74,7 @@ export function Header(props: DrawerHeaderProps) {
         </View>
       </View>
       {measurements && (
-        <Popover measurements={measurements} isOpen={isOpen.value}>
+        <Popover measurements={measurements} isOpen={isOpen.value} onClose={isOpen.setFalse}>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="gap-4 p-4">
             {users.map((user) => (
               <TouchableOpacity
