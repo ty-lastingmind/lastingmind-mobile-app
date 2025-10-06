@@ -14,6 +14,7 @@ interface MessageInputTextFieldProps extends InputProps {
   onSendTextMessage: () => void
   onCancelRecording: () => void
   disabled: boolean
+  placeholder?: string
 }
 
 export function MessageInputTextField({
@@ -24,6 +25,7 @@ export function MessageInputTextField({
   onStopRecording,
   onCancelRecording,
   value,
+  placeholder = 'Respond here...',
   ...props
 }: MessageInputTextFieldProps) {
   const isTyping = Boolean(value)
@@ -34,7 +36,7 @@ export function MessageInputTextField({
       <Input
         {...props}
         value={value}
-        placeholder={!isRecording ? 'Respond here...' : ''}
+        placeholder={!isRecording ? placeholder : ''}
         leftAdornment={
           isRecording ? (
             <TouchableOpacity onPress={onCancelRecording}>

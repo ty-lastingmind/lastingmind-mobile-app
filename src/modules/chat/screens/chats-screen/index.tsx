@@ -126,6 +126,7 @@ export function ChatsScreen() {
                   onSendAudioMessage={handleSendAudioMessage}
                   onStartRecording={recordingControls.startRecording}
                   onCancelRecording={recordingControls.cancelRecording}
+                  placeholder="Ask Anything..."
                 />
               )}
             />
