@@ -174,7 +174,7 @@ export function ChatScreen() {
             }
           />
         </MessagesListContextProvider>
-        <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
+        <KeyboardAvoidingView behavior="padding" className="px-8 pt-4" keyboardVerticalOffset={150}>
           <View className="pb-3">
             <Controller
               name="question"

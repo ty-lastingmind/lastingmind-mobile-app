@@ -109,7 +109,7 @@ export function ChatsScreen() {
         <StartingPrompts form={form} prompts={prompts} onPromptPress={(prompt) => form.setValue('question', prompt)} />
       )}
       {chatWithUser && Boolean(prompts.length) && (
-        <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
+        <KeyboardAvoidingView behavior="padding" className="px-8 pt-4" keyboardVerticalOffset={150}>
           <Animated.View className="pb-3" entering={FadeInDown.delay(prompts.length * 100)}>
             <Controller
               control={form.control}

@@ -29,7 +29,7 @@ export function SelectTopicScreen() {
               field.onChange(text)
             }}
             value={field.value}
-            placeholder="Type Your Own..."
+            placeholder="Type Your Own Topic"
           />
         )}
       />

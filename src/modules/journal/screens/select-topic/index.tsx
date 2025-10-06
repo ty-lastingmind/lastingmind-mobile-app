@@ -16,7 +16,7 @@ export function SelectTopicScreen() {
 
   return (
     <ScreenContainer>
-      <ScreenTitle>Choose your journal topic</ScreenTitle>
+      <ScreenTitle>Choose Your Journal Topic</ScreenTitle>
       <Controller
         control={form.control}
         name="customTopicName"
@@ -28,7 +28,7 @@ export function SelectTopicScreen() {
               field.onChange(text)
             }}
             value={field.value}
-            placeholder="Type Your Own..."
+            placeholder="Type Your Own Topic"
           />
         )}
       />

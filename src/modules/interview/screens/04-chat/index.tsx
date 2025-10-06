@@ -143,7 +143,7 @@ export function ChatScreen() {
     <>
       <View className="flex-1 pb-safe px-4">
         <MessagesList messages={messages} onViewTranscript={setViewMessage} />
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-11 pt-2">
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-8 pt-2">
           <TouchableOpacity onPress={handleConfirmStopInterview}>
             <Typography color="red">Stop interview</Typography>
           </TouchableOpacity>
