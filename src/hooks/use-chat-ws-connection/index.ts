@@ -2,8 +2,8 @@ import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import useUser from '~/hooks/auth/use-user'
 import { serverWebsocketUrl } from '~/libs/axios'
-import { UseChatWsConnectionProps } from '~/modules/chat/screens/chat-screen/hooks/use-chat-ws-connection/index.types'
-import { messageSchema } from '~/modules/chat/screens/chat-screen/hooks/use-chat-ws-connection/index.validation'
+import { UseChatWsConnectionProps } from '~/hooks/use-chat-ws-connection/index.types'
+import { messageSchema } from '~/hooks/use-chat-ws-connection/index.validation'
 import { Auth, Logger } from '~/services'
 
 export function useChatWsConnection({ onMessage, onConnected }: UseChatWsConnectionProps) {

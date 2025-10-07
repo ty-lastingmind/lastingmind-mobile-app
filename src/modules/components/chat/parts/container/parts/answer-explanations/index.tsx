@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
-import { ExplanationDialog } from '~/modules/components/chat/parts/incoming-message/parts/answer-explanations/parts/explanation-dialog'
+import { ExplanationDialog } from '~/modules/components/chat/parts/container/parts/answer-explanations/parts/explanation-dialog'
 import { Icon } from '~/modules/ui/icon'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'

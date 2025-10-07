@@ -1,6 +1,6 @@
 import { ScrollView, useWindowDimensions, View } from 'react-native'
 import { useChatContext } from '~/modules/components/chat/parts/container/parts/provider'
-import { Player } from '~/modules/components/chat/parts/incoming-message/parts/answer-explanations/parts/explanation-dialog/parts/item/parts/player'
+import { Player } from '~/modules/components/chat/parts/container/parts/answer-explanations/parts/explanation-dialog/parts/item/parts/player'
 import { Typography } from '~/modules/ui/typography'
 import { usePullQuestionInfoChatPullQuestionInfoGet } from '~/services/api/generated'
 import { ExplanationItem } from '~/services/api/model'

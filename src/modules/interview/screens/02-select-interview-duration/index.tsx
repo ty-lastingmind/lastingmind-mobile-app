@@ -32,7 +32,7 @@ export function SelectInterviewDurationScreen() {
       <Typography level="body-1" className="text-center" color="secondary">
         Don’t worry, you will be able to stop the interview any time and resume later.
       </Typography>
-      <Link href="/questions/interview/add/03-loading-interview" asChild>
+      <Link href="/questions/interview/add/04-chat" asChild>
         <Button variant={interviewDurationInMinutes ? 'primary' : 'outlinedSecondary'}>Start</Button>
       </Link>
     </ScreenContainer>
