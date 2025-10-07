@@ -5,7 +5,6 @@ import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
 import { useMemo } from 'react'
 import { useRouteInfo } from 'expo-router/build/hooks'
-import { Header } from '~/modules/components/header'
 
 export default function Layout() {
   const colors = useTailwindColors()
@@ -37,12 +36,7 @@ export default function Layout() {
       screenOptions={{
         title: 'Questions',
         headerTitle: headerTitle,
-        header: (props) => {
-          if (isInterview || isJournal || isCuratedQuestions) {
-            return <Header {...props} />
-          }
-          return <BottomTabHeader {...props} userAvatar={userAvatar} />
-        },
+        header: (props) => <BottomTabHeader {...props} userAvatar={userAvatar} />,
         sceneStyle: {
           backgroundColor: colors['bg-primary'],
         },

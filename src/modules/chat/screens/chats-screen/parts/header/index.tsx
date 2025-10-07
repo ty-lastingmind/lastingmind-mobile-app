@@ -1,5 +1,5 @@
 import { DrawerHeaderProps } from '@react-navigation/drawer'
-import { useRouter } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
@@ -56,7 +56,7 @@ export function Header(props: DrawerHeaderProps) {
       <View className="pt-safe px-8">
         <View className="h-[72px] relative flex flex-row items-center justify-between">
           <TouchableOpacity onPress={props.navigation.openDrawer}>
-            <Icon name="menu" color="accent" size="2xl" />
+            <Avatar source={chattingWithUser?.chattingWithImage} />
           </TouchableOpacity>
           <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
             {chattingWithUser && (
@@ -70,7 +70,11 @@ export function Header(props: DrawerHeaderProps) {
               </Animated.View>
             )}
           </View>
-          <Logo />
+          <Link asChild href="/(protected)/(tabs)/home">
+            <TouchableOpacity>
+              <Logo />
+            </TouchableOpacity>
+          </Link>
         </View>
       </View>
       {measurements && (
