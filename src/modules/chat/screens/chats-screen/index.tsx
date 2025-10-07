@@ -17,6 +17,7 @@ import {
   useRefineTextUtilsRefineTextPost,
 } from '~/services/api/generated'
 import { SearchParams } from '../../index.types'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export function ChatsScreen() {
   const router = useRouter()
@@ -101,7 +102,11 @@ export function ChatsScreen() {
   const prompts = startingPrompts.data?.starting_prompts ?? []
 
   return (
-    <View className="pt-6 pb-safe flex-1 flex justify-between">
+    <ScrollView
+      contentContainerClassName="pt-6 pb-safe flex-1 flex justify-between"
+      keyboardShouldPersistTaps="handled"
+      bounces={false}
+    >
       <View className="mx-auto">
         <Avatar isLoading={!chatWithUser} src={chatWithUser?.chattingWithImage} />
       </View>
@@ -109,7 +114,7 @@ export function ChatsScreen() {
         <StartingPrompts form={form} prompts={prompts} onPromptPress={(prompt) => form.setValue('question', prompt)} />
       )}
       {chatWithUser && Boolean(prompts.length) && (
-        <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>
+        <KeyboardAvoidingView behavior="padding" className="px-8 pt-4" keyboardVerticalOffset={150}>
           <Animated.View className="pb-3" entering={FadeInDown.delay(prompts.length * 100)}>
             <Controller
               control={form.control}
@@ -126,12 +131,13 @@ export function ChatsScreen() {
                   onSendAudioMessage={handleSendAudioMessage}
                   onStartRecording={recordingControls.startRecording}
                   onCancelRecording={recordingControls.cancelRecording}
+                  placeholder="Ask Anything..."
                 />
               )}
             />
           </Animated.View>
         </KeyboardAvoidingView>
       )}
-    </View>
+    </ScrollView>
   )
 }

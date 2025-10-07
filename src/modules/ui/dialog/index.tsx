@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react'
-import { Modal, TouchableOpacity, TouchableOpacityProps, View, ViewProps } from 'react-native'
+import { Modal, TouchableOpacity, TouchableOpacityProps, TouchableWithoutFeedback, View, ViewProps } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
 import { cn } from '~/utils/cn'
 import { Typography } from '../typography'
@@ -40,10 +40,16 @@ export function DialogClose(props: TouchableOpacityProps) {
   )
 }
 
-export function DialogOverlay({ children, isOpen }: PropsWithChildren<{ isOpen: boolean }>) {
+export function DialogOverlay({
+  children,
+  isOpen,
+  onClose,
+}: PropsWithChildren<{ isOpen: boolean; onClose?: () => void }>) {
   return (
     <Modal animationType="fade" transparent visible={isOpen}>
-      <View className="h-full w-full bg-bg-vibrant-primary flex items-center justify-center p-4">{children}</View>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View className="h-full w-full bg-bg-vibrant-primary flex items-center justify-center p-4">{children}</View>
+      </TouchableWithoutFeedback>
     </Modal>
   )
 }
@@ -52,11 +58,12 @@ export interface DialogProps {
   isOpen: boolean
   className?: string
   style?: ViewProps['style']
+  onClose?: () => void
 }
 
-export function Dialog({ children, isOpen, className, style }: PropsWithChildren<DialogProps>) {
+export function Dialog({ children, isOpen, className, style, onClose }: PropsWithChildren<DialogProps>) {
   return (
-    <DialogOverlay isOpen={isOpen}>
+    <DialogOverlay isOpen={isOpen} onClose={onClose}>
       <DialogContent style={style} className={className}>
         {children}
       </DialogContent>

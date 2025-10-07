@@ -53,6 +53,7 @@ export function SavingScreen() {
     <SaveResult
       data={stopInterview.data.next_page_info.next_page_data}
       type={stopInterview.data.next_page_info.next_page}
+      shouldRedirect
     />
   )
 }

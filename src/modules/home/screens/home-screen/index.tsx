@@ -1,6 +1,8 @@
 import { Redirect } from 'expo-router'
 import { useMemo } from 'react'
 import { FlatList, View } from 'react-native'
+import { RefreshControl } from 'react-native-gesture-handler'
+import { useBoolean } from 'usehooks-ts'
 import { HomeHeader } from '~/modules/home/parts/header'
 import { QuickActionItem } from '~/modules/home/parts/quick-action-item'
 import {
@@ -10,7 +12,8 @@ import {
 import type { ProgressData } from '~/services/api/model'
 
 export function Home() {
-  const { data } = useGetHomeElementsHomePullHomeElementsGet()
+  const { data, refetch } = useGetHomeElementsHomePullHomeElementsGet()
+  const { value: isRefreshing, setTrue: startRefreshing, setFalse: stopRefreshing } = useBoolean(false)
   const onboarding = useCheckOnboardingCompleteLoginCompletedOnboardingGet()
 
   const progressData = useMemo(() => {
@@ -29,9 +32,15 @@ export function Home() {
     return <Redirect href="/(protected)/onboarding/01-name" />
   }
 
+  const handleRefresh = () => {
+    startRefreshing()
+    refetch().finally(stopRefreshing)
+  }
+
   return (
     <FlatList
       data={data?.quick_actions ?? []}
+      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
       renderItem={({ item }) => <QuickActionItem action={item} />}
       keyExtractor={(item, index) => `${item.action}-${index}`}
       ListHeaderComponent={

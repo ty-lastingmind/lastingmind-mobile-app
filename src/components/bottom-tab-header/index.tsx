@@ -1,5 +1,6 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { DrawerHeaderProps } from '@react-navigation/drawer'
+import { Link } from 'expo-router'
 import { useCallback } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Logo } from '~/modules/components/logo'
@@ -30,7 +31,11 @@ export function BottomTabHeader({ navigation, userAvatar, options }: Props) {
             {String(options.title)}
           </Typography>
         </View>
-        <Logo />
+        <Link asChild href="/(protected)/(tabs)/home">
+          <TouchableOpacity>
+            <Logo />
+          </TouchableOpacity>
+        </Link>
       </View>
     </View>
   )

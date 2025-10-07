@@ -3,7 +3,7 @@ import React from 'react'
 import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 import { Logo } from '~/modules/components/logo'
-import { useRouter } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 
 export default function Header() {
   const router = useRouter()
@@ -15,7 +15,11 @@ export default function Header() {
       <Typography className="" brand color="accent" level="h5">
         View Past Responses
       </Typography>
-      <Logo />
+      <Link asChild href="/(protected)/(tabs)/home">
+        <TouchableOpacity>
+          <Logo />
+        </TouchableOpacity>
+      </Link>
     </View>
   )
 }
