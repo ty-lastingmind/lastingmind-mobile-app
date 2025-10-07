@@ -1,11 +1,19 @@
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
-import React, { useCallback, useState } from 'react'
+import { useFocusEffect, useRouter } from 'expo-router'
+import React, { useCallback, useRef, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { Alert, TouchableOpacity, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
-import { ChatMessage, useMessages } from '~/modules/components/chat/hooks/use-messages'
-import { MessageInput } from '~/modules/components/chat/message-input'
-import { MessagesList } from '~/modules/components/chat/messages-list'
+import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
+import { MessageSchema } from '~/hooks/use-chat-ws-connection/index.types'
+import { Chat } from '~/modules/components/chat'
+import { IncomingMessageLoading } from '~/modules/components/chat/composers/incoming-message-loading'
+import { InterviewIncomingMessage } from '~/modules/components/chat/composers/interview-incoming-message'
+import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
+import { OutgoingMessageLoading } from '~/modules/components/chat/composers/outgoing-message-loading'
+import { useChat } from '~/modules/components/chat/hooks/use-chat'
+import { ChatMessage } from '~/modules/components/chat/index.types'
+import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { useInterviewTimer } from '~/modules/interview/screens/04-chat/hooks/use-interview-timer'
 import { OutOfTimeDialog } from '~/modules/interview/screens/04-chat/parts/out-of-time-dialog'
@@ -17,50 +25,82 @@ import {
   usePullUserInfoHomePullUserInfoGet,
   useRefineTextUtilsRefineTextPost,
 } from '~/services/api/generated'
+import { deleteAllAudioFiles, saveBase64ToFile } from '~/utils/files'
 
 export function ChatScreen() {
   const router = useRouter()
   const [viewMessage, setViewMessage] = useState<ChatMessage | null>(null)
-  const [text, setText] = useState('')
+  const inputForm = useForm({
+    defaultValues: {
+      question: '',
+    },
+  })
   const form = useInterviewFormContext()
+  const isInterviewInitializedRef = useRef(false)
   const refineText = useRefineTextUtilsRefineTextPost()
   const user = usePullUserInfoHomePullUserInfoGet()
-  const { addLoadingMessage, messages, updateMessageAtIndex, addNewMessage, removeLastMessage, updateLastMessage } =
-    useMessages()
+  const { actions, state } = useChat()
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost({
     mutation: {
-      onMutate: () => {
-        addLoadingMessage({
-          isIncoming: true,
-        })
-      },
       onSuccess: (incomingMessage) => {
-        updateLastMessage({
+        actions.add({
           text: incomingMessage as string, // todo fix type
           isIncoming: true,
-          isLoading: false,
         })
-      },
-      onError: () => {
-        removeLastMessage()
       },
     },
   })
-
   const { recordingControls, audioRecorder } = useAudioMessage(INTERVIEW_AUDIO_FOLDER_NAME)
   const duration = form.getValues('interviewDurationInMinutes') ?? 30 // Default to 30 minutes if not set
   const { extendTime, isOutOfTime } = useInterviewTimer(duration)
-  const { firstMessage } = useLocalSearchParams<{ firstMessage: string }>()
+
+  const handleWsMessage = async (message: MessageSchema) => {
+    const audio = await saveBase64ToFile(message.audio)
+    actions.appendTextAndAudioToLastMessage(message.text, audio)
+  }
 
   useFocusEffect(
     useCallback(() => {
-      addNewMessage({
-        text: firstMessage,
-        isIncoming: true,
-        isLoading: false,
-      })
+      return async () => {
+        await deleteAllAudioFiles()
+      }
     }, [])
   )
+
+  const handleStartInterview = () => {
+    if (isInterviewInitializedRef.current) return
+
+    const { topicName, customTopicName, responseId, interviewDurationInMinutes } = form.getValues()
+
+    generateNextQuestion.mutate(
+      {
+        data: {
+          answer: 'Hi! I am ready for my interview',
+          userFullName: 'zarif abdalimov', // todo - add user full name
+          topic: topicName ?? customTopicName,
+          duration: interviewDurationInMinutes,
+          responseId,
+        },
+      },
+      {
+        onSuccess: (message) => {
+          isInterviewInitializedRef.current = true
+
+          if (!message) return
+
+          actions.add({
+            text: message as string, // todo fix type
+            isIncoming: true,
+          })
+        },
+      }
+    )
+  }
+
+  useChatWsConnection({
+    onConnected: handleStartInterview,
+    onMessage: handleWsMessage,
+  })
 
   function handleGenerateNextQuestion(message: string) {
     if (!user.data) return
@@ -79,21 +119,18 @@ export function ChatScreen() {
   }
 
   function handleSendTextMessage() {
-    addNewMessage({
-      text: text,
+    actions.add({
+      text: inputForm.getValues('question'),
       isIncoming: false,
-      isLoading: false,
     })
-    handleGenerateNextQuestion(text)
-    setText('')
+    handleGenerateNextQuestion(inputForm.getValues('question'))
+    inputForm.reset()
   }
 
   async function handleSendAudioMessage() {
     await recordingControls.stopRecording()
 
     if (!user.data) return
-
-    addLoadingMessage()
 
     refineText.mutate(
       {
@@ -104,18 +141,15 @@ export function ChatScreen() {
       },
       {
         onSuccess: ({ text }) => {
-          updateLastMessage({
+          actions.add({
             text,
             isIncoming: false,
-            isLoading: false,
           })
 
           handleGenerateNextQuestion(text)
         },
         onError: () => {
           Alert.alert('Error', 'Failed to send message')
-
-          removeLastMessage()
         },
       }
     )
@@ -142,20 +176,48 @@ export function ChatScreen() {
   return (
     <>
       <View className="flex-1 pb-safe px-4">
-        <MessagesList messages={messages} onViewTranscript={setViewMessage} />
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-8 pt-2">
+        <Chat.Provider
+          meta={{
+            chattingWithViewId: '',
+            conversationId: '',
+            uid: '',
+          }}
+          state={state}
+          actions={actions}
+        >
+          <Chat.Scroll contentContainerClassName="px-4">
+            {state.messages.map((message) => (
+              <React.Fragment key={message.index}>
+                {message.isIncoming ? (
+                  <InterviewIncomingMessage message={message} />
+                ) : (
+                  <OutgoingMessage message={message} />
+                )}
+              </React.Fragment>
+            ))}
+            {generateNextQuestion.isPending && <IncomingMessageLoading />}
+            {refineText.isPending && <OutgoingMessageLoading />}
+          </Chat.Scroll>
+        </Chat.Provider>
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-11 pt-2">
           <TouchableOpacity onPress={handleConfirmStopInterview}>
             <Typography color="red">Stop interview</Typography>
           </TouchableOpacity>
-          <MessageInput
-            value={text}
-            onChangeText={setText}
-            audioRecorder={audioRecorder}
-            disabled={generateNextQuestion.isPending}
-            onSendAudioMessage={handleSendAudioMessage}
-            onCancelRecording={recordingControls.cancelRecording}
-            onStartRecording={recordingControls.startRecording}
-            onSendTextMessage={handleSendTextMessage}
+          <Controller
+            control={inputForm.control}
+            name="question"
+            render={({ field }) => (
+              <MessageInput
+                value={field.value}
+                onChangeText={field.onChange}
+                audioRecorder={audioRecorder}
+                disabled={generateNextQuestion.isPending}
+                onSendAudioMessage={handleSendAudioMessage}
+                onCancelRecording={recordingControls.cancelRecording}
+                onStartRecording={recordingControls.startRecording}
+                onSendTextMessage={handleSendTextMessage}
+              />
+            )}
           />
         </KeyboardAvoidingView>
       </View>
@@ -164,9 +226,7 @@ export function ChatScreen() {
           message={viewMessage}
           onClose={() => setViewMessage(null)}
           onSaveChanges={(text) => {
-            updateMessageAtIndex(viewMessage.index, {
-              text,
-            })
+            actions.update(viewMessage.index, { text })
             setViewMessage(null)
           }}
         />

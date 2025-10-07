@@ -1,7 +1,7 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
-import { IncomingMessage } from '~/modules/components/chat/messages-list/parts/incoming-message'
-import { OutgoingMessage } from '~/modules/components/chat/messages-list/parts/outgoing-message'
+import { IncomingMessage } from '~/modules/components/chat/composers/incoming-message'
+import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { cn } from '~/utils/cn'
@@ -16,7 +16,7 @@ interface ExampleChatProps {
   onPress: () => void
 }
 
-export function ExampleChat({ title, caption, overline, message, answer, avatarUrl, onPress }: ExampleChatProps) {
+export function ExampleChat({ title, caption, overline, message, answer, onPress }: ExampleChatProps) {
   return (
     <View className="px-6 flex-1 pb-safe gap-8">
       <View className="gap-4">
@@ -33,17 +33,21 @@ export function ExampleChat({ title, caption, overline, message, answer, avatarU
         contentContainerClassName="p-4 gap-5"
       >
         <View className="flex flex-row justify-end">
-          <OutgoingMessage message={message} />
+          <OutgoingMessage
+            message={{
+              text: message,
+              index: 0,
+              isIncoming: false,
+            }}
+          />
         </View>
         <View>
           <IncomingMessage
             message={{
               text: answer,
               isIncoming: true,
-              isLoading: false,
               index: 0,
             }}
-            avatarUrl={avatarUrl}
           />
         </View>
       </ScrollView>

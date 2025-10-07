@@ -13,6 +13,8 @@
     "lint:check": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint lint --fix",
     "type:check": "tsc",
+    "type:check-watch": "tsc --watch",
+    "codequalty:check": "npm run format:fix && npm run lint:check && npm run type:check",
     "prepare": "husky",
     "api:generate": "orval --config ./orval.config.ts",
     "api:watch": "orval --config ./orval.config.ts --watch",

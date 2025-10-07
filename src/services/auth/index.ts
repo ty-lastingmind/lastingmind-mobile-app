@@ -1,3 +1,4 @@
+import { FirebaseAuthTypes } from '@react-native-firebase/auth'
 import * as Auth from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import Constants from 'expo-constants'
@@ -74,4 +75,8 @@ export async function signInWithApple() {
 
 export async function signOut() {
   return Auth.signOut(auth)
+}
+
+export async function getIdToken(user: FirebaseAuthTypes.User) {
+  return Auth.getIdToken(user)
 }

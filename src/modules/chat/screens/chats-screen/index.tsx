@@ -8,7 +8,7 @@ import { useBoolean } from 'usehooks-ts'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { Avatar } from '~/modules/chat/screens/chats-screen/parts/avatar'
 import { StartingPrompts } from '~/modules/chat/screens/chats-screen/parts/starting-prompts'
-import { MessageInput } from '~/modules/components/chat/message-input'
+import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import {
   usePullCanChatWithChatPullCanChatWithGet,
