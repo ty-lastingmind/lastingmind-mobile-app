@@ -9,6 +9,7 @@ export { LikeButton } from './parts/like-button'
 export { EditButton } from './parts/edit-button'
 export { CommonActions } from './parts/common-actions'
 export { AnswerExplanations } from './parts/answer-explanations'
+export { AudioButton } from './parts/audio-button'
 
 export function Container({ children, className }: ViewProps) {
   return <View className={cn('gap-3', className)}>{children}</View>

@@ -20,6 +20,7 @@ export function CommonActions({ message }: CommonActions) {
       <IncomingMessage.EditButton message={message} prevMessage={prevMessage} />
       <IncomingMessage.LikeButton message={message} prevMessage={prevMessage} />
       <IncomingMessage.DislikeButton message={message} prevMessage={prevMessage} />
+      <IncomingMessage.AudioButton message={message} />
     </View>
   )
 }

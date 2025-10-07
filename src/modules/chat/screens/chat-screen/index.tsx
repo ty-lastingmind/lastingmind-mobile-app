@@ -1,16 +1,18 @@
+import { useFocusEffect } from 'expo-router'
 import React, { useCallback } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
-import { OutgoingMessageLoading } from '~/modules/components/chat/composers/outgoing-message-loading'
+import { Chat, IncomingMessage as C } from 'src/modules/components/chat'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
-import { useStartConversation } from '~/modules/chat/screens/chat-screen/hooks/use-start-conversation'
-import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
-import { Chat } from 'src/modules/components/chat'
+import { useChatWsConnection } from 'src/modules/chat/screens/chat-screen/hooks/use-chat-ws-connection'
+import { MessageSchema } from '~/modules/chat/screens/chat-screen/hooks/use-chat-ws-connection/index.types'
 import { ChatWithUserIncomingMessage } from '~/modules/components/chat/composers/chat-with-user-incoming-message'
 import { IncomingMessageLoading } from '~/modules/components/chat/composers/incoming-message-loading'
 import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
+import { OutgoingMessageLoading } from '~/modules/components/chat/composers/outgoing-message-loading'
 import { useChat } from '~/modules/components/chat/hooks/use-chat'
+import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import {
   usePullExplanationAndButtonChatPullExplanationAndButtonPost,
@@ -19,6 +21,7 @@ import {
   useSendUserQueryChatSendUserQueryPost,
 } from '~/services/api/generated'
 import { CanChatWithItem } from '~/services/api/model'
+import { deleteAllAudioFiles, saveBase64ToFile } from '~/utils/files'
 
 interface ChatScreenProps {
   chattingWithViewId: string
@@ -40,6 +43,34 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
   const refineText = useRefineTextUtilsRefineTextPost()
   const getExplanations = usePullExplanationAndButtonChatPullExplanationAndButtonPost()
 
+  const handleWsMessage = async (message: MessageSchema) => {
+    const audio = await saveBase64ToFile(message.audio)
+    actions.appendTextAndAudioToLastMessage(message.text, audio)
+  }
+
+  const handleStartConversation = () => {
+    sendMessage.mutate({
+      data: {
+        chattingWithViewId: chattingWithViewId,
+        query: firstMessage,
+        convoId: conversationId,
+      },
+    })
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      return async () => {
+        await deleteAllAudioFiles()
+      }
+    }, [])
+  )
+
+  useChatWsConnection({
+    onMessage: handleWsMessage,
+    onConnected: handleStartConversation,
+  })
+
   const sendMessage = useSendUserQueryChatSendUserQueryPost({
     mutation: {
       onMutate: ({ data }) => {
@@ -47,10 +78,12 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
         actions.add({ text: data.query, isIncoming: false })
       },
       onSuccess: (data) => {
-        actions.add({
-          text: data as string, // todo fix type,
-          isIncoming: true,
-        })
+        if (data) {
+          actions.add({
+            text: data as string, // todo fix type,
+            isIncoming: true,
+          })
+        }
 
         setTimeout(() => {
           getExplanations.mutate({
@@ -65,16 +98,6 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
         Alert.alert('Error', 'Failed to send message')
       },
     },
-  })
-
-  useStartConversation(() => {
-    sendMessage.mutate({
-      data: {
-        chattingWithViewId: chattingWithViewId,
-        query: firstMessage,
-        convoId: conversationId,
-      },
-    })
   })
 
   const handleSendTextMessage = useCallback(() => {
@@ -135,15 +158,15 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
           {state.messages.map((message) => (
             <React.Fragment key={message.index}>
               {message.isIncoming ? (
-                <ChatWithUserIncomingMessage
-                  explanations={getExplanations.data?.explanation ?? undefined}
-                  message={message}
-                />
+                <ChatWithUserIncomingMessage message={message} />
               ) : (
                 <OutgoingMessage message={message} />
               )}
             </React.Fragment>
           ))}
+          {getExplanations.data?.explanation && (
+            <C.AnswerExplanations explanations={getExplanations.data.explanation} />
+          )}
           {sendMessage.isPending && <IncomingMessageLoading />}
           {refineText.isPending && <OutgoingMessageLoading />}
           {getExplanations.data?.button === 'add_answer' && (

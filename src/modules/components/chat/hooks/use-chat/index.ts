@@ -34,12 +34,38 @@ export function useChat() {
     }))
   }, [])
 
+  const appendTextAndAudioToLastMessage = useCallback((text: string, audioSrc: string) => {
+    setState((prevState) => {
+      const lastMessage = prevState.messages.at(-1)
+      const messagesWithoutLastMessage = prevState.messages.slice(0, -1)
+
+      if (!lastMessage) return prevState
+
+      return {
+        ...prevState,
+        messages: [
+          ...messagesWithoutLastMessage,
+          ...(lastMessage.isIncoming
+            ? [
+                {
+                  ...lastMessage,
+                  text: lastMessage.text + ` ${text}`,
+                  audioSources: lastMessage.audioSources ? [...lastMessage.audioSources, audioSrc] : [audioSrc],
+                },
+              ]
+            : [lastMessage, { index: lastMessage.index + 1, text: text, isIncoming: true, audioSources: [audioSrc] }]),
+        ],
+      }
+    })
+  }, [])
+
   return {
     state,
     actions: {
       add,
       remove,
       update,
+      appendTextAndAudioToLastMessage,
     },
   }
 }

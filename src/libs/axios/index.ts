@@ -37,7 +37,7 @@ AXIOS_INSTANCE.interceptors.response.use(
     return response
   },
   (error) => {
-    console.error('Response error:', error.response?.status, error.response?.data)
+    console.error('Response error:', error.response.config.url, error.response?.status, error.response?.data)
 
     // Handle common error cases
     if (error.response?.status === 401) {
