@@ -1,6 +1,6 @@
 import { FlatList, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useMemo, useState } from 'react'
-import Header from '../../parts/past-responses/header'
+import BackHeader from '../../../ui/back-header'
 import { Icon } from '~/modules/ui/icon'
 import { Input } from '~/modules/ui/input'
 import Dropdown from '~/modules/ui/dropdown'
@@ -96,7 +96,7 @@ export function PastResponsesPage() {
 
   return (
     <>
-      <Header />
+      <BackHeader title="View Past Responses" />
       <ScrollView className="px-8">
         <View className="gap-4 bg-icon-white pb-4">
           <Dropdown title="Filters" titleWeight="normal" className="bg-button-white-bg pt-0 pb-0 px-2">

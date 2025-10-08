@@ -40,7 +40,7 @@ const items: DrawerJournalItemType[] = [
     icon: 'view_more',
     subItems: [
       // TODO: handle these links
-      { title: 'Your Voice Clone', icon: 'mic_filled', href: '/profile' },
+      { title: 'Your Voice Clone', icon: 'mic_filled', href: '/(protected)/voice-clone/start-page' },
       { title: 'Upload Your Data', icon: 'upload', href: '/profile' },
       { title: 'Your Audience', icon: 'people', href: '/profile' },
       { title: 'Invite to LastingMind', icon: 'add_people', href: '/profile' },
@@ -112,7 +112,7 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
 
       if (item.href) {
         return (
-          <Link href={item.href} asChild replace>
+          <Link href={item.href} asChild>
             {itemComponent}
           </Link>
         )

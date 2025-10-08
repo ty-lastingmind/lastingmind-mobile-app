@@ -51,6 +51,7 @@ import { Upload } from './svg/upload'
 import { People } from './svg/people'
 import { AddPeople } from './svg/add_people'
 import { Settings } from './svg/settings'
+import { MicTest } from './svg/mic-test'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -107,4 +108,5 @@ export const iconNameToSvg = {
   people: People,
   add_people: AddPeople,
   settings: Settings,
+  mic_test: MicTest,
 } as const
