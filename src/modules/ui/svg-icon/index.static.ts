@@ -52,6 +52,10 @@ import { People } from './svg/people'
 import { AddPeople } from './svg/add_people'
 import { Settings } from './svg/settings'
 import { MicTest } from './svg/mic-test'
+import { Headphones } from './svg/headphones'
+import { Playback } from './svg/playback'
+import { PersonSpeaking } from './svg/person-speaking'
+import { MicSpeaking } from './svg/mic-speaking'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -109,4 +113,8 @@ export const iconNameToSvg = {
   add_people: AddPeople,
   settings: Settings,
   mic_test: MicTest,
+  headphones: Headphones,
+  person_speaking: PersonSpeaking,
+  playback: Playback,
+  mic_speaking: MicSpeaking,
 } as const

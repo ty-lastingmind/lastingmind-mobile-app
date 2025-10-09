@@ -3,6 +3,7 @@ import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Button } from '~/modules/ui/button'
+import { Link } from 'expo-router'
 
 export function VoiceCloneStartPage() {
   return (
@@ -16,9 +17,9 @@ export function VoiceCloneStartPage() {
       <View className="items-center justify-center flex-1 mb-12">
         <SvgIcon name="mic_test" size="logo" color="accent" />
       </View>
-      <View className="align-bottom">
+      <Link asChild href="/(protected)/voice-clone/how-it-works">
         <Button>Continue</Button>
-      </View>
+      </Link>
     </View>
   )
 }
