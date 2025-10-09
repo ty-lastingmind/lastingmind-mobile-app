@@ -7,7 +7,7 @@ import { Link } from 'expo-router'
 
 export function VoiceCloneStartPage() {
   return (
-    <View className="p-8 flex-1">
+    <View className="p-10 flex-1">
       <View className="gap-4">
         <Typography brand level="h3">
           Clone Your Voice

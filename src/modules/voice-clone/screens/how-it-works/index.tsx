@@ -4,6 +4,7 @@ import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { SvgIconName } from '~/modules/ui/svg-icon/index.types'
 import { Button } from '~/modules/ui/button'
+import { Link } from 'expo-router'
 
 const stepsList = [
   {
@@ -47,7 +48,9 @@ export function VoiceCloneHowItWorks() {
           </View>
         ))}
       </View>
-      <Button>Continue</Button>
+      <Link asChild href="/(protected)/voice-clone/mic-setup">
+        <Button>Continue</Button>
+      </Link>
     </View>
   )
 }
