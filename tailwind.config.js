@@ -50,6 +50,9 @@ module.exports = {
       'icon-2xl': 'var(--icon-2xl-size)',
       'icon-3xl': 'var(--icon-3xl-size)',
       'icon-4xl': 'var(--icon-4xl-size)',
+      'icon-5xl': 'var(--icon-5xl-size)',
+      'icon-6xl': 'var(--icon-6xl-size)',
+      'icon-7xl': 'var(--icon-7xl-size)',
 
       'input-text-size': 'var(--input-text-size)',
     },
