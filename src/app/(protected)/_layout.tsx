@@ -6,10 +6,12 @@ import { Typography } from '~/modules/ui/typography'
 import { DrawerJournal } from '~/modules/components/drawer/parts/drawer-journal'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 import { ChatProvider } from '~/modules/chat/contexts/chat-context'
+import { useGetUserTypeUtilsPullUserTypeGet } from '~/services/api/generated'
 
 export default function ProtectedLayout() {
   const userQuery = useUser()
   const colors = useTailwindColors()
+  const { data: userType } = useGetUserTypeUtilsPullUserTypeGet()
 
   if (userQuery.isLoading) {
     return <Typography>Loading...</Typography>
@@ -29,7 +31,7 @@ export default function ProtectedLayout() {
           },
           drawerType: 'slide',
         }}
-        drawerContent={(props) => <DrawerJournal {...props} />}
+        drawerContent={(props) => <DrawerJournal {...props} userType={userType?.user_type} />}
       />
     </ChatProvider>
   )

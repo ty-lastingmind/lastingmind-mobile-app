@@ -2,8 +2,9 @@ import { useFocusEffect, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
-import Animated, { FadeInDown } from 'react-native-reanimated'
+import Animated, { FadeInDown, runOnJS } from 'react-native-reanimated'
 import { useBoolean } from 'usehooks-ts'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { Avatar } from '~/modules/chat/screens/chats-screen/parts/avatar'
@@ -11,6 +12,7 @@ import { StartingPrompts } from '~/modules/chat/screens/chats-screen/parts/start
 import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import {
+  usePullCanChatWithChatPullCanChatWithGet,
   usePullStartingPromptsChatPullStartingPromptsGet,
   usePullUserInfoHomePullUserInfoGet,
   useRefineTextUtilsRefineTextPost,
@@ -18,6 +20,8 @@ import {
 import { SearchParams } from '../../index.types'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useChatContext } from '../../hooks/use-chat-context'
+import { Typography } from '~/modules/ui/typography'
+import { Button } from '~/modules/ui/button'
 
 export function ChatsScreen() {
   const router = useRouter()
@@ -44,6 +48,27 @@ export function ChatsScreen() {
       },
     }
   )
+
+  const canChatWith = usePullCanChatWithChatPullCanChatWithGet({
+    query: {
+      enabled: Boolean(chattingWithViewId),
+    },
+  })
+
+  const hasNoChats = !canChatWith.isLoading && canChatWith.data?.can_chat_with.length === 0
+
+  const handleGoBack = useCallback(() => {
+    router.back()
+  }, [router])
+
+  const swipeGesture = Gesture.Pan()
+    .enabled(hasNoChats)
+    .activeOffsetX(50)
+    .onEnd((event) => {
+      if (event.translationX > 80) {
+        runOnJS(handleGoBack)()
+      }
+    })
 
   useFocusEffect(
     useCallback(() => {
@@ -89,6 +114,35 @@ export function ChatsScreen() {
       pathname: '/chats/chat/[chattingWithViewId]',
       params: searchParams,
     })
+  }
+
+  if (hasNoChats) {
+    return (
+      <GestureDetector gesture={swipeGesture}>
+        <View className="flex-1 justify-center items-center w-full px-8 pb-safe">
+          <View className="flex-[2] justify-center gap-6">
+            <Typography level="h1" weight="bold" brand className="text-center leading-none text-[40px]">
+              You do not have access to chat with anyone yet!
+            </Typography>
+            <Typography level="h4" className="text-center">
+              But you can always create your own LastingMind!
+            </Typography>
+          </View>
+
+          <View className="flex-[1] w-full mt-auto mb-20">
+            <Button
+              variant="primary"
+              size="lg"
+              btnContainerClassName="w-full rounded-sm"
+              textClassName="font-bold"
+              onPress={() => router.push('/onboarding/01-name')}
+            >
+              Create your LastingMind
+            </Button>
+          </View>
+        </View>
+      </GestureDetector>
+    )
   }
 
   const prompts = startingPrompts.data?.starting_prompts ?? []

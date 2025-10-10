@@ -20,6 +20,8 @@ import { TrophyModal } from '../trophy-modal'
 import { PastEntriesList } from '../past-entries-list'
 import { ConversationSession, HighLevelPastEntry } from '~/services/api/model'
 import { useChatContext } from '~/modules/chat/hooks/use-chat-context'
+import { ChatUserJournal } from './parts/chat-user-journal'
+import { UserTypeResponseUserType } from '~/services/api/model'
 
 const items: DrawerJournalItemType[] = [
   { title: 'Home', icon: 'home', href: '/(protected)/(tabs)/home' },
@@ -51,7 +53,7 @@ const items: DrawerJournalItemType[] = [
   },
 ]
 
-export function DrawerJournal(props: DrawerContentComponentProps) {
+export function DrawerJournal(props: DrawerContentComponentProps & { userType?: UserTypeResponseUserType }) {
   const currentRouteName = usePathname()
   const { chattingWithViewId } = useChatContext()
 
@@ -73,6 +75,7 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
   })
 
   const { data: pastConversations, mutate: pullPastConversations } = usePullPastConvosChatPullPastConvosPost()
+  const isSuperUserOrAdmin = props.userType === 'super_user' || props.userType === 'admin'
 
   const userAvatar = { uri: userInfo?.profile_image }
   const showChats = useBoolean(false)
@@ -146,29 +149,36 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
     <View className="pt-safe bg-bg-primary flex-1">
       <View className="flex-1">
         <View className="px-6 pb-4 pt-2">
-          <View className="flex-row items-center justify-between mb-3">
-            <View className="flex-row items-center gap-3">
-              <Link href="/(protected)/(tabs)/profile" asChild>
-                <TouchableOpacity>
-                  <Avatar source={userAvatar} size="sm" />
-                </TouchableOpacity>
-              </Link>
-              <Typography color="accent" level="body-lg" brand>
-                {userInfo?.full_user_name}
-              </Typography>
+          {!isSuperUserOrAdmin && <ChatUserJournal />}
+          {isSuperUserOrAdmin && (
+            <View className="flex-row items-center justify-between mb-3">
+              <View className="flex-row items-center gap-3">
+                <Link href="/(protected)/(tabs)/profile" asChild>
+                  <TouchableOpacity>
+                    <Avatar source={userAvatar} size="sm" />
+                  </TouchableOpacity>
+                </Link>
+                <Typography color="accent" level="body-lg" brand>
+                  {userInfo?.full_user_name}
+                </Typography>
+              </View>
+              <TouchableOpacity onPress={() => showTrophyModal.setValue(!showTrophyModal.value)}>
+                <SvgIcon color="accent" name="trophy_filled" size="lg" />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => showTrophyModal.setValue(!showTrophyModal.value)}>
-              <SvgIcon color="accent" name="trophy_filled" size="lg" />
-            </TouchableOpacity>
-          </View>
+          )}
           {showTrophyModal.value ? (
             <TrophyModal stats={userInfo?.stats} />
           ) : (
             <View>
-              {showChats.value ? (
-                <CanChatWithList navigation={props.navigation} />
-              ) : (
-                (activeSubItems || items).map((item, index) => <View key={index}>{renderItem(item)}</View>)
+              {isSuperUserOrAdmin && (
+                <>
+                  {showChats.value ? (
+                    <CanChatWithList navigation={props.navigation} />
+                  ) : (
+                    (activeSubItems || items).map((item, index) => <View key={index}>{renderItem(item)}</View>)
+                  )}
+                </>
               )}
               {(activeSubItems || showChats.value) && (
                 <TouchableOpacity className="flex-row gap-3 items-center h-[48px] mb-4" onPress={handleBackPress}>
@@ -185,6 +195,7 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
         </View>
         {(isJournalRoute || isInterviewRoute || isConversationRoute) && (
           <PastEntriesList
+            userType={props.userType}
             type={isJournalRoute ? 'journal' : isInterviewRoute ? 'interview' : 'conversation'}
             entries={pastEntries}
             chattingWithViewId={chattingWithViewId}
@@ -192,15 +203,17 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
         )}
       </View>
 
-      <View className="pb-safe">
-        <View className="h-px bg-miscellaneous-topic-stroke mb-4" />
-        <View className="flex-row gap-4 items-center px-6 pt-2">
-          <SvgIcon name="settings" size="lg" color="miscellaneous" />
-          <Typography color="secondary" level="body-1">
-            Settings & Help
-          </Typography>
+      {isSuperUserOrAdmin && (
+        <View className="pb-safe">
+          <View className="h-px bg-miscellaneous-topic-stroke mb-4" />
+          <View className="flex-row gap-4 items-center px-6 pt-2">
+            <SvgIcon name="settings" size="lg" color="miscellaneous" />
+            <Typography color="secondary" level="body-1">
+              Settings & Help
+            </Typography>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   )
 }

@@ -1,6 +1,6 @@
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import { Link } from 'expo-router'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
 import { useBoolean } from 'usehooks-ts'
@@ -10,27 +10,27 @@ import { Avatar } from '~/modules/ui/avatar'
 import { Icon } from '~/modules/ui/icon'
 import { Popover } from '~/modules/ui/popover'
 import { Typography } from '~/modules/ui/typography'
-import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
 import { useChatContext } from '~/modules/chat/hooks/use-chat-context'
+import { usePullCanChatWithChatPullCanChatWithGet, usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
 import { CanChatWithItem } from '~/services/api/model'
+import { UserTypeResponseUserType } from '~/services/api/model'
 
 type NavigationWithDrawer = NativeStackHeaderProps['navigation'] & {
   openDrawer?: () => void
+  setOptions: (options: { swipeEnabled?: boolean }) => void
 }
 
 type HeaderProps = Omit<NativeStackHeaderProps, 'navigation'> & {
   navigation: NavigationWithDrawer
+  userType?: UserTypeResponseUserType
 }
 
-export function Header({ navigation }: HeaderProps) {
+export function Header({ navigation, userType }: HeaderProps) {
   const isOpen = useBoolean(false)
+  const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
   const { chattingWithUser, isInChatsArea, users, selectPersonToChat } = useChatContext()
   const { measurements, measureElement } = useMeasureElement()
   const userInfoQuery = usePullUserInfoHomePullUserInfoGet()
-
-  const userAvatar = useMemo(() => {
-    return { uri: userInfoQuery.data?.profile_image }
-  }, [userInfoQuery])
 
   const handleSelectPersonToChat = useCallback(
     (user: CanChatWithItem) => {
@@ -39,6 +39,17 @@ export function Header({ navigation }: HeaderProps) {
     },
     [selectPersonToChat, isOpen]
   )
+  const hasNoChats = !canChatWith.isLoading && users.length === 0
+
+  const userAvatar = useMemo(() => {
+    return { uri: userInfoQuery?.data?.profile_image }
+  }, [userInfoQuery])
+
+  useEffect(() => {
+    navigation.setOptions({
+      swipeEnabled: !hasNoChats,
+    })
+  }, [hasNoChats, navigation])
 
   return (
     <>
@@ -48,7 +59,7 @@ export function Header({ navigation }: HeaderProps) {
             <Avatar source={userAvatar} />
           </TouchableOpacity>
           <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
-            {chattingWithUser && (
+            {chattingWithUser ? (
               <Animated.View entering={isInChatsArea ? undefined : FadeInUp}>
                 <TouchableOpacity onPress={isOpen.setTrue} className="flex flex-row items-center gap-1">
                   <Typography ref={measureElement} level="h5" brand color="accent">
@@ -57,12 +68,14 @@ export function Header({ navigation }: HeaderProps) {
                   <Icon name="chevron-forward" color="secondary" />
                 </TouchableOpacity>
               </Animated.View>
+            ) : (
+              <Typography ref={measureElement} level="h5" brand color="accent">
+                No Chats Available
+              </Typography>
             )}
           </View>
           <Link asChild href="/(protected)/(tabs)/home">
-            <TouchableOpacity>
-              <Logo />
-            </TouchableOpacity>
+            <TouchableOpacity>{userType === 'chat_user' ? <Avatar source={userAvatar} /> : <Logo />}</TouchableOpacity>
           </Link>
         </View>
       </View>
