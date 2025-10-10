@@ -52,6 +52,7 @@ import { People } from './svg/people'
 import { AddPeople } from './svg/add_people'
 import { Settings } from './svg/settings'
 import { Send } from './svg/send'
+import { Envelope } from './svg/envelope'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -109,4 +110,5 @@ export const iconNameToSvg = {
   add_people: AddPeople,
   settings: Settings,
   send: Send,
+  envelope: Envelope,
 } as const
