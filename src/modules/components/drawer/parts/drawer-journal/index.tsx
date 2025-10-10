@@ -18,6 +18,8 @@ import { DrawerJournalItem } from '../drawer-journal-item'
 import { CanChatWithList } from '../can-chat-with-list'
 import { TrophyModal } from '../trophy-modal'
 import { PastEntriesList } from '../past-entries-list'
+import { ChatUserJournal } from './parts/chat-user-journal'
+import { UserTypeResponseUserType } from '~/services/api/model'
 
 const items: DrawerJournalItemType[] = [
   {
@@ -33,7 +35,7 @@ const items: DrawerJournalItemType[] = [
       { title: 'Journal Entry', icon: 'journal', href: '/questions/journal/add/01-select-topic' },
     ],
   },
-  { title: 'View Past Answers', icon: 'chat_bubbles', href: '/questions' },
+  { title: 'View Past Answers', icon: 'chat_bubbles', href: '/profile/past-responses' },
   { title: 'Chat', icon: 'chat_bubble' },
   {
     title: 'More Features',
@@ -48,7 +50,7 @@ const items: DrawerJournalItemType[] = [
   },
 ]
 
-export function DrawerJournal(props: DrawerContentComponentProps) {
+export function DrawerJournal(props: DrawerContentComponentProps & { userType?: UserTypeResponseUserType }) {
   const currentRouteName = usePathname()
   const currentRoute = props.navigation.getState().routes[props.navigation.getState().index]
   const chattingWithViewId = (currentRoute?.params as { chattingWithViewId?: string })?.chattingWithViewId
@@ -71,6 +73,7 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
   })
 
   const { data: pastConversations, mutate: pullPastConversations } = usePullPastConvosChatPullPastConvosPost()
+  const isSuperUserOrAdmin = props.userType === 'super_user' || props.userType === 'admin'
 
   const userAvatar = { uri: userInfo?.profile_image }
   const showChats = useBoolean(false)
@@ -136,17 +139,20 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
   return (
     <View className="pt-safe bg-bg-primary flex-1">
       <View className="px-10 pb-10 flex-1">
-        <View className="flex-row items-center justify-between mb-4">
-          <View className="flex-row items-center gap-4">
-            <Avatar source={userAvatar} size="sm" />
-            <Typography color="accent" level="body-lg" brand>
-              {userInfo?.full_user_name}
-            </Typography>
+        {!isSuperUserOrAdmin && <ChatUserJournal />}
+        {isSuperUserOrAdmin && (
+          <View className="flex-row items-center justify-between mb-4">
+            <View className="flex-row items-center gap-4">
+              <Avatar source={userAvatar} size="sm" />
+              <Typography color="accent" level="body-lg" brand>
+                {userInfo?.full_user_name}
+              </Typography>
+            </View>
+            <TouchableOpacity onPress={() => showTrophyModal.setValue(!showTrophyModal.value)}>
+              <SvgIcon color="accent" name="trophy_filled" size="lg" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => showTrophyModal.setValue(!showTrophyModal.value)}>
-            <SvgIcon color="accent" name="trophy_filled" size="lg" />
-          </TouchableOpacity>
-        </View>
+        )}
         {showTrophyModal.value ? (
           <TrophyModal stats={userInfo?.stats} />
         ) : (
@@ -162,32 +168,37 @@ export function DrawerJournal(props: DrawerContentComponentProps) {
               </TouchableOpacity>
             )}
 
-            <View className="flex-1">
-              {showChats.value ? (
-                <CanChatWithList navigation={props.navigation} />
-              ) : (
-                (activeSubItems || items).map((item, index) => <View key={index}>{renderItem(item)}</View>)
-              )}
-            </View>
+            {isSuperUserOrAdmin && (
+              <View className="flex-1">
+                {showChats.value ? (
+                  <CanChatWithList navigation={props.navigation} />
+                ) : (
+                  (activeSubItems || items).map((item, index) => <View key={index}>{renderItem(item)}</View>)
+                )}
+              </View>
+            )}
           </>
         )}
       </View>
       {(isJournalRoute || isInterviewRoute || isConversationRoute) && (
         <PastEntriesList
+          userType={props.userType}
           type={isJournalRoute ? 'journal' : isInterviewRoute ? 'interview' : 'conversation'}
           entries={pastJournalEntries?.entries || pastInterviews?.entries || pastConversations?.past_convos || []}
         />
       )}
 
-      <View className="pb-safe">
-        <View className="h-px bg-miscellaneous-topic-stroke mb-4" />
-        <View className="flex-row gap-4 items-center px-10 pt-2">
-          <SvgIcon name="settings" size="lg" color="miscellaneous" />
-          <Typography color="secondary" level="body-1">
-            Settings & Help
-          </Typography>
+      {isSuperUserOrAdmin && (
+        <View className="pb-safe">
+          <View className="h-px bg-miscellaneous-topic-stroke mb-4" />
+          <View className="flex-row gap-4 items-center px-10 pt-2">
+            <SvgIcon name="settings" size="lg" color="miscellaneous" />
+            <Typography color="secondary" level="body-1">
+              Settings & Help
+            </Typography>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   )
 }
