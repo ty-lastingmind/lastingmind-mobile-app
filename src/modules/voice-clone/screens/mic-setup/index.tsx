@@ -24,7 +24,9 @@ export function VoiceCloneMicSetup() {
         <Link asChild href="/(protected)/voice-clone/recomended-mic">
           <Button variant="secondary">View Recomended Mics</Button>
         </Link>
-        <Button>Continue</Button>
+        <Link asChild href="/(protected)/voice-clone/test-your-mic">
+          <Button>Continue</Button>
+        </Link>
       </View>
     </View>
   )
