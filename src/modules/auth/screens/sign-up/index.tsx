@@ -35,8 +35,8 @@ export function SignUpScreen() {
         </View>
         <SignUpForm form={form} />
       </View>
-
-      <TermsOfService />
+      {/* todo: add chat user check when link is added */}
+      <TermsOfService isChatUser={false} />
       <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={20}>
         <Button
           onPress={form.handleSubmit(handleSignUpWithEmailAndPassword)}
