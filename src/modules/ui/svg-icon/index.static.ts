@@ -56,6 +56,10 @@ import { Headphones } from './svg/headphones'
 import { Playback } from './svg/playback'
 import { PersonSpeaking } from './svg/person-speaking'
 import { MicSpeaking } from './svg/mic-speaking'
+import { Listening } from './svg/listening'
+import { Speaking } from './svg/speaking'
+import { Relax } from './svg/relax'
+import { Rewind } from './svg/rewind'
 
 export const iconNameToSvg = {
   reload: Reload,
@@ -117,4 +121,8 @@ export const iconNameToSvg = {
   person_speaking: PersonSpeaking,
   playback: Playback,
   mic_speaking: MicSpeaking,
+  listening: Listening,
+  speaking: Speaking,
+  relax: Relax,
+  rewind: Rewind,
 } as const

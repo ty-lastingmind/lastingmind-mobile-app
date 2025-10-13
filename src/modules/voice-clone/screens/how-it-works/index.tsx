@@ -1,12 +1,11 @@
 import { View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
-import { SvgIcon } from '~/modules/ui/svg-icon'
-import { SvgIconName } from '~/modules/ui/svg-icon/index.types'
 import { Button } from '~/modules/ui/button'
 import { Link } from 'expo-router'
+import InfoList, { ListType } from '../../parts/info-list'
 
-const stepsList = [
+const stepsList: ListType = [
   {
     title: 'Answer questions',
     description: 'Record answers to prompts that will be saved to your LastingMind.',
@@ -36,17 +35,7 @@ export function VoiceCloneHowItWorks() {
         How It Works
       </Typography>
       <View className="flex-1 py-8 gap-10">
-        {stepsList.map((step, index) => (
-          <View key={index} className="flex-row items-center">
-            <SvgIcon name={step.icon as SvgIconName} size="4xl" color="accent" />
-            <View className="pl-2 pr-12">
-              <Typography brand weight="bold" level="h4">
-                {step.title}
-              </Typography>
-              <Typography color="secondary">{step.description}</Typography>
-            </View>
-          </View>
-        ))}
+        <InfoList list={stepsList} />
       </View>
       <Link asChild href="/(protected)/voice-clone/mic-setup">
         <Button>Continue</Button>
