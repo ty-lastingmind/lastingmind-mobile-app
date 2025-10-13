@@ -16,7 +16,7 @@ const items: DrawerJournalItem[] = [
   {
     title: 'View All Answers',
     icon: 'chat_text',
-    href: '/profile/past-responses',
+    href: '/chats/all-answers',
   },
   {
     title: 'Settings & Help',
