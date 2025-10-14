@@ -35,6 +35,11 @@ export function handleNotificationNavigation(data: NotificationData) {
         logInfo('navigation', 'Navigated to journal screen')
         break
 
+      case ROUTER_ENUM.INTERVIEW:
+        router.push(`/(protected)/(tabs)/questions/interview/add/01-select-topic?topicName=${data.topic}`)
+        logInfo('navigation', 'Navigated to interview screen')
+        break
+
       default:
         logError('navigation', `Unknown notification type: ${screen}`)
         break

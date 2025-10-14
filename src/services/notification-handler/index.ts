@@ -5,6 +5,7 @@ import { logError, logInfo } from '~/services/logger'
 import { handleNotificationNavigation } from '~/services/navigation'
 import {
   chatWithSelfNotificationData,
+  interviewNotificationData,
   inviteAudienceNotificationData,
   journalNotificationData,
   NotificationData,
@@ -37,6 +38,9 @@ function parseNotificationData(data: Record<string, unknown>): NotificationData 
 
       case ROUTER_ENUM.JOURNAL:
         return journalNotificationData.parse(data)
+
+      case ROUTER_ENUM.INTERVIEW:
+        return interviewNotificationData.parse(data)
 
       default:
         logError('notification-handler', `Unknown router type: ${router}`)
