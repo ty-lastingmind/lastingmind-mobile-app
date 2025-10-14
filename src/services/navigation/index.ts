@@ -9,30 +9,30 @@ export function handleNotificationNavigation(data: NotificationData) {
   try {
     logInfo('navigation', 'Handling notification navigation', data)
 
-    // Handle schema-based router paths
     switch (data.router) {
       case ROUTER_ENUM.BASIC_INFO:
-        // Navigate to basic info screen
         // todo - add handler
         logInfo('navigation', 'Navigated to basic info screen')
         break
 
       case ROUTER_ENUM.CHAT:
-        // Navigate to chat screen
         router.push(`/(protected)/(tabs)/chats/chat/${data.user_viewing_id}`)
         logInfo('navigation', 'Navigated to chat screen')
         break
 
       case ROUTER_ENUM.VOICE_CLONE:
-        // Navigate to voice clone screen
         // todo - add handler
         logInfo('navigation', 'Navigated to voice clone screen')
         break
 
       case ROUTER_ENUM.INVITE_AUDIENCE:
-        // Navigate to invite audience screen
         // todo - add handler
         logInfo('navigation', 'Navigated to invite audience screen')
+        break
+
+      case ROUTER_ENUM.JOURNAL:
+        router.push(`/(protected)/(tabs)/questions/journal/add/01-select-topic?topicName=${data.topic}`)
+        logInfo('navigation', 'Navigated to journal screen')
         break
 
       default:

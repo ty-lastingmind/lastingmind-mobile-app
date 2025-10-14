@@ -6,6 +6,7 @@ import { handleNotificationNavigation } from '~/services/navigation'
 import {
   chatWithSelfNotificationData,
   inviteAudienceNotificationData,
+  journalNotificationData,
   NotificationData,
   personalSurveyNotificationData,
   ROUTER_ENUM,
@@ -33,6 +34,9 @@ function parseNotificationData(data: Record<string, unknown>): NotificationData 
 
       case ROUTER_ENUM.INVITE_AUDIENCE:
         return inviteAudienceNotificationData.parse(data)
+
+      case ROUTER_ENUM.JOURNAL:
+        return journalNotificationData.parse(data)
 
       default:
         logError('notification-handler', `Unknown router type: ${router}`)
