@@ -18,6 +18,7 @@ AXIOS_INSTANCE.interceptors.request.use(
     if (auth.currentUser) {
       // todo - maybe move token to storage
       const token = await getIdToken(auth.currentUser)
+      // console.log('[debug]', `Bearer ${token}`)
       config.headers.Authorization = `Bearer ${token}`
     }
 

@@ -1,47 +1,43 @@
 import { z } from 'zod'
 
-enum NotificationType {
-  test = 'test',
-}
+// Router enum for type identification
+export const ROUTER_ENUM = {
+  BASIC_INFO: '/basic-info',
+  CHAT: '/chat',
+  VOICE_CLONE: '/voice-clone',
+  INVITE_AUDIENCE: '/invite-audience',
+} as const
 
-export type Notification = {
-  id: string
-  notificationType?: NotificationType
-  title: string
-  body: string
-}
+export type RouterType = (typeof ROUTER_ENUM)[keyof typeof ROUTER_ENUM]
 
-export const schema = z
-  .object({
-    data: z.object({
-      notificationType: z.nativeEnum(NotificationType),
-    }),
-    messageId: z.string(),
-    notification: z.object({
-      body: z.string(),
-      title: z.string(),
-    }),
-    android: z
-      .object({
-        notification: z.object({
-          channel_id: z.string(),
-          sound: z.string(),
-        }),
-      })
-      .optional(),
-    apns: z
-      .object({
-        payload: z.object({
-          aps: z.object({
-            sound: z.string(),
-          }),
-        }),
-      })
-      .optional(),
-  })
-  .transform<Notification>(({ messageId, notification: { title, body }, data }) => ({
-    id: messageId,
-    notificationType: data?.notificationType,
-    title,
-    body,
-  }))
+export const personalSurveyNotificationData = z.object({
+  notification_id: z.string(),
+  router: z.enum([ROUTER_ENUM.BASIC_INFO]),
+})
+
+export const chatWithSelfNotificationData = z.object({
+  notification_id: z.string(),
+  user_viewing_id: z.string(),
+  router: z.enum([ROUTER_ENUM.CHAT]),
+})
+
+export const voiceCloneNotificationData = z.object({
+  notification_id: z.string(),
+  router: z.enum([ROUTER_ENUM.VOICE_CLONE]),
+})
+
+export const inviteAudienceNotificationData = z.object({
+  notification_id: z.string(),
+  router: z.enum([ROUTER_ENUM.INVITE_AUDIENCE]),
+})
+
+export type PersonalSurveyNotificationData = z.infer<typeof personalSurveyNotificationData>
+export type ChatWithSelfNotificationData = z.infer<typeof chatWithSelfNotificationData>
+export type VoiceCloneNotificationData = z.infer<typeof voiceCloneNotificationData>
+export type InviteAudienceNotificationData = z.infer<typeof inviteAudienceNotificationData>
+
+export type NotificationData =
+  | PersonalSurveyNotificationData
+  | ChatWithSelfNotificationData
+  | VoiceCloneNotificationData
+  | InviteAudienceNotificationData

@@ -23,6 +23,7 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
 
   const sender = useMemo(() => {
     if (config?.icon === 'avatar' && topContainer?.top_container_data) {
+      // @ts-expect-error - todo - fix typings
       return topContainer.top_container_data as SentInvitationData
     }
     return null

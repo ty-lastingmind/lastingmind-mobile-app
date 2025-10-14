@@ -5,7 +5,7 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
-    "ios": "expo run:ios",
+    "ios": "expo run:ios --device",
     "web": "expo start --web",
     "clean:folders": "rm -rf ios && rm -rf android",
     "format:check": "prettier --check '**/*.{ts,tsx,md,json}'",
