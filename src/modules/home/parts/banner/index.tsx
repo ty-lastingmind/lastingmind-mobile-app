@@ -23,7 +23,7 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
 
   const sender = useMemo(() => {
     if (config?.icon === 'avatar' && topContainer?.top_container_data) {
-      return topContainer.top_container_data as SentInvitationData
+      return topContainer.top_container_data as unknown as SentInvitationData
     }
     return null
   }, [config?.icon, topContainer?.top_container_data])

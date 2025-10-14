@@ -1,8 +1,8 @@
-import { Typography } from '~/modules/ui/typography'
+import { Typography, TypographyProps } from '~/modules/ui/typography'
 
-export function Logo() {
+export function Logo({ level = 'h2' }: TypographyProps) {
   return (
-    <Typography level="h2" brand color="accent">
+    <Typography level={level} brand color="accent">
       LM
     </Typography>
   )

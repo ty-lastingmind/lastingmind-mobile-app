@@ -1,6 +1,6 @@
 import { DrawerHeaderProps } from '@react-navigation/drawer'
 import { Link, useRouter } from 'expo-router'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
 import { useBoolean } from 'usehooks-ts'
@@ -10,16 +10,26 @@ import { Avatar } from '~/modules/ui/avatar'
 import { Icon } from '~/modules/ui/icon'
 import { Popover } from '~/modules/ui/popover'
 import { Typography } from '~/modules/ui/typography'
-import { usePullCanChatWithChatPullCanChatWithGet } from '~/services/api/generated'
+import { usePullCanChatWithChatPullCanChatWithGet, usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
 import { CanChatWithItem } from '~/services/api/model'
+import { UserTypeResponseUserType } from '~/services/api/model'
 
-export function Header(props: DrawerHeaderProps) {
+export function Header(props: DrawerHeaderProps & { userType?: UserTypeResponseUserType }) {
   const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
   const isOpen = useBoolean(false)
   const router = useRouter()
   const isChatDetail = props.route.name === 'chat'
   const { measurements, measureElement } = useMeasureElement()
+  const userInfoQuery = usePullUserInfoHomePullUserInfoGet()
   const chattingWithViewId = (props.route.params as { chattingWithViewId?: string })?.chattingWithViewId
+
+  const users = canChatWith.data?.can_chat_with ?? []
+  const hasNoChats = !canChatWith.isLoading && users.length === 0
+  const chattingWithUser = users.find((user) => user.chattingWithViewId === chattingWithViewId)
+
+  const userAvatar = useMemo(() => {
+    return { uri: userInfoQuery?.data?.profile_image }
+  }, [userInfoQuery])
 
   /**
    * Initialize chat with first user
@@ -34,8 +44,11 @@ export function Header(props: DrawerHeaderProps) {
     }
   }, [canChatWith, chattingWithViewId, props.navigation])
 
-  const users = canChatWith.data?.can_chat_with ?? []
-  const chattingWithUser = users.find((user) => user.chattingWithViewId === chattingWithViewId)
+  useEffect(() => {
+    props.navigation.setOptions({
+      swipeEnabled: !hasNoChats,
+    })
+  }, [hasNoChats, props.navigation])
 
   function selectPersonToChat(user: CanChatWithItem) {
     if (isChatDetail) {
@@ -55,11 +68,19 @@ export function Header(props: DrawerHeaderProps) {
     <>
       <View className="pt-safe px-8">
         <View className="h-[72px] relative flex flex-row items-center justify-between">
-          <TouchableOpacity onPress={props.navigation.openDrawer}>
-            <Avatar source={chattingWithUser?.chattingWithImage} />
+          <TouchableOpacity
+            onPress={props.navigation.openDrawer}
+            disabled={hasNoChats}
+            className={hasNoChats ? 'opacity-50' : ''}
+          >
+            {props.userType === 'chat_user' ? (
+              <Icon name="menu" color="accent" size="2xl" />
+            ) : (
+              <Avatar source={chattingWithUser?.chattingWithImage} />
+            )}
           </TouchableOpacity>
           <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
-            {chattingWithUser && (
+            {chattingWithUser ? (
               <Animated.View entering={isChatDetail ? undefined : FadeInUp}>
                 <TouchableOpacity onPress={isOpen.setTrue} className="flex flex-row items-center gap-1">
                   <Typography ref={measureElement} level="h5" brand color="accent">
@@ -68,11 +89,15 @@ export function Header(props: DrawerHeaderProps) {
                   <Icon name="chevron-forward" color="secondary" />
                 </TouchableOpacity>
               </Animated.View>
+            ) : (
+              <Typography ref={measureElement} level="h5" brand color="accent">
+                No Chats Available
+              </Typography>
             )}
           </View>
           <Link asChild href="/(protected)/(tabs)/home">
             <TouchableOpacity>
-              <Logo />
+              {props.userType === 'chat_user' ? <Avatar source={userAvatar} /> : <Logo />}
             </TouchableOpacity>
           </Link>
         </View>
