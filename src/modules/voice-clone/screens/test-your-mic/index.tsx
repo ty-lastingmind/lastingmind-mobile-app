@@ -12,6 +12,7 @@ import {
 } from 'expo-audio'
 import { Icon } from '~/modules/ui/icon'
 import { RecordingWaveVisualization } from '~/modules/questions/screens/parts/recording-wave-visualization'
+import { Link } from 'expo-router'
 
 export function VoiceCloneTestYourMic() {
   const [recordingUri, setRecordingUri] = useState<string | undefined>(undefined)
@@ -98,7 +99,9 @@ export function VoiceCloneTestYourMic() {
           </TouchableOpacity>
         </View>
       </View>
-      <Button>Continue</Button>
+      <Link asChild href="/(protected)/voice-clone/all-set">
+        <Button>Continue</Button>
+      </Link>
     </View>
   )
 }

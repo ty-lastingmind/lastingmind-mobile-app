@@ -3,6 +3,7 @@ import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import InfoList, { ListType } from '../../parts/info-list'
 import { Button } from '~/modules/ui/button'
+import { Link } from 'expo-router'
 
 const stepsList: ListType = [
   {
@@ -36,7 +37,9 @@ export function VoiceCloneBestPractices() {
       <View className="flex-1 py-8 gap-10">
         <InfoList list={stepsList} />
       </View>
-      <Button>Continue</Button>
+      <Link asChild href="/(protected)/voice-clone/questions">
+        <Button>Continue</Button>
+      </Link>
     </View>
   )
 }
