@@ -1,17 +1,18 @@
 import { router } from 'expo-router'
+import { markSuccessNotifcationUtilsSucccessfulNotificationPost } from '~/services/api/generated'
 import { logError, logInfo } from '~/services/logger'
 import { NotificationData, ROUTER_ENUM } from '~/services/notifications/index.schema'
 
 /**
  * Handle navigation based on notification payload
  */
-export function handleNotificationNavigation(data: NotificationData) {
+export async function handleNotificationNavigation(data: NotificationData) {
   try {
     logInfo('navigation', 'Handling notification navigation', data)
 
     switch (data.router) {
       case ROUTER_ENUM.BASIC_INFO:
-        // todo - add handler
+        router.push('/(protected)/onboarding/01-name')
         logInfo('navigation', 'Navigated to basic info screen')
         break
 
@@ -40,10 +41,18 @@ export function handleNotificationNavigation(data: NotificationData) {
         logInfo('navigation', 'Navigated to interview screen')
         break
 
+      case ROUTER_ENUM.CURATED_QUESTIONS:
+        // router.push(`/(protected)/(tabs)/questions/curated-questions?topicName=${data.topic}`)
+        // todo add handler
+        logInfo('navigation', 'Navigated to curated questions screen')
+        break
+
       default:
         logError('navigation', `Unknown notification type: ${screen}`)
         break
     }
+
+    await markSuccessNotifcationUtilsSucccessfulNotificationPost({ notificationId: data.notification_id })
   } catch (error) {
     logError('navigation', 'Error handling notification navigation', error)
   }

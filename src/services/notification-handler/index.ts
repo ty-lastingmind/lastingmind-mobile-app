@@ -5,6 +5,7 @@ import { logError, logInfo } from '~/services/logger'
 import { handleNotificationNavigation } from '~/services/navigation'
 import {
   chatWithSelfNotificationData,
+  curatedQuestionsNotificationData,
   interviewNotificationData,
   inviteAudienceNotificationData,
   journalNotificationData,
@@ -42,6 +43,9 @@ function parseNotificationData(data: Record<string, unknown>): NotificationData 
       case ROUTER_ENUM.INTERVIEW:
         return interviewNotificationData.parse(data)
 
+      case ROUTER_ENUM.CURATED_QUESTIONS:
+        return curatedQuestionsNotificationData.parse(data)
+
       default:
         logError('notification-handler', `Unknown router type: ${router}`)
         return null
@@ -55,10 +59,10 @@ function parseNotificationData(data: Record<string, unknown>): NotificationData 
 /**
  * Handle notification navigation based on validated data
  */
-function handleValidatedNotification(notificationData: NotificationData) {
+async function handleValidatedNotification(notificationData: NotificationData) {
   try {
     logInfo('notification-handler', 'Navigating with data', notificationData)
-    handleNotificationNavigation(notificationData)
+    await handleNotificationNavigation(notificationData)
   } catch (error) {
     logError('notification-handler', 'Error handling validated notification', error)
   }
@@ -70,31 +74,31 @@ function handleValidatedNotification(notificationData: NotificationData) {
 export function initNotificationHandlers() {
   try {
     // Handle notification opened app (when user taps notification)
-    Messaging.onNotificationOpenedApp(messaging, (remoteMessage) => {
+    Messaging.onNotificationOpenedApp(messaging, async (remoteMessage) => {
       logInfo('notification-handler', 'Notification opened app', JSON.stringify(remoteMessage, null, 2))
 
       // Parse and validate notification data using Zod schemas
       const validatedData = parseNotificationData(remoteMessage.data || {})
 
       if (validatedData) {
-        handleValidatedNotification(validatedData)
+        await handleValidatedNotification(validatedData)
       } else {
         logError('notification-handler', 'Failed to validate notification data')
       }
     })
 
     // Handle initial notification (when app is opened from notification)
-    Messaging.getInitialNotification(messaging).then((remoteMessage) => {
+    Messaging.getInitialNotification(messaging).then(async (remoteMessage) => {
       if (remoteMessage) {
         logInfo('notification-handler', 'Initial notification', JSON.stringify(remoteMessage, null, 2))
 
         // Wait for app to be ready before navigating
-        const handleInitialNotification = () => {
+        const handleInitialNotification = async () => {
           // Parse and validate notification data using Zod schemas
           const validatedData = parseNotificationData(remoteMessage.data || {})
 
           if (validatedData) {
-            handleValidatedNotification(validatedData)
+            await handleValidatedNotification(validatedData)
           } else {
             logError('notification-handler', 'Failed to validate initial notification data')
           }
@@ -102,12 +106,14 @@ export function initNotificationHandlers() {
 
         // If app is already active, navigate immediately
         if (AppState.currentState === 'active') {
-          setTimeout(handleInitialNotification, 1000) // Small delay to ensure app is ready
+          setTimeout(async () => {
+            await handleInitialNotification()
+          }, 1000) // Small delay to ensure app is ready
         } else {
           // Wait for app to become active
-          const subscription = AppState.addEventListener('change', (nextAppState) => {
+          const subscription = AppState.addEventListener('change', async (nextAppState) => {
             if (nextAppState === 'active') {
-              handleInitialNotification()
+              await handleInitialNotification()
               subscription?.remove()
             }
           })

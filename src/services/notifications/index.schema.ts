@@ -8,6 +8,7 @@ export const ROUTER_ENUM = {
   INVITE_AUDIENCE: '/invite-audience',
   JOURNAL: '/journal',
   INTERVIEW: '/interview',
+  CURATED_QUESTIONS: '/curated-questions',
 } as const
 
 export type RouterType = (typeof ROUTER_ENUM)[keyof typeof ROUTER_ENUM]
@@ -45,12 +46,19 @@ export const interviewNotificationData = z.object({
   router: z.enum([ROUTER_ENUM.INTERVIEW]),
 })
 
+export const curatedQuestionsNotificationData = z.object({
+  notification_id: z.string(),
+  topic: z.string(),
+  router: z.enum([ROUTER_ENUM.CURATED_QUESTIONS]),
+})
+
 export type PersonalSurveyNotificationData = z.infer<typeof personalSurveyNotificationData>
 export type ChatWithSelfNotificationData = z.infer<typeof chatWithSelfNotificationData>
 export type VoiceCloneNotificationData = z.infer<typeof voiceCloneNotificationData>
 export type InviteAudienceNotificationData = z.infer<typeof inviteAudienceNotificationData>
 export type JournalNotificationData = z.infer<typeof journalNotificationData>
 export type InterviewNotificationData = z.infer<typeof interviewNotificationData>
+export type CuratedQuestionsNotificationData = z.infer<typeof curatedQuestionsNotificationData>
 
 export type NotificationData =
   | PersonalSurveyNotificationData
@@ -59,3 +67,4 @@ export type NotificationData =
   | InviteAudienceNotificationData
   | JournalNotificationData
   | InterviewNotificationData
+  | CuratedQuestionsNotificationData
