@@ -78,4 +78,18 @@ export function VoiceCloneStartPage() {
       </View>
     )
   }
+
+  return (
+    <View className="p-10 flex-1">
+      <View className="gap-4">
+        <Typography brand level="h3">
+          Your Voice Clone is in Progress
+        </Typography>
+        <Typography color="secondary">We will notify you when it is ready</Typography>
+      </View>
+      <View className="items-center justify-center flex-1 mb-12">
+        <SvgIcon name="mic_test" size="logo" color="accent" />
+      </View>
+    </View>
+  )
 }
