@@ -1,9 +1,8 @@
 import { View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
-import { Button } from '~/modules/ui/button'
-import { Icon } from '~/modules/ui/icon'
 import { QuestionsResponseNextQuestionsItem } from '~/services/api/model'
+import RecordControls from '../record-controls'
 
 interface QuestionItemProps {
   question: QuestionsResponseNextQuestionsItem
@@ -15,7 +14,7 @@ export default function QuestionItem({ question: questionItem, questionIndex }: 
 
   return (
     <View className="flex-1 w-screen px-6">
-      <View className="flex-1 gap-2">
+      <View className="gap-2">
         <Typography brand color="accent" level="h5">
           Question {questionIndex + 1}
         </Typography>
@@ -23,8 +22,8 @@ export default function QuestionItem({ question: questionItem, questionIndex }: 
           <Typography level="h5">{question?.question || 'Loading question...'}</Typography>
         </View>
       </View>
-      <View>
-        <Button icon={<Icon name="mic" color="white" />}>Record Answer</Button>
+      <View className="flex-1 justify-end">
+        <RecordControls />
       </View>
     </View>
   )

@@ -1,60 +1,14 @@
-import { Alert, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
-import {
-  AudioModule,
-  RecordingPresets,
-  setAudioModeAsync,
-  useAudioPlayer,
-  useAudioRecorder,
-  useAudioRecorderState,
-} from 'expo-audio'
 import { Icon } from '~/modules/ui/icon'
 import { RecordingWaveVisualization } from '~/modules/questions/screens/parts/recording-wave-visualization'
 import { Link } from 'expo-router'
+import { useRecorder } from '../../hooks/use-recorder'
 
 export function VoiceCloneTestYourMic() {
-  const [recordingUri, setRecordingUri] = useState<string | undefined>(undefined)
-  const audioRecorder = useAudioRecorder({ ...RecordingPresets.HIGH_QUALITY, isMeteringEnabled: true })
-  const recorderState = useAudioRecorderState(audioRecorder)
-
-  const player = useAudioPlayer(recordingUri)
-
-  const setPermission = async () => {
-    const status = await AudioModule.requestRecordingPermissionsAsync()
-    if (!status.granted) {
-      Alert.alert('Permission to access microphone was denied')
-    } else {
-      setAudioModeAsync({
-        playsInSilentMode: true,
-        allowsRecording: true,
-      })
-      await audioRecorder.prepareToRecordAsync()
-    }
-  }
-
-  useEffect(() => {
-    setPermission()
-  }, [])
-
-  const record = () => {
-    audioRecorder.record()
-  }
-
-  const stopRecording = async () => {
-    await audioRecorder.stop()
-    setRecordingUri(audioRecorder.uri || undefined)
-  }
-
-  const playRecording = () => {
-    player.seekTo(0)
-    player.play()
-  }
-
-  const pauseRecording = () => {
-    player.pause()
-  }
+  const { recordingUri, record, stopRecording, play, pause, recorderState, player } = useRecorder()
 
   return (
     <View className="flex-1 p-10">
@@ -70,7 +24,7 @@ export function VoiceCloneTestYourMic() {
         </View>
         <View className="items-center justify-evenly flex-row">
           <TouchableOpacity
-            onPress={player.paused ? playRecording : pauseRecording}
+            onPress={player.paused ? play : pause}
             disabled={!recordingUri}
             className="w-20 h-20 rounded-full items-center justify-center border-2 border-fill-accent mt-4"
           >
@@ -91,7 +45,7 @@ export function VoiceCloneTestYourMic() {
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={player.paused ? playRecording : pauseRecording}
+            onPress={player.paused ? play : pause}
             disabled={!recordingUri}
             className="w-20 h-20 rounded-full items-center justify-center border-2 border-fill-accent mt-4"
           >
