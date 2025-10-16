@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { Notifications } from '~/services'
+import { Notifications, NotificationHandler } from '~/services'
 import { useFirebaseNotificationToken } from '../use-firebase-notification-token'
 
 export function useInitServices() {
@@ -9,6 +9,9 @@ export function useInitServices() {
     await Notifications.initMessaging()
     await updateFcmToken()
     initTokenRefresh()
+
+    // Initialize notification handlers for background/foreground handling
+    NotificationHandler.initNotificationHandlers()
   }, [])
 
   useEffect(() => {

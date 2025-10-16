@@ -1,4 +1,5 @@
-import { Link } from 'expo-router'
+import { Link, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
+import { useCallback } from 'react'
 import { Controller } from 'react-hook-form'
 import { View } from 'react-native'
 import { useInterviewForm } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
@@ -14,6 +15,17 @@ export function SelectTopicScreen() {
   const form = useInterviewForm()
   const topics = usePullSuggestedTopicsUtilsPullSuggestedTopicsGet()
   const { selectedTopic, hasTopic, handleTopicChange, customTopicName } = useHandleSelectTopic(form)
+  const { topicName } = useLocalSearchParams<{ topicName?: string }>()
+  const router = useRouter()
+
+  useFocusEffect(
+    useCallback(() => {
+      if (topicName) {
+        form.setValue('customTopicName', topicName)
+        router.push('/questions/interview/add/02-select-interview-duration')
+      }
+    }, [])
+  )
 
   return (
     <ScreenContainer>

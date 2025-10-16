@@ -14,7 +14,6 @@ export function SavingJournalEntryScreen() {
   useFocusEffect(
     useCallback(() => {
       const formValues = form.getValues()
-
       const date = new Date()
 
       submitJournalEntry.mutate(

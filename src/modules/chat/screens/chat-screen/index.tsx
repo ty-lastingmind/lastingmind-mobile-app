@@ -25,7 +25,7 @@ import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
 
 interface ChatScreenProps {
   chattingWithViewId: string
-  firstMessage: string
+  firstMessage?: string
   conversationId: string
   chatWithUser: CanChatWithItem
   uid: string
@@ -49,6 +49,8 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
   }
 
   const handleStartConversation = () => {
+    if (!firstMessage) return
+
     sendMessage.mutate({
       data: {
         chattingWithViewId: chattingWithViewId,

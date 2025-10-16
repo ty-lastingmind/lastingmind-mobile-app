@@ -1,4 +1,4 @@
 export type SearchParams = {
   chattingWithViewId: string
-  firstMessage: string
+  firstMessage?: string
 }
