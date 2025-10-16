@@ -9,9 +9,10 @@ import { formatDate } from '~/utils/date'
 type PastEntriesListProps = {
   entries: (HighLevelPastEntry | ConversationSession)[]
   type: 'journal' | 'interview' | 'conversation'
+  chattingWithViewId: string | null
 }
 
-export function PastEntriesList({ entries, type }: PastEntriesListProps) {
+export function PastEntriesList({ entries, type, chattingWithViewId }: PastEntriesListProps) {
   const title = useMemo(() => {
     if (type === 'journal') return 'Past Entries'
     if (type === 'interview') return 'Past Interviews'
@@ -24,7 +25,7 @@ export function PastEntriesList({ entries, type }: PastEntriesListProps) {
       <View className="h-px bg-miscellaneous-topic-stroke mb-4" />
       {type === 'conversation' && (
         <>
-          <Link href="/chats" asChild>
+          <Link href={`/chats?chattingWithViewId=${chattingWithViewId}`} asChild>
             <TouchableOpacity className="flex flex-row items-center gap-4 mx-10 mb-4">
               <Typography color="accent" level="body-lg" brand>
                 New Chat
@@ -42,7 +43,7 @@ export function PastEntriesList({ entries, type }: PastEntriesListProps) {
             {title}
           </Typography>
         )}
-        contentContainerClassName="gap-2"
+        contentContainerClassName="gap-6"
         className="mx-10 mb-5"
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (

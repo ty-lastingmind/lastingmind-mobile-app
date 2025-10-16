@@ -1,6 +1,13 @@
 import { TopContainerTopContainer } from '~/services/api/model'
 import { BannerConfig } from '../types'
 
+export const FALLBACK_BANNER_CONFIG: BannerConfig = {
+  icon: 'question',
+  text: 'Continue where you left off on curated questions',
+  buttonText: 'Continue',
+  route: '/questions/curated-questions',
+}
+
 export const bannerConfigToData: Record<TopContainerTopContainer, BannerConfig> = {
   // Progress ring banners
   [TopContainerTopContainer.continue_questions_1]: {
@@ -39,11 +46,13 @@ export const bannerConfigToData: Record<TopContainerTopContainer, BannerConfig> 
     icon: 'todo_list',
     text: 'Get started by completing a quick survey on your basic personal information!',
     buttonText: 'Get Started',
+    route: '/basic-info/01-home',
   },
   [TopContainerTopContainer.continue_survey_1]: {
     icon: 'todo_list',
     text: "You're close to finishing your basic personal survey! Keep going!",
     buttonText: 'Continue',
+    route: '/basic-info/01-home',
   },
 
   // Avatar banners
@@ -56,6 +65,7 @@ export const bannerConfigToData: Record<TopContainerTopContainer, BannerConfig> 
     icon: 'avatar',
     text: (senderName) => `${senderName} has invited you to join her audience! Try chatting with ${senderName}!`,
     buttonText: (senderName) => `Chat with ${senderName}`,
+    route: (chattingWithViewId) => `/chats/chat/${chattingWithViewId}`,
   },
 
   // Feature banners
@@ -63,6 +73,7 @@ export const bannerConfigToData: Record<TopContainerTopContainer, BannerConfig> 
     icon: 'chat_bubble_outline',
     text: 'Your LastingMind continues to get better! Go try it out!',
     buttonText: 'Continue',
+    route: '/chats',
   },
   [TopContainerTopContainer.invite_audience_1]: {
     icon: 'audience',
@@ -73,10 +84,12 @@ export const bannerConfigToData: Record<TopContainerTopContainer, BannerConfig> 
     icon: 'interview_table',
     text: 'People are loving the interview feature! Try it out!',
     buttonText: 'Record an Interview',
+    route: '/questions/interview/add/01-select-topic',
   },
   [TopContainerTopContainer.journal_1]: {
     icon: 'journal',
     text: 'The journaling feature is very popular right now! Try it out!',
     buttonText: 'Record a Journal Entry',
+    route: '/questions/journal/add/01-select-topic',
   },
 }

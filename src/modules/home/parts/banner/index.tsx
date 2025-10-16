@@ -6,7 +6,7 @@ import { Typography } from '~/modules/ui/typography'
 import { SentInvitationData, TopContainer } from '~/services/api/model'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Avatar } from '~/modules/ui/avatar'
-import { bannerConfigToData } from '../../constants/banner-config'
+import { bannerConfigToData, FALLBACK_BANNER_CONFIG } from '../../constants/banner-config'
 import { useRouter } from 'expo-router'
 
 interface BannerProps {
@@ -18,13 +18,12 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
   const router = useRouter()
   const config = useMemo(() => {
     const containerType = topContainer?.top_container
-    return containerType ? bannerConfigToData[containerType] : null
+    return containerType ? bannerConfigToData[containerType] : FALLBACK_BANNER_CONFIG
   }, [topContainer?.top_container])
 
   const sender = useMemo(() => {
     if (config?.icon === 'avatar' && topContainer?.top_container_data) {
-      // @ts-expect-error - todo - fix typings
-      return topContainer.top_container_data as SentInvitationData
+      return topContainer.top_container_data as unknown as SentInvitationData
     }
     return null
   }, [config?.icon, topContainer?.top_container_data])
@@ -53,6 +52,8 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
       audience: <SvgIcon name="audience" size="4xl" color="white" />,
       interview_table: <SvgIcon name="interview_table" size="4xl" color="white" />,
       journal: <SvgIcon name="journal" size="4xl" color="white" />,
+      curated_questions: <SvgIcon name="curated_questions" size="4xl" color="white" />,
+      question: <SvgIcon name="question" size="4xl" color="white" />,
     }
   }, [progressPercent, sender?.profile_image])
 
@@ -63,8 +64,13 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
       return
     }
 
+    if (typeof route === 'function') {
+      router.navigate(route(sender?.who_sent_view_id ?? ''))
+      return
+    }
+
     router.navigate(route)
-  }, [config?.route, router])
+  }, [config?.route, router, sender?.who_sent_view_id])
 
   return (
     <View className="bg-fill-accent rounded-md p-4 pt-8 gap-8">

@@ -6,15 +6,17 @@ interface SkippedAllQuestionsOverlayProps {
   isOpen: boolean
   onNewTopic: () => void
   onGenerateNewQuestions: () => void
+  onClose: () => void
 }
 
 export function SkippedAllQuestionsOverlay({
   isOpen,
   onNewTopic,
   onGenerateNewQuestions,
+  onClose,
 }: SkippedAllQuestionsOverlayProps) {
   return (
-    <Dialog isOpen={isOpen} className="w-full gap-6 py-8 px-8">
+    <Dialog isOpen={isOpen} className="w-full gap-6 py-8 px-8" onClose={onClose}>
       <Typography level="h4" weight="normal" color="primary" className="text-center">
         You skipped all the curated questions would you like to move onto a new topic or generate new ones?
       </Typography>

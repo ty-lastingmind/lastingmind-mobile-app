@@ -1,7 +1,7 @@
 import { View, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
 import { Progress } from '~/modules/ui/progress'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 import { CuratedQuestionItem } from '../parts/curated-question-item'
 import { QuestionProvider, useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { RecordingProvider } from '../../contexts/recording-context'
@@ -20,7 +20,6 @@ export function CuratedQuestionsScreen() {
 }
 
 const CuratedQuestionsContent = () => {
-  const flatListRef = useRef<FlatList>(null)
   const navigation = useNavigation()
 
   const {
@@ -30,13 +29,16 @@ const CuratedQuestionsContent = () => {
     isSavingQuestion,
     isGeneratingQuestions,
     isSavingAnswer,
+    isGeneratingStartingQuestions,
     showSuccessScreen,
     handleQuestionIndexChange,
     hasSkippedAllQuestions,
     handleSkippedAllQuestions,
     handleNewTopicPress,
     handleGenerateNewQuestionsPress,
+    handleCloseSkippedAllQuestionsOverlay,
     isTopicPickerOpen,
+    flatListRef,
   } = useQuestionContext()
 
   useEffect(() => {
@@ -52,7 +54,7 @@ const CuratedQuestionsContent = () => {
       flatListRef.current?.scrollToIndex({ index: newIndex, animated: true })
       handleSkippedAllQuestions(false)
     }
-  }, [currentQuestionIndex, handleQuestionIndexChange, handleSkippedAllQuestions])
+  }, [currentQuestionIndex, flatListRef, handleQuestionIndexChange, handleSkippedAllQuestions])
 
   const handleNextPress = useCallback(() => {
     if (currentQuestionIndex < nextQuestions.length - 1) {
@@ -64,7 +66,7 @@ const CuratedQuestionsContent = () => {
     }
 
     handleSkippedAllQuestions(true)
-  }, [currentQuestionIndex, nextQuestions.length, handleSkippedAllQuestions, handleQuestionIndexChange])
+  }, [currentQuestionIndex, nextQuestions.length, handleSkippedAllQuestions, handleQuestionIndexChange, flatListRef])
 
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: Array<{ index: number | null }> }) => {
@@ -79,7 +81,7 @@ const CuratedQuestionsContent = () => {
     itemVisiblePercentThreshold: 50,
   }
 
-  if (isGeneratingQuestions || isSavingQuestion) {
+  if (isGeneratingQuestions || isSavingQuestion || isGeneratingStartingQuestions) {
     return (
       <View className="flex-1 justify-center items-center bg-bg-primary">
         <ActivityIndicator className="text-accent" size="large" />
@@ -140,6 +142,7 @@ const CuratedQuestionsContent = () => {
         isOpen={hasSkippedAllQuestions}
         onNewTopic={handleNewTopicPress}
         onGenerateNewQuestions={handleGenerateNewQuestionsPress}
+        onClose={handleCloseSkippedAllQuestionsOverlay}
       />
       <TopicPickerOverlay isOpen={isTopicPickerOpen} />
     </View>

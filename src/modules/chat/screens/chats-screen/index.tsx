@@ -1,4 +1,4 @@
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
+import { useFocusEffect, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
@@ -11,13 +11,13 @@ import { StartingPrompts } from '~/modules/chat/screens/chats-screen/parts/start
 import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
 import {
-  usePullCanChatWithChatPullCanChatWithGet,
   usePullStartingPromptsChatPullStartingPromptsGet,
   usePullUserInfoHomePullUserInfoGet,
   useRefineTextUtilsRefineTextPost,
 } from '~/services/api/generated'
 import { SearchParams } from '../../index.types'
 import { ScrollView } from 'react-native-gesture-handler'
+import { useChatContext } from '../../hooks/use-chat-context'
 
 export function ChatsScreen() {
   const router = useRouter()
@@ -26,10 +26,10 @@ export function ChatsScreen() {
       question: '',
     },
   })
-  const { chattingWithViewId } = useLocalSearchParams<{ chattingWithViewId?: string }>()
   const { audioRecorder, recordingControls } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
   const userQuery = usePullUserInfoHomePullUserInfoGet()
   const refineText = useRefineTextUtilsRefineTextPost()
+  const { chattingWithUser, chattingWithViewId } = useChatContext()
   const showPrompts = useBoolean(true)
   const startingPrompts = usePullStartingPromptsChatPullStartingPromptsGet(
     {
@@ -45,12 +45,6 @@ export function ChatsScreen() {
     }
   )
 
-  const canChatWith = usePullCanChatWithChatPullCanChatWithGet({
-    query: {
-      enabled: Boolean(chattingWithViewId),
-    },
-  })
-
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -58,8 +52,6 @@ export function ChatsScreen() {
       }
     }, [])
   )
-
-  const chatWithUser = canChatWith.data?.can_chat_with.find((user) => user.chattingWithViewId === chattingWithViewId)
 
   async function handleSendAudioMessage() {
     await recordingControls.stopRecording()
@@ -85,11 +77,11 @@ export function ChatsScreen() {
   }
 
   function handleSendTextMessage() {
-    if (!chatWithUser) return
+    if (!chattingWithUser) return
     const question = form.getValues('question')
 
     const searchParams: SearchParams = {
-      chattingWithViewId: chatWithUser.chattingWithViewId,
+      chattingWithViewId: chattingWithUser.chattingWithViewId,
       firstMessage: question,
     }
 
@@ -108,12 +100,12 @@ export function ChatsScreen() {
       bounces={false}
     >
       <View className="mx-auto">
-        <Avatar isLoading={!chatWithUser} src={chatWithUser?.chattingWithImage} />
+        <Avatar isLoading={!chattingWithUser} src={chattingWithUser?.chattingWithImage} />
       </View>
       {showPrompts.value && (
         <StartingPrompts form={form} prompts={prompts} onPromptPress={(prompt) => form.setValue('question', prompt)} />
       )}
-      {chatWithUser && Boolean(prompts.length) && (
+      {chattingWithUser && Boolean(prompts.length) && (
         <KeyboardAvoidingView behavior="padding" className="px-8 pt-4" keyboardVerticalOffset={150}>
           <Animated.View className="pb-3" entering={FadeInDown.delay(prompts.length * 100)}>
             <Controller
