@@ -18,8 +18,7 @@ export function ProfileScreen() {
       <UserDiscussedTopics />
       <UserPersonalInfo />
 
-      {/* dev options - should stay at the bottom and hidden in staging/prod  */}
-      {__DEV__ && <DeveloperProfileScreen />}
+      <DeveloperProfileScreen />
     </ScrollView>
   )
 }
