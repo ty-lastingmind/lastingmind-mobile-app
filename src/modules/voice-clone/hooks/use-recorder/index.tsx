@@ -9,6 +9,8 @@ import {
   useAudioRecorderState,
 } from 'expo-audio'
 import * as FileSystem from 'expo-file-system'
+import { useUploadAndTranscribeAudioMessage } from '~/modules/questions/hooks/use-upload-and-transcribe-audio-message'
+import { VOICE_CLONE_FOLDER_NAME } from '~/constants/storage'
 
 export function useRecorder() {
   const [recordingUri, setRecordingUri] = useState<string | undefined>(undefined)
@@ -17,6 +19,7 @@ export function useRecorder() {
   const recorderState = useAudioRecorderState(audioRecorder, 100)
 
   const player = useAudioPlayer(recordingUri)
+  const uploader = useUploadAndTranscribeAudioMessage(VOICE_CLONE_FOLDER_NAME)
 
   const setPermission = async () => {
     const status = await AudioModule.requestRecordingPermissionsAsync()
@@ -80,5 +83,6 @@ export function useRecorder() {
     recorderState,
     player,
     cleanupRecording,
+    uploader,
   }
 }

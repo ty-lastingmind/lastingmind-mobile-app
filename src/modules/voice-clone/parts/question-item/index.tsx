@@ -23,7 +23,7 @@ export default function QuestionItem({ question: questionItem, questionIndex }: 
         </View>
       </View>
       <View className="flex-1 justify-end">
-        <RecordControls />
+        <RecordControls question={question.question} />
       </View>
     </View>
   )

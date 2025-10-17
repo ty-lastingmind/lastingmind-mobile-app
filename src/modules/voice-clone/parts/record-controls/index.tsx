@@ -1,16 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useBoolean } from 'usehooks-ts'
 import { useRecorder } from '../../hooks/use-recorder'
 import { RecordingState } from '~/modules/questions/screens/parts/recording-controls/parts/recording-state'
 import { Button } from '~/modules/ui/button'
 import { Icon } from '~/modules/ui/icon'
 import { RecordingStopped } from './parts/recording-stopped'
+import AnswerTranscription from '../answer-transcription'
 
-export default function RecordControls() {
+interface RecordControlsProps {
+  question: string
+}
+
+export default function RecordControls({ question }: RecordControlsProps) {
   const { value: recordingStarted, setTrue: startRecording } = useBoolean(false)
+  const { value: transcriptionOpened, setTrue: openTranscription, setFalse: closeTranscription } = useBoolean(false)
   const { value: recordingStopped, setTrue: finishRecording, setFalse: restartRecording } = useBoolean(false)
 
-  const { record, stopRecording, pauseRecording, recorderState, cleanupRecording, player, play, pause } = useRecorder()
+  const [transcription, setTranscription] = useState('')
+
+  const {
+    record,
+    stopRecording,
+    pauseRecording,
+    recorderState,
+    cleanupRecording,
+    player,
+    play,
+    pause,
+    uploader,
+    recordingUri,
+  } = useRecorder()
 
   const handleRecord = () => {
     startRecording()
@@ -27,6 +46,17 @@ export default function RecordControls() {
 
   const handleSubmit = () => {}
 
+  const handleOpenTranscription = () => {
+    if (recordingUri) {
+      uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
+        onSuccess(data) {
+          setTranscription(data.transcript)
+          openTranscription()
+        },
+      })
+    }
+  }
+
   const handleRecordAgain = () => {
     cleanupRecording().then(() => {
       restartRecording()
@@ -36,13 +66,23 @@ export default function RecordControls() {
 
   if (recordingStopped) {
     return (
-      <RecordingStopped
-        onSubmit={handleSubmit}
-        onRecordAgain={handleRecordAgain}
-        player={player}
-        play={play}
-        pause={pause}
-      />
+      <>
+        <RecordingStopped
+          onSubmit={handleSubmit}
+          onRecordAgain={handleRecordAgain}
+          onOpenTranscription={handleOpenTranscription}
+          player={player}
+          play={play}
+          pause={pause}
+          isTranscriptionLoading={uploader.uploadAndTranscribeAudioMessage.isPending}
+        />
+        <AnswerTranscription
+          question={question}
+          transcription={transcription}
+          isOpen={transcriptionOpened}
+          onClose={closeTranscription}
+        />
+      </>
     )
   }
 
