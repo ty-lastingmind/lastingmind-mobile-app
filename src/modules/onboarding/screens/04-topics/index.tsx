@@ -1,11 +1,10 @@
-import { Alert, View } from 'react-native'
+import { Alert, ScrollView, View } from 'react-native'
 import React, { useState } from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { TopicButton, TopicsList } from '../../parts/TopicsList'
 import { Button } from '~/modules/ui/button'
 import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 import CustomTopicModal from '../../parts/CustomTopicModal'
-import { ScrollView } from 'react-native-gesture-handler'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import {
   useInitializeUserOnboardingInitializeUserPost,

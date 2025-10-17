@@ -62,6 +62,7 @@ const plugins: ExpoConfig['plugins'] = [
     {
       ios: {
         useFrameworks: 'static',
+        forceStaticLinking: ['RNFBApp'],
       },
     },
   ],

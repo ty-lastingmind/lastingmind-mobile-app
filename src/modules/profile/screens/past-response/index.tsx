@@ -10,7 +10,7 @@ import {
   usePullCanChatWithChatPullCanChatWithGet,
   usePullFilteredResponsesViewAnswerPullFilteredAnswersPost,
 } from '~/services/api/generated'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native'
 import { format } from 'date-fns'
 import { FilterBadge } from '../../parts/past-responses/filter-badge'
 import { useBoolean, useDebounceCallback } from 'usehooks-ts'

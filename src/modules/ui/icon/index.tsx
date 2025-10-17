@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { cssInterop } from 'nativewind'
 import { useMemo } from 'react'
 import { variants } from '~/modules/ui/icon/index.styles'

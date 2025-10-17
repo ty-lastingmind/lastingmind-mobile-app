@@ -18,7 +18,7 @@ import {
   useRefineTextUtilsRefineTextPost,
 } from '~/services/api/generated'
 import { SearchParams } from '../../index.types'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native'
 import { useChatContext } from '../../hooks/use-chat-context'
 import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'

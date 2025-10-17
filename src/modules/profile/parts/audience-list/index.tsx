@@ -4,7 +4,7 @@ import { Avatar } from '~/modules/ui/avatar'
 import { Typography } from '~/modules/ui/typography'
 import { AudienceMembersResponse } from '~/services/api/model'
 import { Icon } from '~/modules/ui/icon'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native'
 
 interface AudienceListProps {
   audienceInfo: AudienceMembersResponse
