@@ -1,21 +1,19 @@
-import { Drawer } from 'expo-router/drawer'
+import { Stack } from 'expo-router'
 import { Header } from '~/modules/chat/screens/chats-screen/parts/header'
-import { DrawerJournal } from '~/modules/components/drawer/parts/drawer-journal'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
 export default function Layout() {
   const colors = useTailwindColors()
 
   return (
-    <Drawer
+    <Stack
       screenOptions={{
         headerTitle: 'Chat',
         header: (props) => <Header {...props} />,
-        sceneStyle: {
+        contentStyle: {
           backgroundColor: colors['bg-primary'],
         },
       }}
-      drawerContent={(props) => <DrawerJournal {...props} />}
     />
   )
 }

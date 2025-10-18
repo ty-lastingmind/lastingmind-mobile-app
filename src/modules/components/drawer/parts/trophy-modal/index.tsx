@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import { Progress } from '~/modules/ui/progress'
 import { Typography } from '~/modules/ui/typography'
-import { Stats } from '~/services/api/model/stats'
+import { Stats } from '~/services/api/model'
 
 interface TrophyModalProps {
   stats?: Stats

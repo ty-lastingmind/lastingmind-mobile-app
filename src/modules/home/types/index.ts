@@ -8,6 +8,8 @@ export type BannerIconType =
   | 'audience'
   | 'interview_table'
   | 'journal'
+  | 'curated_questions'
+  | 'question'
 
 export interface ProgressBannerConfig {
   icon: 'progress'
@@ -20,7 +22,7 @@ export interface SenderBannerConfig {
   icon: 'avatar'
   text: (senderName: string) => string
   buttonText: (senderName: string) => string
-  route?: Href
+  route?: (chattingWithViewId: string) => Href
 }
 
 export interface SimpleBannerConfig {

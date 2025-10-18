@@ -1,12 +1,20 @@
-import { createContext, useCallback, useContext, useMemo, useState, useEffect } from 'react'
-import { Alert } from 'react-native'
+import { useLocalSearchParams } from 'expo-router'
+import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef } from 'react'
+import { Alert, FlatList } from 'react-native'
 import {
   useSaveQuestionCuratedQuestionsAddSavedQuestionPost,
   useGenerateContinuedQuestionsCuratedQuestionsContinueQuestionsPost,
   usePullUserInfoHomePullUserInfoGet,
   useSubmitAnswerCuratedQuestionsSubmitAnswerPost,
+  useGenerateStartingQuestionsCuratedQuestionsGenerateStartingQuestionsPost,
 } from '~/services/api/generated'
-import { StarterQuestionsResponseNextQuestionsItem, SubmitQuestionInput } from '~/services/api/model'
+import {
+  QuestionDetail,
+  SavedQuestionsOutputSavedQuestionsAnyOfItem,
+  StarterQuestionsResponseNextQuestionsItem,
+  SubmitAnswerResponse,
+  SubmitQuestionInput,
+} from '~/services/api/model'
 
 const SUCCESS_SCREEN_DURATION = 3000
 
@@ -26,6 +34,7 @@ interface QuestionState {
   isAnswerSaved: boolean
   isSavingQuestion: boolean
   isGeneratingQuestions: boolean
+  isGeneratingStartingQuestions: boolean
   isTopicPickerOpen: boolean
   showSuccessScreen: boolean
   hasSkippedAllQuestions: boolean
@@ -38,6 +47,8 @@ interface QuestionData {
   currentQuestionIndex: number
   questionsProgress: number
   currentQuestion: CurrentQuestion | null
+  topicProgress: number
+  flatListRef: React.RefObject<FlatList | null>
 }
 
 interface QuestionActions {
@@ -45,7 +56,7 @@ interface QuestionActions {
   handleQuestionIndexChange: (index: number) => void
   handleViewTranscription: () => void
   handleSaveForLater: () => void
-  handleSubmitAnswer: (data: Omit<SubmitQuestionInput, 'userFullName'>) => void
+  handleSubmitAnswer: (data: Omit<SubmitQuestionInput, 'userFullName'>, callback?: () => void) => void
   handleNewTopicPress: () => void
   handleGenerateNewQuestionsPress: () => void
   handleCloseSubmittingOverlay: () => void
@@ -55,6 +66,7 @@ interface QuestionActions {
   handleCloseWriteAnswerOverlay: () => void
   handleCloseTopicPicker: () => void
   handleSaveNewTopic: (topic: string) => void
+  handleCloseSkippedAllQuestionsOverlay: () => void
 }
 
 interface QuestionContextValue extends QuestionState, QuestionData, QuestionActions {}
@@ -65,10 +77,12 @@ const QuestionContext = createContext<QuestionContextValue>({
   isWritingAnswer: false,
   isAnswerSaved: false,
   isTopicPickerOpen: false,
+  isGeneratingStartingQuestions: false,
   showSuccessScreen: false,
   nextQuestions: [],
   currentQuestionIndex: 0,
   questionsProgress: 0,
+  topicProgress: 0,
   isSavingQuestion: false,
   isGeneratingQuestions: false,
   isSavingAnswer: false,
@@ -76,6 +90,7 @@ const QuestionContext = createContext<QuestionContextValue>({
   currentQuestion: null,
   hasError: false,
   errorMessage: null,
+  flatListRef: { current: null },
   handleSkippedAllQuestions: () => {},
   handleQuestionIndexChange: () => {},
   handleViewTranscription: () => {},
@@ -90,6 +105,7 @@ const QuestionContext = createContext<QuestionContextValue>({
   handleCloseWriteAnswerOverlay: () => {},
   handleSaveNewTopic: () => {},
   handleCloseTopicPicker: () => {},
+  handleCloseSkippedAllQuestionsOverlay: () => {},
 })
 
 export const QuestionProvider = ({ children }: { children: React.ReactNode }) => {
@@ -101,6 +117,7 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
     isAnswerSaved: false,
     isSavingQuestion: false,
     isGeneratingQuestions: false,
+    isGeneratingStartingQuestions: false,
     isTopicPickerOpen: false,
     showSuccessScreen: false,
     hasSkippedAllQuestions: false,
@@ -110,7 +127,12 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
 
   const [nextQuestions, setNextQuestions] = useState<StarterQuestionsResponseNextQuestionsItem[]>([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [topicProgress, setTopicProgress] = useState(0)
   const [selectedTopic, setSelectedTopic] = useState('')
+  const flatListRef = useRef<FlatList>(null)
+  const isInitialRender = useRef(false)
+  const hasProcessedNewQuestion = useRef(false)
+  const { newQuestion } = useLocalSearchParams<{ newQuestion?: string }>()
 
   const user = usePullUserInfoHomePullUserInfoGet()
   const { mutate: saveQuestion, isPending: isSavingQuestion } = useSaveQuestionCuratedQuestionsAddSavedQuestionPost()
@@ -121,6 +143,8 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
   } = useSubmitAnswerCuratedQuestionsSubmitAnswerPost()
   const { mutate: generateContinuedQuestions, isPending: isGeneratingQuestions } =
     useGenerateContinuedQuestionsCuratedQuestionsContinueQuestionsPost()
+  const { mutate: generateStartingQuestions, isPending: isGeneratingStartingQuestions } =
+    useGenerateStartingQuestionsCuratedQuestionsGenerateStartingQuestionsPost()
 
   const currentQuestion = useMemo((): CurrentQuestion | null => {
     const questionItem = nextQuestions[currentQuestionIndex]
@@ -158,37 +182,99 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
     setState((prev) => ({ ...prev, hasError: false, errorMessage: null }))
   }, [])
 
-  const generateQuestions = useCallback(
-    (topic: string, onSuccess?: () => void) => {
-      if (!user.data) return
+  const generateQuestions = useCallback(() => {
+    if (!user.data) return
 
-      clearError()
+    clearError()
 
-      generateContinuedQuestions(
-        {
-          data: {
-            userFullName: user.data.full_user_name,
-            topic,
-          },
+    generateContinuedQuestions(
+      {
+        data: {
+          userFullName: user.data.full_user_name,
+          topic: '',
         },
-        {
-          onSuccess(data) {
-            setNextQuestions(data.next_questions)
-            onSuccess?.()
-          },
-          onError(error) {
-            handleError(error, 'generating questions')
-          },
-        }
-      )
-    },
-    [clearError, generateContinuedQuestions, handleError, user.data]
-  )
+      },
+      {
+        onSuccess(data) {
+          setNextQuestions(data.next_questions)
+          setTopicProgress(data.progress_percent)
+        },
+        onError(error) {
+          handleError(error, 'generating questions')
+        },
+      }
+    )
+  }, [clearError, generateContinuedQuestions, handleError, user.data])
+
+  const generateNewQuestions = useCallback(() => {
+    if (!user.data) return
+
+    clearError()
+
+    generateStartingQuestions(
+      {
+        data: {
+          userFullName: user.data.full_user_name,
+          topic: selectedTopic,
+        },
+      },
+      {
+        onSuccess(data) {
+          setNextQuestions(data.next_questions)
+          setState((prev) => ({ ...prev, hasSkippedAllQuestions: false }))
+          setTopicProgress(data.progress_percent)
+        },
+        onError(error) {
+          handleError(error, 'generating questions')
+        },
+      }
+    )
+  }, [clearError, generateStartingQuestions, handleError, selectedTopic, user.data])
 
   useEffect(() => {
-    if (!user.data) return
-    generateQuestions(selectedTopic)
-  }, [generateQuestions, user.data, selectedTopic])
+    if (newQuestion && !hasProcessedNewQuestion.current && nextQuestions.length > 0) {
+      hasProcessedNewQuestion.current = true
+      const parsedQuestion: SavedQuestionsOutputSavedQuestionsAnyOfItem = JSON.parse(newQuestion)
+
+      // Get the responseId (key) and question data (value)
+      const responseId = Object.keys(parsedQuestion)[0]
+      const questionData: QuestionDetail = parsedQuestion[responseId]
+
+      // Transform the question to have the saved_question category
+      const transformedQuestion: StarterQuestionsResponseNextQuestionsItem = {
+        [responseId]: {
+          ...questionData,
+          question_cat: 'saved_question',
+        },
+      }
+
+      // Add to front of questions array
+      setNextQuestions([transformedQuestion, ...nextQuestions])
+      setCurrentQuestionIndex(0)
+      flatListRef.current?.scrollToIndex({ index: 0, animated: false })
+    }
+  }, [newQuestion, nextQuestions])
+
+  // Reset the ref when leaving the screen
+  useEffect(() => {
+    return () => {
+      hasProcessedNewQuestion.current = false
+    }
+  }, [])
+
+  // Generate new questions when topic is selected
+  useEffect(() => {
+    if (!user.data || !selectedTopic.length) return
+    generateNewQuestions()
+  }, [generateNewQuestions, user.data, selectedTopic])
+
+  // Generate initial questions when component mounts
+  useEffect(() => {
+    // this should render only once when the component mounts
+    if (isInitialRender.current) return
+    isInitialRender.current = true
+    generateQuestions()
+  }, [generateQuestions])
 
   useEffect(() => {
     if (state.hasError && state.errorMessage) {
@@ -213,15 +299,18 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
     })
   }, [currentQuestion, saveQuestion])
 
-  const handleShowSuccessScreen = useCallback(() => {
+  const handleShowSuccessScreen = useCallback((data: SubmitAnswerResponse) => {
     setState((prev) => ({ ...prev, showSuccessScreen: true }))
+    setNextQuestions(data.next_questions)
+    setCurrentQuestionIndex(0)
+    setTopicProgress(data.progress_percent)
     setTimeout(() => {
       setState((prev) => ({ ...prev, showSuccessScreen: false }))
     }, SUCCESS_SCREEN_DURATION)
   }, [])
 
   const handleSubmitAnswer = useCallback(
-    (data: Omit<SubmitQuestionInput, 'userFullName'>) => {
+    (data: Omit<SubmitQuestionInput, 'userFullName'>, callback?: () => void) => {
       if (!user.data) {
         return
       }
@@ -233,11 +322,17 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
           },
         },
         {
-          onSuccess: handleShowSuccessScreen,
+          onSuccess: (data) => {
+            handleShowSuccessScreen(data)
+            callback?.()
+          },
+          onError(error) {
+            handleError(error, 'submitting answer')
+          },
         }
       )
     },
-    [submitAnswer, handleShowSuccessScreen, user.data]
+    [submitAnswer, handleShowSuccessScreen, handleError, user.data]
   )
 
   const handleCloseSubmittingOverlay = useCallback(() => {
@@ -285,10 +380,12 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
   }, [])
 
   const handleGenerateNewQuestionsPress = useCallback(() => {
-    generateQuestions(selectedTopic, () => {
-      setState((prev) => ({ ...prev, hasSkippedAllQuestions: false }))
-    })
-  }, [generateQuestions, selectedTopic])
+    generateNewQuestions()
+  }, [generateNewQuestions])
+
+  const handleCloseSkippedAllQuestionsOverlay = useCallback(() => {
+    setState((prev) => ({ ...prev, hasSkippedAllQuestions: false }))
+  }, [])
 
   const stateValues = useMemo(
     () => ({
@@ -310,8 +407,10 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
       currentQuestionIndex,
       questionsProgress,
       currentQuestion,
+      topicProgress,
+      flatListRef,
     }),
-    [nextQuestions, currentQuestionIndex, questionsProgress, currentQuestion]
+    [nextQuestions, currentQuestionIndex, questionsProgress, currentQuestion, topicProgress]
   )
 
   const apiStates = useMemo(
@@ -320,8 +419,9 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
       isSavingAnswer,
       isSavingQuestion,
       isGeneratingQuestions,
+      isGeneratingStartingQuestions,
     }),
-    [isAnswerSaved, isSavingAnswer, isSavingQuestion, isGeneratingQuestions]
+    [isAnswerSaved, isSavingAnswer, isSavingQuestion, isGeneratingQuestions, isGeneratingStartingQuestions]
   )
 
   const actions = useMemo(
@@ -340,6 +440,7 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
       handleCloseWriteAnswerOverlay,
       handleCloseTopicPicker: () => setState((prev) => ({ ...prev, isTopicPickerOpen: false })),
       handleSaveNewTopic,
+      handleCloseSkippedAllQuestionsOverlay,
     }),
     [
       handleSkippedAllQuestions,
@@ -354,6 +455,7 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
       handleCloseEditOverlay,
       handleCloseWriteAnswerOverlay,
       handleSaveNewTopic,
+      handleCloseSkippedAllQuestionsOverlay,
     ]
   )
 

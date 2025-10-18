@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
 import { useAudioMessage } from '../use-audio-message'
-import { useUploadAndTranscribeAudioMessage } from '../use-upload-and-transcribe-audio-message'
 import { CURATED_CUESTIONS_FOLDER_NAME } from '~/constants/storage'
 import { useBoolean } from 'usehooks-ts'
 import { useAudioRecorderState } from 'expo-audio'
@@ -11,7 +10,6 @@ export function useRecordingAnswer() {
   const isUploadingAnswer = useBoolean()
 
   const { audioRecorder, recordingControls, uploader } = useAudioMessage(CURATED_CUESTIONS_FOLDER_NAME)
-  const { status: uploaderStatus } = useUploadAndTranscribeAudioMessage(CURATED_CUESTIONS_FOLDER_NAME)
   const { isRecording, durationMillis, metering } = useAudioRecorderState(audioRecorder)
 
   const startRecording = useCallback(async () => {
@@ -59,7 +57,7 @@ export function useRecordingAnswer() {
     durationMillis,
     metering,
     audioRecorder,
-    uploaderStatus,
+    uploaderStatus: uploader.status,
     audioUrl,
     isUploadingAnswer: isUploadingAnswer.value,
     handleAnswerChange: setAnswer,

@@ -1,5 +1,4 @@
-import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
-import { DrawerHeaderProps } from '@react-navigation/drawer'
+import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import { Link } from 'expo-router'
 import { useCallback } from 'react'
 import { TouchableOpacity, View } from 'react-native'
@@ -8,16 +7,20 @@ import { Avatar } from '~/modules/ui/avatar'
 import { Typography } from '~/modules/ui/typography'
 import { ImageSrc } from '~/types/images'
 
-type Props = (BottomTabHeaderProps | DrawerHeaderProps) & {
+type NavigationWithDrawer = NativeStackHeaderProps['navigation'] & {
+  openDrawer?: () => void
+}
+
+type Props = Omit<NativeStackHeaderProps, 'navigation'> & {
+  navigation: NavigationWithDrawer
   userAvatar: ImageSrc
 }
 
 export function BottomTabHeader({ navigation, userAvatar, options }: Props) {
   const handleOpenDrawer = useCallback(() => {
-    if (!('openDrawer' in navigation)) {
-      return
+    if (navigation.openDrawer) {
+      navigation.openDrawer()
     }
-    navigation.openDrawer()
   }, [navigation])
 
   return (

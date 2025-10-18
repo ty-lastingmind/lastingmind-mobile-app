@@ -1,6 +1,6 @@
-import { DrawerHeaderProps } from '@react-navigation/drawer'
-import { Link, useRouter } from 'expo-router'
-import { useEffect } from 'react'
+import { NativeStackHeaderProps } from '@react-navigation/native-stack'
+import { Link } from 'expo-router'
+import { useCallback, useMemo } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
 import { useBoolean } from 'usehooks-ts'
@@ -10,57 +10,46 @@ import { Avatar } from '~/modules/ui/avatar'
 import { Icon } from '~/modules/ui/icon'
 import { Popover } from '~/modules/ui/popover'
 import { Typography } from '~/modules/ui/typography'
-import { usePullCanChatWithChatPullCanChatWithGet } from '~/services/api/generated'
+import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
+import { useChatContext } from '~/modules/chat/hooks/use-chat-context'
 import { CanChatWithItem } from '~/services/api/model'
 
-export function Header(props: DrawerHeaderProps) {
-  const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
+type NavigationWithDrawer = NativeStackHeaderProps['navigation'] & {
+  openDrawer?: () => void
+}
+
+type HeaderProps = Omit<NativeStackHeaderProps, 'navigation'> & {
+  navigation: NavigationWithDrawer
+}
+
+export function Header({ navigation }: HeaderProps) {
   const isOpen = useBoolean(false)
-  const router = useRouter()
-  const isChatDetail = props.route.name === 'chat'
+  const { chattingWithUser, isInChatsArea, users, selectPersonToChat } = useChatContext()
   const { measurements, measureElement } = useMeasureElement()
-  const chattingWithViewId = (props.route.params as { chattingWithViewId?: string })?.chattingWithViewId
+  const userInfoQuery = usePullUserInfoHomePullUserInfoGet()
 
-  /**
-   * Initialize chat with first user
-   */
-  useEffect(() => {
-    if (canChatWith.data?.can_chat_with && !chattingWithViewId) {
-      const firstUser = canChatWith.data.can_chat_with.at(0)
+  const userAvatar = useMemo(() => {
+    return { uri: userInfoQuery.data?.profile_image }
+  }, [userInfoQuery])
 
-      if (firstUser) {
-        props.navigation.setParams({ chattingWithViewId: firstUser.chattingWithViewId })
-      }
-    }
-  }, [canChatWith, chattingWithViewId, props.navigation])
-
-  const users = canChatWith.data?.can_chat_with ?? []
-  const chattingWithUser = users.find((user) => user.chattingWithViewId === chattingWithViewId)
-
-  function selectPersonToChat(user: CanChatWithItem) {
-    if (isChatDetail) {
-      router.replace({
-        pathname: '/chats',
-        params: {
-          chattingWithViewId: user.chattingWithViewId,
-        },
-      })
-    } else {
-      props.navigation.setParams({ chattingWithViewId: user.chattingWithViewId })
-    }
-    isOpen.setFalse()
-  }
+  const handleSelectPersonToChat = useCallback(
+    (user: CanChatWithItem) => {
+      selectPersonToChat(user)
+      isOpen.setFalse()
+    },
+    [selectPersonToChat, isOpen]
+  )
 
   return (
     <>
       <View className="pt-safe px-8">
         <View className="h-[72px] relative flex flex-row items-center justify-between">
-          <TouchableOpacity onPress={props.navigation.openDrawer}>
-            <Avatar source={chattingWithUser?.chattingWithImage} />
+          <TouchableOpacity onPress={navigation.openDrawer}>
+            <Avatar source={userAvatar} />
           </TouchableOpacity>
           <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
             {chattingWithUser && (
-              <Animated.View entering={isChatDetail ? undefined : FadeInUp}>
+              <Animated.View entering={isInChatsArea ? undefined : FadeInUp}>
                 <TouchableOpacity onPress={isOpen.setTrue} className="flex flex-row items-center gap-1">
                   <Typography ref={measureElement} level="h5" brand color="accent">
                     {chattingWithUser.chattingWithName}
@@ -82,7 +71,7 @@ export function Header(props: DrawerHeaderProps) {
           <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="gap-4 p-4">
             {users.map((user) => (
               <TouchableOpacity
-                onPress={() => selectPersonToChat(user)}
+                onPress={() => handleSelectPersonToChat(user)}
                 key={user.chattingWithViewId}
                 className="flex flex-row gap-2 items-center"
               >
