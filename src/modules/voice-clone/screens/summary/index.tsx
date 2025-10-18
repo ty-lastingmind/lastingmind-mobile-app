@@ -12,7 +12,7 @@ export function VoiceCloneSummary() {
 
   const handleContinue = () => {
     if (timeLeft <= 0) {
-      router.replace('/(protected)/voice-clone/questions')
+      router.replace('/(protected)/voice-clone/wrap-up')
     } else {
       router.replace('/(protected)/voice-clone/questions')
     }

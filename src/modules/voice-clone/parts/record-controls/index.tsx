@@ -83,7 +83,7 @@ export default function RecordControls({ question, questionId }: RecordControlsP
           },
           {
             onSuccess(data) {
-              router.navigate({
+              router.replace({
                 pathname: '/(protected)/voice-clone/summary',
                 params: { ...data },
               })
