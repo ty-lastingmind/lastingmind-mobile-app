@@ -14,6 +14,7 @@ interface RecordingStoppedProps {
   pause: () => void
   player: AudioPlayer
   isTranscriptionLoading?: boolean
+  isSubmitting?: boolean
 }
 
 export function RecordingStopped({
@@ -24,6 +25,7 @@ export function RecordingStopped({
   pause,
   player,
   isTranscriptionLoading,
+  isSubmitting,
 }: RecordingStoppedProps) {
   return (
     <View className="gap-4 flex-1 justify-between pt-4">
@@ -63,6 +65,7 @@ export function RecordingStopped({
           icon={<SvgIcon name="check_mark" size="md" color="white" />}
           variant="primary"
           size="lg"
+          loading={isSubmitting}
         >
           Submit Answer
         </Button>

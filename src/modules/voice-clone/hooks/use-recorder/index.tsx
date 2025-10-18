@@ -5,6 +5,7 @@ import {
   RecordingPresets,
   setAudioModeAsync,
   useAudioPlayer,
+  useAudioPlayerStatus,
   useAudioRecorder,
   useAudioRecorderState,
 } from 'expo-audio'
@@ -19,6 +20,7 @@ export function useRecorder() {
   const recorderState = useAudioRecorderState(audioRecorder, 100)
 
   const player = useAudioPlayer(recordingUri)
+  const playerStatus = useAudioPlayerStatus(player)
   const uploader = useUploadAndTranscribeAudioMessage(VOICE_CLONE_FOLDER_NAME)
 
   const setPermission = async () => {
@@ -81,6 +83,7 @@ export function useRecorder() {
     play,
     pause,
     recorderState,
+    playerStatus,
     player,
     cleanupRecording,
     uploader,

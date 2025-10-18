@@ -10,6 +10,8 @@ export default function VoiceCloneLayout() {
         header: () => <BackHeader title="Voice Clone" />,
         contentStyle: { backgroundColor: colors['bg-primary'] },
       }}
-    />
+    >
+      <Stack.Screen name="summary/index" options={{ headerShown: false }} />
+    </Stack>
   )
 }

@@ -6,12 +6,17 @@ import { Button } from '~/modules/ui/button'
 import { Icon } from '~/modules/ui/icon'
 import { RecordingStopped } from './parts/recording-stopped'
 import AnswerTranscription from '../answer-transcription'
+import { useSubmitResponseVoiceCloneSubmitResponsePost } from '~/services/api/generated'
+import { RemainingQuestionItem } from '~/services/api/model'
+import { useRouter } from 'expo-router'
+import { Alert } from 'react-native'
 
 interface RecordControlsProps {
-  question: string
+  question: RemainingQuestionItem
+  questionId: string
 }
 
-export default function RecordControls({ question }: RecordControlsProps) {
+export default function RecordControls({ question, questionId }: RecordControlsProps) {
   const { value: recordingStarted, setTrue: startRecording } = useBoolean(false)
   const { value: transcriptionOpened, setTrue: openTranscription, setFalse: closeTranscription } = useBoolean(false)
   const { value: recordingStopped, setTrue: finishRecording, setFalse: restartRecording } = useBoolean(false)
@@ -29,7 +34,26 @@ export default function RecordControls({ question }: RecordControlsProps) {
     pause,
     uploader,
     recordingUri,
+    playerStatus,
   } = useRecorder()
+
+  const submitter = useSubmitResponseVoiceCloneSubmitResponsePost()
+  const router = useRouter()
+
+  const uploadAndTranscribe = async () => {
+    let returnData: { transcript: string; url: string } = { transcript: '', url: '' }
+    if (recordingUri && !transcription) {
+      await uploader.uploadAndTranscribeAudioMessage.mutateAsync(recordingUri, {
+        onSuccess(data) {
+          setTranscription(data.transcript)
+
+          returnData = data
+        },
+      })
+
+      return returnData
+    }
+  }
 
   const handleRecord = () => {
     startRecording()
@@ -44,21 +68,41 @@ export default function RecordControls({ question }: RecordControlsProps) {
     pauseRecording()
   }
 
-  const handleSubmit = () => {}
+  const handleSubmit = () => {
+    uploadAndTranscribe().then((uploadData) => {
+      if (uploadData) {
+        submitter.mutate(
+          {
+            data: {
+              responseId: questionId,
+              question: question.question,
+              answer: uploadData?.transcript,
+              audioFile: uploadData?.url,
+              duration: playerStatus.duration,
+            },
+          },
+          {
+            onSuccess(data) {
+              router.navigate({
+                pathname: '/(protected)/voice-clone/summary',
+                params: { ...data },
+              })
+            },
+          }
+        )
+      } else {
+        Alert.alert('no url')
+      }
+    })
+  }
 
   const handleOpenTranscription = () => {
-    if (recordingUri) {
-      uploader.uploadAndTranscribeAudioMessage.mutate(recordingUri, {
-        onSuccess(data) {
-          setTranscription(data.transcript)
-          openTranscription()
-        },
-      })
-    }
+    uploadAndTranscribe().then(openTranscription)
   }
 
   const handleRecordAgain = () => {
     cleanupRecording().then(() => {
+      setTranscription('')
       restartRecording()
       record()
     })
@@ -75,9 +119,10 @@ export default function RecordControls({ question }: RecordControlsProps) {
           play={play}
           pause={pause}
           isTranscriptionLoading={uploader.uploadAndTranscribeAudioMessage.isPending}
+          isSubmitting={submitter.isPending}
         />
         <AnswerTranscription
-          question={question}
+          question={question.question}
           transcription={transcription}
           isOpen={transcriptionOpened}
           onClose={closeTranscription}

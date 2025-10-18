@@ -11,6 +11,7 @@ interface QuestionItemProps {
 
 export default function QuestionItem({ question: questionItem, questionIndex }: QuestionItemProps) {
   const question = Object.values(questionItem)[0]
+  const questionId = Object.keys(questionItem)[0]
 
   return (
     <View className="flex-1 w-screen px-6">
@@ -23,7 +24,7 @@ export default function QuestionItem({ question: questionItem, questionIndex }: 
         </View>
       </View>
       <View className="flex-1 justify-end">
-        <RecordControls question={question.question} />
+        <RecordControls question={question} questionId={questionId} />
       </View>
     </View>
   )
