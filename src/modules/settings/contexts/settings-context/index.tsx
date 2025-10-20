@@ -2,14 +2,16 @@ import { useRouter } from 'expo-router'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
 import { queryClient } from '~/libs/query-client'
 import { Auth, Notifications } from '~/services'
-import { changePhoneNumberSettingsChangePhoneNumberPost } from '~/services/api/generated'
+import {
+  changePhoneNumberSettingsChangePhoneNumberPost,
+  usePullUserInfoSettingsGetUserPhoneNameGet,
+} from '~/services/api/generated'
 import {
   changeDisplayName,
   changeEmail,
   changePassword,
   getUserDisplayName,
   getUserEmail,
-  getUserPhoneNumber,
   sendPasswordResetEmail,
 } from '~/services/auth'
 
@@ -59,6 +61,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 // Settings Provider Component
 export function SettingsProvider({ children }: PropsWithChildren) {
   const router = useRouter()
+  const phoneNumber = usePullUserInfoSettingsGetUserPhoneNameGet()
   //updated values
   const [newDisplayName, setNewDisplayName] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
@@ -70,7 +73,7 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const [userData, setUserData] = useState<UserData>({
     displayName: '',
     email: '',
-    phoneNumber: '',
+    phoneNumber: phoneNumber.data?.phone_number || '',
   })
 
   const updateDisplayName = (displayName: string) => {
@@ -190,16 +193,12 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const fetchUserSettings = useCallback(async () => {
     const displayName = getUserDisplayName()
     const email = getUserEmail()
-    const phoneNumber = getUserPhoneNumber()
-    console.log('userData', displayName, email, phoneNumber)
+    console.log('userData', displayName, email)
     if (displayName) {
       setUserData((prev) => ({ ...prev, displayName: displayName }))
     }
     if (email) {
       setUserData((prev) => ({ ...prev, email: email }))
-    }
-    if (phoneNumber) {
-      setUserData((prev) => ({ ...prev, phoneNumber: phoneNumber }))
     }
   }, [])
 

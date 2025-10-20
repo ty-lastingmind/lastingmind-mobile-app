@@ -6,9 +6,9 @@ export function UpdatePasswordFormActions() {
   const { saveNewPassword, handleSendPasswordResetEmail, newPassword, newPasswordConfirm, currentPassword } =
     useSettings()
   const isValid =
-    currentPassword.length > 0 &&
-    newPassword.length > 0 &&
-    newPasswordConfirm.length > 0 &&
+    currentPassword.length > 5 &&
+    newPassword.length > 5 &&
+    newPasswordConfirm.length > 5 &&
     newPassword === newPasswordConfirm
 
   return (
