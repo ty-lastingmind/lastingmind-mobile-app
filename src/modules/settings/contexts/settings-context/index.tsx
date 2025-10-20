@@ -104,21 +104,26 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     try {
       const response = await changeDisplayName(newDisplayName)
       console.log('saveNewDisplayName', response)
-      setUserData((prev) => ({ ...prev, displayName: newDisplayName }))
       setNewDisplayName('')
+      // Refresh user settings to get the latest data from Firebase
+      await fetchUserSettings()
     } catch (error) {
       console.error(error)
+      setNewDisplayName('')
     }
   }
 
   const saveNewPhoneNumber = async () => {
     try {
       const response = await changePhoneNumberSettingsChangePhoneNumberPost({ phone_number: newPhoneNumber })
+      phoneNumber.refetch()
       console.log('saveNewPhoneNumber', response)
-      setUserData((prev) => ({ ...prev, phoneNumber: newPhoneNumber }))
       setNewPhoneNumber('')
+      // Refresh user settings to get the latest data
+      await fetchUserSettings()
     } catch (error) {
       console.error(error)
+      setNewPhoneNumber('')
     }
   }
 
@@ -126,10 +131,12 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     try {
       const response = await changeEmail(newEmail)
       console.log('saveNewEmail', response)
-      setUserData((prev) => ({ ...prev, email: newEmail }))
       setNewEmail('')
+      // Refresh user settings to get the latest data from Firebase
+      await fetchUserSettings()
     } catch (error) {
       console.error(error)
+      setNewEmail('')
     }
   }
 
@@ -193,14 +200,14 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const fetchUserSettings = useCallback(async () => {
     const displayName = getUserDisplayName()
     const email = getUserEmail()
-    console.log('userData', displayName, email)
-    if (displayName) {
-      setUserData((prev) => ({ ...prev, displayName: displayName }))
-    }
-    if (email) {
-      setUserData((prev) => ({ ...prev, email: email }))
-    }
-  }, [])
+    const phoneNumberData = phoneNumber.data?.phone_number || ''
+    console.log('userData', displayName, email, phoneNumberData)
+    setUserData((prev) => ({
+      displayName: displayName || prev.displayName,
+      email: email || prev.email,
+      phoneNumber: phoneNumberData || prev.phoneNumber,
+    }))
+  }, [phoneNumber.data?.phone_number])
 
   useEffect(() => {
     fetchUserSettings()
