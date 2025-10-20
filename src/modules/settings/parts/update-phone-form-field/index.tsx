@@ -23,6 +23,7 @@ export function UpdatePhoneFormField({ label, value, onChangeText, showSeparator
         color="secondary"
         className="bg-transparent border-0 text-right flex-1 ml-4"
         textAlign="right"
+        keyboardType="phone-pad"
       />
     </View>
   )

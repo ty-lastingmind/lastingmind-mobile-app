@@ -22,6 +22,7 @@ import { Edit } from './svg/edit'
 import { EditBox } from './svg/editbox'
 import { Education } from './svg/education'
 import { EducationOutline } from './svg/education-outline'
+import { EmailCard } from './svg/email-card'
 import { Envelope } from './svg/envelope'
 import { Expand } from './svg/expand'
 import { Explanation } from './svg/explanation'
@@ -85,6 +86,7 @@ export const iconNameToSvg = {
   calendar: Calendar,
   'home-outline': HomeOutline,
   'education-outline': EducationOutline,
+  email_card: EmailCard,
   'work-outline': WorkOutline,
   curated_questions: CuratedQuestions,
   mic: Mic,

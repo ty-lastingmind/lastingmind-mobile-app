@@ -26,6 +26,7 @@ interface UserData {
 interface NavigationFunctions {
   navigateToAccount: () => void
   navigateToHelp: () => void
+  navigateToContactUs: () => void
   navigateToEditName: () => void
   navigateToEditEmail: () => void
   navigateToEditPhone: () => void
@@ -178,7 +179,11 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   }
 
   const navigateToHelp = () => {
-    //router.push('/help')
+    router.push('/help')
+  }
+
+  const navigateToContactUs = () => {
+    router.push('/contact-us')
   }
 
   const navigateToEditName = () => {
@@ -234,6 +239,7 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     // Navigation Functions
     navigateToAccount,
     navigateToHelp,
+    navigateToContactUs,
     navigateToEditName,
     navigateToEditEmail,
     navigateToEditPhone,
