@@ -4,6 +4,7 @@ import { Google } from '~/modules/ui/svg-icon/svg/google'
 import { Interview } from '~/modules/ui/svg-icon/svg/interview'
 import { Journal } from '~/modules/ui/svg-icon/svg/journal'
 import { Reload } from '~/modules/ui/svg-icon/svg/reload'
+import { EyeSlashed } from './svg/-slashed'
 import { Add } from './svg/add'
 import { AddPeople } from './svg/add_people'
 import { ArrowRight } from './svg/arrow-right'
@@ -24,6 +25,7 @@ import { EducationOutline } from './svg/education-outline'
 import { Envelope } from './svg/envelope'
 import { Expand } from './svg/expand'
 import { Explanation } from './svg/explanation'
+import { Eye } from './svg/eye'
 import { Family } from './svg/family'
 import { Home } from './svg/home'
 import { HomeOutline } from './svg/home-outline'
@@ -109,6 +111,8 @@ export const iconNameToSvg = {
   people: People,
   add_people: AddPeople,
   settings: Settings,
+  eye: Eye,
+  eye_slash: EyeSlashed,
   send: Send,
   envelope: Envelope,
 } as const

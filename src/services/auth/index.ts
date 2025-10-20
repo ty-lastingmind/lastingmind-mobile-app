@@ -1,6 +1,7 @@
 import * as Auth from '@react-native-firebase/auth'
 import { FirebaseAuthTypes } from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import * as AppleAuthentication from 'expo-apple-authentication'
 import Constants from 'expo-constants'
 import { auth } from '~/libs/firebase'
 
@@ -50,4 +51,41 @@ export async function signOut() {
 
 export async function getIdToken(user: FirebaseAuthTypes.User) {
   return Auth.getIdToken(user)
+}
+
+export async function changeEmail(email: string) {
+  if (!auth.currentUser) throw new Error('No authenticated user')
+  await Auth.updateEmail(auth.currentUser, email)
+}
+
+export async function changeDisplayName(displayName: string) {
+  if (!auth.currentUser) throw new Error('No authenticated user')
+  await Auth.updateProfile(auth.currentUser, { displayName })
+}
+
+export async function sendPasswordResetEmail(email: string) {
+  await Auth.sendPasswordResetEmail(auth, email)
+}
+
+export async function changePassword(currentPassword: string, newPassword: string) {
+  if (!auth.currentUser) throw new Error('No authenticated user')
+
+  // Re-authenticate user with current password
+  const credential = Auth.EmailAuthProvider.credential(auth.currentUser.email!, currentPassword)
+  await Auth.reauthenticateWithCredential(auth.currentUser, credential)
+
+  // Now update password
+  await Auth.updatePassword(auth.currentUser, newPassword)
+}
+
+export function getUserDisplayName(): string | null {
+  return auth.currentUser?.displayName || null
+}
+
+export function getUserEmail(): string | null {
+  return auth.currentUser?.email || null
+}
+
+export function getUserPhoneNumber(): string | null {
+  return auth.currentUser?.phoneNumber || null
 }

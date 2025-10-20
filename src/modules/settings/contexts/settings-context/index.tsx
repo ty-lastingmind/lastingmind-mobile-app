@@ -1,0 +1,255 @@
+import { useRouter } from 'expo-router'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
+import { queryClient } from '~/libs/query-client'
+import { Auth, Notifications } from '~/services'
+import { changePhoneNumberSettingsChangePhoneNumberPost } from '~/services/api/generated'
+import {
+  changeDisplayName,
+  changeEmail,
+  changePassword,
+  getUserDisplayName,
+  getUserEmail,
+  getUserPhoneNumber,
+  sendPasswordResetEmail,
+} from '~/services/auth'
+
+// User Data Interface
+interface UserData {
+  displayName: string
+  email: string
+  phoneNumber: string
+}
+
+// Navigation Functions Interface
+interface NavigationFunctions {
+  navigateToAccount: () => void
+  navigateToHelp: () => void
+  navigateToEditName: () => void
+  navigateToEditEmail: () => void
+  navigateToEditPhone: () => void
+  navigateToChangePassword: () => void
+  handleLogout: () => Promise<void>
+}
+// Settings Context Interface
+interface SettingsContextType extends NavigationFunctions {
+  currentValues: UserData
+  newDisplayName: string
+  newPhoneNumber: string
+  newEmail: string
+  currentPassword: string
+  newPassword: string
+  newPasswordConfirm: string
+  updateDisplayName: (displayName: string) => void
+  updatePhoneNumber: (phone: string) => void
+  updateEmail: (email: string) => void
+  updateCurrentPassword: (currentPassword: string) => void
+  updateNewPassword: (newPassword: string) => void
+  updateNewPasswordConfirm: (newPasswordConfirm: string) => void
+  fetchUserSettings: () => Promise<void>
+  saveNewDisplayName: () => Promise<void>
+  saveNewPhoneNumber: () => Promise<void>
+  saveNewEmail: () => Promise<void>
+  handleSendPasswordResetEmail: () => Promise<void>
+  saveNewPassword: () => Promise<void>
+}
+
+// Create Context
+const SettingsContext = createContext<SettingsContextType | undefined>(undefined)
+
+// Settings Provider Component
+export function SettingsProvider({ children }: PropsWithChildren) {
+  const router = useRouter()
+  //updated values
+  const [newDisplayName, setNewDisplayName] = useState('')
+  const [newPhoneNumber, setNewPhoneNumber] = useState('')
+  const [newEmail, setNewEmail] = useState('')
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState('')
+  // User Data State
+  const [userData, setUserData] = useState<UserData>({
+    displayName: '',
+    email: '',
+    phoneNumber: '',
+  })
+
+  const updateDisplayName = (displayName: string) => {
+    setNewDisplayName(displayName)
+  }
+
+  const updateEmail = (email: string) => {
+    setNewEmail(email)
+  }
+
+  const updatePhoneNumber = (phoneNumber: string) => {
+    setNewPhoneNumber(phoneNumber)
+  }
+
+  const updateCurrentPassword = (password: string) => {
+    setCurrentPassword(password)
+  }
+
+  const updateNewPassword = (password: string) => {
+    setNewPassword(password)
+  }
+
+  const updateNewPasswordConfirm = (passwordConfirm: string) => {
+    setNewPasswordConfirm(passwordConfirm)
+  }
+
+  const saveNewDisplayName = async () => {
+    try {
+      const response = await changeDisplayName(newDisplayName)
+      console.log('saveNewDisplayName', response)
+      setUserData((prev) => ({ ...prev, displayName: newDisplayName }))
+      setNewDisplayName('')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const saveNewPhoneNumber = async () => {
+    try {
+      const response = await changePhoneNumberSettingsChangePhoneNumberPost({ phone_number: newPhoneNumber })
+      console.log('saveNewPhoneNumber', response)
+      setUserData((prev) => ({ ...prev, phoneNumber: newPhoneNumber }))
+      setNewPhoneNumber('')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const saveNewEmail = async () => {
+    try {
+      const response = await changeEmail(newEmail)
+      console.log('saveNewEmail', response)
+      setUserData((prev) => ({ ...prev, email: newEmail }))
+      setNewEmail('')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleSendPasswordResetEmail = async () => {
+    try {
+      const response = await sendPasswordResetEmail(userData.email)
+      console.log('sendPasswordResetEmail', response)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const saveNewPassword = async () => {
+    try {
+      const response = await changePassword(currentPassword, newPassword)
+      console.log('updatePassword', response)
+      setCurrentPassword('')
+      setNewPassword('')
+      setNewPasswordConfirm('')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleLogout = async () => {
+    try {
+      await Auth.signOut()
+      await Notifications.deleteToken()
+      queryClient.removeQueries()
+      router.replace('/auth/sign-in')
+    } catch (error) {
+      console.error('Failed to sign out', error)
+    }
+  }
+
+  // Navigation Functions
+  const navigateToAccount = () => {
+    router.push('/account')
+  }
+
+  const navigateToHelp = () => {
+    //router.push('/help')
+  }
+
+  const navigateToEditName = () => {
+    router.push('/user')
+  }
+
+  const navigateToEditEmail = () => {
+    router.push('/update-email')
+  }
+
+  const navigateToEditPhone = () => {
+    router.push('/update-phone')
+  }
+
+  const navigateToChangePassword = () => {
+    router.push('/update-password')
+  }
+
+  const fetchUserSettings = useCallback(async () => {
+    const displayName = getUserDisplayName()
+    const email = getUserEmail()
+    const phoneNumber = getUserPhoneNumber()
+    console.log('userData', displayName, email, phoneNumber)
+    if (displayName) {
+      setUserData((prev) => ({ ...prev, displayName: displayName }))
+    }
+    if (email) {
+      setUserData((prev) => ({ ...prev, email: email }))
+    }
+    if (phoneNumber) {
+      setUserData((prev) => ({ ...prev, phoneNumber: phoneNumber }))
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchUserSettings()
+  }, [fetchUserSettings])
+
+  // Context Value
+  const contextValue: SettingsContextType = {
+    // User Data
+    currentValues: userData,
+    // New Values
+    newDisplayName,
+    newPhoneNumber,
+    newEmail,
+    currentPassword,
+    newPassword,
+    newPasswordConfirm,
+    // Update Functions
+    updateDisplayName,
+    updateEmail,
+    updatePhoneNumber,
+    updateCurrentPassword,
+    updateNewPassword,
+    updateNewPasswordConfirm,
+    // Navigation Functions
+    navigateToAccount,
+    navigateToHelp,
+    navigateToEditName,
+    navigateToEditEmail,
+    navigateToEditPhone,
+    navigateToChangePassword,
+    handleLogout,
+    //save functions
+    fetchUserSettings,
+    saveNewDisplayName,
+    saveNewPhoneNumber,
+    saveNewEmail,
+    handleSendPasswordResetEmail,
+    saveNewPassword,
+  }
+
+  return <SettingsContext.Provider value={contextValue}>{children}</SettingsContext.Provider>
+}
+
+// Custom Hook to use Settings Context
+export function useSettings(): SettingsContextType {
+  const context = useContext(SettingsContext)
+  if (context === undefined) {
+    throw new Error('useSettings must be used within a SettingsProvider')
+  }
+  return context
+}
