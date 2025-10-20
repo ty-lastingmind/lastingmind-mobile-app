@@ -1,6 +1,5 @@
-import { Drawer } from 'expo-router/drawer'
+import { Stack } from 'expo-router'
 import { BottomTabHeader } from '~/components/bottom-tab-header'
-import { DrawerJournal } from '~/modules/components/drawer/parts/drawer-journal'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
 import { useMemo } from 'react'
@@ -32,16 +31,15 @@ export default function Layout() {
   }, [isInterview, isJournal, isCuratedQuestions])
 
   return (
-    <Drawer
+    <Stack
       screenOptions={{
         title: 'Questions',
         headerTitle: headerTitle,
         header: (props) => <BottomTabHeader {...props} userAvatar={userAvatar} />,
-        sceneStyle: {
+        contentStyle: {
           backgroundColor: colors['bg-primary'],
         },
       }}
-      drawerContent={(props) => <DrawerJournal {...props} />}
     />
   )
 }

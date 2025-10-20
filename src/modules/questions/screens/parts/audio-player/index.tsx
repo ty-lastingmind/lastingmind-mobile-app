@@ -1,5 +1,5 @@
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { View } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
@@ -17,6 +17,10 @@ interface AudioPlayerProps {
 export function AudioPlayer({ audioSrc, className, showSlider }: AudioPlayerProps) {
   const player = useAudioPlayer(audioSrc)
   const status = useAudioPlayerStatus(player)
+
+  useEffect(() => {
+    player.volume = 1.0
+  }, [player])
 
   const containerClassName = useMemo(() => {
     return cn('rounded-full h-[52px] items-center px-4 flex flex-row justify-between', className)

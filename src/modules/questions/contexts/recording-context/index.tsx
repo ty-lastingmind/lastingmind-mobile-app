@@ -3,6 +3,8 @@ import { Alert } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { useRecordingAnswer } from '../../hooks/use-recording-answer'
 import { useQuestionContext } from '../question-context'
+import { AudioRecorder } from 'expo-audio'
+import { UploadStatus } from '~/modules/questions/hooks/use-upload-and-transcribe-audio-message'
 
 const RECORDING_ERROR_TITLE = 'Recording Error'
 const DEFAULT_ERROR_MESSAGE = 'An unexpected error occurred'
@@ -31,6 +33,8 @@ export interface RecordingState {
   durationMillis: number
   audioUrl: string | null
   metering: number | undefined
+  audioRecorder: AudioRecorder | null
+  uploaderStatus: UploadStatus
 }
 
 export interface RecordingActions {
@@ -53,6 +57,8 @@ const RecordingContext = createContext<RecordingContextValue>({
   durationMillis: 0,
   audioUrl: null,
   metering: undefined,
+  audioRecorder: null,
+  uploaderStatus: 'idle',
   handleStartRecording: () => Promise.resolve(),
   handleStopRecording: () => Promise.resolve(),
   handlePauseRecording: () => {},
@@ -77,6 +83,8 @@ export const RecordingProvider = ({ children }: { children: React.ReactNode }) =
     isRecording,
     durationMillis,
     metering,
+    audioRecorder,
+    uploaderStatus,
   } = useRecordingAnswer()
 
   const { isAnswerSaved } = useQuestionContext()
@@ -170,8 +178,10 @@ export const RecordingProvider = ({ children }: { children: React.ReactNode }) =
       durationMillis,
       audioUrl,
       metering,
+      audioRecorder,
+      uploaderStatus,
     }),
-    [status, isRecording, isRecorded, answer, durationMillis, audioUrl, metering]
+    [status, isRecording, isRecorded, answer, durationMillis, audioUrl, metering, audioRecorder, uploaderStatus]
   )
 
   const recordingActions = useMemo(
@@ -183,6 +193,8 @@ export const RecordingProvider = ({ children }: { children: React.ReactNode }) =
       handleCancelRecording,
       handleAnswerChange,
       handleAudioUrlChange,
+      audioRecorder,
+      uploaderStatus,
     }),
     [
       handleStartRecording,
@@ -192,6 +204,8 @@ export const RecordingProvider = ({ children }: { children: React.ReactNode }) =
       handleCancelRecording,
       handleAnswerChange,
       handleAudioUrlChange,
+      audioRecorder,
+      uploaderStatus,
     ]
   )
 

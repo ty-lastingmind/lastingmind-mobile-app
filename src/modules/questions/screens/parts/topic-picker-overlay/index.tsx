@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 import { Button } from '~/modules/ui/button'
 import { Dialog } from '~/modules/ui/dialog'
 import { Typography } from '~/modules/ui/typography'
@@ -12,8 +12,6 @@ import {
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { router } from 'expo-router'
 import { useQuestionContext } from '~/modules/questions/contexts/question-context'
-
-const COLUMNS = 2
 
 interface TopicPickerOverlayProps {
   isOpen: boolean
@@ -72,7 +70,7 @@ export function TopicPickerOverlay({ isOpen }: TopicPickerOverlayProps) {
   }, [handleCloseTopicPicker])
 
   return (
-    <Dialog isOpen={isOpen} className="w-full gap-6 py-8 px-8">
+    <Dialog isOpen={isOpen} className="w-full gap-6 py-8 px-8" onClose={handleCloseTopicPicker}>
       <PickerContent
         currentTopics={generatedSuggestedTopics?.suggested_topics ?? topics?.suggested_topics ?? []}
         selectedTopic={selectedTopic}
@@ -120,18 +118,13 @@ const PickerContent = ({
   }
   return (
     <>
-      <View className="flex-row items-end gap-2">
-        <FlatList
-          data={currentTopics}
-          keyExtractor={(item) => item}
-          contentContainerClassName="gap-2"
-          numColumns={COLUMNS}
-          columnWrapperClassName="gap-2"
-          className="flex-1"
-          renderItem={({ item }) => (
+      <View className="gap-4">
+        <View className="flex-row flex-wrap gap-2">
+          {currentTopics.map((item) => (
             <TouchableOpacity
+              key={item}
               onPress={() => onTopicSelect(item)}
-              className={`flex-1 px-4 py-2 rounded-sm border border-accent items-center justify-center ${
+              className={`px-4 py-2 rounded-sm border border-accent items-center justify-center ${
                 selectedTopic === item ? 'bg-accent' : 'bg-white'
               }`}
             >
@@ -143,8 +136,8 @@ const PickerContent = ({
                 {item}
               </Typography>
             </TouchableOpacity>
-          )}
-        />
+          ))}
+        </View>
         <Button variant="outlined" onPress={onRefresh} className="p-2">
           <SvgIcon name="refresh" size="md" color="accent" />
         </Button>
@@ -155,7 +148,7 @@ const PickerContent = ({
           View Saved Questions
         </Button>
 
-        <Input placeholder="Type Your Own..." value={topic} onChangeText={(text) => onTopicChange(text)} />
+        <Input placeholder="Type Your Own Topic" value={topic} onChangeText={(text) => onTopicChange(text)} />
 
         <Button disabled={!selectedTopic && !topic} onPress={onSubmit}>
           <Typography className="text-purple-800">Submit</Typography>
