@@ -182,7 +182,7 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   }
 
   const navigateToEditName = () => {
-    router.push('/user')
+    router.push('/update-name')
   }
 
   const navigateToEditEmail = () => {

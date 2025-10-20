@@ -4,9 +4,9 @@ import { UserCurrentField } from '../../parts/user-current-field'
 import { UserForm } from '../../parts/user-form'
 import { UserFormActions } from '../../parts/user-form-actions'
 
-export function UserScreen() {
+export function UpdateNameScreen() {
   return (
-    <SettingsScreenLayout title="Name">
+    <SettingsScreenLayout title="Update Name">
       <UserCurrentField />
       <UserForm />
       <UserFormActions />
