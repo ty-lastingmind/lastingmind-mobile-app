@@ -7,6 +7,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { useInitServices } from '~/hooks/use-init-services'
 
 import { queryClient } from '~/libs/query-client'
+import { useResolveClassNames } from 'uniwind'
 
 if (__DEV__) {
   import('../../ReactotronConfig')
@@ -31,14 +32,13 @@ export default function Layout() {
 
 function App() {
   useInitServices()
+  const styles = useResolveClassNames('bg-bg-primary')
 
   return (
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: {
-          backgroundColor: '',
-        },
+        contentStyle: styles,
       }}
     >
       <Stack.Screen
