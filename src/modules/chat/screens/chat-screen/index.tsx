@@ -183,10 +183,10 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
             {sendMessage.isPending && <IncomingMessageLoading />}
             {refineText.isPending && <OutgoingMessageLoading />}
             {getExplanations.data?.button === 'add_answer' && (
-              <Chat.AddAnswerButton question={state.messages.at(-1)?.text ?? ''} />
+              <Chat.AddAnswerButton question={state.messages.at(-2)?.text ?? ''} />
             )}
             {getExplanations.data?.button === 'send_question' && (
-              <Chat.SendQuestionButton question={state.messages.at(-1)?.text ?? ''} />
+              <Chat.SendQuestionButton question={state.messages.at(-2)?.text ?? ''} />
             )}
           </View>
         </Chat.Scroll>
