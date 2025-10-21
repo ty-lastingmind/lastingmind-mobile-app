@@ -1,7 +1,6 @@
 import * as Auth from '@react-native-firebase/auth'
 import { FirebaseAuthTypes } from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
-import * as AppleAuthentication from 'expo-apple-authentication'
 import Constants from 'expo-constants'
 import { auth } from '~/libs/firebase'
 
@@ -43,34 +42,6 @@ export async function signInWithGoogle() {
   const credentials = await Auth.signInWithCredential(auth, googleCredential)
 
   return credentials
-}
-
-export async function signInWithApple() {
-  try {
-    // Perform the sign-in request
-    const appleAuthRequestResponse = await AppleAuthentication.signInAsync({
-      requestedScopes: [
-        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-        AppleAuthentication.AppleAuthenticationScope.EMAIL,
-      ],
-    })
-
-    // Retrieve the identity token
-    const idToken = appleAuthRequestResponse.identityToken
-    if (!idToken) {
-      throw new Error('No identity token found')
-    }
-
-    // Create an Apple credential with the token
-    const appleCredential = Auth.OAuthProvider.credential(idToken)
-
-    // Sign-in the user with the credential
-    const credentials = await Auth.signInWithCredential(auth, appleCredential)
-
-    return credentials
-  } catch (error) {
-    throw new Error(`Apple Sign-In failed: ${(error as Error)?.message}`)
-  }
 }
 
 export async function signOut() {

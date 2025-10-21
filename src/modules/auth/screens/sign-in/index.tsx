@@ -14,7 +14,6 @@ import { GoogleButton } from '~/modules/auth/parts/google-button'
 import { Title } from '~/modules/auth/parts/title'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
-import { AppleButton } from '../../parts/apple-button'
 import WarningLabel from '../../parts/warning-label'
 import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 
@@ -65,7 +64,6 @@ export function SignInScreen() {
         </KeyboardAvoidingView>
       ) : (
         <View className="gap-4">
-          <AppleButton />
           <GoogleButton label="Sign In with Google" />
           <Button variant="whitesecondary" onPress={handleSignUpButton}>
             Or Sign Up
