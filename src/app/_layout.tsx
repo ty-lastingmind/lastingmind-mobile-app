@@ -7,8 +7,6 @@ import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { useInitServices } from '~/hooks/use-init-services'
 
 import { queryClient } from '~/libs/query-client'
-import { ColorSchemeProvider } from '~/providers/color-scheme-provider'
-import { TailwindColorsProvider, useTailwindColors } from '~/providers/tailwind-colors-provider'
 
 if (__DEV__) {
   import('../../ReactotronConfig')
@@ -21,30 +19,25 @@ SplashScreen.setOptions({
 
 export default function Layout() {
   return (
-    <ColorSchemeProvider>
-      <TailwindColorsProvider>
-        <QueryClientProvider client={queryClient}>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <KeyboardProvider>
-              <App />
-            </KeyboardProvider>
-          </GestureHandlerRootView>
-        </QueryClientProvider>
-      </TailwindColorsProvider>
-    </ColorSchemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <KeyboardProvider>
+          <App />
+        </KeyboardProvider>
+      </GestureHandlerRootView>
+    </QueryClientProvider>
   )
 }
 
 function App() {
   useInitServices()
-  const colors = useTailwindColors()
 
   return (
     <Stack
       screenOptions={{
         headerShown: false,
         contentStyle: {
-          backgroundColor: colors['bg-primary'],
+          backgroundColor: '',
         },
       }}
     >

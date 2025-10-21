@@ -3,6 +3,8 @@ import { DrawerActions } from '@react-navigation/routers'
 import { Link, usePathname } from 'expo-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useResolveClassNames } from 'uniwind'
 import { Typography } from '~/modules/ui/typography'
 import {
   usePullPastInterviewsInterviewPullPastInterviewsGet,
@@ -56,6 +58,9 @@ const items: DrawerJournalItemType[] = [
 export function DrawerJournal(props: DrawerContentComponentProps & { userType?: UserTypeResponseUserType }) {
   const currentRouteName = usePathname()
   const { chattingWithViewId } = useChatContext()
+  const currentRoute = props.navigation.getState().routes[props.navigation.getState().index]
+  const chattingWithViewId = (currentRoute?.params as { chattingWithViewId?: string })?.chattingWithViewId
+  const safeAreViewStyles = useResolveClassNames('bg-bg-primary flex-1')
 
   const isJournalRoute = currentRouteName.includes('journal')
   const isInterviewRoute = currentRouteName.includes('interview')
@@ -146,28 +151,28 @@ export function DrawerJournal(props: DrawerContentComponentProps & { userType?: 
   }, [chattingWithViewId, isConversationRoute, pullPastConversations])
 
   return (
-    <View className="pt-safe bg-bg-primary flex-1">
+    <SafeAreaView style={safeAreViewStyles}>
       <View className="flex-1">
+        <View className="flex-1">
         <View className="px-6 pb-4 pt-2">
           {!isSuperUserOrAdmin && <ChatUserJournal />}
           {isSuperUserOrAdmin && (
-            <View className="flex-row items-center justify-between mb-3">
-              <View className="flex-row items-center gap-3">
+          <View className="flex-row items-center justify-between mb-3">
+            <View className="flex-row items-center gap-3">
                 <Link href="/(protected)/(tabs)/profile" asChild>
                   <TouchableOpacity>
-                    <Avatar source={userAvatar} size="sm" />
-                  </TouchableOpacity>
+              <Avatar source={userAvatar} size="sm" />
+              </TouchableOpacity>
                 </Link>
                 <Typography color="accent" level="body-lg" brand>
-                  {userInfo?.full_user_name}
-                </Typography>
-              </View>
-              <TouchableOpacity onPress={() => showTrophyModal.setValue(!showTrophyModal.value)}>
-                <SvgIcon color="accent" name="trophy_filled" size="lg" />
-              </TouchableOpacity>
+                {userInfo?.full_user_name}
+              </Typography>
             </View>
-          )}
-          {showTrophyModal.value ? (
+            <TouchableOpacity onPress={() => showTrophyModal.setValue(!showTrophyModal.value)}>
+              <SvgIcon color="accent" name="trophy_filled" size="lg" />
+            </TouchableOpacity>
+          </View>
+          )}{showTrophyModal.value ? (
             <TrophyModal stats={userInfo?.stats} />
           ) : (
             <View>
@@ -190,21 +195,21 @@ export function DrawerJournal(props: DrawerContentComponentProps & { userType?: 
                   </Typography>
                 </TouchableOpacity>
               )}
-            </View>
-          )}
-        </View>
+
+              </View>
+                )}
+              </View>
+
         {(isJournalRoute || isInterviewRoute || isConversationRoute) && (
-          <PastEntriesList
-            userType={props.userType}
+          <PastEntriesListuserType={props.userType}
             type={isJournalRoute ? 'journal' : isInterviewRoute ? 'interview' : 'conversation'}
             entries={pastEntries}
             chattingWithViewId={chattingWithViewId}
           />
-        )}
-      </View>
+          )}
+        </View>
 
-      {isSuperUserOrAdmin && (
-        <View className="pb-safe">
+        {isSuperUserOrAdmin && (<View>
           <View className="h-px bg-miscellaneous-topic-stroke mb-4" />
           <View className="flex-row gap-4 items-center px-6 pt-2">
             <SvgIcon name="settings" size="lg" color="miscellaneous" />
@@ -212,8 +217,8 @@ export function DrawerJournal(props: DrawerContentComponentProps & { userType?: 
               Settings & Help
             </Typography>
           </View>
-        </View>
-      )}
-    </View>
+        </View>)}
+      </View>
+    </SafeAreaView>
   )
 }

@@ -1,12 +1,15 @@
 import { Stack } from 'expo-router'
+import { useResolveClassNames } from 'uniwind'
 import { BottomTabHeader } from '~/components/bottom-tab-header'
 import { useTailwindColors } from '~/providers/tailwind-colors-provider'
+import { DrawerJournal } from '~/modules/components/drawer/parts/drawer-journal'
+
 import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
 import { useMemo } from 'react'
 import { useRouteInfo } from 'expo-router/build/hooks'
 
 export default function Layout() {
-  const colors = useTailwindColors()
+  const styles = useResolveClassNames('bg-screen-bg-primary')
   const route = useRouteInfo()
 
   const isInterview = route.pathname.includes('interview')
@@ -36,9 +39,7 @@ export default function Layout() {
         title: 'Questions',
         headerTitle: headerTitle,
         header: (props) => <BottomTabHeader {...props} userAvatar={userAvatar} />,
-        contentStyle: {
-          backgroundColor: colors['bg-primary'],
-        },
+        contentStyle: styles,
       }}
     />
   )

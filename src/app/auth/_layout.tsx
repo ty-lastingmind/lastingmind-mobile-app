@@ -1,10 +1,10 @@
 import { Redirect, Stack } from 'expo-router'
+import { useResolveClassNames } from 'uniwind'
 
 import useUser from '~/hooks/auth/use-user'
-import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
 export default function AuthLayout() {
-  const colors = useTailwindColors()
+  const styles = useResolveClassNames('bg-screen-bg-primary text-accent')
   const userQuery = useUser()
 
   if (userQuery.isLoading) {
@@ -23,9 +23,9 @@ export default function AuthLayout() {
         headerTitle: '',
         headerBackTitle: 'Back',
         headerBackButtonMenuEnabled: false,
-        headerTintColor: colors['accent'],
+        headerTintColor: styles.color?.toString(),
         contentStyle: {
-          backgroundColor: colors['bg-primary'],
+          backgroundColor: styles.backgroundColor,
         },
       }}
     />
