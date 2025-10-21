@@ -1,12 +1,12 @@
-import { ScrollView } from 'react-native-gesture-handler'
-import UserInfo from '../../parts/user-info'
-import UserAudience from '../../parts/user-audience'
-import UserSuggestedTopics from '../../parts/user-suggested-topics'
-import UserDiscussedTopics from '../../parts/user-discussed-topics'
-import UserPersonalInfo from '../../parts/user-personal-info'
-import ChatUserProfile from '../../parts/chat-user-profile'
-import { DeveloperProfileScreen } from '../../developer-profile-screen'
+import { ScrollView } from 'react-native'
 import { useGetUserTypeUtilsPullUserTypeGet } from '~/services/api/generated'
+import { DeveloperProfileScreen } from '../../developer-profile-screen'
+import ChatUserProfile from '../../parts/chat-user-profile'
+import UserAudience from '../../parts/user-audience'
+import UserDiscussedTopics from '../../parts/user-discussed-topics'
+import UserInfo from '../../parts/user-info'
+import UserPersonalInfo from '../../parts/user-personal-info'
+import UserSuggestedTopics from '../../parts/user-suggested-topics'
 
 export function ProfileScreen() {
   const { data: userType } = useGetUserTypeUtilsPullUserTypeGet()

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Svg, { Path } from 'react-native-svg'
 import { SvgProps } from '../index.types'
+
 export const ChatBubbleOutline = ({ size, color }: SvgProps) => (
   <Svg width={size} height={size} viewBox="0 0 93 81" fill="none">
     <Path

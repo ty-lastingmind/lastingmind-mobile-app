@@ -1,8 +1,7 @@
-import { useRouter } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import useSignOut from '~/hooks/auth/use-sign-out'
-import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
-import { Link } from 'expo-router'
+import { Typography } from '~/modules/ui/typography'
 
 export function DeveloperProfileScreen() {
   const signOutMutation = useSignOut()

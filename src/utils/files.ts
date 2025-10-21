@@ -1,20 +1,20 @@
-import * as FileSystem from 'expo-file-system'
+import { Directory, File, Paths } from 'expo-file-system'
 import { Logger } from '~/services'
 
 export async function saveBase64ToFile(base64Audio: string): Promise<string> {
   try {
     const fileName = `audio_${Date.now()}.mp3` // or .wav depending on format
-    const fileUri = `${FileSystem.cacheDirectory}${fileName}`
+    const file = new File(Paths.cache, fileName)
 
     const base64Data = base64Audio.includes(',') ? base64Audio.split(',')[1] : base64Audio
 
-    await FileSystem.writeAsStringAsync(fileUri, base64Data, {
-      encoding: FileSystem.EncodingType.Base64,
+    file.write(base64Data, {
+      encoding: 'base64',
     })
 
-    Logger.logInfo('[audio] Saved audio file', { fileUri })
+    Logger.logInfo('[audio] Saved audio file', { fileUri: file.uri })
 
-    return fileUri
+    return file.uri
   } catch (error) {
     Logger.logError('[audio] Failed to save base64 audio:', error)
     throw error
@@ -23,25 +23,22 @@ export async function saveBase64ToFile(base64Audio: string): Promise<string> {
 
 export async function deleteAllAudioFiles(): Promise<void> {
   try {
-    const cacheDir = FileSystem.cacheDirectory
+    const cacheDir = new Directory(Paths.cache)
+
     if (!cacheDir) {
       Logger.logWarn('[audio] Cache directory not available')
       return
     }
 
     // Read all files in cache directory
-    const files = await FileSystem.readDirectoryAsync(cacheDir)
+    const files = cacheDir.list()
 
     // Filter files that start with 'audio_'
-    const audioFiles = files.filter((file) => file.startsWith('audio_'))
+    const audioFiles = files.filter((file) => file.name.startsWith('audio_'))
 
-    // Delete each audio file
-    const deletePromises = audioFiles.map((file) => {
-      const fileUri = `${cacheDir}${file}`
-      return FileSystem.deleteAsync(fileUri, { idempotent: true })
+    audioFiles.forEach((file) => {
+      return file.delete()
     })
-
-    await Promise.all(deletePromises)
 
     Logger.logInfo(`[audio] Deleted ${audioFiles.length} audio file(s)`)
   } catch (error) {

@@ -1,24 +1,12 @@
-import { cssInterop } from 'nativewind'
 import { useMemo } from 'react'
+import { useResolveClassNames } from 'uniwind'
 import { iconNameToSvg } from '~/modules/ui/svg-icon/index.static'
 import { variants } from '../icon/index.styles'
 
-import { SvgIconName, SvgIconProps } from './index.types'
+import { SvgIconProps } from './index.types'
 
 export function SvgIcon({ name, size = 'md', color = 'primary' }: SvgIconProps) {
-  const className = useMemo(() => variants({ size, color }), [color, size])
-
-  return <SvgIconInterop className={className} name={name} />
-}
-
-interface SvgIconInnerProps {
-  className: string
-  name: SvgIconName
-  size?: number
-  color?: string
-}
-
-const SvgIconInner = ({ name, color, size }: SvgIconInnerProps) => {
+  const styles = useResolveClassNames(variants({ size, color }))
   const Icon = useMemo(() => iconNameToSvg[name], [name])
 
   if (!Icon) {
@@ -26,15 +14,5 @@ const SvgIconInner = ({ name, color, size }: SvgIconInnerProps) => {
     return null
   }
 
-  return <Icon size={size} color={color} />
+  return <Icon color={styles.color?.toString()} size={styles.fontSize} />
 }
-
-const SvgIconInterop = cssInterop(SvgIconInner, {
-  className: {
-    target: false,
-    nativeStyleToProp: {
-      color: 'color',
-      fontSize: 'size',
-    },
-  },
-})

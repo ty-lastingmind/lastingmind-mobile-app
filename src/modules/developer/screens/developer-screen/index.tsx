@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { AnimatedTypographyShowcase } from '~/modules/developer/screens/developer-screen/parts/animated-typography-showcase'
 import { AvatarShowcase } from '~/modules/developer/screens/developer-screen/parts/avatar-showcase'
 
@@ -39,19 +40,21 @@ export function DeveloperScreen() {
   const Component = showCaseComponents[currentTab]
 
   return (
-    <View className="pt-safe gap-8">
-      <ScrollView horizontal contentContainerClassName="gap-2 px-4" showsHorizontalScrollIndicator={false}>
-        {Object.keys(showCaseComponents).map((label) => (
-          <TouchableOpacity key={label} onPress={() => setCurrentTab(label as ShowCaseComponent)}>
-            <Badge variant={currentTab === label ? 'primary' : 'outlined'} label={label} />
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <ScrollView className="px-4">
-        <SafeAreaView className="flex gap-8">
-          <Component />
-        </SafeAreaView>
-      </ScrollView>
-    </View>
+    <SafeAreaView>
+      <View className="gap-8">
+        <ScrollView horizontal contentContainerClassName="gap-2 px-4" showsHorizontalScrollIndicator={false}>
+          {Object.keys(showCaseComponents).map((label) => (
+            <TouchableOpacity key={label} onPress={() => setCurrentTab(label as ShowCaseComponent)}>
+              <Badge variant={currentTab === label ? 'primary' : 'outlined'} label={label} />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        <ScrollView className="px-4">
+          <View className="flex gap-8">
+            <Component />
+          </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   )
 }

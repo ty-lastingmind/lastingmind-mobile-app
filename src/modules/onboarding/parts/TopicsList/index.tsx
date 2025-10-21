@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, FlatList } from 'react-native'
+import { FlatList, TouchableOpacity, View } from 'react-native'
 import { Typography } from '~/modules/ui/typography'
 import { cn } from '~/utils/cn'
 

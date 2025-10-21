@@ -1,8 +1,8 @@
-import { View } from 'react-native'
 import React, { useEffect } from 'react'
-import { Typography } from '~/modules/ui/typography'
-import { useBoolean } from 'usehooks-ts'
+import { View } from 'react-native'
 import Animated, { FadeIn } from 'react-native-reanimated'
+import { useBoolean } from 'usehooks-ts'
+import { Typography } from '~/modules/ui/typography'
 
 interface TransitionProps {
   title: string

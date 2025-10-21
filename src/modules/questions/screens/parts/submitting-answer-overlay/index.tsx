@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react'
-import { View, TouchableOpacity } from 'react-native'
-import { Icon } from '~/modules/ui/icon'
-import { Typography } from '~/modules/ui/typography'
-import { Button } from '~/modules/ui/button'
-import { Dialog, DialogHeader, DialogFooter, DialogClose, DialogContent } from '~/modules/ui/dialog'
+import { TouchableOpacity, View } from 'react-native'
 import { useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
 import { AudioPlayer } from '~/modules/questions/screens/parts/audio-player'
+import { Button } from '~/modules/ui/button'
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from '~/modules/ui/dialog'
+import { Icon } from '~/modules/ui/icon'
+import { Typography } from '~/modules/ui/typography'
 
 interface SubmittingAnswerOverlayProps {
   question: string

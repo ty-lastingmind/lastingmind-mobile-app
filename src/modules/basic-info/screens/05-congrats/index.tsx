@@ -1,10 +1,10 @@
-import { View } from 'react-native'
-import React from 'react'
-import LottieView from 'lottie-react-native'
-import CheckSpecial from '~/modules/basic-info/assets/Check_Special.json'
-import { Typography } from '~/modules/ui/typography'
 import { Link } from 'expo-router'
+import LottieView from 'lottie-react-native'
+import React from 'react'
+import { View } from 'react-native'
+import CheckSpecial from '~/modules/basic-info/assets/Check_Special.json'
 import { Button } from '~/modules/ui/button'
+import { Typography } from '~/modules/ui/typography'
 
 export function BasicInfoCongratsPage() {
   return (

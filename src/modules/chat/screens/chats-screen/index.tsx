@@ -1,7 +1,7 @@
 import { useFocusEffect, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Alert, View } from 'react-native'
+import { Alert, ScrollView, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import Animated, { FadeInDown, runOnJS } from 'react-native-reanimated'
@@ -11,17 +11,16 @@ import { Avatar } from '~/modules/chat/screens/chats-screen/parts/avatar'
 import { StartingPrompts } from '~/modules/chat/screens/chats-screen/parts/starting-prompts'
 import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
+import { Button } from '~/modules/ui/button'
+import { Typography } from '~/modules/ui/typography'
 import {
   usePullCanChatWithChatPullCanChatWithGet,
   usePullStartingPromptsChatPullStartingPromptsGet,
   usePullUserInfoHomePullUserInfoGet,
   useRefineTextUtilsRefineTextPost,
 } from '~/services/api/generated'
-import { SearchParams } from '../../index.types'
-import { ScrollView } from 'react-native-gesture-handler'
 import { useChatContext } from '../../hooks/use-chat-context'
-import { Typography } from '~/modules/ui/typography'
-import { Button } from '~/modules/ui/button'
+import { SearchParams } from '../../index.types'
 
 export function ChatsScreen() {
   const router = useRouter()

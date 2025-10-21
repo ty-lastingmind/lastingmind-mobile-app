@@ -1,13 +1,13 @@
-import { View } from 'react-native'
-import React, { useEffect } from 'react'
-import { Typography } from '~/modules/ui/typography'
-import { Button } from '~/modules/ui/button'
 import { Link } from 'expo-router'
-import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
-import { Input } from '~/modules/ui/input'
+import React, { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form'
+import { View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { useFirebaseNotificationToken } from '~/hooks/use-firebase-notification-token'
+import { Button } from '~/modules/ui/button'
+import { Input } from '~/modules/ui/input'
+import { Typography } from '~/modules/ui/typography'
+import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 
 export function NameScreen() {
   const form = useOnboardingFormContext()

@@ -78,6 +78,8 @@ export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function 
     }
   }, [variant, size, btnContainerClassName, disabled, textClassNameProp])
 
+  console.log('[debug]', classNames.buttonClassName)
+
   return (
     <TouchableOpacity className={classNames.buttonClassName} {...props} ref={ref} disabled={disabled}>
       {loading && <ActivityIndicator />}

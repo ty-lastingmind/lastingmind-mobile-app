@@ -1,11 +1,11 @@
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { DrawerActions } from '@react-navigation/routers'
+import { Href, Link } from 'expo-router'
 import { useCallback, useMemo } from 'react'
 import { ActivityIndicator } from 'react-native'
 import { usePullCanChatWithChatPullCanChatWithGet } from '~/services/api/generated'
-import { DrawerJournalItem } from '../drawer-journal-item'
 import { DrawerJournalItem as DrawerJournalItemType } from '../../types'
-import { Href, Link } from 'expo-router'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { DrawerActions } from '@react-navigation/routers'
+import { DrawerJournalItem } from '../drawer-journal-item'
 
 type CanChatWithListProps = {
   navigation: DrawerContentComponentProps['navigation']

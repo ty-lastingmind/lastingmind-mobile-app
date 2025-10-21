@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
+
+import { useEffect, useState } from 'react'
+import { getUniqueId } from 'react-native-device-info'
 import { Notifications } from '~/services'
 import {
   useMoveFcmTokenOnboardingMoveFcmTokenPost,
   useUpdateFcmTokenUtilsUpdateFcmTokenPost,
   useUpdatePresignupFcmTokenUtilsUpdatePresignupFcmTokenPost,
 } from '~/services/api/generated'
-import { getUniqueId } from 'react-native-device-info'
-
-import { useState, useEffect } from 'react'
 import useUser from '../auth/use-user'
 
 export const useFirebaseNotificationToken = () => {

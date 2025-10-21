@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Svg, { Path } from 'react-native-svg'
 import { SvgProps } from '../index.types'
+
 export const Upload = ({ size, color, ...props }: SvgProps) => (
   <Svg width={size} height={size} fill="none" viewBox="0 0 20 20" {...props}>
     <Path

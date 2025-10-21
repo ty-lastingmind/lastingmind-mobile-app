@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { Alert, FlatList, View } from 'react-native'
 import { RefreshControl } from 'react-native-gesture-handler'
 import { useBoolean } from 'usehooks-ts'
+import { FALLBACK_QUICK_ACTIONS } from '~/modules/home/constants/fallback-data'
 import { HomeHeader } from '~/modules/home/parts/header'
 import { QuickActionItem } from '~/modules/home/parts/quick-action-item'
 import {
@@ -13,7 +14,6 @@ import {
   usePullActiveInvitesSentToUserInvitationsPullInvitationsSentToUserActiveGet,
 } from '~/services/api/generated'
 import type { ProgressData } from '~/services/api/model'
-import { FALLBACK_QUICK_ACTIONS } from '~/modules/home/constants/fallback-data'
 import { InvitationModal } from '../../parts/invitation-modal'
 
 const API_TIMEOUT_MS = 30000 // 30 seconds

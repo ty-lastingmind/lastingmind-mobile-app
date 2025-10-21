@@ -1,8 +1,8 @@
-import { TouchableOpacity } from 'react-native'
 import React from 'react'
-import { Typography } from '~/modules/ui/typography'
+import { TouchableOpacity } from 'react-native'
 import { Avatar } from '~/modules/ui/avatar'
 import { Icon } from '~/modules/ui/icon'
+import { Typography } from '~/modules/ui/typography'
 
 interface FilterBadgeProps {
   label: string

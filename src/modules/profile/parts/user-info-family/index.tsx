@@ -1,19 +1,19 @@
-import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React, { useState } from 'react'
+import { ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native'
+import { useBoolean } from 'usehooks-ts'
+import BadgeList from '~/modules/ui/badge-list'
+import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
+import { TypographyTyping } from '~/modules/ui/typography-typing'
 import {
   useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
   useEditPersonalInfoProfilePageEditPersonalInfoPost,
   usePullAiAboutProfilePagePullAiAboutPost,
 } from '~/services/api/generated'
 import { FamilyItem } from '~/services/api/model'
-import BadgeList from '~/modules/ui/badge-list'
-import { Typography } from '~/modules/ui/typography'
-import { TypographyTyping } from '~/modules/ui/typography-typing'
-import { SvgIcon } from '~/modules/ui/svg-icon'
-import { useProfileInfo } from '../../hooks/use-profile-info'
-import { useBoolean } from 'usehooks-ts'
-import FamilyForm from '../dialogs/family-form'
 import { FamilyFormData, useFamilyForm } from '../../hooks/use-family-form'
+import { useProfileInfo } from '../../hooks/use-profile-info'
+import FamilyForm from '../dialogs/family-form'
 
 export function FamilyInfo() {
   const {

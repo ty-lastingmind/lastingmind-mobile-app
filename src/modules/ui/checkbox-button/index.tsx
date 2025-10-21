@@ -1,7 +1,7 @@
-import { View, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { Typography } from '~/modules/ui/typography'
+import { TouchableOpacity, View } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
+import { Typography } from '~/modules/ui/typography'
 import { cn } from '~/utils/cn'
 
 interface CheckboxButtonProps {

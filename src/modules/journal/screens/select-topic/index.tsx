@@ -26,6 +26,8 @@ export function SelectTopicScreen() {
     }, [])
   )
 
+  console.log('[debug]', hasTopic)
+
   return (
     <ScreenContainer>
       <ScreenTitle>Choose Your Journal Topic</ScreenTitle>

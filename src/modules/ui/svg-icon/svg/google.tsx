@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Svg, { Defs, Pattern, Rect, Image, Use } from 'react-native-svg'
+import Svg, { Defs, Image, Pattern, Rect, Use } from 'react-native-svg'
 
 export const Google = () => (
   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">

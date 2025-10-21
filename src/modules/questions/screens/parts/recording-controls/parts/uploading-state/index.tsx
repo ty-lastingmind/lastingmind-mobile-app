@@ -1,5 +1,4 @@
-import { View } from 'react-native'
-import { ActivityIndicator } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import { Typography } from '~/modules/ui/typography'
 
 export const UploadingState = () => {

@@ -1,8 +1,8 @@
-import { View } from 'react-native'
 import React from 'react'
+import { View } from 'react-native'
+import BadgeList from '~/modules/ui/badge-list'
 import { Typography } from '~/modules/ui/typography'
 import { usePullTopicsDiscussedProfilePagePullDiscussedTopicsGet } from '~/services/api/generated'
-import BadgeList from '~/modules/ui/badge-list'
 
 export default function UserDiscussedTopics() {
   const { data: discussedTopics, isLoading } = usePullTopicsDiscussedProfilePagePullDiscussedTopicsGet()

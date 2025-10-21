@@ -1,8 +1,8 @@
+import { router } from 'expo-router'
 import { View } from 'react-native'
 import { Logo } from '~/modules/components/logo'
-import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
-import { router } from 'expo-router'
+import { Typography } from '~/modules/ui/typography'
 
 export function StartScreen() {
   return (

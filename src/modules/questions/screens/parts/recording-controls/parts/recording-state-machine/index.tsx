@@ -1,11 +1,10 @@
-import { InitialState } from '../initial-state'
-import { RecordingState } from '../recording-state'
-import { RecordedState } from '../recorded-state'
-import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
-import { UploadingState } from '../uploading-state'
 import { useQuestionContext } from '~/modules/questions/contexts/question-context'
+import { RecordingStatus, useRecordingContext } from '~/modules/questions/contexts/recording-context'
+import { InitialState } from '../initial-state'
+import { RecordedState } from '../recorded-state'
+import { RecordingState } from '../recording-state'
 import { SavedState } from '../saved-state'
-import { RecordingStatus } from '~/modules/questions/contexts/recording-context'
+import { UploadingState } from '../uploading-state'
 
 interface RecordingStateMachineProps {
   onSubmitAnswer: () => void

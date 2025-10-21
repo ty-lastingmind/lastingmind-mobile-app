@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react'
 import { View } from 'react-native'
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { Typography } from '~/modules/ui/typography'
 import { formatDuration } from '~/utils/player'
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 
 const MIN_PX = 12
 const MAX_PX = 120

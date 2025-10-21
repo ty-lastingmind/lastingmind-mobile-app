@@ -1,13 +1,13 @@
-import { View } from 'react-native'
+import { useRouter } from 'expo-router'
 import React from 'react'
-import { Typography } from '~/modules/ui/typography'
-import { Title } from '../../parts/title'
-import TermsOfService from '../../parts/terms-of-service'
-import { AppleButton } from '../../parts/apple-button'
-import { GoogleButton } from '../../parts/google-button'
+import { View } from 'react-native'
 import { Button } from '~/modules/ui/button'
 import { Icon } from '~/modules/ui/icon'
-import { useRouter } from 'expo-router'
+import { Typography } from '~/modules/ui/typography'
+import { AppleButton } from '../../parts/apple-button'
+import { GoogleButton } from '../../parts/google-button'
+import TermsOfService from '../../parts/terms-of-service'
+import { Title } from '../../parts/title'
 
 export function SignUpOptionsScreen() {
   const navigation = useRouter()

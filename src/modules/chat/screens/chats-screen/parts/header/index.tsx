@@ -5,15 +5,14 @@ import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
 import { useBoolean } from 'usehooks-ts'
 import { useMeasureElement } from '~/hooks/use-measure-element'
+import { useChatContext } from '~/modules/chat/hooks/use-chat-context'
 import { Logo } from '~/modules/components/logo'
 import { Avatar } from '~/modules/ui/avatar'
 import { Icon } from '~/modules/ui/icon'
 import { Popover } from '~/modules/ui/popover'
 import { Typography } from '~/modules/ui/typography'
-import { useChatContext } from '~/modules/chat/hooks/use-chat-context'
 import { usePullCanChatWithChatPullCanChatWithGet, usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
-import { CanChatWithItem } from '~/services/api/model'
-import { UserTypeResponseUserType } from '~/services/api/model'
+import { CanChatWithItem, UserTypeResponseUserType } from '~/services/api/model'
 
 type NavigationWithDrawer = NativeStackHeaderProps['navigation'] & {
   openDrawer?: () => void

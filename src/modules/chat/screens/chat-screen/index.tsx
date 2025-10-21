@@ -4,7 +4,9 @@ import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
+import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
 import { MessageSchema } from '~/hooks/use-chat-ws-connection/index.types'
+import { Chat } from '~/modules/components/chat'
 import { ChatWithUserIncomingMessage } from '~/modules/components/chat/composers/chat-with-user-incoming-message'
 import { IncomingMessageLoading } from '~/modules/components/chat/composers/incoming-message-loading'
 import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
@@ -20,8 +22,6 @@ import {
 } from '~/services/api/generated'
 import { CanChatWithItem } from '~/services/api/model'
 import { deleteAllAudioFiles, saveBase64ToFile } from '~/utils/files'
-import { Chat } from '~/modules/components/chat'
-import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
 
 interface ChatScreenProps {
   chattingWithViewId: string

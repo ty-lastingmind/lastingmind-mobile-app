@@ -1,5 +1,5 @@
-import { View } from 'react-native'
 import React from 'react'
+import { View } from 'react-native'
 import { Progress } from '~/modules/ui/progress'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'

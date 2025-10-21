@@ -1,16 +1,16 @@
 import React from 'react'
+import { UseFormReturn } from 'react-hook-form'
 import { TouchableOpacity, View } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
+import { levelOptions } from '~/modules/basic-info/hooks/use-education-info-form'
+import { Button } from '~/modules/ui/button'
 import { Dialog } from '~/modules/ui/dialog'
-import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
-import { Button } from '~/modules/ui/button'
-import { Typography } from '~/modules/ui/typography'
-import { UseFormReturn } from 'react-hook-form'
-import { EducationFormData } from '../../hooks/use-education-form'
 import { Selector } from '~/modules/ui/selector'
-import { levelOptions } from '~/modules/basic-info/hooks/use-education-info-form'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
+import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
+import { EducationFormData } from '../../hooks/use-education-form'
 
 interface EducationFormProps {
   isOpen?: boolean

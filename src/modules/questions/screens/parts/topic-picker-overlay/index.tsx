@@ -1,17 +1,17 @@
+import { router } from 'expo-router'
+import { useCallback, useState } from 'react'
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
+import { useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { Button } from '~/modules/ui/button'
 import { Dialog } from '~/modules/ui/dialog'
-import { Typography } from '~/modules/ui/typography'
 import { Input } from '~/modules/ui/input'
-import { useCallback, useState } from 'react'
+import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
 import {
   useGenerateNewSuggestedTopicsUtilsGenerateNewSuggestedTopicsPost,
   usePullSuggestedTopicsUtilsPullSuggestedTopicsGet,
   usePullUserInfoHomePullUserInfoGet,
 } from '~/services/api/generated'
-import { SvgIcon } from '~/modules/ui/svg-icon'
-import { router } from 'expo-router'
-import { useQuestionContext } from '~/modules/questions/contexts/question-context'
 
 interface TopicPickerOverlayProps {
   isOpen: boolean

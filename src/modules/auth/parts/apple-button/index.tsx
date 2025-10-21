@@ -1,6 +1,6 @@
 // import { useAppleSignIn } from '~/hooks/auth/use-apple-sign-in'
-import { View } from 'react-native'
 import * as AppleAuthentication from 'expo-apple-authentication'
+import { View } from 'react-native'
 
 export function AppleButton() {
   // TODO: Configure Apple sign in certificates

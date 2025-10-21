@@ -18,7 +18,7 @@ export function TopicsCard({ onTopicChange, customTopicName, topics, selectedTop
       <Typography color="accent">Suggested Topics</Typography>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="flex flex-row flex-wrap gap-1.5 pb-4">
         {topics.map((topic, index) => (
-          <TouchableOpacity key={index} onPress={() => onTopicChange(topic)}>
+          <TouchableOpacity activeOpacity={0.8} key={index} onPress={() => onTopicChange(topic)}>
             <Badge variant={!customTopicName && selectedTopic === topic ? 'primary' : 'secondary'} label={topic} />
           </TouchableOpacity>
         ))}
