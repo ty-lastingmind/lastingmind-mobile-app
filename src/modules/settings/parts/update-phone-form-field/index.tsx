@@ -11,7 +11,7 @@ interface UpdatePhoneFormFieldProps {
 export function UpdatePhoneFormField({ label, value, onChangeText, showSeparator }: UpdatePhoneFormFieldProps) {
   return (
     <View
-      className={`flex-row items-center justify-between px-[24px] gap-[12px] ${showSeparator ? 'border-b border-miscellaneous-topic-stroke' : ''}`}
+      className={`flex flex-row items-center justify-between px-[24px] gap-[12px] ${showSeparator ? 'border-b border-miscellaneous-topic-stroke' : ''}`}
     >
       <Typography brand level="h5" weight="bold" color="accent">
         {label}

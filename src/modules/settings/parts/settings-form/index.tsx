@@ -22,7 +22,7 @@ export function SettingsForm() {
   ]
 
   return (
-    <View className="bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
+    <View className="flex flex bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
       {settingsItems.map((item, index) => {
         return <SettingsFormOption item={item} key={index} showSeparator={index === settingsItems.length - 1} />
       })}

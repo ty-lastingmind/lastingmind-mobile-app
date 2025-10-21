@@ -18,7 +18,7 @@ export function UserForm() {
   }
 
   return (
-    <View className="bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
+    <View className="flex bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
       <UserFormField label="New First Name" value={firstName} onChangeText={handleChangeFirstName} showSeparator />
       <UserFormField label="New Last Name" value={lastName} onChangeText={handleChangeLastName} />
     </View>

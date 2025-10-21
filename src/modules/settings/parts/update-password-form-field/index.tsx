@@ -16,7 +16,7 @@ export function UpdatePasswordFormField({ label, showSeparator, value, onChangeT
 
   return (
     <View
-      className={`flex-row items-center justify-between pl-[24px] pr-[12px] gap-[12px] ${showSeparator ? 'border-b border-miscellaneous-topic-stroke' : ''}`}
+      className={`flex flex-row items-center justify-between pl-[24px] pr-[12px] gap-[12px] ${showSeparator ? 'border-b border-miscellaneous-topic-stroke' : ''}`}
     >
       <Typography brand level="h5" weight="bold" color="accent">
         {label}

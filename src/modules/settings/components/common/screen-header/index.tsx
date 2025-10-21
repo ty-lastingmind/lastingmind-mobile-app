@@ -16,7 +16,7 @@ export function SettingsHeader({ title, showBackButton = true }: SettingsHeaderP
   }
 
   return (
-    <View className="flex-row items-center justify-between h-[72px] px-[30px] py-[16px]">
+    <View className="flex flex-row items-center justify-between h-[72px] px-[30px] py-[16px]">
       {showBackButton ? (
         <TouchableOpacity className="w-[40px]" onPress={handleBackPress}>
           <Ionicons name="chevron-back" size={40} color="accent" />

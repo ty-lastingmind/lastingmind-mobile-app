@@ -13,7 +13,7 @@ export function SettingsFormOption({ item, showSeparator }: SettingsFormOptionPr
   return (
     <TouchableOpacity
       onPress={item.onPress}
-      className={`flex-row items-center justify-between h-[100px] pl-[24px] pr-[12px] gap-[12px] ${!showSeparator ? 'border-b border-miscellaneous-topic-stroke' : ''}`}
+      className={`flex flex-row items-center justify-between h-[100px] pl-[24px] pr-[12px] gap-[12px] ${!showSeparator ? 'border-b border-miscellaneous-topic-stroke' : ''}`}
     >
       <SvgIcon name={item.icon as SvgIconName} size="2xl" color="accent" />
       <View className="flex-1 flex-col gap-[10px]">

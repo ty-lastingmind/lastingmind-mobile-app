@@ -8,7 +8,7 @@ export function UpdatePhoneForm() {
   const { updatePhoneNumber, currentValues, newPhoneNumber } = useSettings()
 
   return (
-    <View className="bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
+    <View className="flex bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
       <View className="flex-row items-center justify-between h-[52px] px-[24px] gap-[12px] border-b border-miscellaneous-topic-stroke">
         <Typography brand level="h5" weight="bold" color="accent">
           Current

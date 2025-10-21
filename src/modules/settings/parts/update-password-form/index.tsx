@@ -14,7 +14,7 @@ export function UpdatePasswordForm() {
   } = useSettings()
 
   return (
-    <View className="bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
+    <View className="flex bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
       <UpdatePasswordFormField
         label="Current"
         value={currentPassword}

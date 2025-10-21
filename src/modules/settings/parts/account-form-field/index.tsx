@@ -13,7 +13,7 @@ export function AccountFormField({ field, showSeparator }: AccountFormFieldProps
   return (
     <TouchableOpacity
       onPress={field.onPress}
-      className={`flex-row items-center justify-between h-[52px] pl-[24px] pr-[12px] gap-[12px] ${!showSeparator ? 'border-b border-miscellaneous-topic-stroke' : ''}`}
+      className={`flex flex-row items-center justify-between h-[52px] pl-[24px] pr-[12px] gap-[12px] ${!showSeparator ? 'border-b border-miscellaneous-topic-stroke' : ''}`}
     >
       <Typography brand level="h5" weight="bold" color="accent">
         {field.label}

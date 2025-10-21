@@ -28,7 +28,7 @@ export function AccountForm() {
   ]
 
   return (
-    <View className="bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
+    <View className="flex bg-bg-secondary rounded-t-[20px] rounded-b-[20px]">
       {accountFields.map((field, index) => {
         return <AccountFormField field={field} showSeparator={index === accountFields.length - 1} key={index} />
       })}
