@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import Animated, { FadeIn } from 'react-native-reanimated'
 import { useBoolean } from 'usehooks-ts'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import Congrats from '~/modules/onboarding/assets/Congrats.json'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
@@ -52,6 +53,7 @@ function SecondView() {
 
 export function CongratsScreen() {
   const { value: showSecondScreen, setTrue: setShowSecondScreen } = useBoolean(false)
+  const safeStyles = useSafeAreaStyles()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -61,5 +63,9 @@ export function CongratsScreen() {
     return () => clearTimeout(timer)
   }, [])
 
-  return <View className="gap-4 px-8 py-safe flex flex-1">{!showSecondScreen ? <FirstView /> : <SecondView />}</View>
+  return (
+    <View className="gap-4 px-8 flex flex-1" style={safeStyles}>
+      {!showSecondScreen ? <FirstView /> : <SecondView />}
+    </View>
+  )
 }

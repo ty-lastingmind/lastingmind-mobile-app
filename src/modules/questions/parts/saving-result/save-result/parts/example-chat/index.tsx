@@ -1,5 +1,6 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { IncomingMessage } from '~/modules/components/chat/composers/incoming-message'
 import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
 import { Button } from '~/modules/ui/button'
@@ -17,8 +18,10 @@ interface ExampleChatProps {
 }
 
 export function ExampleChat({ title, caption, overline, message, answer, onPress }: ExampleChatProps) {
+  const pbSafeStyles = usePbSafeStyles()
+
   return (
-    <View className="px-6 flex-1 pb-safe gap-8">
+    <View className="px-6 flex-1 gap-8" style={pbSafeStyles}>
       <View className="gap-4">
         <Typography className="text-center" brand level="h2">
           {title}

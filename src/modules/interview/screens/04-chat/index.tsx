@@ -177,7 +177,7 @@ export function ChatScreen() {
 
   return (
     <>
-      <View className="flex-1 pb-safe px-4" style={pbStyles}>
+      <View className="flex-1 px-4" style={pbStyles}>
         <Chat.Provider
           meta={{
             chattingWithViewId: '',

@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Alert, ScrollView, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { useUid } from '~/hooks/auth/use-uid'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import { useFirebaseNotificationToken } from '~/hooks/use-firebase-notification-token'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
@@ -37,6 +38,7 @@ export function TopicsPage() {
   const router = useRouter()
   const { needsToUpgrade } = useLocalSearchParams()
   const { moveFcmToken } = useFirebaseNotificationToken()
+  const safeStyles = useSafeAreaStyles()
 
   const initializeUser = useInitializeUserOnboardingInitializeUserPost()
   const upgradeUser = useUpgradeToSuperUserChatOnlyUserUpgradeToSuperUserPost()
@@ -99,7 +101,7 @@ export function TopicsPage() {
   }
 
   return (
-    <View className="gap-4 px-8 py-safe flex flex-1">
+    <View className="gap-4 px-8 flex flex-1" style={safeStyles}>
       <View className="pt-28 gap-2">
         <Typography brand level="h3" color="accent">
           What topics matter most to you.

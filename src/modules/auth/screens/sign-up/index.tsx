@@ -4,6 +4,7 @@ import { View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 
 import { useSignUpWithEmailAndPassword } from '~/hooks/auth/use-sign-up-with-email-and-password'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import { Title } from '~/modules/auth/parts/title'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
@@ -12,6 +13,7 @@ import TermsOfService from '../../parts/terms-of-service'
 
 export function SignUpScreen() {
   const signUpWithEmailAndPasswordMutation = useSignUpWithEmailAndPassword()
+  const safeStyles = useSafeAreaStyles()
 
   const form = useForm({
     resolver: zodResolver(signUpFormSchema),
@@ -25,7 +27,7 @@ export function SignUpScreen() {
   }
 
   return (
-    <View className="gap-4 px-10 py-safe flex flex-1 justify-between">
+    <View className="gap-4 px-10 flex flex-1 justify-between" style={safeStyles}>
       <View className="flex-1">
         <View className="py-24 gap-4">
           <Title>LastingMind</Title>

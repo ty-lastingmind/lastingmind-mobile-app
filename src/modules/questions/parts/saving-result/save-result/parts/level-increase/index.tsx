@@ -4,6 +4,7 @@ import { Badge } from '~/modules/ui/badge'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { Animation, animations } from '../../index.static'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 
 interface LevelIncreaseProps {
   title: string
@@ -14,8 +15,10 @@ interface LevelIncreaseProps {
 }
 
 export function LevelIncrease({ title, topics, onTryChatPress, onContinuePress, animation }: LevelIncreaseProps) {
+  const pbSafeStyles = usePbSafeStyles()
+
   return (
-    <View className="flex-1 pb-safe gap-16 pt-8">
+    <View style={pbSafeStyles} className="flex-1 gap-16 pt-8">
       <Typography level="h2" brand className="text-center">
         {title}
       </Typography>

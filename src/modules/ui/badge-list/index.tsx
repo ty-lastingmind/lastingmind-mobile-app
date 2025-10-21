@@ -58,7 +58,7 @@ export default function BadgeList({
           <FlatList
             scrollEnabled={false}
             contentContainerClassName="gap-2"
-            numColumns={flatListRows}
+            numColumns={flatListRows <= 1 ? 2 : flatListRows}
             data={list}
             keyExtractor={(item, index) => item + index}
             renderItem={({ item: label, index }) => (

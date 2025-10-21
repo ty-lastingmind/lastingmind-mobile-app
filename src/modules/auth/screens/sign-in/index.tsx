@@ -16,10 +16,12 @@ import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { AppleButton } from '../../parts/apple-button'
 import WarningLabel from '../../parts/warning-label'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 
 export function SignInScreen() {
   const signInWithEmailAndPasswordMutation = useSignInWithEmailAndPassword()
   const router = useRouter()
+  const safeStyles = useSafeAreaStyles()
 
   const form = useForm({
     resolver: zodResolver(emailPasswordSchema),
@@ -37,7 +39,7 @@ export function SignInScreen() {
   }
 
   return (
-    <View className="gap-4 px-10 py-safe flex flex-1 justify-between">
+    <View style={safeStyles} className="gap-4 px-10 flex flex-1 justify-between">
       <View>
         <View className="py-24">
           <Title>LastingMind</Title>

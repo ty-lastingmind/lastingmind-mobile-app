@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { ResponseDialog } from '~/modules/profile/parts/past-responses/response-dialog'
 import { Typography } from '~/modules/ui/typography'
 import {
@@ -16,6 +17,7 @@ export function QuestionsScreen() {
   const { data: canChatWith } = usePullCanChatWithChatPullCanChatWithGet()
   const [selectedQuestion, setSelectedQuestion] = useState<RecentQuestionItem | null>(null)
   const { value: isDialogOpen, setTrue: openDialog, setFalse: closeDialog } = useBoolean(false)
+  const pbSafeStyles = usePbSafeStyles()
 
   const handleQuestionPress = (question: RecentQuestionItem) => {
     setSelectedQuestion(question)
@@ -43,7 +45,8 @@ export function QuestionsScreen() {
           </View>
         }
         className="gap-4 px-4 pt-4"
-        contentContainerClassName="gap-4 pb-safe"
+        contentContainerClassName="gap-4"
+        contentContainerStyle={pbSafeStyles}
         renderItem={({ item }) => <QuestionCard question={item} onPress={handleQuestionPress} />}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => `${item.question_title}-${index}`}

@@ -1,6 +1,7 @@
 import { router } from 'expo-router'
 import React, { useCallback } from 'react'
 import { Alert, View } from 'react-native'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { useInitializeUserOnboardingInitializeUserPost } from '~/services/api/generated'
@@ -15,6 +16,7 @@ export function AgePage() {
   const form = useOnboardingFormContext()
   const currentAge = form.watch('age')
   const initializeUser = useInitializeUserOnboardingInitializeUserPost()
+  const safeStyles = useSafeAreaStyles()
 
   const handleCheckboxChange = (label: string) => {
     form.setValue('age', label)
@@ -45,7 +47,7 @@ export function AgePage() {
   }, [currentAge, form, initializeUser])
 
   return (
-    <View className="gap-4 px-8 py-safe flex flex-1">
+    <View className="gap-4 px-8 flex flex-1" style={safeStyles}>
       <View className="pt-28 gap-2">
         <Typography brand level="h3" color="accent">
           How old are you?

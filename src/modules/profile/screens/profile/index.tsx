@@ -1,4 +1,5 @@
 import { ScrollView } from 'react-native'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import { useGetUserTypeUtilsPullUserTypeGet } from '~/services/api/generated'
 import { DeveloperProfileScreen } from '../../developer-profile-screen'
 import ChatUserProfile from '../../parts/chat-user-profile'
@@ -11,13 +12,14 @@ import UserSuggestedTopics from '../../parts/user-suggested-topics'
 export function ProfileScreen() {
   const { data: userType } = useGetUserTypeUtilsPullUserTypeGet()
   const isChatUser = userType?.user_type === 'chat_user'
+  const safeStyles = useSafeAreaStyles()
 
   if (isChatUser) {
     return <ChatUserProfile />
   }
 
   return (
-    <ScrollView contentContainerClassName="py-safe flex px-8 gap-4">
+    <ScrollView contentContainerClassName="flex px-8 gap-4" contentContainerStyle={safeStyles}>
       <UserInfo />
       <UserAudience />
       <UserSuggestedTopics />
