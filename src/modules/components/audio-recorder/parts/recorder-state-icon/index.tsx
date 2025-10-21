@@ -29,7 +29,7 @@ export function RecorderStateIcon({
     } =>
       recorderState.isRecording
         ? {
-            icon: 'pause-outline',
+            icon: 'stop',
             onPress: onStopRecording,
             label: 'Listening...',
           }
