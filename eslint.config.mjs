@@ -18,6 +18,7 @@ export default defineConfig([
     'metro.config.js',
     'babel.config.js',
     'src/services/api/**/*',
+    'uniwind-types.d.ts',
   ]),
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'], plugins: { js }, extends: ['js/recommended'] },
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'], languageOptions: { globals: globals.browser } },
