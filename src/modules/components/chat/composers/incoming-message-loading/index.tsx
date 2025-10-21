@@ -12,7 +12,6 @@ export function IncomingMessageLoading() {
         <Avatar source={meta?.avatarSrc} />
         <ActivityIndicator />
       </C.HeaderContainer>
-      <C.Text text="Loading..." />
     </C.Container>
   )
 }
