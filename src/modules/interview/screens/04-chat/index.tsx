@@ -188,17 +188,19 @@ export function ChatScreen() {
           actions={actions}
         >
           <Chat.Scroll contentContainerClassName="px-4">
-            {state.messages.map((message) => (
-              <React.Fragment key={message.index}>
-                {message.isIncoming ? (
-                  <InterviewIncomingMessage message={message} />
-                ) : (
-                  <OutgoingMessage message={message} />
-                )}
-              </React.Fragment>
-            ))}
-            {generateNextQuestion.isPending && <IncomingMessageLoading />}
-            {refineText.isPending && <OutgoingMessageLoading />}
+            <View className="gap-3">
+              {state.messages.map((message) => (
+                <React.Fragment key={message.index}>
+                  {message.isIncoming ? (
+                    <InterviewIncomingMessage message={message} />
+                  ) : (
+                    <OutgoingMessage message={message} />
+                  )}
+                </React.Fragment>
+              ))}
+              {generateNextQuestion.isPending && <IncomingMessageLoading />}
+              {refineText.isPending && <OutgoingMessageLoading />}
+            </View>
           </Chat.Scroll>
         </Chat.Provider>
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-11 pt-2">
