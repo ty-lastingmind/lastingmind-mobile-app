@@ -1,5 +1,6 @@
 import LottieView from 'lottie-react-native'
 import { View } from 'react-native'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { Button } from '~/modules/ui/button'
 import { Progress } from '~/modules/ui/progress'
 import { Typography } from '~/modules/ui/typography'
@@ -24,8 +25,10 @@ export function PercentIncrease({
   description,
   onPress,
 }: PercentIncreaseProps) {
+  const pbSafeStyles = usePbSafeStyles()
+
   return (
-    <View className="flex-1 pb-safe gap-10">
+    <View className="flex-1 gap-10" style={pbSafeStyles}>
       <Typography brand className="text-center" level="h2">
         {title}
       </Typography>

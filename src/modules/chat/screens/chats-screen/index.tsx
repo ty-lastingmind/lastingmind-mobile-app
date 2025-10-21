@@ -5,8 +5,10 @@ import { Alert, ScrollView, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import Animated, { FadeInDown, runOnJS } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useBoolean } from 'usehooks-ts'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { Avatar } from '~/modules/chat/screens/chats-screen/parts/avatar'
 import { StartingPrompts } from '~/modules/chat/screens/chats-screen/parts/starting-prompts'
 import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
@@ -30,8 +32,10 @@ export function ChatsScreen() {
     },
   })
   const { audioRecorder, recordingControls } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
+  const pbSafeStyles = usePbSafeStyles()
   const userQuery = usePullUserInfoHomePullUserInfoGet()
   const refineText = useRefineTextUtilsRefineTextPost()
+  const insets = useSafeAreaInsets()
   const { chattingWithUser, chattingWithViewId } = useChatContext()
   const showPrompts = useBoolean(true)
   const startingPrompts = usePullStartingPromptsChatPullStartingPromptsGet(
@@ -118,7 +122,7 @@ export function ChatsScreen() {
   if (hasNoChats) {
     return (
       <GestureDetector gesture={swipeGesture}>
-        <View className="flex-1 justify-center items-center w-full px-8 pb-safe">
+        <View style={pbSafeStyles} className="flex-1 justify-center items-center w-full px-8">
           <View className="flex-[2] justify-center gap-6">
             <Typography level="h1" weight="bold" brand className="text-center leading-none text-[40px]">
               You do not have access to chat with anyone yet!
@@ -148,8 +152,11 @@ export function ChatsScreen() {
 
   return (
     <ScrollView
-      contentContainerClassName="pt-6 pb-safe flex-1 flex justify-between"
+      contentContainerClassName="pt-6 flex-1 flex justify-between"
       keyboardShouldPersistTaps="handled"
+      style={{
+        paddingBottom: insets.bottom,
+      }}
       bounces={false}
     >
       <View className="mx-auto">

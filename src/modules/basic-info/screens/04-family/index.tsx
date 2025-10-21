@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
 import { Alert, KeyboardAvoidingView, ScrollView, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import { Button } from '~/modules/ui/button'
 import { Form } from '~/modules/ui/form'
 import { InputGroup } from '~/modules/ui/input-group'
@@ -32,6 +33,7 @@ export function FamilySurveyPage() {
   const { value: showForm, setTrue: openForm, setFalse: closeForm } = useBoolean(true)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const router = useRouter()
+  const safeStyles = useSafeAreaStyles()
 
   const { mutateAsync, isPending } = useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost()
 
@@ -95,7 +97,7 @@ export function FamilySurveyPage() {
 
   return (
     <Transition title="Response Saved!" subtitle="Last Question!">
-      <View className="flex-1 px-8 py-safe">
+      <View className="flex-1 px-8" style={safeStyles}>
         <KeyboardAvoidingView behavior="padding" className="flex-1">
           <ScrollView contentContainerClassName="gap-4 pb-8" bounces={false} showsVerticalScrollIndicator={false}>
             <View className="pt-28 gap-2">

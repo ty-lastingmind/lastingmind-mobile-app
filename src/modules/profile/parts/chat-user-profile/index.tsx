@@ -1,4 +1,5 @@
 import { FlatList, View } from 'react-native'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import { Avatar } from '~/modules/ui/avatar'
 import { Typography } from '~/modules/ui/typography'
 import {
@@ -13,13 +14,14 @@ export default function ChatUserProfile() {
   const { data: canChatWith, isLoading: isLoadingCanChatWith } = usePullCanChatWithChatPullCanChatWithGet()
   const { data: sentQuestions, isLoading: isLoadingSentQuestions } =
     usePullSentQuestionsChatOnlyUserPullSentQuestionsGet()
+  const safeStyles = useSafeAreaStyles()
 
   if (isLoadingUserInfo || isLoadingCanChatWith || isLoadingSentQuestions) {
     return null
   }
 
   return (
-    <View className="py-safe flex px-8 gap-4">
+    <View className="flex px-8 gap-4" style={safeStyles}>
       <FlatList
         data={sentQuestions?.sent_questions}
         ListHeaderComponent={() => (

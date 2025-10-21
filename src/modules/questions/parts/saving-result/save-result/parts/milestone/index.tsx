@@ -1,5 +1,6 @@
 import LottieView from 'lottie-react-native'
 import { View } from 'react-native'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { animations } from '../../index.static'
@@ -13,8 +14,10 @@ interface MilestoneProps {
 }
 
 export function Milestone({ title, caption, text, animation, onPress }: MilestoneProps) {
+  const pbSafeStyles = usePbSafeStyles()
+
   return (
-    <View className="flex-1 pb-safe pt-8 px-8">
+    <View className="flex-1 pt-8 px-8" style={pbSafeStyles}>
       <Typography className="text-center" brand level="h2">
         {title}
       </Typography>

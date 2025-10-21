@@ -2,9 +2,11 @@ import React, { useMemo, useState } from 'react'
 import { View } from 'react-native'
 import { Calendar } from 'react-native-calendars'
 import { MarkingProps } from 'react-native-calendars/src/calendar/day/marking'
+import { MarkedDates } from 'react-native-calendars/src/types'
 
 import { Button } from '../button'
 import { Dialog } from '../dialog'
+import { useResolveClassNames } from 'uniwind'
 
 interface DatePickerDialogProps {
   isOpen: boolean
@@ -25,6 +27,7 @@ export function DatePickerDialog({
 }: DatePickerDialogProps) {
   const [startDate, setStartDate] = useState<string | undefined>(startDateValue ? startDateValue : undefined)
   const [endDate, setEndDate] = useState<string | undefined>(endDateValue ? endDateValue : undefined)
+  const styles = useResolveClassNames('bg-bg-primary text-accent')
 
   function getMarkedDates(startDate: string | undefined, endDate: string | undefined) {
     if (!startDate) return undefined
@@ -35,8 +38,8 @@ export function DatePickerDialog({
       return {
         [currentDate.toISOString().split('T')[0]]: {
           selected: true,
-          selectedColor: 'colors.accent',
-          textColor: "colors['bg-primary']",
+          selectedColor: styles.color,
+          textColor: styles.backgroundColor,
         },
       }
     }
@@ -47,11 +50,22 @@ export function DatePickerDialog({
     while (currentDate <= end) {
       const dateString = currentDate.toISOString().split('T')[0]
       if (dateString === startDate) {
-        markedDates[dateString] = { startingDay: true, color: 'colors.accent', textColor: "colors['bg-primary']" }
+        markedDates[dateString] = {
+          startingDay: true,
+          color: styles.color?.toString(),
+          textColor: styles.backgroundColor?.toString() ?? '',
+        }
       } else if (dateString === endDate) {
-        markedDates[dateString] = { endingDay: true, color: 'colors.accent', textColor: "colors['bg-primary']" }
+        markedDates[dateString] = {
+          endingDay: true,
+          color: styles.color?.toString(),
+          textColor: styles.backgroundColor?.toString() ?? '',
+        }
       } else {
-        markedDates[dateString] = { color: 'colors.accent', textColor: "colors['bg-primary']" }
+        markedDates[dateString] = {
+          color: styles.color?.toString(),
+          textColor: styles.backgroundColor?.toString() ?? '',
+        }
       }
       currentDate.setDate(currentDate.getDate() + 1)
     }
@@ -92,11 +106,11 @@ export function DatePickerDialog({
       <View>
         <Calendar
           theme={{
-            arrowColor: 'colors.accent',
-            todayTextColor: 'colors.accent',
+            arrowColor: styles.color?.toString(),
+            todayTextColor: styles.color?.toString(),
           }}
           markingType={endDate || startDate === endDate ? 'period' : 'dot'}
-          markedDates={markedDates}
+          markedDates={markedDates as MarkedDates} // todo: fix type
           onDayPress={handleDayPress}
         />
         <View className="gap-2">

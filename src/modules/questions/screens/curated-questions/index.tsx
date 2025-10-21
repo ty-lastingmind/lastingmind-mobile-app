@@ -1,6 +1,7 @@
 import { useNavigation } from 'expo-router'
 import { useCallback, useEffect } from 'react'
 import { ActivityIndicator, FlatList, TouchableOpacity, View } from 'react-native'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { QuestionProvider, useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { Icon } from '~/modules/ui/icon'
 import { Progress } from '~/modules/ui/progress'
@@ -21,6 +22,7 @@ export function CuratedQuestionsScreen() {
 
 const CuratedQuestionsContent = () => {
   const navigation = useNavigation()
+  const pbSafeStyles = usePbSafeStyles()
 
   const {
     nextQuestions,
@@ -122,7 +124,7 @@ const CuratedQuestionsContent = () => {
         scrollEventThrottle={16}
       />
       <View className="px-6 pb-5">
-        <View className="flex-row items-center justify-between pb-safe">
+        <View className="flex-row items-center justify-between" style={pbSafeStyles}>
           <TouchableOpacity onPress={handlePreviousPress} className="p-2" disabled={currentQuestionIndex === 0}>
             <Icon name="chevron-back" size="xl" color={currentQuestionIndex === 0 ? 'tertiary' : 'secondary'} />
           </TouchableOpacity>
