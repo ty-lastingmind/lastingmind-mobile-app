@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from 'react-native'
+import { Alert, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { Button } from '~/modules/ui/button'
@@ -45,11 +45,10 @@ export function VoiceCloneTestYourMic() {
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={player.paused ? play : pause}
-            disabled={!recordingUri}
+            onPress={() => Alert.alert('Contact Us for Help: help@lastingmind.ai')}
             className="w-20 h-20 rounded-full items-center justify-center border-2 border-fill-accent mt-4"
           >
-            <Icon name="arrow-redo" size="lg" color="accent" />
+            <Icon name="help-outline" size="lg" color="accent" />
           </TouchableOpacity>
         </View>
       </View>

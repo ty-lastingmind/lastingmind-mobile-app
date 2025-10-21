@@ -75,6 +75,7 @@ export function useRecorder() {
   }
 
   return {
+    audioRecorder,
     recordingUri,
     setRecordingUri,
     record,

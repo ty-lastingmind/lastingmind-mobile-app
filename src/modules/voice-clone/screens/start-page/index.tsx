@@ -3,7 +3,7 @@ import React from 'react'
 import { Typography } from '~/modules/ui/typography'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Button } from '~/modules/ui/button'
-import { Link } from 'expo-router'
+import { Link, Redirect } from 'expo-router'
 import {
   usePullCloningProgressVoiceClonePullCloningProgressGet,
   usePullCloningStatusVoiceClonePullCloningStatusGet,
@@ -21,6 +21,10 @@ export function VoiceCloneStartPage() {
         <Typography>Loading...</Typography>
       </View>
     )
+  }
+
+  if (data.status === 'complete') {
+    return <Redirect href="/(protected)/voice-clone/clone-test" />
   }
 
   if (data.status === 'not_started') {
