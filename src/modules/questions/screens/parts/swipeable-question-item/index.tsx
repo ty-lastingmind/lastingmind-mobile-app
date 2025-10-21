@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from 'react'
+import { router } from 'expo-router'
+import React, { useCallback, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, interpolate } from 'react-native-reanimated'
-import { Typography } from '~/modules/ui/typography'
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { Button } from '~/modules/ui/button'
 import { Dialog, DialogContent, DialogFooter } from '~/modules/ui/dialog'
-import { SavedQuestionsOutputSavedQuestionsAnyOfItem } from '~/services/api/model'
 import { SvgIcon } from '~/modules/ui/svg-icon'
-import { router } from 'expo-router'
+import { Typography } from '~/modules/ui/typography'
+import { SavedQuestionsOutputSavedQuestionsAnyOfItem } from '~/services/api/model'
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 

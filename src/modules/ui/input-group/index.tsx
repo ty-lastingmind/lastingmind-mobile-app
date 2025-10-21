@@ -1,11 +1,11 @@
-import { View } from 'react-native'
 import React from 'react'
-import { Typography } from '../typography'
+import { FieldValues, Path, UseFormReturn } from 'react-hook-form'
+import { View } from 'react-native'
+import { cn } from '~/utils/cn'
+import { FormControl, FormField, FormItem } from '../form'
 import { Input } from '../input'
 import { Selector } from '../selector'
-import { cn } from '~/utils/cn'
-import { UseFormReturn, FieldValues, Path } from 'react-hook-form'
-import { FormControl, FormField, FormItem } from '../form'
+import { Typography } from '../typography'
 
 interface InputListType {
   name: string

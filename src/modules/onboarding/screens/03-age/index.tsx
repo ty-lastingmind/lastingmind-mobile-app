@@ -1,11 +1,11 @@
-import { Alert, View } from 'react-native'
-import React, { useCallback } from 'react'
-import { Typography } from '~/modules/ui/typography'
-import { Button } from '~/modules/ui/button'
-import { CheckboxList } from '../../../ui/checkbox-list'
 import { router } from 'expo-router'
-import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
+import React, { useCallback } from 'react'
+import { Alert, View } from 'react-native'
+import { Button } from '~/modules/ui/button'
+import { Typography } from '~/modules/ui/typography'
 import { useInitializeUserOnboardingInitializeUserPost } from '~/services/api/generated'
+import { CheckboxList } from '../../../ui/checkbox-list'
+import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 
 const ageOptions = ['Less than 20', '20s', '30s', '40s', '50s', '60+']
 // todo: replace with chat user check when link is added

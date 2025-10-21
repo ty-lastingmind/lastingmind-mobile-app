@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { Notifications, NotificationHandler } from '~/services'
+import { NotificationHandler, Notifications } from '~/services'
 import { useFirebaseNotificationToken } from '../use-firebase-notification-token'
 
 export function useInitServices() {

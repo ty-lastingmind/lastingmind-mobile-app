@@ -1,12 +1,12 @@
-import { FlatList } from 'react-native'
 import { useCallback } from 'react'
+import { FlatList } from 'react-native'
+import { queryClient } from '~/libs/query-client'
 import {
-  usePullSavedQuestionsCuratedQuestionsPullSavedQuestionsGet,
-  useDeleteSavedQuestionsCuratedQuestionsDeleteSavedQuestionPost,
   getPullSavedQuestionsCuratedQuestionsPullSavedQuestionsGetQueryKey,
+  useDeleteSavedQuestionsCuratedQuestionsDeleteSavedQuestionPost,
+  usePullSavedQuestionsCuratedQuestionsPullSavedQuestionsGet,
 } from '~/services/api/generated'
 import { SwipeableQuestionItem } from '../parts/swipeable-question-item'
-import { queryClient } from '~/libs/query-client'
 
 export function SavedQuestionsScreen() {
   const { data: savedQuestions } = usePullSavedQuestionsCuratedQuestionsPullSavedQuestionsGet()

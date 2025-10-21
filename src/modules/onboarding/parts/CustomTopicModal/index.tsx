@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import {
-  View,
+  Keyboard,
+  KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  Keyboard,
+  View,
 } from 'react-native'
 import { Dialog } from '~/modules/ui/dialog'
 import { Icon } from '~/modules/ui/icon'

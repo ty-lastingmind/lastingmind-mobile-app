@@ -1,13 +1,13 @@
+import { useRouter } from 'expo-router'
 import { useCallback, useMemo } from 'react'
 import { View } from 'react-native'
+import { Avatar } from '~/modules/ui/avatar'
 import { Button } from '~/modules/ui/button'
 import { CircularProgress } from '~/modules/ui/circular-progress'
+import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
 import { SentQuestionData, TopContainer, UIActiveInivteItem } from '~/services/api/model'
-import { SvgIcon } from '~/modules/ui/svg-icon'
-import { Avatar } from '~/modules/ui/avatar'
 import { bannerConfigToData, FALLBACK_BANNER_CONFIG } from '../../constants/banner-config'
-import { useRouter } from 'expo-router'
 
 interface BannerProps {
   topContainer: TopContainer | null
@@ -75,7 +75,7 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
 
     if (typeof route === 'function') {
       const viewId = sender && 'who_sent_viewingId' in sender ? sender.who_sent_viewingId : ''
-      router.navigate(route(viewId))
+      router.navigate(route(viewId as string)) // todo fix type
       return
     }
 

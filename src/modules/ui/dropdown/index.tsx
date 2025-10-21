@@ -1,12 +1,12 @@
-import { TouchableOpacity } from 'react-native'
 import React from 'react'
+import { TouchableOpacity } from 'react-native'
+import Animated, { FadeInUp } from 'react-native-reanimated'
+import { useBoolean } from 'usehooks-ts'
+import { cn } from '~/utils/cn'
 import { Icon } from '../icon'
 import { SvgIcon } from '../svg-icon'
-import { Typography } from '../typography'
 import { SvgIconName } from '../svg-icon/index.types'
-import { useBoolean } from 'usehooks-ts'
-import Animated, { FadeInUp } from 'react-native-reanimated'
-import { cn } from '~/utils/cn'
+import { Typography } from '../typography'
 
 interface DropdownProps extends React.ComponentProps<typeof TouchableOpacity> {
   iconName?: SvgIconName

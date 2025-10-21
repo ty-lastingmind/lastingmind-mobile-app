@@ -2,9 +2,9 @@ import { Alert } from 'react-native'
 import Animated, { FadeInLeft } from 'react-native-reanimated'
 import { useBoolean } from 'usehooks-ts'
 import { useSendQuestionChatSendQuestionPost } from '~/services/api/generated'
+import { useChatContext } from '../provider'
 import { QuestionButton } from '../question-button'
 import { SendQuestionDialog } from './parts/send-question-dialog'
-import { useChatContext } from '../provider'
 
 interface SendQuestionButtonProps {
   question: string

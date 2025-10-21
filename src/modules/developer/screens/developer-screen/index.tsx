@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { AnimatedTypographyShowcase } from '~/modules/developer/screens/developer-screen/parts/animated-typography-showcase'
 import { AvatarShowcase } from '~/modules/developer/screens/developer-screen/parts/avatar-showcase'
 
@@ -15,7 +16,6 @@ import { SvgIconShowcase } from '~/modules/developer/screens/developer-screen/pa
 import { TypographyShowcase } from '~/modules/developer/screens/developer-screen/parts/typography-showcase'
 import { Badge } from '~/modules/ui/badge'
 import SurveyShowcase from './parts/survey-showcase'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 const showCaseComponents = {
   SvgIconShowcase: SvgIconShowcase,

@@ -1,12 +1,12 @@
-import { View } from 'react-native'
-import React, { useEffect } from 'react'
-import { Typography } from '~/modules/ui/typography'
-import Congrats from '~/modules/onboarding/assets/Congrats.json'
-import LottieView from 'lottie-react-native'
-import { Button } from '~/modules/ui/button'
 import { Link } from 'expo-router'
-import { useBoolean } from 'usehooks-ts'
+import LottieView from 'lottie-react-native'
+import React, { useEffect } from 'react'
+import { View } from 'react-native'
 import Animated, { FadeIn } from 'react-native-reanimated'
+import { useBoolean } from 'usehooks-ts'
+import Congrats from '~/modules/onboarding/assets/Congrats.json'
+import { Button } from '~/modules/ui/button'
+import { Typography } from '~/modules/ui/typography'
 
 function FirstView() {
   return (

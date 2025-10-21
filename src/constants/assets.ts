@@ -1,6 +1,6 @@
 import janeAvatar from '../../assets/images/jane-avatar.jpg'
-import tyAvatar from '../../assets/images/ty-avatar.png'
 import placeholderAvatar from '../../assets/images/placeholder-avatar.png'
+import tyAvatar from '../../assets/images/ty-avatar.png'
 
 export const assets = {
   ty: tyAvatar,

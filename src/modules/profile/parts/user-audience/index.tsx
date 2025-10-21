@@ -1,9 +1,9 @@
-import { TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { Typography } from '~/modules/ui/typography'
-import AudienceList from '../audience-list'
-import { useGetUserAudienceProfilePageGetUserAudienceGet } from '~/services/api/generated'
+import { TouchableOpacity, View } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
+import { Typography } from '~/modules/ui/typography'
+import { useGetUserAudienceProfilePageGetUserAudienceGet } from '~/services/api/generated'
+import AudienceList from '../audience-list'
 
 export default function UserAudience() {
   const { data: audienceInfo, isLoading } = useGetUserAudienceProfilePageGetUserAudienceGet()

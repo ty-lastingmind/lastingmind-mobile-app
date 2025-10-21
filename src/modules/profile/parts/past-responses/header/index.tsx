@@ -1,9 +1,9 @@
-import { View, TouchableOpacity } from 'react-native'
+import { Link, useRouter } from 'expo-router'
 import React from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import { Logo } from '~/modules/components/logo'
 import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
-import { Logo } from '~/modules/components/logo'
-import { Link, useRouter } from 'expo-router'
 
 export default function Header() {
   const router = useRouter()

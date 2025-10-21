@@ -1,10 +1,9 @@
-import { ScrollView, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { FlatList } from 'react-native'
-import { Badge } from '../badge'
-import { Typography } from '../typography'
+import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { cn } from '~/utils/cn'
+import { Badge } from '../badge'
+import { Typography } from '../typography'
 
 interface BadgeListProps {
   list: string[]

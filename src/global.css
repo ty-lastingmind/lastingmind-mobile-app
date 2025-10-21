@@ -27,21 +27,21 @@
   --text-button-md: 20px;
   --text-button-lg: 18px;
 
-    --text-badge-sm: 10px;
-    --text-badge-md: 16px;
-    --text-badge-lg: 20px;
+  --text-badge-sm: 10px;
+  --text-badge-md: 16px;
+  --text-badge-lg: 20px;
 
-    --icon-xs-size: 12px;
-    --icon-sm-size: 16px;
-    --icon-md-size: 20px;
-    --icon-lg-size: 24px;
-    --icon-xl-size: 32px;
-    --icon-2xl-size: 40px;
-    --icon-3xl-size: 48px;
-    --icon-4xl-size: 64px;
-      --icon-5xl-size: 80px;
-      --icon-6xl-size: 96px;
-      --icon-7xl-size: 221px;
+  --icon-xs-size: 12px;
+  --icon-sm-size: 16px;
+  --icon-md-size: 20px;
+  --icon-lg-size: 24px;
+  --icon-xl-size: 32px;
+  --icon-2xl-size: 40px;
+  --icon-3xl-size: 48px;
+  --icon-4xl-size: 64px;
+  --icon-5xl-size: 80px;
+  --icon-6xl-size: 96px;
+  --icon-7xl-size: 221px;
 
   --text-icon-xs: 12px;
   --text-icon-sm: 16px;

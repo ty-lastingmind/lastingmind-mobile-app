@@ -1,7 +1,7 @@
-import { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { router, usePathname } from 'expo-router'
-import { CanChatWithItem } from '~/services/api/model'
+import { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { usePullCanChatWithChatPullCanChatWithGet } from '~/services/api/generated'
+import { CanChatWithItem } from '~/services/api/model'
 
 interface ChatContextValue {
   chattingWithViewId: string | null

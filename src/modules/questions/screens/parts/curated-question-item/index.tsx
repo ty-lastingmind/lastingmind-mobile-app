@@ -1,14 +1,14 @@
+import { useCallback, useMemo } from 'react'
 import { TouchableOpacity, View } from 'react-native'
+import { useQuestionContext } from '~/modules/questions/contexts/question-context'
+import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
 import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 import { StarterQuestionsResponseNextQuestionsItem } from '~/services/api/model/starterQuestionsResponseNextQuestionsItem'
-import { SubmittingAnswerOverlay } from '../submitting-answer-overlay'
-import { RecordingControls } from '../../parts/recording-controls'
-import { EditAnswerOverlay } from '../../parts/edit-answer-overlay'
-import { useCallback, useMemo } from 'react'
-import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
-import { useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { formatDate } from '~/utils/date'
+import { EditAnswerOverlay } from '../../parts/edit-answer-overlay'
+import { RecordingControls } from '../../parts/recording-controls'
+import { SubmittingAnswerOverlay } from '../submitting-answer-overlay'
 
 interface CuratedQuestionItemProps {
   question: StarterQuestionsResponseNextQuestionsItem

@@ -1,20 +1,20 @@
-import { Alert, ScrollView, View } from 'react-native'
-import React, { useState } from 'react'
-import { Typography } from '~/modules/ui/typography'
-import { TopicButton, TopicsList } from '../../parts/TopicsList'
-import { Button } from '~/modules/ui/button'
-import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
-import CustomTopicModal from '../../parts/CustomTopicModal'
 import { useLocalSearchParams, useRouter } from 'expo-router'
+import React, { useState } from 'react'
+import { Alert, ScrollView, View } from 'react-native'
+import { useBoolean } from 'usehooks-ts'
+import { useUid } from '~/hooks/auth/use-uid'
+import { useFirebaseNotificationToken } from '~/hooks/use-firebase-notification-token'
+import { Button } from '~/modules/ui/button'
+import { Typography } from '~/modules/ui/typography'
+import { Storage } from '~/services'
 import {
   useInitializeUserOnboardingInitializeUserPost,
   useUpgradeToSuperUserChatOnlyUserUpgradeToSuperUserPost,
 } from '~/services/api/generated'
+import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 import { useUploadProfilePicture } from '../../hooks/use-upload-profile-picture'
-import { useUid } from '~/hooks/auth/use-uid'
-import { Storage } from '~/services'
-import { useBoolean } from 'usehooks-ts'
-import { useFirebaseNotificationToken } from '~/hooks/use-firebase-notification-token'
+import CustomTopicModal from '../../parts/CustomTopicModal'
+import { TopicButton, TopicsList } from '../../parts/TopicsList'
 
 const initialTopics = [
   '🧓 Growing Up',

@@ -1,10 +1,9 @@
-import { TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { Avatar } from '~/modules/ui/avatar'
+import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 import { AudienceMembersResponse } from '~/services/api/model'
-import { Icon } from '~/modules/ui/icon'
-import { ScrollView } from 'react-native'
 
 interface AudienceListProps {
   audienceInfo: AudienceMembersResponse

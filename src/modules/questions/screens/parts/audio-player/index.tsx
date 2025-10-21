@@ -1,7 +1,6 @@
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { useCallback, useEffect, useMemo } from 'react'
-import { View } from 'react-native'
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
 import { Progress } from '~/modules/ui/progress'
 import { Typography } from '~/modules/ui/typography'

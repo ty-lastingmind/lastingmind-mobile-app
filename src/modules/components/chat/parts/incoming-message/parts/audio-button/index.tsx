@@ -1,6 +1,6 @@
+import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { useEffect, useRef, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
-import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { ChatMessage } from '~/modules/components/chat/index.types'
 import { Icon } from '~/modules/ui/icon'
 import { logInfo } from '~/services/logger'

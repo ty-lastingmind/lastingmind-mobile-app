@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Svg, { Path, Circle } from 'react-native-svg'
+import Svg, { Circle, Path } from 'react-native-svg'
 import { SvgProps } from '../index.types'
 
 export const Envelope = ({ color, size }: SvgProps) => (

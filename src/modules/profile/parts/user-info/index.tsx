@@ -1,16 +1,16 @@
-import { View, TouchableOpacity } from 'react-native'
+import { Link } from 'expo-router'
 import React, { useMemo } from 'react'
+import { TouchableOpacity, View } from 'react-native'
 import { Avatar } from '~/modules/ui/avatar'
 import { Icon } from '~/modules/ui/icon'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
+import {
+  usePullUserInfoHomePullUserInfoGet,
+  usePullUserStatsProfilePagePullUserStatsGet,
+} from '~/services/api/generated'
 import InfoCard from '../info-card'
 import QuestionsProgress from '../questions-progress'
-import {
-  usePullUserStatsProfilePagePullUserStatsGet,
-  usePullUserInfoHomePullUserInfoGet,
-} from '~/services/api/generated'
-import { Link } from 'expo-router'
 
 export default function UserInfo() {
   const { data: userStats, isLoading: isLoadingUserStats } = usePullUserStatsProfilePagePullUserStatsGet()

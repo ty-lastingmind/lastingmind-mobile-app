@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Svg, { Path } from 'react-native-svg'
 import { SvgProps } from '../index.types'
+
 export const AudioWave = ({ size, color }: SvgProps) => (
   <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
     <Path

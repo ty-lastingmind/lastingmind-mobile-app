@@ -1,17 +1,17 @@
-import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
-import { CareerItem } from '~/services/api/model'
-import BadgeList from '~/modules/ui/badge-list'
-import { Typography } from '~/modules/ui/typography'
-import { SvgIcon } from '~/modules/ui/svg-icon'
-import { useProfileInfo } from '../../hooks/use-profile-info'
+import { ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
-import { CareerFormData, useCareerForm } from '../../hooks/use-career-form'
-import CareerForm from '../dialogs/career-form'
+import BadgeList from '~/modules/ui/badge-list'
+import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
 import {
   useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
   useEditPersonalInfoProfilePageEditPersonalInfoPost,
 } from '~/services/api/generated'
+import { CareerItem } from '~/services/api/model'
+import { CareerFormData, useCareerForm } from '../../hooks/use-career-form'
+import { useProfileInfo } from '../../hooks/use-profile-info'
+import CareerForm from '../dialogs/career-form'
 
 export function CareerInfo() {
   const {

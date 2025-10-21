@@ -1,14 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { View } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 
 import { useSignUpWithEmailAndPassword } from '~/hooks/auth/use-sign-up-with-email-and-password'
 import { Title } from '~/modules/auth/parts/title'
 import { Button } from '~/modules/ui/button'
-import { SignUpForm, signUpFormSchema, SignUpFormValues } from '../../parts/sign-up-form'
 import { Typography } from '~/modules/ui/typography'
+import { SignUpForm, signUpFormSchema, SignUpFormValues } from '../../parts/sign-up-form'
 import TermsOfService from '../../parts/terms-of-service'
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 
 export function SignUpScreen() {
   const signUpWithEmailAndPasswordMutation = useSignUpWithEmailAndPassword()

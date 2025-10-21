@@ -1,5 +1,5 @@
 import React from 'react'
-import Svg, { G, Circle, Path, Defs, ClipPath, Rect } from 'react-native-svg'
+import Svg, { Circle, ClipPath, Defs, G, Path, Rect } from 'react-native-svg'
 import { SvgProps } from '../index.types'
 
 export const Add = ({ size, color }: SvgProps) => {

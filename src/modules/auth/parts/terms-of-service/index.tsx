@@ -1,9 +1,9 @@
 import React from 'react'
 import { View } from 'react-native'
+import { useBoolean } from 'usehooks-ts'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
 import TosDialog from '../tos-dialog'
-import { useBoolean } from 'usehooks-ts'
 
 interface TermsOfServiceProps {
   isChatUser?: boolean

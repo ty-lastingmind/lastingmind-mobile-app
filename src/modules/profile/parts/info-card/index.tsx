@@ -1,8 +1,8 @@
-import { TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import { TouchableOpacity, View } from 'react-native'
 import { SvgIcon } from '~/modules/ui/svg-icon'
-import { Typography } from '~/modules/ui/typography'
 import { SvgIconName } from '~/modules/ui/svg-icon/index.types'
+import { Typography } from '~/modules/ui/typography'
 import { cn } from '~/utils/cn'
 
 interface InfoCardProps extends React.ComponentProps<typeof View> {

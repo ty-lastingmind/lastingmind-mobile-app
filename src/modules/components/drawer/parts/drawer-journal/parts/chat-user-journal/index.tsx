@@ -1,10 +1,10 @@
-import { TouchableOpacity, View } from 'react-native'
-import { Avatar } from '~/modules/ui/avatar'
-import { usePullCanChatWithChatPullCanChatWithGet } from '~/services/api/generated'
-import { Typography } from '~/modules/ui/typography'
-import { DrawerJournalItem } from '~/modules/components/drawer/types'
-import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Link } from 'expo-router'
+import { TouchableOpacity, View } from 'react-native'
+import { DrawerJournalItem } from '~/modules/components/drawer/types'
+import { Avatar } from '~/modules/ui/avatar'
+import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
+import { usePullCanChatWithChatPullCanChatWithGet } from '~/services/api/generated'
 
 const items: DrawerJournalItem[] = [
   {

@@ -1,10 +1,10 @@
-import { View } from 'react-native'
-import React from 'react'
-import { Typography } from '~/modules/ui/typography'
-import { Button } from '~/modules/ui/button'
-import { ProfilePicSelector } from '../../parts/ProfilePicSelector'
 import { Link } from 'expo-router'
+import React from 'react'
+import { View } from 'react-native'
+import { Button } from '~/modules/ui/button'
+import { Typography } from '~/modules/ui/typography'
 import { useOnboardingFormContext } from '../../hooks/use-onboarding-form'
+import { ProfilePicSelector } from '../../parts/ProfilePicSelector'
 
 export function ProfilePictureScreen() {
   const form = useOnboardingFormContext()

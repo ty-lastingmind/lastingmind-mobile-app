@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { ActionSheetIOS, TouchableOpacity } from 'react-native'
-import { Typography } from '../typography'
-import { Icon } from '../icon'
 import { cn } from '~/utils/cn'
+import { Icon } from '../icon'
+import { Typography } from '../typography'
 
 interface SelectorProps extends React.ComponentProps<typeof TouchableOpacity> {
   placeholder?: string

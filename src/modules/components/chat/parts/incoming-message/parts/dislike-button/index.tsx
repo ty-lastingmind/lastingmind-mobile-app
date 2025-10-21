@@ -1,6 +1,7 @@
 import { Alert, TouchableOpacity } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { ConfirmDialog } from '~/components/confirm-dialog'
+import { ChatMessage } from '~/modules/components/chat/index.types'
 import { AnswerFormDialog } from '~/modules/components/chat/parts/container/parts/answer-form-dialog'
 import { AnswerFormData } from '~/modules/components/chat/parts/container/parts/answer-form-dialog/hooks/use-answer-form'
 import { Icon } from '~/modules/ui/icon'
@@ -9,7 +10,6 @@ import {
   useSaveToGroundingChatSaveToGroundingPost,
 } from '~/services/api/generated'
 import { useChatContext } from '../../../container/parts/provider'
-import { ChatMessage } from '~/modules/components/chat/index.types'
 
 interface DislikeButtonProps {
   message: ChatMessage

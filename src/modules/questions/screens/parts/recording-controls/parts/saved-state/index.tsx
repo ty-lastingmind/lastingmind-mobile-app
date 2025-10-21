@@ -1,8 +1,8 @@
 import { TouchableOpacity, View } from 'react-native'
+import { AudioPlayer } from '~/modules/questions/screens/parts/audio-player'
 import { Button } from '~/modules/ui/button'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
-import { AudioPlayer } from '~/modules/questions/screens/parts/audio-player'
 
 interface SavedStateProps {
   onViewTranscription: () => void

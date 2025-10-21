@@ -1,12 +1,10 @@
 import { Stack } from 'expo-router'
+import { useRouteInfo } from 'expo-router/build/hooks'
+import { useMemo } from 'react'
 import { useResolveClassNames } from 'uniwind'
 import { BottomTabHeader } from '~/components/bottom-tab-header'
-import { useTailwindColors } from '~/providers/tailwind-colors-provider'
-import { DrawerJournal } from '~/modules/components/drawer/parts/drawer-journal'
 
 import { usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
-import { useMemo } from 'react'
-import { useRouteInfo } from 'expo-router/build/hooks'
 
 export default function Layout() {
   const styles = useResolveClassNames('bg-screen-bg-primary')
