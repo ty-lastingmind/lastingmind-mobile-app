@@ -62,7 +62,7 @@ export function AddJournalEntryScreen() {
         onSuccess: async ({ text }) => {
           const currentText = form.getValues('text')
 
-          form.setValue('text', currentText.concat('\n\n', text))
+          form.setValue('text', `${currentText}${currentText ? '. ' : ''}${text}`)
 
           uploader.upload.mutate(
             {

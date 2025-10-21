@@ -43,7 +43,7 @@ export function AnswerFormDialog({ title, onClose, onSave, defaultValues }: Answ
       {
         onSuccess: ({ text }) => {
           const answer = form.getValues('answer')
-          form.setValue('answer', `${answer}\n${text}`)
+          form.setValue('answer', `${answer}${answer ? '. ' : ''}${text}`)
         },
         onError: () => {
           Alert.alert('Error', 'Failed to send message')
