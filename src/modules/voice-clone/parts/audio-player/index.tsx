@@ -4,6 +4,7 @@ import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 import { Progress } from '~/modules/ui/progress'
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
+import { formatDuration } from '~/utils/player'
 
 interface AudioPlayerProps {
   audioBytes: string
@@ -34,13 +35,6 @@ export function AudioPlayer({ audioBytes, mediaType }: AudioPlayerProps) {
     }
   }
 
-  const formatTime = (seconds: number) => {
-    const totalSeconds = Math.floor(seconds)
-    const minutes = Math.floor(totalSeconds / 60)
-    const remainingSeconds = totalSeconds % 60
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
-  }
-
   return (
     <View className="flex-row items-center gap-2 py-2">
       <TouchableOpacity onPress={handlePlayPause} disabled={!status.isLoaded} className="p-1">
@@ -48,7 +42,7 @@ export function AudioPlayer({ audioBytes, mediaType }: AudioPlayerProps) {
       </TouchableOpacity>
 
       <Typography brand color="accent">
-        {formatTime(status.currentTime)} / {formatTime(status.duration)}
+        {formatDuration(status.currentTime)} / {formatDuration(status.duration)}
       </Typography>
 
       <Progress value={progress} size="sm" />

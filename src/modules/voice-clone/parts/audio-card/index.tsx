@@ -4,6 +4,7 @@ import { CloningProgressQuestionsAnsweredItem } from '~/services/api/model'
 import { Typography } from '~/modules/ui/typography'
 import { Icon } from '~/modules/ui/icon'
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
+import { formatDuration } from '~/utils/player'
 
 interface AudioCardProps {
   item: CloningProgressQuestionsAnsweredItem
@@ -34,7 +35,7 @@ export default function AudioCard({ item }: AudioCardProps) {
         </TouchableOpacity>
         <Typography className="flex-1">Your Answer</Typography>
         <Typography brand color="accent">
-          {player.duration}
+          {formatDuration(status.duration)}
         </Typography>
       </View>
     </View>
