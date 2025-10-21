@@ -3,6 +3,7 @@ import { Link } from 'expo-router'
 import { useCallback, useEffect, useMemo } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useBoolean } from 'usehooks-ts'
 import { useMeasureElement } from '~/hooks/use-measure-element'
 import { useChatContext } from '~/modules/chat/hooks/use-chat-context'
@@ -51,8 +52,8 @@ export function Header({ navigation, userType }: HeaderProps) {
   }, [hasNoChats, navigation])
 
   return (
-    <>
-      <View className="pt-safe px-8">
+    <SafeAreaView>
+      <View className="px-8">
         <View className="h-[72px] relative flex flex-row items-center justify-between">
           <TouchableOpacity onPress={navigation.openDrawer}>
             <Avatar source={userAvatar} />
@@ -94,6 +95,6 @@ export function Header({ navigation, userType }: HeaderProps) {
           </ScrollView>
         </Popover>
       )}
-    </>
+    </SafeAreaView>
   )
 }

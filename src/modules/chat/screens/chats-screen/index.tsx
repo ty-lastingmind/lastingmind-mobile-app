@@ -5,6 +5,7 @@ import { Alert, ScrollView, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import Animated, { FadeInDown, runOnJS } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useBoolean } from 'usehooks-ts'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { Avatar } from '~/modules/chat/screens/chats-screen/parts/avatar'
@@ -32,6 +33,7 @@ export function ChatsScreen() {
   const { audioRecorder, recordingControls } = useAudioMessage(CHAT_AUDIO_FOLDER_NAME)
   const userQuery = usePullUserInfoHomePullUserInfoGet()
   const refineText = useRefineTextUtilsRefineTextPost()
+  const insets = useSafeAreaInsets()
   const { chattingWithUser, chattingWithViewId } = useChatContext()
   const showPrompts = useBoolean(true)
   const startingPrompts = usePullStartingPromptsChatPullStartingPromptsGet(
@@ -148,8 +150,11 @@ export function ChatsScreen() {
 
   return (
     <ScrollView
-      contentContainerClassName="pt-6 pb-safe flex-1 flex justify-between"
+      contentContainerClassName="pt-6 flex-1 flex justify-between"
       keyboardShouldPersistTaps="handled"
+      style={{
+        paddingBottom: insets.bottom,
+      }}
       bounces={false}
     >
       <View className="mx-auto">

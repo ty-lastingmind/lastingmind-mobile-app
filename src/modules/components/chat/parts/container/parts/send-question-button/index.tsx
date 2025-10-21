@@ -39,7 +39,7 @@ export function SendQuestionButton({ question }: SendQuestionButtonProps) {
 
   return (
     <>
-      <Animated.View entering={FadeInLeft}>
+      <Animated.View entering={FadeInLeft} className="mr-auto">
         <QuestionButton text="Send question" icon="question" onPress={isSendQuestionDialogOpen.setTrue} />
       </Animated.View>
       {isSendQuestionDialogOpen.value && (
