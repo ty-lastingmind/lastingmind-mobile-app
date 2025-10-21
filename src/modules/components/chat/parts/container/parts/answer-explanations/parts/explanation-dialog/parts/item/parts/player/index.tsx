@@ -24,7 +24,7 @@ export function Player({ audioUrl }: PlayerProps) {
   }
 
   return (
-    <View className="gap-2 px-4">
+    <View className="gap-2">
       <Typography color="secondary" weight="bold" level="caption-1" className="pl-4">
         Audio
       </Typography>
