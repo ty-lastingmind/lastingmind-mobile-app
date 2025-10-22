@@ -52,9 +52,8 @@ export async function getIdToken(user: FirebaseAuthTypes.User) {
   return Auth.getIdToken(user)
 }
 
-export async function changeEmail(email: string) {
-  if (!auth.currentUser) throw new Error('No authenticated user')
-  await Auth.updateEmail(auth.currentUser, email)
+export function getUserDisplayName(): string | null {
+  return auth.currentUser?.displayName || null
 }
 
 export async function changeDisplayName(displayName: string) {
@@ -75,16 +74,4 @@ export async function changePassword(currentPassword: string, newPassword: strin
 
   // Now update password
   await Auth.updatePassword(auth.currentUser, newPassword)
-}
-
-export function getUserDisplayName(): string | null {
-  return auth.currentUser?.displayName || null
-}
-
-export function getUserEmail(): string | null {
-  return auth.currentUser?.email || null
-}
-
-export function getUserPhoneNumber(): string | null {
-  return auth.currentUser?.phoneNumber || null
 }

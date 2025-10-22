@@ -1,19 +1,15 @@
+import { onAuthStateChanged } from '@react-native-firebase/auth'
 import { useRouter } from 'expo-router'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
-import { queryClient } from '~/libs/query-client'
-import { Auth, Notifications } from '~/services'
+import useSignOut from '~/hooks/auth/use-sign-out'
+import { auth } from '~/libs/firebase'
 import {
-  changePhoneNumberSettingsChangePhoneNumberPost,
+  useChangePhoneNumberSettingsChangeEmailPost,
+  useChangePhoneNumberSettingsChangePhoneNumberPost,
+  useGetUserEmailSettingsGetUserEmailGet,
   usePullUserInfoSettingsGetUserPhoneNameGet,
 } from '~/services/api/generated'
-import {
-  changeDisplayName,
-  changeEmail,
-  changePassword,
-  getUserDisplayName,
-  getUserEmail,
-  sendPasswordResetEmail,
-} from '~/services/auth'
+import { changeDisplayName, changePassword, getUserDisplayName, sendPasswordResetEmail } from '~/services/auth'
 
 // User Data Interface
 interface UserData {
@@ -37,7 +33,6 @@ interface SettingsContextType {
   updateCurrentPassword: (currentPassword: string) => void
   updateNewPassword: (newPassword: string) => void
   updateNewPasswordConfirm: (newPasswordConfirm: string) => void
-  fetchUserSettings: () => Promise<void>
   saveNewDisplayName: () => Promise<void>
   saveNewPhoneNumber: () => Promise<void>
   saveNewEmail: () => Promise<void>
@@ -52,7 +47,16 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 // Settings Provider Component
 export function SettingsProvider({ children }: PropsWithChildren) {
   const router = useRouter()
-  const phoneNumber = usePullUserInfoSettingsGetUserPhoneNameGet()
+  //queries
+  const displayName = getUserDisplayName()
+  //const { data: displayName, refetch: refetchDisplayName } = useGetUserNameSettingsGetUserNameGet()
+  const { data: email, refetch: refetchEmail } = useGetUserEmailSettingsGetUserEmailGet()
+  const { data: phoneNumber, refetch: refetchPhoneNumber } = usePullUserInfoSettingsGetUserPhoneNameGet()
+  //mutations
+  //const changeDisplayNameMutation = useChangeUserNameSettingsChangeUserNamePost()
+  const changeEmailMutation = useChangePhoneNumberSettingsChangeEmailPost()
+  const changePhoneNumberMutation = useChangePhoneNumberSettingsChangePhoneNumberPost()
+  const signOutMutation = useSignOut()
   //updated values
   const [newDisplayName, setNewDisplayName] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
@@ -62,9 +66,9 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('')
   // User Data State
   const [userData, setUserData] = useState<UserData>({
-    displayName: '',
-    email: '',
-    phoneNumber: phoneNumber.data?.phone_number || '',
+    displayName: displayName || '',
+    email: email?.email || '',
+    phoneNumber: phoneNumber?.phone_number || '',
   })
 
   const updateDisplayName = (displayName: string) => {
@@ -97,38 +101,43 @@ export function SettingsProvider({ children }: PropsWithChildren) {
       console.log('saveNewDisplayName', response)
       setNewDisplayName('')
       // Refresh user settings to get the latest data from Firebase
-      await fetchUserSettings()
     } catch (error) {
       console.error(error)
       setNewDisplayName('')
     }
+    /* changeDisplayNameMutation.mutate(
+      { data: { name: newDisplayName } },
+      {
+        onSuccess: () => {
+          setNewDisplayName('')
+          refetchUserSettings()
+        },
+      }
+    ) */
   }
 
   const saveNewPhoneNumber = async () => {
-    try {
-      const response = await changePhoneNumberSettingsChangePhoneNumberPost({ phone_number: newPhoneNumber })
-      phoneNumber.refetch()
-      console.log('saveNewPhoneNumber', response)
-      setNewPhoneNumber('')
-      // Refresh user settings to get the latest data
-      await fetchUserSettings()
-    } catch (error) {
-      console.error(error)
-      setNewPhoneNumber('')
-    }
+    changePhoneNumberMutation.mutate(
+      { data: { phone_number: newPhoneNumber } },
+      {
+        onSuccess: () => {
+          setNewPhoneNumber('')
+          refetchUserSettings()
+        },
+      }
+    )
   }
 
   const saveNewEmail = async () => {
-    try {
-      const response = await changeEmail(newEmail)
-      console.log('saveNewEmail', response)
-      setNewEmail('')
-      // Refresh user settings to get the latest data from Firebase
-      await fetchUserSettings()
-    } catch (error) {
-      console.error(error)
-      setNewEmail('')
-    }
+    changeEmailMutation.mutate(
+      { data: { new_email: newEmail } },
+      {
+        onSuccess: () => {
+          setNewEmail('')
+          refetchUserSettings()
+        },
+      }
+    )
   }
 
   const handleSendPasswordResetEmail = async () => {
@@ -153,31 +162,35 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   }
 
   const handleLogout = async () => {
-    try {
-      await Auth.signOut()
-      await Notifications.deleteToken()
-      queryClient.removeQueries()
-      router.replace('/auth/sign-in')
-    } catch (error) {
-      console.error('Failed to sign out', error)
-    }
+    signOutMutation.mutate(undefined, {
+      onSuccess: () => {
+        router.replace('/auth/sign-in')
+      },
+    })
   }
 
-  const fetchUserSettings = useCallback(async () => {
-    const displayName = getUserDisplayName()
-    const email = getUserEmail()
-    const phoneNumberData = phoneNumber.data?.phone_number || ''
-    console.log('userData', displayName, email, phoneNumberData)
-    setUserData((prev) => ({
-      displayName: displayName || prev.displayName,
-      email: email || prev.email,
-      phoneNumber: phoneNumberData || prev.phoneNumber,
-    }))
-  }, [phoneNumber.data?.phone_number])
+  const refetchUserSettings = useCallback(async () => {
+    getUserDisplayName()
+    await refetchEmail()
+    await refetchPhoneNumber()
+  }, [refetchEmail, refetchPhoneNumber])
 
   useEffect(() => {
-    fetchUserSettings()
-  }, [fetchUserSettings])
+    setUserData({
+      displayName: displayName || '',
+      email: email?.email || '',
+      phoneNumber: phoneNumber?.phone_number || '',
+    })
+  }, [displayName, email, phoneNumber])
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        refetchUserSettings()
+      }
+    })
+    return () => unsubscribe()
+  }, [refetchUserSettings, userData])
 
   // Context Value
   const contextValue: SettingsContextType = {
@@ -198,7 +211,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     updateNewPassword,
     updateNewPasswordConfirm,
     //save functions
-    fetchUserSettings,
     saveNewDisplayName,
     saveNewPhoneNumber,
     saveNewEmail,
