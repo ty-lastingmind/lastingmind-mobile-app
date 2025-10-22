@@ -121,7 +121,7 @@ const expoConfig: ExpoConfig = {
       usesNonExemptEncryption: false,
     },
     infoPlist: {
-      LSApplicationQueriesSchemes: ['itms-apps'],
+      LSApplicationQueriesSchemes: ['itms-apps', 'mailto'],
       UIBackgroundModes: ['remote-notification', 'fetch'],
     },
     entitlements: {
