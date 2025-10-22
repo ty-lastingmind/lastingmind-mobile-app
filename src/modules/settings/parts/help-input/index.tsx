@@ -4,7 +4,7 @@ import { SvgIcon } from '~/modules/ui/svg-icon'
 
 export function HelpInput() {
   return (
-    <View className="flex-row bg-bg-secondary items-center justify-center h-[52px] p-[14px] rounded-[26px]">
+    <View className="flex flex-row bg-bg-secondary items-center justify-center h-[52px] p-[14px] rounded-[26px]">
       <Input
         placeholder="Ask anything"
         value=""

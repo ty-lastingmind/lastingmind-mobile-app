@@ -1,7 +1,6 @@
 import * as Auth from '@react-native-firebase/auth'
 import { FirebaseAuthTypes } from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
-import * as AppleAuthentication from 'expo-apple-authentication'
 import Constants from 'expo-constants'
 import { auth } from '~/libs/firebase'
 

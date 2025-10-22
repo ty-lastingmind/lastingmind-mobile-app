@@ -22,19 +22,8 @@ interface UserData {
   phoneNumber: string
 }
 
-// Navigation Functions Interface
-interface NavigationFunctions {
-  navigateToAccount: () => void
-  navigateToHelp: () => void
-  navigateToContactUs: () => void
-  navigateToEditName: () => void
-  navigateToEditEmail: () => void
-  navigateToEditPhone: () => void
-  navigateToChangePassword: () => void
-  handleLogout: () => Promise<void>
-}
 // Settings Context Interface
-interface SettingsContextType extends NavigationFunctions {
+interface SettingsContextType {
   currentValues: UserData
   newDisplayName: string
   newPhoneNumber: string
@@ -54,6 +43,7 @@ interface SettingsContextType extends NavigationFunctions {
   saveNewEmail: () => Promise<void>
   handleSendPasswordResetEmail: () => Promise<void>
   saveNewPassword: () => Promise<void>
+  handleLogout: () => Promise<void>
 }
 
 // Create Context
@@ -173,35 +163,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     }
   }
 
-  // Navigation Functions
-  const navigateToAccount = () => {
-    router.push('/account')
-  }
-
-  const navigateToHelp = () => {
-    router.push('/help')
-  }
-
-  const navigateToContactUs = () => {
-    router.push('/contact-us')
-  }
-
-  const navigateToEditName = () => {
-    router.push('/update-name')
-  }
-
-  const navigateToEditEmail = () => {
-    router.push('/update-email')
-  }
-
-  const navigateToEditPhone = () => {
-    router.push('/update-phone')
-  }
-
-  const navigateToChangePassword = () => {
-    router.push('/update-password')
-  }
-
   const fetchUserSettings = useCallback(async () => {
     const displayName = getUserDisplayName()
     const email = getUserEmail()
@@ -236,15 +197,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     updateCurrentPassword,
     updateNewPassword,
     updateNewPasswordConfirm,
-    // Navigation Functions
-    navigateToAccount,
-    navigateToHelp,
-    navigateToContactUs,
-    navigateToEditName,
-    navigateToEditEmail,
-    navigateToEditPhone,
-    navigateToChangePassword,
-    handleLogout,
     //save functions
     fetchUserSettings,
     saveNewDisplayName,
@@ -252,6 +204,7 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     saveNewEmail,
     handleSendPasswordResetEmail,
     saveNewPassword,
+    handleLogout,
   }
 
   return <SettingsContext.Provider value={contextValue}>{children}</SettingsContext.Provider>

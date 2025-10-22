@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
-import { router } from 'expo-router'
+import { useRouter } from 'expo-router'
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Logo } from '~/modules/components/logo'
@@ -11,6 +11,8 @@ interface SettingsHeaderProps {
 }
 
 export function SettingsHeader({ title, showBackButton = true }: SettingsHeaderProps) {
+  const router = useRouter()
+
   const handleBackPress = () => {
     router.back()
   }

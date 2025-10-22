@@ -4,26 +4,29 @@ import { AccountField } from '../../types'
 import { AccountFormField } from '../account-form-field'
 
 export function AccountForm() {
-  const { navigateToEditName, navigateToEditEmail, navigateToEditPhone, currentValues } = useSettings()
+  const { currentValues } = useSettings()
 
   const accountFields: AccountField[] = [
     {
       label: 'Name',
       value: currentValues.displayName,
       hasChevron: true,
-      onPress: navigateToEditName,
+      // @ts-expect-error - Route types will be regenerated
+      href: '/(protected)/settings/update-name',
     },
     {
       label: 'Email',
       value: currentValues.email,
       hasChevron: true,
-      onPress: navigateToEditEmail,
+      // @ts-expect-error - Route types will be regenerated
+      href: '/(protected)/settings/update-email',
     },
     {
       label: 'Phone',
       value: currentValues.phoneNumber || 'Add',
       hasChevron: true,
-      onPress: navigateToEditPhone,
+      // @ts-expect-error - Route types will be regenerated
+      href: '/(protected)/settings/update-phone',
     },
   ]
 
