@@ -8,7 +8,6 @@ export function AccountFormActions() {
 
   return (
     <>
-      {/* @ts-expect-error - Route types will be regenerated */}
       <Link href="/(protected)/settings/update-password" asChild>
         <TouchableOpacity>
           <Typography level="body-lg" color="primary" className="text-center">
