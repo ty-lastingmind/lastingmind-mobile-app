@@ -21,15 +21,9 @@ interface UserData {
 // Settings Context Interface
 interface SettingsContextType {
   currentValues: UserData
-  newDisplayName: string
-  newPhoneNumber: string
-  newEmail: string
-  updateDisplayName: (displayName: string) => void
-  updatePhoneNumber: (phone: string) => void
-  updateEmail: (email: string) => void
-  saveNewDisplayName: () => Promise<void>
-  saveNewPhoneNumber: () => Promise<void>
-  saveNewEmail: () => Promise<void>
+  saveNewDisplayName: (newDisplayName: string) => Promise<void>
+  saveNewPhoneNumber: (newPhoneNumber: string) => Promise<void>
+  saveNewEmail: (newEmail: string) => Promise<void>
   handleSendPasswordResetEmail: () => Promise<void>
   saveNewPassword: (currentPassword: string, newPassword: string) => Promise<void>
   handleLogout: () => Promise<void>
@@ -53,10 +47,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const changeEmailMutation = useChangePhoneNumberSettingsChangeEmailPost()
   const changePhoneNumberMutation = useChangePhoneNumberSettingsChangePhoneNumberPost()
   const signOutMutation = useSignOut()
-  //updated values
-  const [newDisplayName, setNewDisplayName] = useState('')
-  const [newPhoneNumber, setNewPhoneNumber] = useState('')
-  const [newEmail, setNewEmail] = useState('')
   //loading states
   const [isUpdatingDisplayName, setIsUpdatingDisplayName] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
@@ -68,37 +58,22 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     phoneNumber: phoneNumber?.phone_number || '',
   })
 
-  const updateDisplayName = (displayName: string) => {
-    setNewDisplayName(displayName)
-  }
-
-  const updateEmail = (email: string) => {
-    setNewEmail(email)
-  }
-
-  const updatePhoneNumber = (phoneNumber: string) => {
-    setNewPhoneNumber(phoneNumber)
-  }
-
-  const saveNewDisplayName = async () => {
+  const saveNewDisplayName = async (newDisplayName: string) => {
     setIsUpdatingDisplayName(true)
     try {
       await changeDisplayName(newDisplayName)
-      setNewDisplayName('')
     } catch (error) {
       console.error(error)
-      setNewDisplayName('')
     } finally {
       setIsUpdatingDisplayName(false)
     }
   }
 
-  const saveNewPhoneNumber = async () => {
+  const saveNewPhoneNumber = async (newPhoneNumber: string) => {
     changePhoneNumberMutation.mutate(
       { data: { phone_number: newPhoneNumber } },
       {
         onSuccess: () => {
-          setNewPhoneNumber('')
           refetchUserSettings()
         },
         onError: (error) => {
@@ -108,12 +83,11 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     )
   }
 
-  const saveNewEmail = async () => {
+  const saveNewEmail = async (newEmail: string) => {
     changeEmailMutation.mutate(
       { data: { new_email: newEmail } },
       {
         onSuccess: () => {
-          setNewEmail('')
           refetchUserSettings()
         },
         onError: (error) => {
@@ -183,14 +157,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const contextValue: SettingsContextType = {
     // User Data
     currentValues: userData,
-    // New Values
-    newDisplayName,
-    newPhoneNumber,
-    newEmail,
-    // Update Functions
-    updateDisplayName,
-    updateEmail,
-    updatePhoneNumber,
     //save functions
     saveNewDisplayName,
     saveNewPhoneNumber,

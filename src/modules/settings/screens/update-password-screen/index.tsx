@@ -16,7 +16,9 @@ export function UpdatePasswordScreen() {
   const isValid = form.formState.isValid
 
   const handleSaveNewPassword = () => {
-    saveNewPassword(form.getValues('currentPassword'), form.getValues('newpassword'))
+    saveNewPassword(form.getValues('currentPassword'), form.getValues('newpassword')).then(() => {
+      form.reset()
+    })
   }
 
   return (

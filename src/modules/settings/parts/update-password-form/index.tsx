@@ -5,7 +5,7 @@ import z from 'zod'
 import WarningLabel from '~/modules/auth/parts/warning-label'
 import { Form, FormControl, FormField, FormItem } from '~/modules/ui/form'
 import { getFormErrors } from '~/utils/getFormErrors'
-import { UpdatePasswordFormField } from '../update-password-form-field'
+import { ScreenFormField } from '../../components/common/screen-form-field'
 
 export const updatePasswordFormSchema = z
   .object({
@@ -40,7 +40,7 @@ export function UpdatePasswordForm({ form }: UpdatePasswordFormPropsType) {
           render={({ field, fieldState }) => (
             <FormItem>
               <FormControl>
-                <UpdatePasswordFormField
+                <ScreenFormField
                   label="Current"
                   value={field.value}
                   onChangeText={field.onChange}
@@ -59,7 +59,7 @@ export function UpdatePasswordForm({ form }: UpdatePasswordFormPropsType) {
           render={({ field, fieldState }) => (
             <FormItem>
               <FormControl>
-                <UpdatePasswordFormField
+                <ScreenFormField
                   label="New"
                   value={field.value}
                   onChangeText={field.onChange}
@@ -78,7 +78,7 @@ export function UpdatePasswordForm({ form }: UpdatePasswordFormPropsType) {
           render={({ field, fieldState }) => (
             <FormItem>
               <FormControl>
-                <UpdatePasswordFormField
+                <ScreenFormField
                   label="Confirm"
                   value={field.value}
                   onChangeText={field.onChange}
