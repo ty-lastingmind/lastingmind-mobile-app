@@ -24,20 +24,14 @@ interface SettingsContextType {
   newDisplayName: string
   newPhoneNumber: string
   newEmail: string
-  currentPassword: string
-  newPassword: string
-  newPasswordConfirm: string
   updateDisplayName: (displayName: string) => void
   updatePhoneNumber: (phone: string) => void
   updateEmail: (email: string) => void
-  updateCurrentPassword: (currentPassword: string) => void
-  updateNewPassword: (newPassword: string) => void
-  updateNewPasswordConfirm: (newPasswordConfirm: string) => void
   saveNewDisplayName: () => Promise<void>
   saveNewPhoneNumber: () => Promise<void>
   saveNewEmail: () => Promise<void>
   handleSendPasswordResetEmail: () => Promise<void>
-  saveNewPassword: () => Promise<void>
+  saveNewPassword: (currentPassword: string, newPassword: string) => Promise<void>
   handleLogout: () => Promise<void>
   isUpdating: boolean
   isLoggingOut: boolean
@@ -63,9 +57,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const [newDisplayName, setNewDisplayName] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [newEmail, setNewEmail] = useState('')
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [newPasswordConfirm, setNewPasswordConfirm] = useState('')
   //loading states
   const [isUpdatingDisplayName, setIsUpdatingDisplayName] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
@@ -87,18 +78,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
 
   const updatePhoneNumber = (phoneNumber: string) => {
     setNewPhoneNumber(phoneNumber)
-  }
-
-  const updateCurrentPassword = (password: string) => {
-    setCurrentPassword(password)
-  }
-
-  const updateNewPassword = (password: string) => {
-    setNewPassword(password)
-  }
-
-  const updateNewPasswordConfirm = (passwordConfirm: string) => {
-    setNewPasswordConfirm(passwordConfirm)
   }
 
   const saveNewDisplayName = async () => {
@@ -144,13 +123,10 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     )
   }
 
-  const saveNewPassword = async () => {
+  const saveNewPassword = async (currentPassword: string, newPassword: string) => {
     setIsSavingPassword(true)
     try {
       await changePassword(currentPassword, newPassword)
-      setCurrentPassword('')
-      setNewPassword('')
-      setNewPasswordConfirm('')
     } catch (error) {
       console.error(error)
     } finally {
@@ -211,16 +187,10 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     newDisplayName,
     newPhoneNumber,
     newEmail,
-    currentPassword,
-    newPassword,
-    newPasswordConfirm,
     // Update Functions
     updateDisplayName,
     updateEmail,
     updatePhoneNumber,
-    updateCurrentPassword,
-    updateNewPassword,
-    updateNewPasswordConfirm,
     //save functions
     saveNewDisplayName,
     saveNewPhoneNumber,
