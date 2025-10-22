@@ -1,16 +1,9 @@
-import { TouchableOpacity } from 'react-native'
-import { Typography } from '~/modules/ui/typography'
+import { ScreenButton } from '../../components/common/screen-button'
 import { useSettings } from '../../contexts/settings-context'
 
 export function UpdateEmailFormActions() {
-  const { saveNewEmail, newEmail } = useSettings()
+  const { saveNewEmail, newEmail, isUpdating } = useSettings()
   const isValid = newEmail.length > 0
 
-  return (
-    <TouchableOpacity onPress={saveNewEmail} disabled={!isValid}>
-      <Typography level="body-lg" color="primary" className="text-center">
-        Save
-      </Typography>
-    </TouchableOpacity>
-  )
+  return <ScreenButton onPress={saveNewEmail} disabled={!isValid} label="Save" loading={isUpdating} />
 }

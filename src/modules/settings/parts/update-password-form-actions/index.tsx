@@ -1,10 +1,16 @@
-import { TouchableOpacity } from 'react-native'
-import { Typography } from '~/modules/ui/typography'
+import { ScreenButton } from '../../components/common/screen-button'
 import { useSettings } from '../../contexts/settings-context'
 
 export function UpdatePasswordFormActions() {
-  const { saveNewPassword, handleSendPasswordResetEmail, newPassword, newPasswordConfirm, currentPassword } =
-    useSettings()
+  const {
+    saveNewPassword,
+    handleSendPasswordResetEmail,
+    newPassword,
+    newPasswordConfirm,
+    currentPassword,
+    isSendingEmail,
+    isSavingPassword,
+  } = useSettings()
   const isValid =
     currentPassword.length > 5 &&
     newPassword.length > 5 &&
@@ -13,16 +19,14 @@ export function UpdatePasswordFormActions() {
 
   return (
     <>
-      <TouchableOpacity onPress={saveNewPassword} disabled={!isValid}>
-        <Typography level="body-lg" color="primary" className="text-center">
-          Save
-        </Typography>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleSendPasswordResetEmail}>
-        <Typography level="body-lg" color="red" className="text-center">
-          Forgot Password?
-        </Typography>
-      </TouchableOpacity>
+      <ScreenButton onPress={saveNewPassword} disabled={!isValid} label="Save" loading={isSavingPassword} />
+      <ScreenButton
+        variant="red"
+        onPress={handleSendPasswordResetEmail}
+        label="Forgot Password?"
+        loading={isSendingEmail}
+        loadingLabel="Sending Email..."
+      />
     </>
   )
 }

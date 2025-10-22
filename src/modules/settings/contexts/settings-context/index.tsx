@@ -39,6 +39,10 @@ interface SettingsContextType {
   handleSendPasswordResetEmail: () => Promise<void>
   saveNewPassword: () => Promise<void>
   handleLogout: () => Promise<void>
+  isUpdating: boolean
+  isLoggingOut: boolean
+  isSendingEmail: boolean
+  isSavingPassword: boolean
 }
 
 // Create Context
@@ -49,11 +53,9 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const router = useRouter()
   //queries
   const displayName = getUserDisplayName()
-  //const { data: displayName, refetch: refetchDisplayName } = useGetUserNameSettingsGetUserNameGet()
   const { data: email, refetch: refetchEmail } = useGetUserEmailSettingsGetUserEmailGet()
   const { data: phoneNumber, refetch: refetchPhoneNumber } = usePullUserInfoSettingsGetUserPhoneNameGet()
   //mutations
-  //const changeDisplayNameMutation = useChangeUserNameSettingsChangeUserNamePost()
   const changeEmailMutation = useChangePhoneNumberSettingsChangeEmailPost()
   const changePhoneNumberMutation = useChangePhoneNumberSettingsChangePhoneNumberPost()
   const signOutMutation = useSignOut()
@@ -64,6 +66,10 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('')
+  //loading states
+  const [isUpdatingDisplayName, setIsUpdatingDisplayName] = useState(false)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
+  const [isSavingPassword, setIsSavingPassword] = useState(false)
   // User Data State
   const [userData, setUserData] = useState<UserData>({
     displayName: displayName || '',
@@ -96,24 +102,16 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   }
 
   const saveNewDisplayName = async () => {
+    setIsUpdatingDisplayName(true)
     try {
-      const response = await changeDisplayName(newDisplayName)
-      console.log('saveNewDisplayName', response)
+      await changeDisplayName(newDisplayName)
       setNewDisplayName('')
-      // Refresh user settings to get the latest data from Firebase
     } catch (error) {
       console.error(error)
       setNewDisplayName('')
+    } finally {
+      setIsUpdatingDisplayName(false)
     }
-    /* changeDisplayNameMutation.mutate(
-      { data: { name: newDisplayName } },
-      {
-        onSuccess: () => {
-          setNewDisplayName('')
-          refetchUserSettings()
-        },
-      }
-    ) */
   }
 
   const saveNewPhoneNumber = async () => {
@@ -123,6 +121,9 @@ export function SettingsProvider({ children }: PropsWithChildren) {
         onSuccess: () => {
           setNewPhoneNumber('')
           refetchUserSettings()
+        },
+        onError: (error) => {
+          console.error(error)
         },
       }
     )
@@ -136,28 +137,35 @@ export function SettingsProvider({ children }: PropsWithChildren) {
           setNewEmail('')
           refetchUserSettings()
         },
+        onError: (error) => {
+          console.error(error)
+        },
       }
     )
   }
 
-  const handleSendPasswordResetEmail = async () => {
-    try {
-      const response = await sendPasswordResetEmail(userData.email)
-      console.log('sendPasswordResetEmail', response)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   const saveNewPassword = async () => {
+    setIsSavingPassword(true)
     try {
-      const response = await changePassword(currentPassword, newPassword)
-      console.log('updatePassword', response)
+      await changePassword(currentPassword, newPassword)
       setCurrentPassword('')
       setNewPassword('')
       setNewPasswordConfirm('')
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsSavingPassword(false)
+    }
+  }
+
+  const handleSendPasswordResetEmail = async () => {
+    setIsSendingEmail(true)
+    try {
+      await sendPasswordResetEmail(userData.email)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsSendingEmail(false)
     }
   }
 
@@ -165,6 +173,9 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     signOutMutation.mutate(undefined, {
       onSuccess: () => {
         router.replace('/auth/sign-in')
+      },
+      onError: (error) => {
+        console.error(error)
       },
     })
   }
@@ -217,6 +228,10 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     handleSendPasswordResetEmail,
     saveNewPassword,
     handleLogout,
+    isUpdating: changeEmailMutation.isPending || changePhoneNumberMutation.isPending || isUpdatingDisplayName,
+    isLoggingOut: signOutMutation.isPending,
+    isSendingEmail,
+    isSavingPassword,
   }
 
   return <SettingsContext.Provider value={contextValue}>{children}</SettingsContext.Provider>
