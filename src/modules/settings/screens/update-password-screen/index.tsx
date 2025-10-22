@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { ScreenButton } from '../../components/common/screen-button'
 import { SettingsScreenLayout } from '../../components/common/screen-layout'
@@ -12,8 +12,20 @@ export function UpdatePasswordScreen() {
     resolver: zodResolver(updatePasswordFormSchema),
     defaultValues: { currentPassword: '', newpassword: '', confirmNewPassword: '' },
     mode: 'onChange',
+    reValidateMode: 'onChange',
   })
-  const isValid = form.formState.isValid
+  const currentPassword = form.watch('currentPassword')
+  const newPassword = form.watch('newpassword')
+  const confirmPassword = form.watch('confirmNewPassword')
+
+  const hasAnyValue = currentPassword.length > 0 || newPassword.length > 0 || confirmPassword.length > 0
+  const isValid = form.formState.isValid && hasAnyValue
+
+  useEffect(() => {
+    if (newPassword || confirmPassword) {
+      form.trigger(['newpassword', 'confirmNewPassword'])
+    }
+  }, [newPassword, confirmPassword, form])
 
   const handleSaveNewPassword = () => {
     saveNewPassword(form.getValues('currentPassword'), form.getValues('newpassword')).then(() => {

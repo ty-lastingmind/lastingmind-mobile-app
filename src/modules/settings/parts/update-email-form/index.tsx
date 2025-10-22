@@ -9,7 +9,9 @@ import { getFormErrors } from '~/utils/getFormErrors'
 import { ScreenFormField } from '../../components/common/screen-form-field'
 
 export const updateEmailFormSchema = z.object({
-  newEmail: z.string().email({ message: 'Please enter a valid email address' }),
+  newEmail: z.string().refine((val) => val.length === 0 || z.string().email().safeParse(val).success, {
+    message: 'Please enter a valid email address',
+  }),
 })
 
 export type UpdateEmailFormValues = z.infer<typeof updateEmailFormSchema>

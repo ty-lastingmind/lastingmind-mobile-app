@@ -9,18 +9,38 @@ import { ScreenFormField } from '../../components/common/screen-form-field'
 
 export const updatePasswordFormSchema = z
   .object({
-    currentPassword: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-    newpassword: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-    confirmNewPassword: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+    currentPassword: z.string().refine((val) => val.length === 0 || val.length >= 6, {
+      message: 'Password must be at least 6 characters',
+    }),
+    newpassword: z.string().refine((val) => val.length === 0 || val.length >= 6, {
+      message: 'Password must be at least 6 characters',
+    }),
+    confirmNewPassword: z.string().refine((val) => val.length === 0 || val.length >= 6, {
+      message: 'Password must be at least 6 characters',
+    }),
   })
-  .refine((data) => data.currentPassword !== data.newpassword, {
-    message: 'New password must be different from current password',
-    path: ['newpassword'],
-  })
-  .refine((data) => data.newpassword === data.confirmNewPassword, {
-    message: 'Passwords must match',
-    path: ['confirmNewPassword'],
-  })
+  .refine(
+    (data) => {
+      if (data.currentPassword.length > 0 && data.newpassword.length === 0) return false
+      if (data.currentPassword.length === 0 || data.newpassword.length === 0) return true
+      return data.currentPassword !== data.newpassword
+    },
+    {
+      message: 'New password must be different from current password',
+      path: ['newpassword'],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.currentPassword.length > 0 && data.confirmNewPassword.length === 0) return false
+      if (data.newpassword.length === 0 && data.confirmNewPassword.length === 0) return true
+      return data.newpassword === data.confirmNewPassword
+    },
+    {
+      message: 'Passwords must match',
+      path: ['confirmNewPassword'],
+    }
+  )
 
 export type UpdatePasswordFormValues = z.infer<typeof updatePasswordFormSchema>
 

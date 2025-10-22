@@ -9,8 +9,12 @@ import { getFormErrors } from '~/utils/getFormErrors'
 import { ScreenFormField } from '../../components/common/screen-form-field'
 
 export const updateNameFormSchema = z.object({
-  firstName: z.string().min(4, { message: 'First name is required' }),
-  lastName: z.string().min(4, { message: 'Last name is required' }),
+  firstName: z.string().refine((val) => val.length === 0 || val.length >= 4, {
+    message: 'First name must be at least 4 characters',
+  }),
+  lastName: z.string().refine((val) => val.length === 0 || val.length >= 4, {
+    message: 'Last name must be at least 4 characters',
+  }),
 })
 
 export type UpdateNameFormValues = z.infer<typeof updateNameFormSchema>

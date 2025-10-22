@@ -9,12 +9,16 @@ import { getFormErrors } from '~/utils/getFormErrors'
 import { ScreenFormField } from '../../components/common/screen-form-field'
 
 export const updatePhoneFormSchema = z.object({
-  newPhone: z
-    .string()
-    .min(10, { message: 'Phone number must be at least 10 digits' })
-    .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, {
-      message: 'Please enter a valid phone number',
-    }),
+  newPhone: z.string().refine(
+    (val) => {
+      if (val.length === 0) return true
+      if (val.length < 10) return false
+      return /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/.test(val)
+    },
+    {
+      message: 'Please enter a valid phone number (at least 10 digits)',
+    }
+  ),
 })
 
 export type UpdatePhoneFormValues = z.infer<typeof updatePhoneFormSchema>
