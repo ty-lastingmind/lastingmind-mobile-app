@@ -1,10 +1,9 @@
-import { ScrollView, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { FlatList } from 'react-native'
-import { Badge } from '../badge'
-import { Typography } from '../typography'
+import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { cn } from '~/utils/cn'
+import { Badge } from '../badge'
+import { Typography } from '../typography'
 
 interface BadgeListProps {
   list: string[]
@@ -59,7 +58,7 @@ export default function BadgeList({
           <FlatList
             scrollEnabled={false}
             contentContainerClassName="gap-2"
-            numColumns={flatListRows}
+            numColumns={flatListRows <= 1 ? 2 : flatListRows}
             data={list}
             keyExtractor={(item, index) => item + index}
             renderItem={({ item: label, index }) => (

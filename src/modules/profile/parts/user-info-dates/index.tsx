@@ -1,17 +1,17 @@
-import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
-import { DatesItem } from '~/services/api/model'
-import BadgeList from '~/modules/ui/badge-list'
-import { Typography } from '~/modules/ui/typography'
-import { SvgIcon } from '~/modules/ui/svg-icon'
-import { useProfileInfo } from '../../hooks/use-profile-info'
-import { DatesFormData, useDatesForm } from '../../hooks/use-dates-form'
+import { ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
-import DatesForm from '../dialogs/dates-form'
+import BadgeList from '~/modules/ui/badge-list'
+import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
 import {
   useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
   useEditPersonalInfoProfilePageEditPersonalInfoPost,
 } from '~/services/api/generated'
+import { DatesItem } from '~/services/api/model'
+import { DatesFormData, useDatesForm } from '../../hooks/use-dates-form'
+import { useProfileInfo } from '../../hooks/use-profile-info'
+import DatesForm from '../dialogs/dates-form'
 
 export function DatesInfo() {
   const {

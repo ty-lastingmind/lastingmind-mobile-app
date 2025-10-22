@@ -1,10 +1,13 @@
 import { useFocusEffect } from 'expo-router'
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
+import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
 import { MessageSchema } from '~/hooks/use-chat-ws-connection/index.types'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
+import { Chat } from '~/modules/components/chat'
 import { ChatWithUserIncomingMessage } from '~/modules/components/chat/composers/chat-with-user-incoming-message'
 import { IncomingMessageLoading } from '~/modules/components/chat/composers/incoming-message-loading'
 import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
@@ -20,12 +23,10 @@ import {
 } from '~/services/api/generated'
 import { CanChatWithItem } from '~/services/api/model'
 import { deleteAllAudioFiles, saveBase64ToFile } from '~/utils/files'
-import { Chat } from '~/modules/components/chat'
-import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
 
 interface ChatScreenProps {
   chattingWithViewId: string
-  firstMessage: string
+  firstMessage?: string
   conversationId: string
   chatWithUser: CanChatWithItem
   uid: string
@@ -42,6 +43,8 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
   const userQuery = usePullUserInfoHomePullUserInfoGet()
   const refineText = useRefineTextUtilsRefineTextPost()
   const getExplanations = usePullExplanationAndButtonChatPullExplanationAndButtonPost()
+  const isFirstMessageSendRef = useRef(false)
+  const pbStyles = usePbSafeStyles()
 
   const handleWsMessage = async (message: MessageSchema) => {
     const audio = await saveBase64ToFile(message.audio)
@@ -49,13 +52,22 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
   }
 
   const handleStartConversation = () => {
-    sendMessage.mutate({
-      data: {
-        chattingWithViewId: chattingWithViewId,
-        query: firstMessage,
-        convoId: conversationId,
+    if (!firstMessage || isFirstMessageSendRef.current) return
+
+    sendMessage.mutate(
+      {
+        data: {
+          chattingWithViewId: chattingWithViewId,
+          query: firstMessage,
+          convoId: conversationId,
+        },
       },
-    })
+      {
+        onSettled: () => {
+          isFirstMessageSendRef.current = true
+        },
+      }
+    )
   }
 
   useFocusEffect(
@@ -143,7 +155,7 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
   }, [recordingControls, userQuery.data, refineText, sendMessage, chattingWithViewId, conversationId])
 
   return (
-    <View className="flex-1 pb-safe">
+    <View className="flex-1" style={pbStyles}>
       <Chat.Provider
         state={state}
         actions={actions}
@@ -155,26 +167,28 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
         }}
       >
         <Chat.Scroll contentContainerClassName="px-4">
-          {state.messages.map((message) => (
-            <React.Fragment key={message.index}>
-              {message.isIncoming ? (
-                <ChatWithUserIncomingMessage message={message} />
-              ) : (
-                <OutgoingMessage message={message} />
-              )}
-            </React.Fragment>
-          ))}
-          {getExplanations.data?.explanation && (
-            <Chat.AnswerExplanations explanations={getExplanations.data.explanation} />
-          )}
-          {sendMessage.isPending && <IncomingMessageLoading />}
-          {refineText.isPending && <OutgoingMessageLoading />}
-          {getExplanations.data?.button === 'add_answer' && (
-            <Chat.AddAnswerButton question={state.messages.at(-1)?.text ?? ''} />
-          )}
-          {getExplanations.data?.button === 'send_question' && (
-            <Chat.SendQuestionButton question={state.messages.at(-1)?.text ?? ''} />
-          )}
+          <View className="gap-3">
+            {state.messages.map((message) => (
+              <React.Fragment key={message.index}>
+                {message.isIncoming ? (
+                  <ChatWithUserIncomingMessage message={message} />
+                ) : (
+                  <OutgoingMessage message={message} />
+                )}
+              </React.Fragment>
+            ))}
+            {getExplanations.data?.explanation && (
+              <Chat.AnswerExplanations explanations={getExplanations.data.explanation} />
+            )}
+            {sendMessage.isPending && <IncomingMessageLoading />}
+            {refineText.isPending && <OutgoingMessageLoading />}
+            {getExplanations.data?.button === 'add_answer' && (
+              <Chat.AddAnswerButton question={state.messages.at(-2)?.text ?? ''} />
+            )}
+            {getExplanations.data?.button === 'send_question' && (
+              <Chat.SendQuestionButton question={state.messages.at(-2)?.text ?? ''} />
+            )}
+          </View>
         </Chat.Scroll>
       </Chat.Provider>
       <KeyboardAvoidingView behavior="padding" className="px-16 pt-4" keyboardVerticalOffset={150}>

@@ -1,14 +1,14 @@
 import { Stack } from 'expo-router'
+import { useResolveClassNames } from 'uniwind'
 import BackHeader from '~/modules/ui/back-header'
-import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
 export default function VoiceCloneLayout() {
-  const colors = useTailwindColors()
+  const style = useResolveClassNames('bg-bg-primary')
   return (
     <Stack
       screenOptions={{
         header: () => <BackHeader title="Voice Clone" />,
-        contentStyle: { backgroundColor: colors['bg-primary'] },
+        contentStyle: style,
       }}
     >
       <Stack.Screen name="summary/index" options={{ headerShown: false }} />

@@ -1,7 +1,7 @@
 import { cva, VariantProps } from 'class-variance-authority'
 import { cssInterop } from 'nativewind'
 import React, { forwardRef, useCallback, useMemo } from 'react'
-import { NativeSyntheticEvent, TextInput, TextInputFocusEventData, View } from 'react-native'
+import { BlurEvent, TextInput, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { InputProps } from '~/modules/ui/input'
 
@@ -30,7 +30,7 @@ export const Textarea = forwardRef<TextInput, TextareaProps>(function Textarea(
   const isFocused = useBoolean(false)
 
   const handleFocus = useCallback(
-    (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    (event: BlurEvent) => {
       isFocused.setTrue()
       onFocus?.(event)
     },
@@ -38,7 +38,7 @@ export const Textarea = forwardRef<TextInput, TextareaProps>(function Textarea(
   )
 
   const handleBlur = useCallback(
-    (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    (event: BlurEvent) => {
       isFocused.setFalse()
       onBlur?.(event)
     },

@@ -1,184 +1,258 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Required: Import Tailwind CSS */
+@import 'tailwindcss';
 
-@layer base {
+/* Required: Import Uniwind */
+@import 'uniwind';
+
+@theme {
+  /* FONT SIZES */
+  --text-h1: 50px;
+  --text-h2: 32px;
+  --text-h3: 28px;
+  --text-h4: 24px;
+  --text-h5: 20px;
+  --text-h6: 18px;
+  --text-body-lg: 20px;
+  --text-body-1: 16px;
+  --text-body-2: 14px;
+  --text-label-1: 16px;
+  --text-label-2: 14px;
+  --text-caption-1: 12px;
+  --text-caption-2: 10px;
+  --text-overline-1: 10px;
+  --text-overline-2: 8px;
+  --text-logo: 160px;
+
+  --text-button-sm: 20px;
+  --text-button-md: 20px;
+  --text-button-lg: 18px;
+
+  --text-badge-sm: 10px;
+  --text-badge-md: 16px;
+  --text-badge-lg: 20px;
+
+  --icon-xs-size: 12px;
+  --icon-sm-size: 16px;
+  --icon-md-size: 20px;
+  --icon-lg-size: 24px;
+  --icon-xl-size: 32px;
+  --icon-2xl-size: 40px;
+  --icon-3xl-size: 48px;
+  --icon-4xl-size: 64px;
+  --icon-5xl-size: 80px;
+  --icon-6xl-size: 96px;
+  --icon-7xl-size: 221px;
+
+  --text-icon-xs: 12px;
+  --text-icon-sm: 16px;
+  --text-icon-md: 20px;
+  --text-icon-lg: 24px;
+  --text-icon-xl: 32px;
+  --text-icon-2xl: 40px;
+  --text-icon-3xl: 48px;
+  --text-icon-4xl: 64px;
+
+  --text-input-text-size: 15px;
+
+  /* BORDER RADIUS */
+  --radius-sm: 0.625rem;
+  --radius-md: 20px;
+
+  /* HEIGHTS */
+  --height-sm: 32px;
+  --height-md: 52px;
+
+  /* LINE HEIGHTS */
+  --line-height-badge-md: 16px;
+
+  /* BASE COLORS (theme-independent) */
+  --color-brand: rgba(74, 108, 250, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-white: rgba(255, 255, 255, 1);
+  --color-error: rgba(239, 68, 68, 1);
+}
+
+@layer theme {
   :root {
-    /* SIZES */
-    --h1: 50px; /* TAKEN */
-    --h2: 32px; /* TAKEN */
-    --h3: 28px;
-    --h4: 24px;
-    --h5: 20px; /* TAKEN */
-    --h6: 18px;
-    --body-lg: 20px;
-    --body-1: 16px; /* TAKEN */
-    --body-2: 14px;
-    --label-1: 16px; /* TAKEN */
-    --label-2: 14px;
-    --caption-1: 12px;
-    --caption-2: 10px;
-    --overline-1: 10px;
-    --overline-2: 8px;
-    --logo: 160px;
+    /* Light theme variables */
+    @variant light {
+      /* FIGMA COLORS */
+      --color-accent: rgba(22, 0, 110, 1);
+      --color-red: rgba(255, 0, 0, 1);
+      --color-red-alpha-20: rgba(255, 0, 0, 0.2);
+      --color-label-primary: rgba(0, 0, 0, 1);
+      --color-label-secondary: rgba(60, 60, 67, 0.6);
+      --color-label-accent: rgba(22, 0, 110, 1);
+      --color-fill-accent: rgba(52, 46, 125, 1);
+      --color-bg-vibrant-primary: rgba(229, 229, 229, 0.75);
+      --color-bg-vibrant-accent: rgba(99, 109, 172, 0.2);
+      --color-bg-primary: rgba(255, 255, 255, 1);
+      --color-bg-secondary: rgba(120, 120, 128, 0.16);
+      --color-bg-tertiary: rgba(239, 239, 239, 1);
+      --color-miscellaneous: rgba(255, 255, 255, 1);
+      --color-miscellaneous-topic-stroke: rgba(195, 195, 195, 1);
+      --color-miscellaneous-component: rgba(138, 56, 245, 1);
 
-    --button-sm-text-size: 20px;
-    --button-md-text-size: 20px;
-    --button-lg-text-size: var(--h6);
+      /* SCREEN */
+      --color-screen-bg-primary: rgba(255, 255, 255, 1);
 
-    --badge-sm-text-size: var(--caption-2);
-    --badge-md-text-size: 16px;
-    --badge-lg-text-size: 20px;
+      /* BUTTON */
+      --color-button-primary-bg: rgba(52, 46, 125, 1);
+      --color-button-primary-text: rgba(255, 255, 255, 1);
+      --color-button-primary-border: rgba(22, 0, 110, 1);
 
-    --icon-xs-size: 12px;
-    --icon-sm-size: 16px;
-    --icon-md-size: 20px;
-    --icon-lg-size: 24px;
-    --icon-xl-size: 32px;
-    --icon-2xl-size: 40px;
-    --icon-3xl-size: 48px;
-    --icon-4xl-size: 64px;
+      --color-button-secondary-bg: rgba(120, 120, 128, 0.16);
+      --color-button-secondary-text: rgba(22, 0, 110, 1);
 
-    --input-text-size: 15px;
+      --color-button-outlined-bg: transparent;
+      --color-button-outlined-text: rgba(22, 0, 110, 1);
+      --color-button-outlined-border: rgba(22, 0, 110, 1);
 
-    --radius-sm: 0.625rem;
-    --radius-md: 20px;
+      --color-button-outlined-secondary-bg: transparent;
+      --color-button-outlined-secondary-text: rgba(22, 0, 110, 1);
+      --color-button-outlined-secondary-border: rgba(195, 195, 195, 1);
 
-    --height-sm: 32px;
-    --height-md: 52px;
+      --color-button-white-bg: rgba(255, 255, 255, 1);
+      --color-button-black-bg: rgba(0, 0, 0, 1);
+      --color-button-email-bg: rgba(239, 239, 239, 1);
 
-    /* COLORS */
-    --brand: rgba(74, 108, 250, 1);
-    --black: rgba(0, 0, 0, 1);
-    --white: rgba(255, 255, 255, 1);
-    --error: rgba(239, 68, 68, 1);
+      /* BADGE */
+      --color-badge-primary-bg: rgba(22, 0, 110, 1);
+      --color-badge-primary-text: rgba(255, 255, 255, 1);
+      --color-badge-primary-border: rgba(22, 0, 110, 1);
 
-    /* FIGMA COLORS */
-    --accent: rgba(22, 0, 110, 1);
-    --red: rgba(255, 0, 0, 1);
-    --red-alpha-20: rgba(255, 0, 0, 0.2);
-    --label-primary: rgba(0, 0, 0, 1);
-    --label-secondary: rgba(60, 60, 67, 0.6);
-    --label-accent: rgba(22, 0, 110, 1);
-    --fill-accent: rgba(52, 46, 125, 1);
-    --bg-vibrant-primary: rgba(229, 229, 229, 0.75);
-    --bg-vibrant-accent: rgba(99, 109, 172, 0.2);
-    --bg-primary: rgba(255, 255, 255, 1);
-    --bg-secondary: rgba(120, 120, 128, 0.16);
-    --bg-tertiary: rgba(239, 239, 239, 1);
-    --miscellaneous: rgba(255, 255, 255, 1);
-    --miscellaneous-topic-stroke: rgba(195, 195, 195, 1);
-    --miscellaneous-component: rgba(138, 56, 245, 1);
+      --color-badge-secondary-bg: rgba(255, 255, 255, 1);
+      --color-badge-secondary-text: rgba(22, 0, 110, 1);
 
-    /* COMPONENTS */
+      --color-badge-outlined-bg: transparent;
+      --color-badge-outlined-text: rgba(22, 0, 110, 1);
+      --color-badge-outlined-border: rgba(195, 195, 195, 1);
 
-    /* SCREEN */
-    --screen-bg-primary: var(--bg-primary);
+      /* ICON */
+      --color-icon-accent: rgba(22, 0, 110, 1);
+      --color-icon-white: rgba(255, 255, 255, 1);
+      --color-icon-primary: rgba(0, 0, 0, 1);
+      --color-icon-secondary: rgba(60, 60, 67, 0.6);
+      --color-icon-logo: rgba(255, 255, 255, 1);
+      --color-icon-miscellaneous: rgba(195, 195, 195, 1);
+      --color-icon-tertiary: rgba(0, 0, 0, 0.5);
+      --color-icon-brand: rgba(74, 108, 250, 1);
+      --color-icon-red: rgba(239, 68, 68, 1);
+      --color-icon-green: rgba(34, 197, 94, 1);
+      --color-icon-blue: rgba(59, 130, 246, 1);
+      --color-icon-error: rgba(239, 68, 68, 1);
 
-    /* BUTTON */
-    --button-primary-bg: var(--fill-accent);
-    --button-primary-text: var(--white);
-    --button-primary-border: var(--accent);
+      /* TYPOGRAPHY */
+      --color-typography-primary: rgba(0, 0, 0, 1);
+      --color-typography-secondary: rgba(60, 60, 67, 0.6);
+      --color-typography-tertiary: rgba(0, 0, 0, 1);
+      --color-typography-accent: rgba(22, 0, 110, 1);
+      --color-typography-red: rgba(255, 0, 0, 1);
+      --color-typography-white: rgba(255, 255, 255, 1);
+      --color-typography-black: rgba(0, 0, 0, 1);
 
-    --button-secondary-bg: var(--bg-secondary);
-    --button-secondary-text: var(--accent);
+      /* SEPARATOR */
+      --color-separator-bg: rgba(255, 255, 255, 0.1);
 
-    --button-outlined-bg: transparent;
-    --button-outlined-text: var(--label-accent);
-    --button-outlined-border: var(--accent);
+      /* INPUT */
+      --color-input-primary-border: rgba(22, 0, 110, 1);
+      --color-input-secondary-border: rgba(195, 195, 195, 1);
+      --color-input-border--error: rgba(239, 68, 68, 1);
+      --color-input-border--focus: rgba(0, 0, 0, 1);
+      --color-input-text: rgba(0, 0, 0, 1);
+      --color-input-label: rgba(0, 0, 0, 1);
+      --color-input-placeholder: rgba(60, 60, 67, 0.6);
+      --color-input-placeholder--error: rgba(239, 68, 68, 1);
+    }
 
-    --button-outlined-secondary-bg: transparent;
-    --button-outlined-secondary-text: var(--label-accent);
-    --button-outlined-secondary-border: var(--miscellaneous-topic-stroke);
+    /* Dark theme variables */
+    @variant dark {
+      /* FIGMA COLORS */
+      --color-accent: rgba(52, 46, 125, 1);
+      --color-red: rgba(255, 0, 0, 1);
+      --color-red-alpha-20: rgba(255, 0, 0, 0.2);
+      --color-label-primary: rgba(255, 255, 255, 1);
+      --color-label-secondary: rgba(255, 255, 255, 0.6);
+      --color-label-accent: rgba(255, 255, 255, 1);
+      --color-fill-accent: rgba(52, 46, 125, 1);
+      --color-bg-vibrant-primary: rgba(0, 0, 0, 0.75);
+      --color-bg-primary: rgba(0, 0, 0, 1);
+      --color-bg-secondary: rgba(0, 0, 0, 1);
+      --color-bg-tertiary: rgba(34, 34, 34, 1);
+      --color-miscellaneous: rgba(255, 255, 255, 1);
+      --color-miscellaneous-topic-stroke: rgba(68, 68, 68, 1);
+      --color-miscellaneous-component: rgba(138, 56, 245, 1);
 
-    --button-white-bg: var(--bg-primary);
+      /* SCREEN */
+      --color-screen-bg-primary: rgba(0, 0, 0, 1);
 
-    --button-black-bg: var(--label-primary);
-    --button-email-bg: var(--bg-tertiary);
+      /* BUTTON */
+      --color-button-primary-bg: rgba(52, 46, 125, 1);
+      --color-button-primary-text: rgba(255, 255, 255, 1);
+      --color-button-primary-border: rgba(52, 46, 125, 1);
 
-    /* BADGE */
-    --badge-primary-bg: var(--accent);
-    --badge-primary-text: var(--white);
-    --badge-primary-border: var(--accent);
+      --color-button-secondary-bg: rgba(74, 108, 250, 0.2);
+      --color-button-secondary-text: rgba(52, 46, 125, 1);
 
-    --badge-secondary-bg: var(--bg-primary);
-    --badge-secondary-text: var(--label-accent);
+      --color-button-outlined-bg: transparent;
+      --color-button-outlined-text: rgba(255, 255, 255, 1);
+      --color-button-outlined-border: rgba(52, 46, 125, 1);
 
-    --badge-outlined-bg: transparent;
-    --badge-outlined-text: var(--label-accent);
-    --badge-outlined-border: var(--miscellaneous-topic-stroke);
+      --color-button-outlined-secondary-bg: transparent;
+      --color-button-outlined-secondary-text: rgba(255, 255, 255, 1);
+      --color-button-outlined-secondary-border: rgba(68, 68, 68, 1);
 
-    /* ICON */
-    --icon-accent: var(--accent);
-    --icon-white: var(--white);
-    --icon-primary: var(--black);
-    --icon-secondary: var(--label-secondary);
-    --icon-logo: var(--bg-primary);
-    --icon-miscellaneous: var(--miscellaneous-topic-stroke);
-    --icon-tertiary: rgba(0, 0, 0, 0.5);
-    --icon-brand: var(--brand);
-    --icon-red: rgba(239, 68, 68, 1);
-    --icon-green: rgba(34, 197, 94, 1);
-    --icon-blue: rgba(59, 130, 246, 1);
-    --icon-error: rgba(239, 68, 68, 1);
+      --color-button-white-bg: rgba(0, 0, 0, 1);
+      --color-button-black-bg: rgba(255, 255, 255, 1);
+      --color-button-email-bg: rgba(34, 34, 34, 1);
 
-    /* TYPOGRAPHY */
-    --typography-primary: var(--black);
-    --typography-secondary: var(--label-secondary);
-    --typography-tertiary: var(--black);
-    --typography-accent: var(--label-accent);
-    --typography-red: var(--red);
-    --typography-white: var(--white);
-    --typography-black: var(--black);
+      /* BADGE */
+      --color-badge-primary-bg: rgba(52, 46, 125, 1);
+      --color-badge-primary-text: rgba(255, 255, 255, 1);
+      --color-badge-primary-border: rgba(52, 46, 125, 1);
 
-    /* SEPARATOR */
-    --separator-bg: rgba(255, 255, 255, 0.1);
+      --color-badge-secondary-bg: rgba(0, 0, 0, 1);
+      --color-badge-secondary-text: rgba(255, 255, 255, 1);
 
-    /* INPUT */
-    --input-primary-border: var(--accent);
-    --input-secondary-border: var(--miscellaneous-topic-stroke);
-    --input-border--error: rgba(239, 68, 68, 1);
-    --input-border--focus: rgba(0, 0, 0, 1);
-    --input-text: var(--label-primary);
-    --input-label: var(--black);
-    --input-placeholder: var(--label-secondary);
-    --input-placeholder--error: var(--error);
-  }
+      --color-badge-outlined-bg: transparent;
+      --color-badge-outlined-text: rgba(255, 255, 255, 1);
+      --color-badge-outlined-border: rgba(68, 68, 68, 1);
 
-  .dark {
-    /* FIGMA COLORS */
-    --accent: rgba(52, 46, 125, 1);
-    --red: rgba(255, 0, 0, 1);
-    --label-primary: rgba(255, 255, 255, 1);
-    --label-secondary: rgba(255, 255, 255, 0.6);
-    --label-accent: rgba(255, 255, 255, 1);
-    --fill-accent: rgba(52, 46, 125, 1);
-    --bg-vibrant-primary: rgba(0, 0, 0, 0.75);
-    --bg-primary: rgba(0, 0, 0, 1);
-    --bg-secondary: rgba(0, 0, 0, 1);
-    --bg-tertiary: rgba(34, 34, 34, 1);
-    --miscellaneous: rgba(255, 255, 255, 1);
-    --miscellaneous-topic-stroke: rgba(68, 68, 68, 1);
-    --miscellaneous-component: rgba(138, 56, 245, 1);
+      /* ICON */
+      --color-icon-accent: rgba(52, 46, 125, 1);
+      --color-icon-white: rgba(255, 255, 255, 1);
+      --color-icon-primary: rgba(255, 255, 255, 1);
+      --color-icon-secondary: rgba(255, 255, 255, 0.6);
+      --color-icon-logo: rgba(0, 0, 0, 1);
+      --color-icon-miscellaneous: rgba(68, 68, 68, 1);
+      --color-icon-tertiary: rgba(255, 255, 255, 0.5);
+      --color-icon-brand: rgba(74, 108, 250, 1);
+      --color-icon-red: rgba(239, 68, 68, 1);
+      --color-icon-green: rgba(34, 197, 94, 1);
+      --color-icon-blue: rgba(59, 130, 246, 1);
+      --color-icon-error: rgba(239, 68, 68, 1);
 
-    /* SCREEN */
-    --screen-bg-primary: var(--black);
+      /* TYPOGRAPHY */
+      --color-typography-primary: rgba(255, 255, 255, 1);
+      --color-typography-secondary: rgba(255, 255, 255, 1);
+      --color-typography-tertiary: rgba(255, 255, 255, 1);
+      --color-typography-accent: rgba(255, 255, 255, 1);
+      --color-typography-red: rgba(255, 0, 0, 1);
+      --color-typography-white: rgba(255, 255, 255, 1);
+      --color-typography-black: rgba(0, 0, 0, 1);
 
-    /* BUTTON */
-    --button-secondary-bg: rgba(74, 108, 250, 0.2);
-    --button-outlined-bg: transparent;
+      /* SEPARATOR */
+      --color-separator-bg: rgba(255, 255, 255, 0.2);
 
-    /* ICON */
-    --icon-primary: var(--white);
-    --icon-tertiary: rgba(255, 255, 255, 0.5);
-
-    /* TYPOGRAPHY */
-    --typography-primary: var(--white);
-    --typography-secondary: var(--white);
-    --typography-tertiary: var(--white);
-    --typography-white: var(--white);
-
-    /* SEPARATOR */
-    --separator-bg: rgba(255, 255, 255, 0.2);
+      /* INPUT */
+      --color-input-primary-border: rgba(52, 46, 125, 1);
+      --color-input-secondary-border: rgba(68, 68, 68, 1);
+      --color-input-border--error: rgba(239, 68, 68, 1);
+      --color-input-border--focus: rgba(0, 0, 0, 1);
+      --color-input-text: rgba(255, 255, 255, 1);
+      --color-input-label: rgba(0, 0, 0, 1);
+      --color-input-placeholder: rgba(255, 255, 255, 0.6);
+      --color-input-placeholder--error: rgba(239, 68, 68, 1);
+    }
   }
 }

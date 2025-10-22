@@ -1,11 +1,11 @@
 import { Stack } from 'expo-router'
 import { FormProvider } from 'react-hook-form'
+import { useResolveClassNames } from 'uniwind'
 
 import { useInterviewForm } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
-import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
 export default function JournalLayout() {
-  const colors = useTailwindColors()
+  const styles = useResolveClassNames('bg-screen-bg-primary')
   const form = useInterviewForm()
 
   return (
@@ -14,9 +14,7 @@ export default function JournalLayout() {
         screenOptions={{
           headerTitle: 'Interview',
           headerShown: false,
-          contentStyle: {
-            backgroundColor: colors['bg-primary'],
-          },
+          contentStyle: styles,
         }}
       />
     </FormProvider>

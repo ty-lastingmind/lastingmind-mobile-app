@@ -1,13 +1,13 @@
-import { View } from 'react-native'
 import React from 'react'
-import { Typography } from '~/modules/ui/typography'
+import { View } from 'react-native'
 import Dropdown from '~/modules/ui/dropdown'
+import { Typography } from '~/modules/ui/typography'
+import { CareerInfo } from '../user-info-career'
+import { DatesInfo } from '../user-info-dates'
+import { EducationInfo } from '../user-info-education'
 import { FamilyInfo } from '../user-info-family'
 import { FriendsInfo } from '../user-info-friends'
-import { EducationInfo } from '../user-info-education'
-import { CareerInfo } from '../user-info-career'
 import { LivingInfo } from '../user-info-living'
-import { DatesInfo } from '../user-info-dates'
 import { OrganizationsInfo } from '../user-info-organizations'
 
 export default function UserPersonalInfo() {

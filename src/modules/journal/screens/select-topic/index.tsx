@@ -1,4 +1,5 @@
-import { Link } from 'expo-router'
+import { Link, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
+import { useCallback } from 'react'
 import { Controller } from 'react-hook-form'
 import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
 import { useHandleSelectTopic } from '~/modules/questions/hooks/use-handle-select-topic'
@@ -10,9 +11,20 @@ import { Input } from '~/modules/ui/input'
 import { usePullSuggestedTopicsUtilsPullSuggestedTopicsGet } from '~/services/api/generated'
 
 export function SelectTopicScreen() {
+  const { topicName } = useLocalSearchParams<{ topicName?: string }>()
   const form = useAddJournalEntryFormContext()
   const topics = usePullSuggestedTopicsUtilsPullSuggestedTopicsGet()
+  const router = useRouter()
   const { selectedTopic, hasTopic, handleTopicChange, customTopicName } = useHandleSelectTopic(form)
+
+  useFocusEffect(
+    useCallback(() => {
+      if (topicName) {
+        form.setValue('customTopicName', topicName)
+        router.push('/questions/journal/add/02-enter-journal-entry')
+      }
+    }, [])
+  )
 
   return (
     <ScreenContainer>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Alert, TouchableOpacity } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { ChatMessage } from '~/modules/components/chat/index.types'
+import { AnswerFormDialog } from '~/modules/components/chat/parts/container/parts/answer-form-dialog'
 import { AnswerFormData } from '~/modules/components/chat/parts/container/parts/answer-form-dialog/hooks/use-answer-form'
 
 import { useChatContext } from '~/modules/components/chat/parts/container/parts/provider'
@@ -9,7 +10,6 @@ import { Icon } from '~/modules/ui/icon'
 import { useEditAnswerChatEditAnswerPost } from '~/services/api/generated'
 import { ImageSrc } from '~/types/images'
 import { ConfirmEditAnswerDialog } from './parts/confirm-edit-answer-dialog'
-import { AnswerFormDialog } from '~/modules/components/chat/parts/container/parts/answer-form-dialog'
 
 interface EditButtonProps {
   message: ChatMessage

@@ -1,9 +1,9 @@
 import { Stack } from 'expo-router'
+import { useResolveClassNames } from 'uniwind'
 import { font } from '~/constants/fonts'
-import { useTailwindColors } from '~/providers/tailwind-colors-provider'
 
 export default function BasicInfoLayout() {
-  const colors = useTailwindColors()
+  const styles = useResolveClassNames('bg-screen-bg-primary text-accent')
 
   return (
     <Stack
@@ -13,13 +13,13 @@ export default function BasicInfoLayout() {
         headerTransparent: true,
         headerBackTitle: 'Back',
         headerBackButtonMenuEnabled: false,
-        headerTintColor: colors['accent'],
+        headerTintColor: styles.color?.toString(),
         headerTitleStyle: {
           fontFamily: font.family.InriaSerif.Bold,
           fontSize: 22,
         },
         contentStyle: {
-          backgroundColor: colors['bg-primary'],
+          backgroundColor: styles.backgroundColor,
         },
       }}
     />

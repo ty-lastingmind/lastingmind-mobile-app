@@ -1,11 +1,11 @@
+import { useRouter } from 'expo-router'
+import { useCallback, useMemo } from 'react'
 import { TouchableOpacity } from 'react-native'
+import { Avatar } from '~/modules/ui/avatar'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
-import { QuickActionAction, type QuickAction } from '~/services/api/model'
-import { quickActionToData, defaultQuickActionConfig } from './index.static'
-import { useCallback, useMemo } from 'react'
-import { useRouter } from 'expo-router'
-import { Avatar } from '~/modules/ui/avatar'
+import { type QuickAction, QuickActionAction } from '~/services/api/model'
+import { defaultQuickActionConfig, quickActionToData } from './index.static'
 
 interface QuickActionItemProps {
   action: QuickAction
@@ -37,7 +37,7 @@ export const QuickActionItem = ({ action }: QuickActionItemProps) => {
   return (
     <TouchableOpacity
       onPress={handleActionPress}
-      className="w-36 h-36 bg-button-secondary-bg rounded-[20px] flex flex-col items-center justify-center gap-3"
+      className="w-[144px] h-[144px] bg-button-secondary-bg rounded-[20px] flex flex-col items-center justify-center gap-3"
       activeOpacity={0.7}
     >
       <Typography level="label-1" color="primary" className="text-center px-2">

@@ -4,6 +4,7 @@ import { Controller } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 import { JOURNAL_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useUid } from '~/hooks/auth/use-uid'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { AudioRecorder } from '~/modules/components/audio-recorder'
 import { useAddJournalEntryFormContext } from '~/modules/journal/hooks/use-add-journal-entry-form-context'
 import { AudioTracksList } from '~/modules/journal/screens/add-journal-entry/parts/audio-tracks-list'
@@ -21,6 +22,7 @@ export function AddJournalEntryScreen() {
   const formattedDate = useMemo(() => formatDate(new Date()), [])
   const refineText = useRefineTextUtilsRefineTextPost()
   const userQuery = usePullUserInfoHomePullUserInfoGet()
+  const pbSafeStyles = usePbSafeStyles()
   const uid = useUid()
 
   const topicName = form.getValues('topicName')
@@ -62,7 +64,7 @@ export function AddJournalEntryScreen() {
         onSuccess: async ({ text }) => {
           const currentText = form.getValues('text')
 
-          form.setValue('text', currentText.concat('\n\n', text))
+          form.setValue('text', `${currentText}${currentText ? '. ' : ''}${text}`)
 
           uploader.upload.mutate(
             {
@@ -87,7 +89,7 @@ export function AddJournalEntryScreen() {
   }
 
   return (
-    <View className="px-4 pt-6 flex-1 pb-safe gap-5">
+    <View style={pbSafeStyles} className="px-4 pt-6 flex-1 gap-5">
       <View className="gap-2">
         <Typography color="accent" level="h5" brand>
           {topicNameToDisplay}

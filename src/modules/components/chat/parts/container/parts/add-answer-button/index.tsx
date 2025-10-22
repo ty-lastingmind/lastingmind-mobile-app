@@ -41,7 +41,7 @@ export function AddAnswerButton({ question }: AddAnswerButtonProps) {
 
   return (
     <>
-      <Animated.View entering={FadeInLeft}>
+      <Animated.View entering={FadeInLeft} className="mr-auto">
         <QuestionButton text="Add answer" icon="question" onPress={isOpen.setTrue} />
       </Animated.View>
       {isOpen.value && (

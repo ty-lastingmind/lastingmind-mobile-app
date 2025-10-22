@@ -1,17 +1,17 @@
-import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
-import { FriendsItem } from '~/services/api/model'
-import BadgeList from '~/modules/ui/badge-list'
-import { Typography } from '~/modules/ui/typography'
-import { SvgIcon } from '~/modules/ui/svg-icon'
-import { useProfileInfo } from '../../hooks/use-profile-info'
-import { FriendsFormData, useFriendsForm } from '../../hooks/use-friends-form'
+import { ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
-import FriendsForm from '../dialogs/friends-form'
+import BadgeList from '~/modules/ui/badge-list'
+import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
 import {
   useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
   useEditPersonalInfoProfilePageEditPersonalInfoPost,
 } from '~/services/api/generated'
+import { FriendsItem } from '~/services/api/model'
+import { FriendsFormData, useFriendsForm } from '../../hooks/use-friends-form'
+import { useProfileInfo } from '../../hooks/use-profile-info'
+import FriendsForm from '../dialogs/friends-form'
 
 export function FriendsInfo() {
   const {

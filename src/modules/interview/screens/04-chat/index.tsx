@@ -6,6 +6,7 @@ import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
 import { MessageSchema } from '~/hooks/use-chat-ws-connection/index.types'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { Chat } from '~/modules/components/chat'
 import { IncomingMessageLoading } from '~/modules/components/chat/composers/incoming-message-loading'
 import { InterviewIncomingMessage } from '~/modules/components/chat/composers/interview-incoming-message'
@@ -39,6 +40,7 @@ export function ChatScreen() {
   const isInterviewInitializedRef = useRef(false)
   const refineText = useRefineTextUtilsRefineTextPost()
   const user = usePullUserInfoHomePullUserInfoGet()
+  const pbStyles = usePbSafeStyles()
   const { actions, state } = useChat()
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost({
     mutation: {
@@ -175,7 +177,7 @@ export function ChatScreen() {
 
   return (
     <>
-      <View className="flex-1 pb-safe px-4">
+      <View className="flex-1 px-4" style={pbStyles}>
         <Chat.Provider
           meta={{
             chattingWithViewId: '',
@@ -186,17 +188,19 @@ export function ChatScreen() {
           actions={actions}
         >
           <Chat.Scroll contentContainerClassName="px-4">
-            {state.messages.map((message) => (
-              <React.Fragment key={message.index}>
-                {message.isIncoming ? (
-                  <InterviewIncomingMessage message={message} />
-                ) : (
-                  <OutgoingMessage message={message} />
-                )}
-              </React.Fragment>
-            ))}
-            {generateNextQuestion.isPending && <IncomingMessageLoading />}
-            {refineText.isPending && <OutgoingMessageLoading />}
+            <View className="gap-3">
+              {state.messages.map((message) => (
+                <React.Fragment key={message.index}>
+                  {message.isIncoming ? (
+                    <InterviewIncomingMessage message={message} />
+                  ) : (
+                    <OutgoingMessage message={message} />
+                  )}
+                </React.Fragment>
+              ))}
+              {generateNextQuestion.isPending && <IncomingMessageLoading />}
+              {refineText.isPending && <OutgoingMessageLoading />}
+            </View>
           </Chat.Scroll>
         </Chat.Provider>
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={150} className="gap-1 px-11 pt-2">

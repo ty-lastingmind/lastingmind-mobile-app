@@ -19,7 +19,7 @@ export function AudioPlayer({ audioBytes, mediaType }: AudioPlayerProps) {
     return { uri: dataUri }
   }, [audioBytes, mediaType])
 
-  const player = useAudioPlayer(audioSource, 100)
+  const player = useAudioPlayer(audioSource, { updateInterval: 100 })
   const status = useAudioPlayerStatus(player)
 
   const progress = status.duration > 0 ? (status.currentTime / status.duration) * 100 : 0

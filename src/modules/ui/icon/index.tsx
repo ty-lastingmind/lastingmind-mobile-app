@@ -1,6 +1,5 @@
-import { Ionicons } from '@expo/vector-icons'
-import { cssInterop } from 'nativewind'
-import { useMemo } from 'react'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { useResolveClassNames } from 'uniwind'
 import { variants } from '~/modules/ui/icon/index.styles'
 
 import { IconName, IconVariants } from './index.types'
@@ -10,17 +9,7 @@ export interface IconProps extends IconVariants {
 }
 
 export function Icon({ name, size, color }: IconProps) {
-  const className = useMemo(() => variants({ size, color }), [color, size])
+  const styles = useResolveClassNames(variants({ size, color }))
 
-  return <Ionicons name={name} className={className} />
+  return <Ionicons name={name} color={styles.color} size={styles.fontSize} />
 }
-
-cssInterop(Ionicons, {
-  className: {
-    target: false,
-    nativeStyleToProp: {
-      color: 'color',
-      fontSize: 'size',
-    },
-  },
-})

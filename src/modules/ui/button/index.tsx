@@ -50,22 +50,33 @@ type ButtonVariants = VariantProps<(typeof variants)['button']>
 interface ButtonProps extends TouchableOpacityProps, ButtonVariants {
   loading?: boolean
   btnContainerClassName?: string
+  textClassName?: string
   icon?: React.ReactNode
 }
 
 export const Button = forwardRef<View, PropsWithChildren<ButtonProps>>(function Button(
-  { children, variant = 'primary', size = 'md', loading = false, btnContainerClassName, icon, disabled, ...props },
+  {
+    children,
+    variant = 'primary',
+    size = 'md',
+    loading = false,
+    btnContainerClassName,
+    textClassName: textClassNameProp,
+    icon,
+    disabled,
+    ...props
+  },
   ref
 ) {
   const classNames = useMemo(() => {
     const buttonClassName = cn(variants.button({ variant, size }), btnContainerClassName, disabled && 'opacity-50')
-    const textClassName = variants.text({ variant, size })
+    const textClassName = cn(variants.text({ variant, size }), textClassNameProp)
 
     return {
       buttonClassName,
       textClassName,
     }
-  }, [variant, size, btnContainerClassName, disabled])
+  }, [variant, size, btnContainerClassName, disabled, textClassNameProp])
 
   return (
     <TouchableOpacity className={classNames.buttonClassName} {...props} ref={ref} disabled={disabled}>

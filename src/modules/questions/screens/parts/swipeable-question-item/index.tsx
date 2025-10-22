@@ -1,12 +1,13 @@
-import React, { useState, useCallback } from 'react'
+import { router } from 'expo-router'
+import React, { useCallback, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, interpolate } from 'react-native-reanimated'
-import { Typography } from '~/modules/ui/typography'
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { Button } from '~/modules/ui/button'
 import { Dialog, DialogContent, DialogFooter } from '~/modules/ui/dialog'
-import { SavedQuestionsOutputSavedQuestionsAnyOfItem } from '~/services/api/model'
 import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
+import { SavedQuestionsOutputSavedQuestionsAnyOfItem } from '~/services/api/model'
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 
@@ -29,11 +30,9 @@ export function SwipeableQuestionItem({ question: questionItem, onDelete }: Swip
     .activeOffsetX([-10, 10])
     .failOffsetY([-10, 10])
     .onUpdate((event) => {
-      console.log('Pan gesture triggered:', event.translationX)
       if (event.translationX < 0) {
         translateX.value = event.translationX
         deleteButtonOpacity.value = interpolate(event.translationX, [SWIPE_THRESHOLD, 0], [1, 0], 'clamp')
-        console.log('Delete button opacity:', deleteButtonOpacity.value)
       }
     })
     .onEnd((event) => {
@@ -63,6 +62,15 @@ export function SwipeableQuestionItem({ question: questionItem, onDelete }: Swip
     }
   })
 
+  const handlePress = useCallback(() => {
+    router.navigate({
+      pathname: '/questions/curated-questions',
+      params: {
+        newQuestion: JSON.stringify(questionItem),
+      },
+    })
+  }, [questionItem])
+
   const handleDeletePress = useCallback(() => {
     setShowDeleteDialog(true)
   }, [])
@@ -89,13 +97,13 @@ export function SwipeableQuestionItem({ question: questionItem, onDelete }: Swip
           <SvgIcon name="trash" size="2xl" color="red" />
         </AnimatedTouchableOpacity>
         <GestureDetector gesture={panGesture}>
-          <Animated.View style={animatedCardStyle}>
+          <AnimatedTouchableOpacity style={animatedCardStyle} onPress={handlePress}>
             <View className="w-full h-[98px] bg-bg-secondary py-4 px-4 rounded-2xl">
               <Typography level="body-1" color="accent">
                 {question.question_text}
               </Typography>
             </View>
-          </Animated.View>
+          </AnimatedTouchableOpacity>
         </GestureDetector>
       </View>
 

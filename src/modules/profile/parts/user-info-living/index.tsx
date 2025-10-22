@@ -1,17 +1,17 @@
-import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
-import { CitiesLivedItem } from '~/services/api/model'
-import BadgeList from '~/modules/ui/badge-list'
-import { Typography } from '~/modules/ui/typography'
-import { SvgIcon } from '~/modules/ui/svg-icon'
-import { useProfileInfo } from '../../hooks/use-profile-info'
-import { LivingFormData, useLivingForm } from '../../hooks/use-living-form'
+import { ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
-import LivingForm from '../dialogs/living-form'
+import BadgeList from '~/modules/ui/badge-list'
+import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
 import {
   useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
   useEditPersonalInfoProfilePageEditPersonalInfoPost,
 } from '~/services/api/generated'
+import { CitiesLivedItem } from '~/services/api/model'
+import { LivingFormData, useLivingForm } from '../../hooks/use-living-form'
+import { useProfileInfo } from '../../hooks/use-profile-info'
+import LivingForm from '../dialogs/living-form'
 
 export function LivingInfo() {
   const {

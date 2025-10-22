@@ -1,22 +1,24 @@
-import { View } from 'react-native'
-import React, { useEffect } from 'react'
-import { Typography } from '~/modules/ui/typography'
-import { Button } from '~/modules/ui/button'
 import { Link } from 'expo-router'
-import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
-import { Input } from '~/modules/ui/input'
+import React, { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form'
+import { View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { useFirebaseNotificationToken } from '~/hooks/use-firebase-notification-token'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
+import { Button } from '~/modules/ui/button'
+import { Input } from '~/modules/ui/input'
+import { Typography } from '~/modules/ui/typography'
+import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
 
 export function NameScreen() {
   const form = useOnboardingFormContext()
   const { sendPreSignUpFcmToken } = useFirebaseNotificationToken()
+  const safeStyles = useSafeAreaStyles()
 
   useEffect(() => sendPreSignUpFcmToken(), [])
 
   return (
-    <View className="gap-4 px-10 py-safe flex flex-1">
+    <View style={safeStyles} className="gap-4 px-10 flex flex-1">
       <View className="justify-center flex-1">
         <Typography brand className="text-center" level="logo" color="accent" weight="light">
           LM

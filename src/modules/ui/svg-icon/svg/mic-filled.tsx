@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Svg, { Path } from 'react-native-svg'
 import { SvgProps } from '../index.types'
+
 export const MicFilled = ({ size, color }: SvgProps) => (
   <Svg fill="none" width={size} height={size} viewBox="0 0 64 64">
     <Path

@@ -1,9 +1,9 @@
-import { TouchableOpacity, View } from 'react-native'
-import React from 'react'
-import { assets } from '~/constants/assets'
 import { Image } from 'expo-image'
-import { SvgIcon } from '~/modules/ui/svg-icon'
 import * as ImagePicker from 'expo-image-picker'
+import React from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import { assets } from '~/constants/assets'
+import { SvgIcon } from '~/modules/ui/svg-icon'
 
 interface ProfilePicSelectorProps {
   onProfilePicChange?: (uri: string) => void

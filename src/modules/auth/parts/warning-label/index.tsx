@@ -1,5 +1,5 @@
-import { View } from 'react-native'
 import React from 'react'
+import { View } from 'react-native'
 import { Icon } from '~/modules/ui/icon'
 import { Typography } from '~/modules/ui/typography'
 

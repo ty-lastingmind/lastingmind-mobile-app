@@ -1,18 +1,21 @@
-import { Alert, View } from 'react-native'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import React, { useState } from 'react'
-import { Typography } from '~/modules/ui/typography'
-import { TopicButton, TopicsList } from '../../parts/TopicsList'
-import { Button } from '~/modules/ui/button'
-import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
-import CustomTopicModal from '../../parts/CustomTopicModal'
-import { ScrollView } from 'react-native-gesture-handler'
-import { useRouter } from 'expo-router'
-import { useInitializeUserOnboardingInitializeUserPost } from '~/services/api/generated'
-import { useUploadProfilePicture } from '../../hooks/use-upload-profile-picture'
-import { useUid } from '~/hooks/auth/use-uid'
-import { Storage } from '~/services'
+import { Alert, ScrollView, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
+import { useUid } from '~/hooks/auth/use-uid'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import { useFirebaseNotificationToken } from '~/hooks/use-firebase-notification-token'
+import { Button } from '~/modules/ui/button'
+import { Typography } from '~/modules/ui/typography'
+import { Storage } from '~/services'
+import {
+  useInitializeUserOnboardingInitializeUserPost,
+  useUpgradeToSuperUserChatOnlyUserUpgradeToSuperUserPost,
+} from '~/services/api/generated'
+import { OnboardingFormData, useOnboardingFormContext } from '../../hooks/use-onboarding-form'
+import { useUploadProfilePicture } from '../../hooks/use-upload-profile-picture'
+import CustomTopicModal from '../../parts/CustomTopicModal'
+import { TopicButton, TopicsList } from '../../parts/TopicsList'
 
 const initialTopics = [
   '🧓 Growing Up',
@@ -33,9 +36,12 @@ export function TopicsPage() {
   const form = useOnboardingFormContext()
   const selectedTopics = form.watch('topics')
   const router = useRouter()
+  const { needsToUpgrade } = useLocalSearchParams()
   const { moveFcmToken } = useFirebaseNotificationToken()
+  const safeStyles = useSafeAreaStyles()
 
   const initializeUser = useInitializeUserOnboardingInitializeUserPost()
+  const upgradeUser = useUpgradeToSuperUserChatOnlyUserUpgradeToSuperUserPost()
   const uploadPicture = useUploadProfilePicture()
   const uid = useUid()
   const { value: isLoading, setTrue: setLoadingTrue, setFalse: setLoadingFalse } = useBoolean(false)
@@ -59,47 +65,43 @@ export function TopicsPage() {
 
   const handleSubmit = async (data: OnboardingFormData) => {
     setLoadingTrue()
-    let profileImageUri: string = data.profilePicture || ''
-    if (profileImageUri && uid) {
-      await uploadPicture.mutateAsync(
-        { pictureUri: profileImageUri as string, uid },
-        {
-          onSuccess: (picture) => {
-            profileImageUri = Storage.getGCSUri(picture.metadata.fullPath)
-          },
-          onError: () => {
-            Alert.alert('Error', 'Failed to save profile picture.')
-            setLoadingFalse()
-            return
-          },
-        }
-      )
-    }
-    await initializeUser.mutateAsync(
-      {
-        data: {
-          name: `${data.firstName} ${data.lastName}`,
-          age: data.age,
-          profile_image: profileImageUri,
-          chosen_topics: data.topics,
-        },
-      },
-      {
-        onSuccess: () => {
-          moveFcmToken()
-          router.push('/(protected)/onboarding/05-congrats')
-          setLoadingFalse()
-        },
-        onError: () => {
-          Alert.alert('Error', 'Failed to save profile.')
-          setLoadingFalse()
-        },
+
+    try {
+      let profileImageUri = data.profilePicture || ''
+      if (profileImageUri && uid) {
+        const picture = await uploadPicture.mutateAsync({
+          pictureUri: profileImageUri,
+          uid,
+        })
+        profileImageUri = Storage.getGCSUri(picture.metadata.fullPath)
       }
-    )
+
+      if (needsToUpgrade === 'true') {
+        await upgradeUser.mutateAsync({
+          data: { chosen_topics: data.topics },
+        })
+      } else {
+        await initializeUser.mutateAsync({
+          data: {
+            name: `${data.firstName} ${data.lastName}`,
+            age: data.age,
+            profile_image: profileImageUri,
+            chosen_topics: data.topics,
+          },
+        })
+        moveFcmToken()
+      }
+
+      router.push('/(protected)/onboarding/05-congrats')
+    } catch {
+      Alert.alert('Error', 'Failed to save profile.')
+    } finally {
+      setLoadingFalse()
+    }
   }
 
   return (
-    <View className="gap-4 px-8 py-safe flex flex-1">
+    <View className="gap-4 px-8 flex flex-1" style={safeStyles}>
       <View className="pt-28 gap-2">
         <Typography brand level="h3" color="accent">
           What topics matter most to you.

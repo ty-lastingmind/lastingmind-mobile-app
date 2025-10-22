@@ -1,19 +1,18 @@
-import { FlatList, TouchableOpacity, View } from 'react-native'
+import { format } from 'date-fns'
 import React, { useEffect, useMemo, useState } from 'react'
 import BackHeader from '../../../ui/back-header'
+import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native'
+import { useBoolean, useDebounceCallback } from 'usehooks-ts'
+import Dropdown from '~/modules/ui/dropdown'
 import { Icon } from '~/modules/ui/icon'
 import { Input } from '~/modules/ui/input'
-import Dropdown from '~/modules/ui/dropdown'
 import { Selector } from '~/modules/ui/selector'
 import { Typography } from '~/modules/ui/typography'
 import {
   usePullCanChatWithChatPullCanChatWithGet,
   usePullFilteredResponsesViewAnswerPullFilteredAnswersPost,
 } from '~/services/api/generated'
-import { ScrollView } from 'react-native-gesture-handler'
-import { format } from 'date-fns'
 import { FilterBadge } from '../../parts/past-responses/filter-badge'
-import { useBoolean, useDebounceCallback } from 'usehooks-ts'
 import { ResponseDialog } from '../../parts/past-responses/response-dialog'
 
 // TODO: Re-enable date picker filter once backend is fixed

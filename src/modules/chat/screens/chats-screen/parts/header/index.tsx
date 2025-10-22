@@ -1,66 +1,66 @@
-import { DrawerHeaderProps } from '@react-navigation/drawer'
-import { Link, useRouter } from 'expo-router'
-import { useEffect } from 'react'
+import { NativeStackHeaderProps } from '@react-navigation/native-stack'
+import { Link } from 'expo-router'
+import { useCallback, useEffect, useMemo } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useBoolean } from 'usehooks-ts'
 import { useMeasureElement } from '~/hooks/use-measure-element'
+import { useChatContext } from '~/modules/chat/hooks/use-chat-context'
 import { Logo } from '~/modules/components/logo'
 import { Avatar } from '~/modules/ui/avatar'
 import { Icon } from '~/modules/ui/icon'
 import { Popover } from '~/modules/ui/popover'
 import { Typography } from '~/modules/ui/typography'
-import { usePullCanChatWithChatPullCanChatWithGet } from '~/services/api/generated'
-import { CanChatWithItem } from '~/services/api/model'
+import { usePullCanChatWithChatPullCanChatWithGet, usePullUserInfoHomePullUserInfoGet } from '~/services/api/generated'
+import { CanChatWithItem, UserTypeResponseUserType } from '~/services/api/model'
 
-export function Header(props: DrawerHeaderProps) {
-  const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
+type NavigationWithDrawer = NativeStackHeaderProps['navigation'] & {
+  openDrawer?: () => void
+  setOptions: (options: { swipeEnabled?: boolean }) => void
+}
+
+type HeaderProps = Omit<NativeStackHeaderProps, 'navigation'> & {
+  navigation: NavigationWithDrawer
+  userType?: UserTypeResponseUserType
+}
+
+export function Header({ navigation, userType }: HeaderProps) {
   const isOpen = useBoolean(false)
-  const router = useRouter()
-  const isChatDetail = props.route.name === 'chat'
+  const canChatWith = usePullCanChatWithChatPullCanChatWithGet()
+  const { chattingWithUser, isInChatsArea, users, selectPersonToChat } = useChatContext()
   const { measurements, measureElement } = useMeasureElement()
-  const chattingWithViewId = (props.route.params as { chattingWithViewId?: string })?.chattingWithViewId
+  const userInfoQuery = usePullUserInfoHomePullUserInfoGet()
 
-  /**
-   * Initialize chat with first user
-   */
+  const handleSelectPersonToChat = useCallback(
+    (user: CanChatWithItem) => {
+      selectPersonToChat(user)
+      isOpen.setFalse()
+    },
+    [selectPersonToChat, isOpen]
+  )
+  const hasNoChats = !canChatWith.isLoading && users.length === 0
+
+  const userAvatar = useMemo(() => {
+    return { uri: userInfoQuery?.data?.profile_image }
+  }, [userInfoQuery])
+
   useEffect(() => {
-    if (canChatWith.data?.can_chat_with && !chattingWithViewId) {
-      const firstUser = canChatWith.data.can_chat_with.at(0)
-
-      if (firstUser) {
-        props.navigation.setParams({ chattingWithViewId: firstUser.chattingWithViewId })
-      }
-    }
-  }, [canChatWith, chattingWithViewId, props.navigation])
-
-  const users = canChatWith.data?.can_chat_with ?? []
-  const chattingWithUser = users.find((user) => user.chattingWithViewId === chattingWithViewId)
-
-  function selectPersonToChat(user: CanChatWithItem) {
-    if (isChatDetail) {
-      router.replace({
-        pathname: '/chats',
-        params: {
-          chattingWithViewId: user.chattingWithViewId,
-        },
-      })
-    } else {
-      props.navigation.setParams({ chattingWithViewId: user.chattingWithViewId })
-    }
-    isOpen.setFalse()
-  }
+    navigation.setOptions({
+      swipeEnabled: !hasNoChats,
+    })
+  }, [hasNoChats, navigation])
 
   return (
-    <>
-      <View className="pt-safe px-8">
+    <SafeAreaView>
+      <View className="px-8">
         <View className="h-[72px] relative flex flex-row items-center justify-between">
-          <TouchableOpacity onPress={props.navigation.openDrawer}>
-            <Avatar source={chattingWithUser?.chattingWithImage} />
+          <TouchableOpacity onPress={navigation.openDrawer}>
+            <Avatar source={userAvatar} />
           </TouchableOpacity>
           <View className="absolute left-0 top-0 flex items-center justify-center right-0 bottom-0">
-            {chattingWithUser && (
-              <Animated.View entering={isChatDetail ? undefined : FadeInUp}>
+            {chattingWithUser ? (
+              <Animated.View entering={isInChatsArea ? undefined : FadeInUp}>
                 <TouchableOpacity onPress={isOpen.setTrue} className="flex flex-row items-center gap-1">
                   <Typography ref={measureElement} level="h5" brand color="accent">
                     {chattingWithUser.chattingWithName}
@@ -68,12 +68,14 @@ export function Header(props: DrawerHeaderProps) {
                   <Icon name="chevron-forward" color="secondary" />
                 </TouchableOpacity>
               </Animated.View>
+            ) : (
+              <Typography ref={measureElement} level="h5" brand color="accent">
+                No Chats Available
+              </Typography>
             )}
           </View>
           <Link asChild href="/(protected)/(tabs)/home">
-            <TouchableOpacity>
-              <Logo />
-            </TouchableOpacity>
+            <TouchableOpacity>{userType === 'chat_user' ? <Avatar source={userAvatar} /> : <Logo />}</TouchableOpacity>
           </Link>
         </View>
       </View>
@@ -82,7 +84,7 @@ export function Header(props: DrawerHeaderProps) {
           <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="gap-4 p-4">
             {users.map((user) => (
               <TouchableOpacity
-                onPress={() => selectPersonToChat(user)}
+                onPress={() => handleSelectPersonToChat(user)}
                 key={user.chattingWithViewId}
                 className="flex flex-row gap-2 items-center"
               >
@@ -93,6 +95,6 @@ export function Header(props: DrawerHeaderProps) {
           </ScrollView>
         </Popover>
       )}
-    </>
+    </SafeAreaView>
   )
 }

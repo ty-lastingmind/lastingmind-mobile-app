@@ -1,16 +1,17 @@
-import { Alert, View, ScrollView, KeyboardAvoidingView } from 'react-native'
+import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
+import { Alert, KeyboardAvoidingView, ScrollView, View } from 'react-native'
+import { useBoolean } from 'usehooks-ts'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
+import { Button } from '~/modules/ui/button'
+import { Form } from '~/modules/ui/form'
+import { InputGroup } from '~/modules/ui/input-group'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
-import { InputGroup } from '~/modules/ui/input-group'
-import { Button } from '~/modules/ui/button'
-import { useWorkInfoForm, WorkInfoData } from '../../hooks/use-work-info-form'
-import { Form } from '~/modules/ui/form'
-import InputResult from '../../parts/input-result'
-import { useRouter } from 'expo-router'
-import Transition from '../../parts/transition'
 import { useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost } from '~/services/api/generated'
-import { useBoolean } from 'usehooks-ts'
+import { useWorkInfoForm, WorkInfoData } from '../../hooks/use-work-info-form'
+import InputResult from '../../parts/input-result'
+import Transition from '../../parts/transition'
 
 const inputList = [
   {
@@ -45,6 +46,7 @@ export function WorkSurveyPage() {
   const { value: showForm, setTrue: openForm, setFalse: closeForm } = useBoolean(true)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const router = useRouter()
+  const safeStyles = useSafeAreaStyles()
 
   const { mutateAsync, isPending } = useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost()
 
@@ -111,7 +113,7 @@ export function WorkSurveyPage() {
 
   return (
     <Transition title="Response Saved!" subtitle="Only 2 Questions Left!">
-      <View className="flex-1 px-8 py-safe">
+      <View className="flex-1 px-8" style={safeStyles}>
         <KeyboardAvoidingView behavior="padding" className="flex-1">
           <ScrollView contentContainerClassName="gap-4 pb-8" bounces={false} showsVerticalScrollIndicator={false}>
             <View className="pt-28 gap-2">

@@ -12,6 +12,9 @@ export const variants = cva('', {
       '3xl': 'text-icon-3xl',
       '4xl': 'text-icon-4xl',
       logo: 'text-logo',
+      '5xl': 'text-icon-5xl',
+      '6xl': 'text-icon-6xl',
+      '7xl': 'text-icon-7xl',
     },
     color: {
       accent: 'text-icon-accent',

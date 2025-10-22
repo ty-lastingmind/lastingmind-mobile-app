@@ -1,43 +1,50 @@
+import { AudioRecorder as AudioRecorderType } from 'expo-audio'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { View } from 'react-native'
-import { Typography } from '~/modules/ui/typography'
-import { DialogContent, DialogHeader, Dialog, DialogTitle, DialogFooter } from '~/modules/ui/dialog'
-import { useCallback, useEffect, useRef } from 'react'
-import { Button } from '~/modules/ui/button'
-import { Textarea } from '~/modules/ui/textarea'
+import { AudioRecorder } from '~/modules/components/audio-recorder'
 import { useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { useRecordingContext } from '~/modules/questions/contexts/recording-context'
+import { Button } from '~/modules/ui/button'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/modules/ui/dialog'
+import { Textarea } from '~/modules/ui/textarea'
+import { Typography } from '~/modules/ui/typography'
+import { QuestionDetail } from '~/services/api/model'
 import { AudioPlayer } from '../audio-player'
-import { AudioRecorder } from '~/modules/components/audio-recorder'
-import { useRecordingAnswer } from '~/modules/questions/hooks/use-recording-answer'
 
 interface EditAnswerOverlayProps {
-  question: string
+  question: QuestionDetail
+  responseId: string
 }
 
-export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
-  const { answer, handleAnswerChange, handleAudioUrlChange, audioUrl } = useRecordingContext()
-  const { isEditingAnswer, isWritingAnswer, handleCloseEditOverlay, handleCloseWriteAnswerOverlay } =
-    useQuestionContext()
+export function EditAnswerOverlay({ question, responseId }: EditAnswerOverlayProps) {
   const {
-    audioRecorder,
+    answer,
+    handleAnswerChange,
+    audioUrl,
     uploaderStatus,
-    startRecording,
-    stopRecording,
-    cancelRecording,
-    audioUrl: editingAudioUrl,
-    answer: editingAnswer,
-    handleAnswerChange: setEditingAnswer,
-  } = useRecordingAnswer()
+    audioRecorder,
+    handleStartRecording,
+    handleStopRecording,
+    handleCancelRecording,
+  } = useRecordingContext()
+  const {
+    isEditingAnswer,
+    isWritingAnswer,
+    handleCloseEditOverlay,
+    handleCloseWriteAnswerOverlay,
+    handleSubmitAnswer,
+  } = useQuestionContext()
+
   const hasInitialized = useRef(false)
 
   useEffect(() => {
     if ((isEditingAnswer || isWritingAnswer) && !hasInitialized.current) {
       hasInitialized.current = true
-      setEditingAnswer(answer)
+      handleAnswerChange(answer)
     } else if (!isEditingAnswer && !isWritingAnswer) {
       hasInitialized.current = false
     }
-  }, [isEditingAnswer, isWritingAnswer, answer, setEditingAnswer])
+  }, [isEditingAnswer, isWritingAnswer, answer, handleAnswerChange])
 
   const handleClose = useCallback(() => {
     if (isWritingAnswer) {
@@ -48,29 +55,58 @@ export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
   }, [handleCloseEditOverlay, handleCloseWriteAnswerOverlay, isWritingAnswer])
 
   const handleSave = useCallback(() => {
-    handleAnswerChange(editingAnswer)
-    handleAudioUrlChange(editingAudioUrl)
-    handleClose()
-  }, [handleAnswerChange, editingAnswer, handleAudioUrlChange, editingAudioUrl, handleClose])
+    handleSubmitAnswer(
+      {
+        answer,
+        responseId,
+        question: question.question_text,
+        question_cat: question.question_cat,
+        topic: question.topic,
+        audioFiles: audioUrl ? [audioUrl] : undefined,
+      },
+      handleClose
+    )
+  }, [
+    answer,
+    audioUrl,
+    handleClose,
+    handleSubmitAnswer,
+    question.question_cat,
+    question.question_text,
+    question.topic,
+    responseId,
+  ])
 
   const handleCancel = useCallback(() => {
-    cancelRecording()
+    handleCancelRecording()
     handleClose()
-  }, [handleClose, cancelRecording])
+  }, [handleClose, handleCancelRecording])
 
   const dialogTitle = isWritingAnswer ? 'Write Answer' : 'Edit Transcription'
+
+  const isSubmitDisabled = useMemo(() => {
+    return !answer || uploaderStatus === 'transcribing' || uploaderStatus === 'uploading' || audioRecorder?.isRecording
+  }, [answer, uploaderStatus, audioRecorder?.isRecording])
+
+  const isCancelDisabled = useMemo(() => {
+    return uploaderStatus === 'transcribing' || uploaderStatus === 'uploading' || audioRecorder?.isRecording
+  }, [uploaderStatus, audioRecorder?.isRecording])
 
   return (
     <Dialog isOpen={isEditingAnswer || isWritingAnswer} className="gap-0 mt-safe mb-safe">
       <DialogHeader>
-        <View className="flex flex-row gap-2 justify-between items-center">
-          <Button onPress={handleCancel} variant="outlined" size="sm">
-            Cancel
-          </Button>
+        <View className={`flex flex-row gap-2 items-center ${isEditingAnswer ? 'justify-between' : 'justify-center'}`}>
+          {isEditingAnswer && (
+            <Button onPress={handleCancel} variant="outlined" size="sm">
+              Cancel
+            </Button>
+          )}
           <DialogTitle>{dialogTitle}</DialogTitle>
-          <Button onPress={handleSave} size="sm">
-            Save
-          </Button>
+          {isEditingAnswer && (
+            <Button onPress={handleSave} size="sm">
+              Save
+            </Button>
+          )}
         </View>
       </DialogHeader>
 
@@ -80,7 +116,7 @@ export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
             Question
           </Typography>
           <Typography level="body-1" color="primary" className="text-wrap bg-bg-secondary rounded-md p-4">
-            {question}
+            {question.question_text}
           </Typography>
         </View>
 
@@ -89,8 +125,8 @@ export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
             Answer
           </Typography>
           <Textarea
-            value={editingAnswer}
-            onChangeText={setEditingAnswer}
+            value={answer}
+            onChangeText={handleAnswerChange}
             numberOfLines={20}
             scrollEnabled
             className="h-80 border-b-0"
@@ -99,18 +135,18 @@ export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
             bottomAdornment={
               <View className="border-t border-miscellaneous-topic-stroke px-3.5 pt-3">
                 <AudioRecorder
-                  audioRecorder={audioRecorder}
+                  audioRecorder={audioRecorder as AudioRecorderType}
                   uploaderStatus={uploaderStatus}
-                  onStartRecording={startRecording}
-                  onStopRecording={stopRecording}
+                  onStartRecording={handleStartRecording}
+                  onStopRecording={handleStopRecording}
                 />
               </View>
             }
           />
         </View>
       </DialogContent>
-      {isEditingAnswer && (
-        <DialogFooter>
+      <DialogFooter>
+        {isEditingAnswer ? (
           <View className="gap-4 mx-4">
             <View className="gap-2">
               <View className="gap-3">
@@ -126,8 +162,17 @@ export function EditAnswerOverlay({ question }: EditAnswerOverlayProps) {
               </Button>
             </View>
           </View>
-        </DialogFooter>
-      )}
+        ) : (
+          <View className="gap-4 mx-4">
+            <Button onPress={handleCancel} variant="outlined" size="sm" disabled={isCancelDisabled}>
+              Cancel
+            </Button>
+            <Button onPress={handleSave} size="md" disabled={isSubmitDisabled} btnContainerClassName="py-3">
+              Submit
+            </Button>
+          </View>
+        )}
+      </DialogFooter>
     </Dialog>
   )
 }

@@ -1,13 +1,13 @@
+import React from 'react'
 import { View } from 'react-native'
+import { Chat } from '~/modules/components/chat'
 import { IncomingMessage } from '~/modules/components/chat/composers/incoming-message'
+import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
+import { AnswerFormData } from '~/modules/components/chat/parts/container/parts/answer-form-dialog/hooks/use-answer-form'
 import { Button } from '~/modules/ui/button'
 import { Dialog } from '~/modules/ui/dialog'
 import { Typography } from '~/modules/ui/typography'
 import { ImageSrc } from '~/types/images'
-import { AnswerFormData } from '~/modules/components/chat/parts/container/parts/answer-form-dialog/hooks/use-answer-form'
-import React from 'react'
-import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
-import { Chat } from '~/modules/components/chat'
 
 interface ConfirmEditAnswerDialogProps {
   avatarUrl: ImageSrc

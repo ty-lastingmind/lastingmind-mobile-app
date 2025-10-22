@@ -1,13 +1,14 @@
-import { View, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'
+import { useNavigation } from 'expo-router'
+import { useCallback, useEffect } from 'react'
+import { ActivityIndicator, FlatList, TouchableOpacity, View } from 'react-native'
+import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
+import { QuestionProvider, useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { Icon } from '~/modules/ui/icon'
 import { Progress } from '~/modules/ui/progress'
-import { useCallback, useEffect, useRef } from 'react'
-import { CuratedQuestionItem } from '../parts/curated-question-item'
-import { QuestionProvider, useQuestionContext } from '~/modules/questions/contexts/question-context'
 import { RecordingProvider } from '../../contexts/recording-context'
 import { SavedAnswer } from '../../parts/saving-result/save-result/parts/saved-answer'
-import { useNavigation } from 'expo-router'
 import { TitleAndCaption } from '../../parts/saving-result/title-and-caption'
+import { CuratedQuestionItem } from '../parts/curated-question-item'
 import { SkippedAllQuestionsOverlay } from '../parts/skipped-all-questions-overlay'
 import { TopicPickerOverlay } from '../parts/topic-picker-overlay'
 
@@ -20,8 +21,8 @@ export function CuratedQuestionsScreen() {
 }
 
 const CuratedQuestionsContent = () => {
-  const flatListRef = useRef<FlatList>(null)
   const navigation = useNavigation()
+  const pbSafeStyles = usePbSafeStyles()
 
   const {
     nextQuestions,
@@ -30,13 +31,16 @@ const CuratedQuestionsContent = () => {
     isSavingQuestion,
     isGeneratingQuestions,
     isSavingAnswer,
+    isGeneratingStartingQuestions,
     showSuccessScreen,
     handleQuestionIndexChange,
     hasSkippedAllQuestions,
     handleSkippedAllQuestions,
     handleNewTopicPress,
     handleGenerateNewQuestionsPress,
+    handleCloseSkippedAllQuestionsOverlay,
     isTopicPickerOpen,
+    flatListRef,
   } = useQuestionContext()
 
   useEffect(() => {
@@ -52,7 +56,7 @@ const CuratedQuestionsContent = () => {
       flatListRef.current?.scrollToIndex({ index: newIndex, animated: true })
       handleSkippedAllQuestions(false)
     }
-  }, [currentQuestionIndex, handleQuestionIndexChange, handleSkippedAllQuestions])
+  }, [currentQuestionIndex, flatListRef, handleQuestionIndexChange, handleSkippedAllQuestions])
 
   const handleNextPress = useCallback(() => {
     if (currentQuestionIndex < nextQuestions.length - 1) {
@@ -64,7 +68,7 @@ const CuratedQuestionsContent = () => {
     }
 
     handleSkippedAllQuestions(true)
-  }, [currentQuestionIndex, nextQuestions.length, handleSkippedAllQuestions, handleQuestionIndexChange])
+  }, [currentQuestionIndex, nextQuestions.length, handleSkippedAllQuestions, handleQuestionIndexChange, flatListRef])
 
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: Array<{ index: number | null }> }) => {
@@ -79,7 +83,7 @@ const CuratedQuestionsContent = () => {
     itemVisiblePercentThreshold: 50,
   }
 
-  if (isGeneratingQuestions || isSavingQuestion) {
+  if (isGeneratingQuestions || isSavingQuestion || isGeneratingStartingQuestions) {
     return (
       <View className="flex-1 justify-center items-center bg-bg-primary">
         <ActivityIndicator className="text-accent" size="large" />
@@ -120,7 +124,7 @@ const CuratedQuestionsContent = () => {
         scrollEventThrottle={16}
       />
       <View className="px-6 pb-5">
-        <View className="flex-row items-center justify-between pb-safe">
+        <View className="flex-row items-center justify-between" style={pbSafeStyles}>
           <TouchableOpacity onPress={handlePreviousPress} className="p-2" disabled={currentQuestionIndex === 0}>
             <Icon name="chevron-back" size="xl" color={currentQuestionIndex === 0 ? 'tertiary' : 'secondary'} />
           </TouchableOpacity>
@@ -140,6 +144,7 @@ const CuratedQuestionsContent = () => {
         isOpen={hasSkippedAllQuestions}
         onNewTopic={handleNewTopicPress}
         onGenerateNewQuestions={handleGenerateNewQuestionsPress}
+        onClose={handleCloseSkippedAllQuestionsOverlay}
       />
       <TopicPickerOverlay isOpen={isTopicPickerOpen} />
     </View>

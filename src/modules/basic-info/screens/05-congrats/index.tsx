@@ -1,14 +1,17 @@
-import { View } from 'react-native'
-import React from 'react'
-import LottieView from 'lottie-react-native'
-import CheckSpecial from '~/modules/basic-info/assets/Check_Special.json'
-import { Typography } from '~/modules/ui/typography'
 import { Link } from 'expo-router'
+import LottieView from 'lottie-react-native'
+import React from 'react'
+import { View } from 'react-native'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
+import CheckSpecial from '~/modules/basic-info/assets/Check_Special.json'
 import { Button } from '~/modules/ui/button'
+import { Typography } from '~/modules/ui/typography'
 
 export function BasicInfoCongratsPage() {
+  const safeStyles = useSafeAreaStyles()
+
   return (
-    <View className="gap-4 px-8 py-safe flex flex-1">
+    <View className="gap-4 px-8 flex flex-1" style={safeStyles}>
       <View className="flex-1 justify-center">
         <LottieView
           style={{

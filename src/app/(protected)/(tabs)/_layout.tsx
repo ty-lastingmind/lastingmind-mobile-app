@@ -1,12 +1,11 @@
 import { Tabs, usePathname } from 'expo-router'
 import { useMemo } from 'react'
+import { useResolveClassNames } from 'uniwind'
 import { hideTabBar } from '~/modules/components/tab-bar/index.utils'
 import { TabBarIcon } from '~/modules/components/tab-bar/parts/tab-bar-icon'
 
-import { useTailwindColors } from '~/providers/tailwind-colors-provider'
-
 export default function TabLayout() {
-  const colors = useTailwindColors()
+  const styles = useResolveClassNames('bg-bg-primary text-accent border-miscellaneous-topic-stroke')
   const pathname = usePathname()
   const isTabBarHidden = useMemo(() => hideTabBar(pathname), [pathname])
 
@@ -15,21 +14,21 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         sceneStyle: {
-          backgroundColor: colors['bg-primary'],
+          backgroundColor: styles.backgroundColor,
         },
         tabBarLabelStyle: {
           fontSize: 14,
           paddingTop: 4,
         },
-        tabBarActiveTintColor: colors['accent'],
+        tabBarActiveTintColor: styles.color?.toString(),
         tabBarItemStyle: {
           paddingTop: 8,
         },
         tabBarStyle: {
           height: 100,
           display: isTabBarHidden ? 'none' : 'flex',
-          backgroundColor: colors['bg-primary'],
-          borderColor: colors['miscellaneous-topic-stroke'],
+          backgroundColor: styles.backgroundColor,
+          borderColor: styles.borderColor,
         },
       }}
     >

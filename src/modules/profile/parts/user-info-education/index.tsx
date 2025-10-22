@@ -1,17 +1,17 @@
-import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
-import { EducationItem } from '~/services/api/model'
-import BadgeList from '~/modules/ui/badge-list'
-import { Typography } from '~/modules/ui/typography'
-import { SvgIcon } from '~/modules/ui/svg-icon'
-import { useProfileInfo } from '../../hooks/use-profile-info'
-import { EducationFormData, useEducationForm } from '../../hooks/use-education-form'
+import { ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
-import EducationForm from '../dialogs/education-form'
+import BadgeList from '~/modules/ui/badge-list'
+import { SvgIcon } from '~/modules/ui/svg-icon'
+import { Typography } from '~/modules/ui/typography'
 import {
   useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
   useEditPersonalInfoProfilePageEditPersonalInfoPost,
 } from '~/services/api/generated'
+import { EducationItem } from '~/services/api/model'
+import { EducationFormData, useEducationForm } from '../../hooks/use-education-form'
+import { useProfileInfo } from '../../hooks/use-profile-info'
+import EducationForm from '../dialogs/education-form'
 
 export function EducationInfo() {
   const {

@@ -1,5 +1,8 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'expo-router'
+import { useForm } from 'react-hook-form'
 import { View } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 
 import { useSignInWithEmailAndPassword } from '~/hooks/auth/use-sign-in-with-email-and-password'
 import {
@@ -9,17 +12,15 @@ import {
 } from '~/modules/auth/parts/email-password-form'
 import { GoogleButton } from '~/modules/auth/parts/google-button'
 import { Title } from '~/modules/auth/parts/title'
-import { Typography } from '~/modules/ui/typography'
-import { AppleButton } from '../../parts/apple-button'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '~/modules/ui/button'
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
+import { Typography } from '~/modules/ui/typography'
 import WarningLabel from '../../parts/warning-label'
+import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 
 export function SignInScreen() {
   const signInWithEmailAndPasswordMutation = useSignInWithEmailAndPassword()
   const router = useRouter()
+  const safeStyles = useSafeAreaStyles()
 
   const form = useForm({
     resolver: zodResolver(emailPasswordSchema),
@@ -37,7 +38,7 @@ export function SignInScreen() {
   }
 
   return (
-    <View className="gap-4 px-10 py-safe flex flex-1 justify-between">
+    <View style={safeStyles} className="gap-4 px-10 flex flex-1 justify-between">
       <View>
         <View className="py-24">
           <Title>LastingMind</Title>
@@ -63,7 +64,6 @@ export function SignInScreen() {
         </KeyboardAvoidingView>
       ) : (
         <View className="gap-4">
-          <AppleButton />
           <GoogleButton label="Sign In with Google" />
           <Button variant="whitesecondary" onPress={handleSignUpButton}>
             Or Sign Up
