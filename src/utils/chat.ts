@@ -4,7 +4,7 @@ export function mergeMessageTextData(message: IncomingChatMessage | undefined): 
   return message?.data.map((data) => data.text ?? '').join('') ?? ''
 }
 
-export function isIncomingMessage(message: ChatMessage | null): message is IncomingChatMessage {
+export function isIncomingMessage(message?: ChatMessage | null): message is IncomingChatMessage {
   return message?.type === 'incoming'
 }
 

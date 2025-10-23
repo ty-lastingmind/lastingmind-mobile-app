@@ -70,17 +70,24 @@ export function useChat() {
       const lastMessage = prevState.messages.at(-1)
       const messagesWithoutLastMessage = prevState.messages.slice(0, -1)
 
-      if (!lastMessage || isOutgoingMessage(lastMessage)) return prevState
+      if (isIncomingMessage(lastMessage)) {
+        return {
+          ...prevState,
+          messages: [
+            ...messagesWithoutLastMessage,
+            {
+              ...lastMessage,
+              data: lastMessage.data.concat(data),
+            },
+          ],
+        }
+      } else {
+        const newMessage: IncomingChatMessage = { type: 'incoming', index: prevState.messages.length, data: [data] }
 
-      return {
-        ...prevState,
-        messages: [
-          ...messagesWithoutLastMessage,
-          {
-            ...lastMessage,
-            data: lastMessage.data.concat(data),
-          },
-        ],
+        return {
+          ...prevState,
+          messages: [...prevState.messages, newMessage],
+        }
       }
     })
   }, [])

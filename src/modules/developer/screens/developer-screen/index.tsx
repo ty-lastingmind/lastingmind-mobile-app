@@ -11,6 +11,7 @@ import { IconShowcase } from '~/modules/developer/screens/developer-screen/parts
 import { InputShowcase } from '~/modules/developer/screens/developer-screen/parts/input-showcase'
 import { MiniPlayerShowcase } from '~/modules/developer/screens/developer-screen/parts/mini-player-showcase'
 import { NotificationsShowcase } from '~/modules/developer/screens/developer-screen/parts/notifications-showcase'
+import { OutgoingMessageShowcase } from '~/modules/developer/screens/developer-screen/parts/outgoing-message-showcase'
 import { ProgressShowcase } from '~/modules/developer/screens/developer-screen/parts/progress-showcase'
 import { SvgIconShowcase } from '~/modules/developer/screens/developer-screen/parts/svg-icon-showcase'
 import { TypographyShowcase } from '~/modules/developer/screens/developer-screen/parts/typography-showcase'
@@ -18,6 +19,7 @@ import { Badge } from '~/modules/ui/badge'
 import SurveyShowcase from './parts/survey-showcase'
 
 const showCaseComponents = {
+  OutgoingMessageShowcase: OutgoingMessageShowcase,
   SvgIconShowcase: SvgIconShowcase,
   DialogShowcase: DialogShowcase,
   MiniPlayerShowcase: MiniPlayerShowcase,
@@ -36,7 +38,7 @@ const showCaseComponents = {
 type ShowCaseComponent = keyof typeof showCaseComponents
 
 export function DeveloperScreen() {
-  const [currentTab, setCurrentTab] = useState<ShowCaseComponent>('DialogShowcase')
+  const [currentTab, setCurrentTab] = useState<ShowCaseComponent>('OutgoingMessageShowcase')
   const Component = showCaseComponents[currentTab]
 
   return (

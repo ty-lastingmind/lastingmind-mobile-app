@@ -54,10 +54,12 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
     console.log('[debug]', {
       audioSrc: audio,
       text: message.text,
+      alignment: message.alignment,
     })
     actions.appendDataToLastMessageIncomingMessage({
       audioSrc: audio,
       text: message.text,
+      alignment: message.alignment,
     })
   }
 
