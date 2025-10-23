@@ -23,7 +23,7 @@ const inputList = [
   {
     name: 'school',
     label: 'School',
-    placeholder: 'University of Alabama',
+    placeholder: 'MIT',
   },
 ]
 

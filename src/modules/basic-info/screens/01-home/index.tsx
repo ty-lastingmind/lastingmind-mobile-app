@@ -26,7 +26,7 @@ const inputList = [
   {
     name: 'endAge',
     label: 'End Age',
-    placeholder: '18',
+    placeholder: 'Now',
   },
 ]
 

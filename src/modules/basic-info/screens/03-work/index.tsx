@@ -32,7 +32,7 @@ const inputList = [
   {
     name: 'endAge',
     label: 'End Age',
-    placeholder: '22',
+    placeholder: 'Now',
   },
   {
     name: 'description',
