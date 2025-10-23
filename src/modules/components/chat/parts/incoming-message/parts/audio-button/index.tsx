@@ -1,12 +1,12 @@
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
-import { ChatMessage } from '~/modules/components/chat/index.types'
+import { IncomingChatMessage } from '~/modules/components/chat/index.types'
 import { Icon } from '~/modules/ui/icon'
 import { logInfo } from '~/services/logger'
 
 interface AudioButtonProps {
-  message: ChatMessage
+  message: IncomingChatMessage
 }
 
 export function AudioButton({ message }: AudioButtonProps) {
@@ -14,6 +14,7 @@ export function AudioButton({ message }: AudioButtonProps) {
   const player = useAudioPlayer()
   const status = useAudioPlayerStatus(player)
   const previousPlayingRef = useRef<boolean>(false)
+  const audioSources = useMemo(() => message.data.map((data) => data.audioSrc), [message.data])
 
   logInfo(
     `currentIndex: ${currentIndex}, playing: ${status.playing}, currentTime: ${status.currentTime}, duration: ${status.duration}`
@@ -21,7 +22,7 @@ export function AudioButton({ message }: AudioButtonProps) {
 
   // Monitor playback status and advance to next audio when current one finishes
   useEffect(() => {
-    if (!message.audioSources || currentIndex === null) return
+    if (!audioSources || currentIndex === null) return
 
     // Detect transition from playing to not playing (audio just finished)
     const justFinished = previousPlayingRef.current && !status.playing
@@ -34,11 +35,11 @@ export function AudioButton({ message }: AudioButtonProps) {
       // Move to next audio
       const nextIndex = currentIndex + 1
 
-      if (nextIndex < message.audioSources.length) {
+      if (nextIndex < audioSources.length) {
         // Play next audio
         logInfo('Playing next audio at index:', nextIndex)
         setCurrentIndex(nextIndex)
-        player.replace({ uri: message.audioSources[nextIndex] })
+        player.replace({ uri: audioSources[nextIndex] })
         player.play()
       } else {
         // Queue finished
@@ -46,11 +47,9 @@ export function AudioButton({ message }: AudioButtonProps) {
         setCurrentIndex(null)
       }
     }
-  }, [status.playing, status.currentTime, status.duration, currentIndex, message.audioSources, player])
+  }, [status.playing, status.currentTime, status.duration, currentIndex, audioSources, player])
 
   function handlePlayAudio() {
-    const audioSources = message.audioSources
-
     if (!audioSources || audioSources.length === 0) return
 
     // If already playing, stop
@@ -69,7 +68,7 @@ export function AudioButton({ message }: AudioButtonProps) {
     player.play()
   }
 
-  if (!message.audioSources || message.audioSources?.length === 0) return null
+  if (!audioSources || audioSources?.length === 0) return null
 
   return (
     <TouchableOpacity onPress={handlePlayAudio}>

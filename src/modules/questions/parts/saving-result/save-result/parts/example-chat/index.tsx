@@ -38,17 +38,17 @@ export function ExampleChat({ title, caption, overline, message, answer, onPress
         <View className="flex flex-row justify-end">
           <OutgoingMessage
             message={{
-              text: message,
+              data: { text: message },
+              type: 'outgoing',
               index: 0,
-              isIncoming: false,
             }}
           />
         </View>
         <View>
           <IncomingMessage
             message={{
-              text: answer,
-              isIncoming: true,
+              data: [{ text: answer }],
+              type: 'incoming',
               index: 0,
             }}
           />

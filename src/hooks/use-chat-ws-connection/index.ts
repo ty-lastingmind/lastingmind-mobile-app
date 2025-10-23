@@ -1,10 +1,15 @@
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import useUser from '~/hooks/auth/use-user'
-import { UseChatWsConnectionProps } from '~/hooks/use-chat-ws-connection/index.types'
-import { messageSchema } from '~/hooks/use-chat-ws-connection/index.validation'
 import { serverWebsocketUrl } from '~/libs/axios'
+import { WsMessage } from '~/modules/components/chat/index.types'
+import { wsMessageSchema } from '~/modules/components/chat/index.validation'
 import { Auth, Logger } from '~/services'
+
+export interface UseChatWsConnectionProps {
+  onMessage: (message: WsMessage) => void
+  onConnected: () => void
+}
 
 export function useChatWsConnection({ onMessage, onConnected }: UseChatWsConnectionProps) {
   const user = useUser()
@@ -35,7 +40,7 @@ export function useChatWsConnection({ onMessage, onConnected }: UseChatWsConnect
       Logger.logInfo('WebSocket message')
 
       const data = JSON.parse(event.data)
-      const result = messageSchema.safeParse(data)
+      const result = wsMessageSchema.safeParse(data)
 
       if (!result.data) {
         Logger.logWarn('WebSocket message is not valid')

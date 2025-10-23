@@ -1,10 +1,11 @@
 import { View } from 'react-native'
-import { ChatMessage } from '~/modules/components/chat/index.types'
+import { IncomingChatMessage } from '~/modules/components/chat/index.types'
+import { isOutgoingMessage } from '~/utils/chat'
 import { IncomingMessage } from '../../..'
 import { useChatContext } from '../../../container/parts/provider'
 
 interface CommonActions {
-  message: ChatMessage
+  message: IncomingChatMessage
 }
 
 export function CommonActions({ message }: CommonActions) {
@@ -13,7 +14,7 @@ export function CommonActions({ message }: CommonActions) {
   } = useChatContext()
   const prevMessage = messages.at(message.index - 1)
 
-  if (!prevMessage) return null
+  if (!isOutgoingMessage(prevMessage)) return null
 
   return (
     <View className="flex flex-row gap-3">

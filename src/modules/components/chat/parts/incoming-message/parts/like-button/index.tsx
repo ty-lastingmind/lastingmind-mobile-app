@@ -1,12 +1,13 @@
 import { TouchableOpacity } from 'react-native'
-import { ChatMessage } from '~/modules/components/chat/index.types'
+import { IncomingChatMessage, OutgoingChatMessage } from '~/modules/components/chat/index.types'
 import { useChatContext } from '~/modules/components/chat/parts/container/parts/provider'
 import { Icon } from '~/modules/ui/icon'
 import { useLikeAnswerChatLikeAnswerPost } from '~/services/api/generated'
+import { mergeMessageTextData } from '~/utils/chat'
 
 interface LikeButtonProps {
-  message: ChatMessage
-  prevMessage: ChatMessage
+  message: IncomingChatMessage
+  prevMessage: OutgoingChatMessage
 }
 
 export function LikeButton({ message, prevMessage }: LikeButtonProps) {
@@ -18,8 +19,8 @@ export function LikeButton({ message, prevMessage }: LikeButtonProps) {
   function handleLikeAnswer() {
     likeAnswer.mutate({
       data: {
-        question: prevMessage.text,
-        answer: message.text,
+        question: prevMessage.data.text,
+        answer: mergeMessageTextData(message),
         chattingWithViewId,
       },
     })

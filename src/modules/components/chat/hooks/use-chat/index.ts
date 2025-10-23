@@ -1,12 +1,34 @@
 import { useCallback, useState } from 'react'
-import { ChatMessage } from '../../index.types'
+import { isIncomingMessage, isOutgoingMessage } from '~/utils/chat'
+import {
+  ChatMessage,
+  IncomingChatMessage,
+  IncomingMessageData,
+  IncomingMessageDataItem,
+  OutgoingChatMessage,
+  OutgoingMessageData,
+} from '../../index.types'
 
 export function useChat() {
   const [state, setState] = useState<{ messages: ChatMessage[] }>({ messages: [] })
 
-  const add = useCallback(
-    (message: Omit<ChatMessage, 'index'>) => {
-      const newMessage = { index: state.messages.length, ...message }
+  const addIncoming = useCallback(
+    (data: IncomingMessageData) => {
+      const newMessage: IncomingChatMessage = { type: 'incoming', index: state.messages.length, data }
+
+      setState((prevState) => ({
+        ...prevState,
+        messages: [...prevState.messages, newMessage],
+      }))
+
+      return newMessage
+    },
+    [state.messages.length]
+  )
+
+  const addOutgoing = useCallback(
+    (data: OutgoingMessageData) => {
+      const newMessage: OutgoingChatMessage = { type: 'outgoing', index: state.messages.length, data }
 
       setState((prevState) => ({
         ...prevState,
@@ -25,35 +47,39 @@ export function useChat() {
     }))
   }, [])
 
-  const update = useCallback((index: number, message: Omit<Partial<ChatMessage>, 'index'>) => {
+  const updateIncoming = useCallback((index: number, data: IncomingMessageData) => {
     setState((prevState) => ({
       ...prevState,
-      messages: prevState.messages.map((prevMessage) =>
-        prevMessage.index === index ? { ...message, ...prevMessage } : prevMessage
+      messages: prevState.messages.map((message) =>
+        message.index === index && isIncomingMessage(message) ? { ...message, data } : message
       ),
     }))
   }, [])
 
-  const appendTextAndAudioToLastMessage = useCallback((text: string, audioSrc: string) => {
+  const updateOutgoing = useCallback((index: number, data: OutgoingMessageData) => {
+    setState((prevState) => ({
+      ...prevState,
+      messages: prevState.messages.map((message) =>
+        message.index === index && isOutgoingMessage(message) ? { ...message, data } : message
+      ),
+    }))
+  }, [])
+
+  const appendDataToLastMessageIncomingMessage = useCallback((data: IncomingMessageDataItem) => {
     setState((prevState) => {
       const lastMessage = prevState.messages.at(-1)
       const messagesWithoutLastMessage = prevState.messages.slice(0, -1)
 
-      if (!lastMessage) return prevState
+      if (!lastMessage || isOutgoingMessage(lastMessage)) return prevState
 
       return {
         ...prevState,
         messages: [
           ...messagesWithoutLastMessage,
-          ...(lastMessage.isIncoming
-            ? [
-                {
-                  ...lastMessage,
-                  text: lastMessage.text + ` ${text}`,
-                  audioSources: lastMessage.audioSources ? [...lastMessage.audioSources, audioSrc] : [audioSrc],
-                },
-              ]
-            : [lastMessage, { index: lastMessage.index + 1, text: text, isIncoming: true, audioSources: [audioSrc] }]),
+          {
+            ...lastMessage,
+            data: lastMessage.data.concat(data),
+          },
         ],
       }
     })
@@ -62,10 +88,12 @@ export function useChat() {
   return {
     state,
     actions: {
-      add,
+      addIncoming,
+      addOutgoing,
       remove,
-      update,
-      appendTextAndAudioToLastMessage,
+      updateIncoming,
+      updateOutgoing,
+      appendDataToLastMessageIncomingMessage,
     },
   }
 }

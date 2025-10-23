@@ -5,7 +5,6 @@ import { Alert, TouchableOpacity, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
-import { MessageSchema } from '~/hooks/use-chat-ws-connection/index.types'
 import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { Chat } from '~/modules/components/chat'
 import { IncomingMessageLoading } from '~/modules/components/chat/composers/incoming-message-loading'
@@ -13,7 +12,7 @@ import { InterviewIncomingMessage } from '~/modules/components/chat/composers/in
 import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
 import { OutgoingMessageLoading } from '~/modules/components/chat/composers/outgoing-message-loading'
 import { useChat } from '~/modules/components/chat/hooks/use-chat'
-import { ChatMessage } from '~/modules/components/chat/index.types'
+import { ChatMessage, WsMessage } from '~/modules/components/chat/index.types'
 import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
 import { useInterviewFormContext } from '~/modules/interview/hooks/use-add-journal-entry-form-context'
 import { useInterviewTimer } from '~/modules/interview/screens/04-chat/hooks/use-interview-timer'
@@ -26,6 +25,7 @@ import {
   usePullUserInfoHomePullUserInfoGet,
   useRefineTextUtilsRefineTextPost,
 } from '~/services/api/generated'
+import { isIncomingMessage, isOutgoingMessage } from '~/utils/chat'
 import { deleteAllAudioFiles, saveBase64ToFile } from '~/utils/files'
 
 export function ChatScreen() {
@@ -44,11 +44,12 @@ export function ChatScreen() {
   const { actions, state } = useChat()
   const generateNextQuestion = useGenerateNextQuestionInterviewGenerateNextQuestionPost({
     mutation: {
-      onSuccess: (incomingMessage) => {
-        actions.add({
-          text: incomingMessage as string, // todo fix type
-          isIncoming: true,
-        })
+      onSuccess: (response) => {
+        const incomingMessageText = response as string
+
+        if (incomingMessageText) {
+          actions.addIncoming([{ text: incomingMessageText }])
+        }
       },
     },
   })
@@ -56,9 +57,13 @@ export function ChatScreen() {
   const duration = form.getValues('interviewDurationInMinutes') ?? 30 // Default to 30 minutes if not set
   const { extendTime, isOutOfTime } = useInterviewTimer(duration)
 
-  const handleWsMessage = async (message: MessageSchema) => {
+  const handleWsMessage = async (message: WsMessage) => {
     const audio = await saveBase64ToFile(message.audio)
-    actions.appendTextAndAudioToLastMessage(message.text, audio)
+
+    actions.appendDataToLastMessageIncomingMessage({
+      text: message.text,
+      audioSrc: audio,
+    })
   }
 
   useFocusEffect(
@@ -85,15 +90,8 @@ export function ChatScreen() {
         },
       },
       {
-        onSuccess: (message) => {
+        onSuccess: () => {
           isInterviewInitializedRef.current = true
-
-          if (!message) return
-
-          actions.add({
-            text: message as string, // todo fix type
-            isIncoming: true,
-          })
         },
       }
     )
@@ -121,9 +119,8 @@ export function ChatScreen() {
   }
 
   function handleSendTextMessage() {
-    actions.add({
+    actions.addOutgoing({
       text: inputForm.getValues('question'),
-      isIncoming: false,
     })
     handleGenerateNextQuestion(inputForm.getValues('question'))
     inputForm.reset()
@@ -143,9 +140,8 @@ export function ChatScreen() {
       },
       {
         onSuccess: ({ text }) => {
-          actions.add({
+          actions.addOutgoing({
             text,
-            isIncoming: false,
           })
 
           handleGenerateNextQuestion(text)
@@ -191,7 +187,7 @@ export function ChatScreen() {
             <View className="gap-3">
               {state.messages.map((message) => (
                 <React.Fragment key={message.index}>
-                  {message.isIncoming ? (
+                  {isIncomingMessage(message) ? (
                     <InterviewIncomingMessage message={message} />
                   ) : (
                     <OutgoingMessage message={message} />
@@ -225,12 +221,12 @@ export function ChatScreen() {
           />
         </KeyboardAvoidingView>
       </View>
-      {viewMessage && (
+      {isOutgoingMessage(viewMessage) && (
         <TranscriptDialog
           message={viewMessage}
           onClose={() => setViewMessage(null)}
           onSaveChanges={(text) => {
-            actions.update(viewMessage.index, { text })
+            actions.updateOutgoing(viewMessage.index, { text })
             setViewMessage(null)
           }}
         />

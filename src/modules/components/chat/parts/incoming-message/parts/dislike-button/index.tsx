@@ -1,7 +1,7 @@
 import { Alert, TouchableOpacity } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { ConfirmDialog } from '~/components/confirm-dialog'
-import { ChatMessage } from '~/modules/components/chat/index.types'
+import { IncomingChatMessage, OutgoingChatMessage } from '~/modules/components/chat/index.types'
 import { AnswerFormDialog } from '~/modules/components/chat/parts/container/parts/answer-form-dialog'
 import { AnswerFormData } from '~/modules/components/chat/parts/container/parts/answer-form-dialog/hooks/use-answer-form'
 import { Icon } from '~/modules/ui/icon'
@@ -9,11 +9,12 @@ import {
   useDislikeAnswerChatDislikeAnswerPost,
   useSaveToGroundingChatSaveToGroundingPost,
 } from '~/services/api/generated'
+import { mergeMessageTextData } from '~/utils/chat'
 import { useChatContext } from '../../../container/parts/provider'
 
 interface DislikeButtonProps {
-  message: ChatMessage
-  prevMessage: ChatMessage
+  message: IncomingChatMessage
+  prevMessage: OutgoingChatMessage
 }
 
 export function DislikeButton({ message, prevMessage }: DislikeButtonProps) {
@@ -29,8 +30,8 @@ export function DislikeButton({ message, prevMessage }: DislikeButtonProps) {
   function handleDislikeAnswer() {
     dislikeAnswer.mutate({
       data: {
-        question: prevMessage.text,
-        answer: message.text,
+        question: prevMessage.data.text,
+        answer: mergeMessageTextData(message),
         chattingWithViewId,
       },
     })
@@ -84,7 +85,7 @@ export function DislikeButton({ message, prevMessage }: DislikeButtonProps) {
           onClose={isAddAnswerDialogOpen.setFalse}
           onSave={handleSave}
           defaultValues={{
-            question: prevMessage.text,
+            question: prevMessage.data.text,
             answer: '',
           }}
         />

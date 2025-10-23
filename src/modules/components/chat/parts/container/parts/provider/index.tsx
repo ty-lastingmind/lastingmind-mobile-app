@@ -1,14 +1,16 @@
 import React, { createContext, PropsWithChildren } from 'react'
-import { ChatMessage } from '~/modules/components/chat/index.types'
+import { ChatMessage, IncomingMessageData, OutgoingMessageData } from '~/modules/components/chat/index.types'
 
 export interface ContextValue {
   state: {
     messages: ChatMessage[]
   }
   actions: {
-    add?: (message: ChatMessage) => void
+    addIncoming?: (message: IncomingMessageData) => void
+    addOutgoing?: (message: OutgoingMessageData) => void
     remove?: (index: number) => void
-    update?: (index: number, message: Omit<Partial<ChatMessage>, 'index'>) => void
+    updateIncoming?: (index: number, data: IncomingMessageData) => void
+    updateOutgoing?: (index: number, data: OutgoingMessageData) => void
   }
   meta: {
     avatarSrc?: string

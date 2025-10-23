@@ -1,10 +1,11 @@
 import { useChatContext } from '~/modules/components/chat/parts/container/parts/provider'
 import { Avatar } from '~/modules/ui/avatar'
 import { IncomingMessage as C } from '../..'
-import { ChatMessage } from '../../index.types'
+import { IncomingChatMessage } from '../../index.types'
+import { mergeMessageTextData } from '~/utils/chat'
 
 interface ChatWithUserIncomingMessageProps {
-  message: ChatMessage
+  message: IncomingChatMessage
 }
 
 export function ChatWithUserIncomingMessage({ message }: ChatWithUserIncomingMessageProps) {
@@ -16,7 +17,7 @@ export function ChatWithUserIncomingMessage({ message }: ChatWithUserIncomingMes
         <C.HeaderContainer>
           <Avatar source={meta?.avatarSrc} />
         </C.HeaderContainer>
-        <C.Text text={message.text} />
+        <C.Text text={mergeMessageTextData(message)} />
       </C.Container>
       <C.CommonActions message={message} />
     </C.Container>

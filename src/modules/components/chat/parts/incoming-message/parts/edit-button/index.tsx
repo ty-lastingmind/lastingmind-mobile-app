@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Alert, TouchableOpacity } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
-import { ChatMessage } from '~/modules/components/chat/index.types'
+import { IncomingChatMessage, OutgoingChatMessage } from '~/modules/components/chat/index.types'
 import { AnswerFormDialog } from '~/modules/components/chat/parts/container/parts/answer-form-dialog'
 import { AnswerFormData } from '~/modules/components/chat/parts/container/parts/answer-form-dialog/hooks/use-answer-form'
 
@@ -9,11 +9,12 @@ import { useChatContext } from '~/modules/components/chat/parts/container/parts/
 import { Icon } from '~/modules/ui/icon'
 import { useEditAnswerChatEditAnswerPost } from '~/services/api/generated'
 import { ImageSrc } from '~/types/images'
+import { mergeMessageTextData } from '~/utils/chat'
 import { ConfirmEditAnswerDialog } from './parts/confirm-edit-answer-dialog'
 
 interface EditButtonProps {
-  message: ChatMessage
-  prevMessage: ChatMessage
+  message: IncomingChatMessage
+  prevMessage: OutgoingChatMessage
   avatarUrl?: ImageSrc
 }
 
@@ -53,7 +54,7 @@ export function EditButton({ message, prevMessage, avatarUrl }: EditButtonProps)
       </TouchableOpacity>
       {isEditAnswerDialogOpen.value && (
         <AnswerFormDialog
-          defaultValues={{ question: prevMessage.text, answer: message.text }}
+          defaultValues={{ question: prevMessage.data.text, answer: mergeMessageTextData(message) }}
           title="Edit answer"
           onSave={(data) => {
             setDataToConfirm(data)

@@ -1,10 +1,11 @@
 import { IncomingMessage as C } from '~/modules/components/chat'
-import { ChatMessage } from '~/modules/components/chat/index.types'
+import { IncomingChatMessage } from '~/modules/components/chat/index.types'
 import { useChatContext } from '~/modules/components/chat/parts/container/parts/provider'
 import { Avatar } from '~/modules/ui/avatar'
+import { mergeMessageTextData } from '~/utils/chat'
 
 interface InterviewIncomingMessageProps {
-  message: ChatMessage
+  message: IncomingChatMessage
 }
 
 export function InterviewIncomingMessage({ message }: InterviewIncomingMessageProps) {
@@ -16,7 +17,7 @@ export function InterviewIncomingMessage({ message }: InterviewIncomingMessagePr
         <C.HeaderContainer>
           <Avatar source={meta?.avatarSrc} />
         </C.HeaderContainer>
-        <C.Text text={message.text} />
+        <C.Text text={mergeMessageTextData(message)} />
       </C.Container>
       <C.AudioButton message={message} />
     </C.Container>
