@@ -5,7 +5,6 @@ import { Alert, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
-import { MessageSchema } from '~/hooks/use-chat-ws-connection/index.types'
 import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
 import { Chat } from '~/modules/components/chat'
 import { ChatWithUserIncomingMessage } from '~/modules/components/chat/composers/chat-with-user-incoming-message'
@@ -13,8 +12,10 @@ import { IncomingMessageLoading } from '~/modules/components/chat/composers/inco
 import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
 import { OutgoingMessageLoading } from '~/modules/components/chat/composers/outgoing-message-loading'
 import { useChat } from '~/modules/components/chat/hooks/use-chat'
+import { WsMessage } from '~/modules/components/chat/index.types'
 import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
 import { useAudioMessage } from '~/modules/questions/hooks/use-audio-message'
+import { Logger } from '~/services'
 import {
   usePullExplanationAndButtonChatPullExplanationAndButtonPost,
   usePullUserInfoHomePullUserInfoGet,
@@ -22,6 +23,7 @@ import {
   useSendUserQueryChatSendUserQueryPost,
 } from '~/services/api/generated'
 import { CanChatWithItem } from '~/services/api/model'
+import { isIncomingMessage, isOutgoingMessage } from '~/utils/chat'
 import { deleteAllAudioFiles, saveBase64ToFile } from '~/utils/files'
 
 interface ChatScreenProps {
@@ -45,10 +47,18 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
   const getExplanations = usePullExplanationAndButtonChatPullExplanationAndButtonPost()
   const isFirstMessageSendRef = useRef(false)
   const pbStyles = usePbSafeStyles()
+  const lastQuestion = state.messages.at(-2)
 
-  const handleWsMessage = async (message: MessageSchema) => {
+  const handleWsMessage = async (message: WsMessage) => {
     const audio = await saveBase64ToFile(message.audio)
-    actions.appendTextAndAudioToLastMessage(message.text, audio)
+    console.log('[debug]', {
+      audioSrc: audio,
+      text: message.text,
+    })
+    actions.appendDataToLastMessageIncomingMessage({
+      audioSrc: audio,
+      text: message.text,
+    })
   }
 
   const handleStartConversation = () => {
@@ -87,14 +97,16 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
     mutation: {
       onMutate: ({ data }) => {
         getExplanations.reset()
-        actions.add({ text: data.query, isIncoming: false })
+        actions.addOutgoing({ text: data.query })
       },
       onSuccess: (data) => {
         if (data) {
-          actions.add({
-            text: data as string, // todo fix type,
-            isIncoming: true,
-          })
+          Logger.logInfo('using data from send message response')
+          actions.addIncoming([
+            {
+              text: data as string, // todo fix type,
+            },
+          ])
         }
 
         setTimeout(() => {
@@ -170,7 +182,7 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
           <View className="gap-3">
             {state.messages.map((message) => (
               <React.Fragment key={message.index}>
-                {message.isIncoming ? (
+                {isIncomingMessage(message) ? (
                   <ChatWithUserIncomingMessage message={message} />
                 ) : (
                   <OutgoingMessage message={message} />
@@ -182,11 +194,11 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
             )}
             {sendMessage.isPending && <IncomingMessageLoading />}
             {refineText.isPending && <OutgoingMessageLoading />}
-            {getExplanations.data?.button === 'add_answer' && (
-              <Chat.AddAnswerButton question={state.messages.at(-2)?.text ?? ''} />
+            {getExplanations.data?.button === 'add_answer' && isOutgoingMessage(lastQuestion) && (
+              <Chat.AddAnswerButton question={lastQuestion.data.text} />
             )}
-            {getExplanations.data?.button === 'send_question' && (
-              <Chat.SendQuestionButton question={state.messages.at(-2)?.text ?? ''} />
+            {getExplanations.data?.button === 'send_question' && isOutgoingMessage(lastQuestion) && (
+              <Chat.SendQuestionButton question={lastQuestion.data.text} />
             )}
           </View>
         </Chat.Scroll>

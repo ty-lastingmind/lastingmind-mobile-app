@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { TextInput, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { AudioTrack } from '~/modules/components/audio-track'
-import { ChatMessage } from '~/modules/components/chat/index.types'
+import { OutgoingChatMessage } from '~/modules/components/chat/index.types'
 
 import { Button } from '~/modules/ui/button'
 import { Dialog, DialogClose, DialogFooter, DialogHeader } from '~/modules/ui/dialog'
@@ -11,15 +11,15 @@ import { Icon } from '~/modules/ui/icon'
 interface TranscriptDialogProps {
   onClose: () => void
   onSaveChanges: (text: string) => void
-  message: ChatMessage
+  message: OutgoingChatMessage
 }
 
 export function TranscriptDialog({ onClose, message, onSaveChanges }: TranscriptDialogProps) {
-  const [editText, setEditText] = useState(message.text)
+  const [editText, setEditText] = useState(message.data.text)
   const isEdit = useBoolean()
 
   function handleCancel() {
-    setEditText(message.text)
+    setEditText(message.data.text)
     isEdit.setFalse()
   }
 
@@ -27,7 +27,7 @@ export function TranscriptDialog({ onClose, message, onSaveChanges }: Transcript
     onSaveChanges(editText)
   }
 
-  if (!message.audioUrl) {
+  if (!message.data.audioSrc) {
     return null
   }
 
@@ -42,7 +42,7 @@ export function TranscriptDialog({ onClose, message, onSaveChanges }: Transcript
                 <Icon name="pencil" size="lg" color="secondary" />
               </TouchableOpacity>
             )}
-            <AudioTrack audioSrc={message.audioUrl} index={0} />
+            <AudioTrack audioSrc={message.data.audioSrc} index={0} />
           </View>
         </View>
       </DialogHeader>

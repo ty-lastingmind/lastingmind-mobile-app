@@ -3,11 +3,13 @@ import { View } from 'react-native'
 import { Chat } from '~/modules/components/chat'
 import { IncomingMessage } from '~/modules/components/chat/composers/incoming-message'
 import { OutgoingMessage } from '~/modules/components/chat/composers/outgoing-message'
+import { ChatMessage } from '~/modules/components/chat/index.types'
 import { AnswerFormData } from '~/modules/components/chat/parts/container/parts/answer-form-dialog/hooks/use-answer-form'
 import { Button } from '~/modules/ui/button'
 import { Dialog } from '~/modules/ui/dialog'
 import { Typography } from '~/modules/ui/typography'
 import { ImageSrc } from '~/types/images'
+import { isIncomingMessage } from '~/utils/chat'
 
 interface ConfirmEditAnswerDialogProps {
   avatarUrl: ImageSrc
@@ -27,18 +29,22 @@ export function ConfirmEditAnswerDialog({
     onConfirm(dataToConfirm)
   }
 
-  const messages = [
+  const messages: ChatMessage[] = [
     {
       index: 0,
-      text: dataToConfirm.question,
-      isIncoming: false,
-      isLoading: false,
+      type: 'outgoing',
+      data: {
+        text: dataToConfirm.question,
+      },
     },
     {
       index: 1,
-      text: dataToConfirm.answer,
-      isIncoming: true,
-      isLoading: false,
+      type: 'incoming',
+      data: [
+        {
+          text: dataToConfirm.answer,
+        },
+      ],
     },
   ]
 
@@ -51,7 +57,11 @@ export function ConfirmEditAnswerDialog({
         <Chat.Scroll contentContainerClassName="p-4">
           {messages.map((message) => (
             <React.Fragment key={message.index}>
-              {message.isIncoming ? <IncomingMessage message={message} /> : <OutgoingMessage message={message} />}
+              {isIncomingMessage(message) ? (
+                <IncomingMessage message={message} />
+              ) : (
+                <OutgoingMessage message={message} />
+              )}
             </React.Fragment>
           ))}
         </Chat.Scroll>
