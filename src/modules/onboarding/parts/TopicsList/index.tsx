@@ -52,7 +52,8 @@ export function TopicsList({
     <View className="gap-3">
       <FlatList
         data={topics}
-        keyExtractor={(index) => index.toString()}
+        scrollEnabled={false}
+        keyExtractor={(index) => index}
         nestedScrollEnabled={nestedScrollEnabled}
         renderItem={({ item: topic }) => (
           <TopicButton
