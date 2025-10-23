@@ -8,6 +8,7 @@ import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
 import { SentQuestionData, TopContainer, UIActiveInivteItem } from '~/services/api/model'
 import { bannerConfigToData, FALLBACK_BANNER_CONFIG } from '../../constants/banner-config'
+import { isTopContainerDataAnyOf, isUIActiveInviteItem, isSenderUIActiveInvite } from '../../utils/banner-safe-guards'
 
 interface BannerProps {
   topContainer: TopContainer | null
@@ -24,12 +25,12 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
   const sender = useMemo((): UIActiveInivteItem | SentQuestionData | null => {
     if (!topContainer?.top_container_data) return null
 
-    if (typeof topContainer?.top_container_data === 'object') {
+    if (isTopContainerDataAnyOf(topContainer?.top_container_data)) {
       const data = Object.values(topContainer?.top_container_data ?? {})
       return data[0] as SentQuestionData
     }
 
-    if ('profile_image' in topContainer.top_container_data) {
+    if (isUIActiveInviteItem(topContainer.top_container_data)) {
       return topContainer?.top_container_data as UIActiveInivteItem
     }
 
@@ -40,11 +41,11 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
     if (!config) return ''
 
     const percent = progressPercent ?? 0
-    const senderName = sender && 'sender_full_name' in sender ? sender.sender_full_name : sender?.who_sent
 
     if (config.icon === 'progress') {
       return config.text(percent)
     } else if (config.icon === 'avatar') {
+      const senderName = isSenderUIActiveInvite(sender) ? sender.sender_full_name : sender?.who_sent
       return senderName ? config.text(senderName) : ''
     } else {
       return config.text
@@ -52,7 +53,7 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
   }, [config, progressPercent, sender])
 
   const iconComponents = useMemo(() => {
-    const profileImage = sender && 'profile_image' in sender ? sender.profile_image : undefined
+    const profileImage = isSenderUIActiveInvite(sender) ? sender.profile_image : undefined
     return {
       progress: <CircularProgress value={progressPercent} />,
       todo_list: <SvgIcon name="todo_list" size="4xl" color="white" />,
@@ -74,8 +75,8 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
     }
 
     if (typeof route === 'function') {
-      const viewId = sender && 'who_sent_viewingId' in sender ? sender.who_sent_viewingId : ''
-      router.navigate(route(viewId as string)) // todo fix type
+      const viewId = !isSenderUIActiveInvite(sender) ? (sender?.who_sent_viewingId ?? '') : ''
+      router.navigate(route(viewId))
       return
     }
 
@@ -94,7 +95,7 @@ export const Banner = ({ topContainer, progressPercent }: BannerProps) => {
       <View>
         <Button variant="white" size="lg" onPress={handleContinuePress}>
           {typeof config?.buttonText === 'function'
-            ? config.buttonText(sender && 'who_sent' in sender ? sender.who_sent : '')
+            ? config.buttonText(!isSenderUIActiveInvite(sender) ? (sender?.who_sent ?? '') : '')
             : config?.buttonText}
         </Button>
       </View>
