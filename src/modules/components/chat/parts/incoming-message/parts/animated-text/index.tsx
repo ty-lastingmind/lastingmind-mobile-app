@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Text, View } from 'react-native'
 import Animated, { FadeIn, FadeInLeft } from 'react-native-reanimated'
 import { useMessageAudio } from '~/modules/components/chat/hooks/use-message-audio'
@@ -18,22 +18,53 @@ interface CharacterData {
 
 export function AnimatedText({ messageData }: AnimatedTextProps) {
   const { currentIndex: currentAudioIndex } = useMessageAudio()
-  const hasStartedPlayingRef = useRef(false)
-  const hasCompletedAnimationRef = useRef(false)
+  const animatedIndicesRef = useRef<Set<number>>(new Set())
+  const allAnimationsCompleteRef = useRef(false)
+  const previousMessageCountRef = useRef(0)
+  const previousAudioIndexRef = useRef<number | null>(null)
 
-  // Track if audio has ever started playing
+  // Track when new message parts arrive
+  useEffect(() => {
+    const currentCount = messageData.length
+    const previousCount = previousMessageCountRef.current
+
+    // If new parts arrived and we have audio data with them
+    if (currentCount > previousCount) {
+      // Check if new parts have audio
+      const newParts = messageData.slice(previousCount)
+      const hasNewAudio = newParts.some((data) => data.audioSrc)
+      
+      if (hasNewAudio) {
+        // New parts with audio arrived, so animations are not complete anymore
+        allAnimationsCompleteRef.current = false
+      }
+    }
+
+    previousMessageCountRef.current = currentCount
+  }, [messageData])
+
+  // Track which message indices have been animated
   useEffect(() => {
     if (currentAudioIndex !== null) {
-      hasStartedPlayingRef.current = true
+      animatedIndicesRef.current.add(currentAudioIndex)
     }
-  }, [currentAudioIndex])
-
-  // Track when animation completes (audio finishes playing)
-  useEffect(() => {
-    if (hasStartedPlayingRef.current && currentAudioIndex === null) {
-      hasCompletedAnimationRef.current = true
+    
+    // Detect when audio finishes (goes from a number to null)
+    if (previousAudioIndexRef.current !== null && currentAudioIndex === null) {
+      // Check if all message parts with audio have been animated
+      const audioIndices = messageData
+        .map((data, idx) => (data.audioSrc ? idx : -1))
+        .filter((idx) => idx !== -1)
+      
+      const allAnimated = audioIndices.every((idx) => animatedIndicesRef.current.has(idx))
+      
+      if (allAnimated && audioIndices.length > 0) {
+        allAnimationsCompleteRef.current = true
+      }
     }
-  }, [currentAudioIndex])
+    
+    previousAudioIndexRef.current = currentAudioIndex
+  }, [currentAudioIndex, messageData])
 
   // Build character data with delay timing for each message part
   const messageCharacters = useMemo(() => {
@@ -81,28 +112,8 @@ export function AnimatedText({ messageData }: AnimatedTextProps) {
     )
   }
 
-  // Handle different states based on currentIndex
-  if (currentAudioIndex === null) {
-    // If audio has finished (was playing but now index is null), show full text
-    if (hasStartedPlayingRef.current) {
-      return (
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-          {messageCharacters.map((chars, messageIndex) =>
-            chars.map((charData) => (
-              <Typography key={`${charData.messageIndex}-${charData.charIndex}`} level="body-1">
-                {charData.char}
-              </Typography>
-            ))
-          )}
-        </View>
-      )
-    }
-    // Otherwise, still waiting for auto-play to start - show nothing
-    return null
-  }
-
-  // If animation has already completed once, just show all text without animation
-  if (hasCompletedAnimationRef.current) {
+  // If all animations have completed, always show full text without animation
+  if (allAnimationsCompleteRef.current) {
     return (
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
         {messageCharacters.map((chars, messageIndex) =>
@@ -116,16 +127,31 @@ export function AnimatedText({ messageData }: AnimatedTextProps) {
     )
   }
 
-  // Render characters for all message parts (when audio index is set)
+  // If no audio is currently playing, show all text that exists
+  if (currentAudioIndex === null) {
+    return (
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+        {messageCharacters.map((chars, messageIndex) =>
+          chars.map((charData) => (
+            <Typography key={`${charData.messageIndex}-${charData.charIndex}`} level="body-1">
+              {charData.char}
+            </Typography>
+          ))
+        )}
+      </View>
+    )
+  }
+
+  // Render characters for all message parts (with animation for current part)
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
       {messageCharacters.map((chars, messageIndex) => {
         const isCurrentAudio = messageIndex === currentAudioIndex
-        const isPastAudio = messageIndex < currentAudioIndex
+        const hasBeenAnimated = animatedIndicesRef.current.has(messageIndex)
 
         return chars.map((charData) => {
-          // Show past audio text immediately without animation
-          if (isPastAudio) {
+          // Show text that has already been animated (from previous or earlier parts)
+          if (hasBeenAnimated && !isCurrentAudio) {
             return (
               <Typography key={`${charData.messageIndex}-${charData.charIndex}`} level="body-1">
                 {charData.char}
@@ -144,7 +170,7 @@ export function AnimatedText({ messageData }: AnimatedTextProps) {
             )
           }
 
-          // Hide future audio text (render nothing)
+          // Hide future audio text that hasn't been played yet (render nothing)
           return null
         })
       })}

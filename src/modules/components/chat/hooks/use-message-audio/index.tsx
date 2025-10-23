@@ -22,27 +22,31 @@ export function MessageAudioProvider({ message, children }: MessageAudioProvider
   const player = useAudioPlayer()
   const status = useAudioPlayerStatus(player)
   const previousPlayingRef = useRef<boolean>(false)
-  const hasAutoPlayedRef = useRef<boolean>(false)
+  const lastProcessedIndexRef = useRef<number>(-1)
   const audioSources = useMemo(() => message.data.map((data) => data.audioSrc), [message.data])
 
   logInfo(
-    `currentIndex: ${currentIndex}, playing: ${status.playing}, currentTime: ${status.currentTime}, duration: ${status.duration}`
+    `currentIndex: ${currentIndex}, playing: ${status.playing}, currentTime: ${status.currentTime}, duration: ${status.duration}, audioSources: ${audioSources.length}`
   )
 
-  // Auto-play audio on mount if available
+  // Auto-play audio when new parts with audio arrive
   useEffect(() => {
-    if (hasAutoPlayedRef.current) return
     if (!audioSources || audioSources.length === 0) return
-    if (!audioSources[0]) return
 
-    hasAutoPlayedRef.current = true
-    logInfo('Auto-playing audio on mount')
+    // Find the first unprocessed audio source
+    const nextAudioIndex = audioSources.findIndex((src, idx) => src && idx > lastProcessedIndexRef.current)
     
-    // Set index and start playing simultaneously
-    setCurrentIndex(0)
-    player.replace({ uri: audioSources[0] })
-    player.play()
-  }, [audioSources, player])
+    if (nextAudioIndex === -1) return // No new audio sources
+
+    // If we're not currently playing anything, auto-play the new audio
+    if (currentIndex === null && !status.playing) {
+      logInfo('Auto-playing new audio at index:', nextAudioIndex)
+      lastProcessedIndexRef.current = nextAudioIndex
+      setCurrentIndex(nextAudioIndex)
+      player.replace({ uri: audioSources[nextAudioIndex] })
+      player.play()
+    }
+  }, [audioSources, currentIndex, status.playing, player])
 
   // Monitor playback status and advance to next audio when current one finishes
   useEffect(() => {
@@ -56,18 +60,21 @@ export function MessageAudioProvider({ message, children }: MessageAudioProvider
     if (justFinished && status.currentTime > 0 && status.currentTime >= status.duration) {
       logInfo('Audio finished at index:', currentIndex)
 
-      // Move to next audio
-      const nextIndex = currentIndex + 1
+      // Update last processed index
+      lastProcessedIndexRef.current = currentIndex
 
-      if (nextIndex < audioSources.length) {
+      // Look for next audio source (might be at currentIndex + 1 or later if some parts don't have audio)
+      const nextIndex = audioSources.findIndex((src, idx) => src && idx > currentIndex)
+
+      if (nextIndex !== -1) {
         // Play next audio
         logInfo('Playing next audio at index:', nextIndex)
         setCurrentIndex(nextIndex)
         player.replace({ uri: audioSources[nextIndex] })
         player.play()
       } else {
-        // Queue finished
-        logInfo('Queue finished')
+        // No more audio in queue (for now)
+        logInfo('Queue finished (waiting for more parts)')
         setCurrentIndex(null)
       }
     }
