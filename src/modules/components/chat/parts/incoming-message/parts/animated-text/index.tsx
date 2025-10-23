@@ -19,11 +19,19 @@ interface CharacterData {
 export function AnimatedText({ messageData }: AnimatedTextProps) {
   const { currentIndex: currentAudioIndex } = useMessageAudio()
   const hasStartedPlayingRef = useRef(false)
+  const hasCompletedAnimationRef = useRef(false)
 
   // Track if audio has ever started playing
   useEffect(() => {
     if (currentAudioIndex !== null) {
       hasStartedPlayingRef.current = true
+    }
+  }, [currentAudioIndex])
+
+  // Track when animation completes (audio finishes playing)
+  useEffect(() => {
+    if (hasStartedPlayingRef.current && currentAudioIndex === null) {
+      hasCompletedAnimationRef.current = true
     }
   }, [currentAudioIndex])
 
@@ -91,6 +99,21 @@ export function AnimatedText({ messageData }: AnimatedTextProps) {
     }
     // Otherwise, still waiting for auto-play to start - show nothing
     return null
+  }
+
+  // If animation has already completed once, just show all text without animation
+  if (hasCompletedAnimationRef.current) {
+    return (
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+        {messageCharacters.map((chars, messageIndex) =>
+          chars.map((charData) => (
+            <Typography key={`${charData.messageIndex}-${charData.charIndex}`} level="body-1">
+              {charData.char}
+            </Typography>
+          ))
+        )}
+      </View>
+    )
   }
 
   // Render characters for all message parts (when audio index is set)
