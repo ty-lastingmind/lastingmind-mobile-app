@@ -98,6 +98,25 @@ export function HomeSurveyScreen() {
     }
   }
 
+  const handleSkip = async () => {
+    await mutateAsync(
+      {
+        data: {
+          topic: 'cities_lived',
+          answers: [],
+        },
+      },
+      {
+        onSuccess() {
+          router.navigate('/(protected)/basic-info/02-education')
+        },
+        onError() {
+          Alert.alert('An error has ocurred')
+        },
+      }
+    )
+  }
+
   return (
     <View className="flex-1 px-8" style={safeStyles}>
       <KeyboardAvoidingView behavior="padding" className="flex-1">
@@ -143,9 +162,14 @@ export function HomeSurveyScreen() {
             </View>
           </Form>
         </ScrollView>
-        <Button onPress={handleSave} loading={isPending}>
-          Save
-        </Button>
+        <View className="gap-4">
+          <Button variant="white" onPress={handleSkip} loading={isPending}>
+            Skip
+          </Button>
+          <Button onPress={handleSave} loading={isPending}>
+            Save
+          </Button>
+        </View>
       </KeyboardAvoidingView>
     </View>
   )

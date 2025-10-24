@@ -105,6 +105,25 @@ export function WorkSurveyPage() {
     }
   }
 
+  const handleSkip = async () => {
+    await mutateAsync(
+      {
+        data: {
+          topic: 'career',
+          answers: [],
+        },
+      },
+      {
+        onSuccess() {
+          router.navigate('/(protected)/basic-info/04-family')
+        },
+        onError() {
+          Alert.alert('An error has ocurred')
+        },
+      }
+    )
+  }
+
   return (
     <Transition title="Response Saved!" subtitle="Only 2 Questions Left!">
       <View className="flex-1 px-8" style={safeStyles}>
@@ -151,9 +170,14 @@ export function WorkSurveyPage() {
               </View>
             </Form>
           </ScrollView>
-          <Button onPress={handleSave} loading={isPending}>
-            Save
-          </Button>
+          <View className="gap-4">
+            <Button variant="white" onPress={handleSkip} loading={isPending}>
+              Skp
+            </Button>
+            <Button onPress={handleSave} loading={isPending}>
+              Save
+            </Button>
+          </View>
         </KeyboardAvoidingView>
       </View>
     </Transition>
