@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Text, View } from 'react-native'
-import Animated, { FadeIn, FadeInLeft } from 'react-native-reanimated'
+import { useEffect, useMemo, useRef } from 'react'
+import { View } from 'react-native'
+import Animated, { FadeIn } from 'react-native-reanimated'
 import { useMessageAudio } from '~/modules/components/chat/hooks/use-message-audio'
 import { IncomingMessageDataItem } from '~/modules/components/chat/index.types'
 import { Typography } from '~/modules/ui/typography'
@@ -33,7 +33,7 @@ export function AnimatedText({ messageData }: AnimatedTextProps) {
       // Check if new parts have audio
       const newParts = messageData.slice(previousCount)
       const hasNewAudio = newParts.some((data) => data.audioSrc)
-      
+
       if (hasNewAudio) {
         // New parts with audio arrived, so animations are not complete anymore
         allAnimationsCompleteRef.current = false
@@ -48,21 +48,19 @@ export function AnimatedText({ messageData }: AnimatedTextProps) {
     if (currentAudioIndex !== null) {
       animatedIndicesRef.current.add(currentAudioIndex)
     }
-    
+
     // Detect when audio finishes (goes from a number to null)
     if (previousAudioIndexRef.current !== null && currentAudioIndex === null) {
       // Check if all message parts with audio have been animated
-      const audioIndices = messageData
-        .map((data, idx) => (data.audioSrc ? idx : -1))
-        .filter((idx) => idx !== -1)
-      
+      const audioIndices = messageData.map((data, idx) => (data.audioSrc ? idx : -1)).filter((idx) => idx !== -1)
+
       const allAnimated = audioIndices.every((idx) => animatedIndicesRef.current.has(idx))
-      
+
       if (allAnimated && audioIndices.length > 0) {
         allAnimationsCompleteRef.current = true
       }
     }
-    
+
     previousAudioIndexRef.current = currentAudioIndex
   }, [currentAudioIndex, messageData])
 
@@ -116,7 +114,7 @@ export function AnimatedText({ messageData }: AnimatedTextProps) {
   if (allAnimationsCompleteRef.current) {
     return (
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-        {messageCharacters.map((chars, messageIndex) =>
+        {messageCharacters.map((chars) =>
           chars.map((charData) => (
             <Typography key={`${charData.messageIndex}-${charData.charIndex}`} level="body-1">
               {charData.char}
@@ -131,7 +129,7 @@ export function AnimatedText({ messageData }: AnimatedTextProps) {
   if (currentAudioIndex === null) {
     return (
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-        {messageCharacters.map((chars, messageIndex) =>
+        {messageCharacters.map((chars) =>
           chars.map((charData) => (
             <Typography key={`${charData.messageIndex}-${charData.charIndex}`} level="body-1">
               {charData.char}

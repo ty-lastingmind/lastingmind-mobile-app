@@ -35,7 +35,7 @@ export function MessageAudioProvider({ message, children }: MessageAudioProvider
 
     // Find the first unprocessed audio source
     const nextAudioIndex = audioSources.findIndex((src, idx) => src && idx > lastProcessedIndexRef.current)
-    
+
     if (nextAudioIndex === -1) return // No new audio sources
 
     // If we're not currently playing anything, auto-play the new audio
@@ -117,4 +117,3 @@ export function useMessageAudio() {
   }
   return context
 }
-
