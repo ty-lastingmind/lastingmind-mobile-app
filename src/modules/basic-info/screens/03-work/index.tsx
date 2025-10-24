@@ -140,7 +140,7 @@ export function WorkSurveyPage() {
               {works.map((work, index) => (
                 <InputResult
                   key={index}
-                  label={work.company}
+                  label={`${work.company}, age ${work.startAge} to ${work.endAge}`}
                   icon="work"
                   onPress={() => handleEdit(index)}
                   isExpanded={editingIndex === index}

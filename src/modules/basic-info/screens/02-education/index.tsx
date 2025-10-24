@@ -129,7 +129,7 @@ export function EducationSurveyScreen() {
               {educations.map((education, index) => (
                 <InputResult
                   key={index}
-                  label={education.school}
+                  label={`${education.school}, ${education.level}`}
                   icon="education"
                   onPress={() => handleEdit(index)}
                   isExpanded={editingIndex === index}

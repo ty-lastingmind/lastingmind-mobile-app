@@ -130,7 +130,7 @@ export function FamilySurveyPage() {
               {familyMembers.map((member, index) => (
                 <InputResult
                   key={index}
-                  label={member.name}
+                  label={`${member.name}, ${member.relationship}`}
                   icon="family"
                   onPress={() => handleEdit(index)}
                   isExpanded={editingIndex === index}

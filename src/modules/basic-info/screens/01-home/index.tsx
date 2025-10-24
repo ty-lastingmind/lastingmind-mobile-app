@@ -132,7 +132,7 @@ export function HomeSurveyScreen() {
             {locations.map((location, index) => (
               <InputResult
                 key={index}
-                label={location.location}
+                label={`${location.location}, age ${location.startAge} to ${location.endAge}`}
                 icon="home"
                 onPress={() => handleEdit(index)}
                 isExpanded={editingIndex === index}
