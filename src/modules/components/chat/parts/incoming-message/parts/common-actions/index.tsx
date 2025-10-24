@@ -13,6 +13,7 @@ export function CommonActions({ message }: CommonActions) {
     state: { messages },
   } = useChatContext()
   const prevMessage = messages.at(message.index - 1)
+  const hasAudio = message.data.some((data) => data.audioSrc)
 
   if (!isOutgoingMessage(prevMessage)) return null
 
@@ -21,7 +22,7 @@ export function CommonActions({ message }: CommonActions) {
       <IncomingMessage.EditButton message={message} prevMessage={prevMessage} />
       <IncomingMessage.LikeButton message={message} prevMessage={prevMessage} />
       <IncomingMessage.DislikeButton message={message} prevMessage={prevMessage} />
-      <IncomingMessage.AudioButton message={message} />
+      {hasAudio && <IncomingMessage.AudioButton />}
     </View>
   )
 }
