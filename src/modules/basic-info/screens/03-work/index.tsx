@@ -34,11 +34,6 @@ const inputList = [
     label: 'End Age',
     placeholder: 'Now',
   },
-  {
-    name: 'description',
-    label: 'Description',
-    placeholder: 'Describe your roles and responsibilities',
-  },
 ]
 
 export function WorkSurveyPage() {
@@ -77,7 +72,7 @@ export function WorkSurveyPage() {
   }
 
   const handleAddAnother = () => {
-    form.reset({ company: '', position: '', startAge: '', endAge: '', description: '' })
+    form.reset({ company: '', position: '', startAge: '', endAge: '' })
     setEditingIndex(null)
     openForm()
   }
@@ -93,7 +88,6 @@ export function WorkSurveyPage() {
               position: work.position,
               start_age: Number(work.startAge),
               end_age: Number(work.endAge),
-              description: work.description,
             })),
           },
         },

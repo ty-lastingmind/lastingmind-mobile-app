@@ -7,7 +7,6 @@ const workInfoSchema = z.object({
   position: z.string().min(2),
   startAge: z.string().min(1),
   endAge: z.string().min(1),
-  description: z.string().max(300).optional(),
 })
 
 export type WorkInfoData = z.infer<typeof workInfoSchema>
@@ -24,7 +23,6 @@ export const useWorkInfoForm = () => {
       position: '',
       startAge: '',
       endAge: '',
-      description: '',
     },
   })
 }
