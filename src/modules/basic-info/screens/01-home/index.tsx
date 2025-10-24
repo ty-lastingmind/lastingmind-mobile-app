@@ -79,8 +79,8 @@ export function HomeSurveyScreen() {
             topic: 'cities_lived',
             answers: locations.map((location) => ({
               location: location.location,
-              start_age: Number(location.startAge),
-              end_age: Number(location.endAge),
+              start_age: location.startAge,
+              end_age: location.endAge,
             })),
           },
         },

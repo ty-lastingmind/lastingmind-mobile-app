@@ -86,8 +86,8 @@ export function WorkSurveyPage() {
             answers: works.map((work) => ({
               company: work.company,
               position: work.position,
-              start_age: Number(work.startAge),
-              end_age: Number(work.endAge),
+              start_age: work.startAge,
+              end_age: work.endAge,
             })),
           },
         },
