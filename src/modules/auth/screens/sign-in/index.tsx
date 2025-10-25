@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'expo-router'
 import { useForm } from 'react-hook-form'
 import { View } from 'react-native'
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 
 import { useSignInWithEmailAndPassword } from '~/hooks/auth/use-sign-in-with-email-and-password'
 import {
@@ -38,38 +38,43 @@ export function SignInScreen() {
   }
 
   return (
-    <View style={safeStyles} className="gap-4 px-10 flex flex-1 justify-between">
-      <View>
-        <View className="py-24">
-          <Title>LastingMind</Title>
+    <KeyboardAwareScrollView
+      contentContainerStyle={safeStyles}
+      contentContainerClassName="px-10 flex-1"
+      bounces={false}
+    >
+      <View className="flex-1/2 justify-evenly">
+        <Title>LastingMind</Title>
+        <View>
+          <EmailPasswordForm form={form} />
+          <Typography level="label-1" color="tertiary" className="text-center pt-2" weight="light">
+            Forgot Password
+          </Typography>
         </View>
-        <EmailPasswordForm form={form} />
-        <Typography level="label-1" color="tertiary" className="text-center pt-2" weight="light">
-          Forgot Password
-        </Typography>
       </View>
-
-      {isDirty ? (
-        <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={20}>
-          {signInWithEmailAndPasswordMutation.isError && (
-            <WarningLabel label="Either the email or password is incorrect." />
-          )}
-          <Button
-            onPress={form.handleSubmit(handleSignInWithEmailAndPassword)}
-            loading={signInWithEmailAndPasswordMutation.isPending}
-            disabled={!isValid}
-          >
-            Continue
-          </Button>
-        </KeyboardAvoidingView>
-      ) : (
-        <View className="gap-4">
-          <GoogleButton label="Sign In with Google" />
-          <Button variant="whitesecondary" onPress={handleSignUpButton}>
-            Or Sign Up
-          </Button>
-        </View>
-      )}
-    </View>
+      <View className="flex-1/2 justify-end">
+        {isDirty ? (
+          <>
+            {signInWithEmailAndPasswordMutation.isError && (
+              <WarningLabel label="Either the email or password is incorrect." />
+            )}
+            <Button
+              onPress={form.handleSubmit(handleSignInWithEmailAndPassword)}
+              loading={signInWithEmailAndPasswordMutation.isPending}
+              disabled={!isValid}
+            >
+              Continue
+            </Button>
+          </>
+        ) : (
+          <>
+            <GoogleButton label="Sign In with Google" />
+            <Button variant="whitesecondary" onPress={handleSignUpButton}>
+              Or Sign Up
+            </Button>
+          </>
+        )}
+      </View>
+    </KeyboardAwareScrollView>
   )
 }
