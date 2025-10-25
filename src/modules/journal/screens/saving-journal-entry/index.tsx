@@ -19,7 +19,7 @@ export function SavingJournalEntryScreen() {
       submitJournalEntry.mutate(
         {
           data: {
-            topic: formValues.customTopicName ?? formValues.topicName,
+            topic: formValues.customTopicName || formValues.topicName,
             date: date.toISOString(),
             text: formValues.text,
             audioFiles: formValues.audioFiles,
