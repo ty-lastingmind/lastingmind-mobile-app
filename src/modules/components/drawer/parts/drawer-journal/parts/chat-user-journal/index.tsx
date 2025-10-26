@@ -11,18 +11,18 @@ const items: DrawerJournalItem[] = [
     title: 'Send Questions',
     icon: 'send',
     // todo: change to the correct href
-    href: '/questions/curated-questions',
+    href: '/(protected)/(tabs)/questions/curated-questions',
   },
   {
     title: 'View All Answers',
     icon: 'chat_text',
-    href: '/chats/all-answers',
+    href: '/(protected)/(tabs)/chats/all-answers',
   },
   {
     title: 'Settings & Help',
     icon: 'settings',
     // todo: change to the correct href
-    href: '/profile/past-responses',
+    href: '/(protected)/settings',
   },
 ]
 
@@ -44,12 +44,16 @@ export const ChatUserJournal = () => {
         </View>
       ))}
       {items.map((item) => (
-        <View key={item.title} className="flex flex-row items-center gap-4 mb-4">
-          <SvgIcon name={item.icon} size="2xl" color="accent" />
-          <Typography brand level="body-lg" color="accent">
-            {item.title}
-          </Typography>
-        </View>
+        <Link key={item.title} href={item.href!} asChild>
+          <TouchableOpacity>
+            <View key={item.title} className="flex flex-row items-center gap-4 mb-4">
+              <SvgIcon name={item.icon} size="2xl" color="accent" />
+              <Typography brand level="body-lg" color="accent">
+                {item.title}
+              </Typography>
+            </View>
+          </TouchableOpacity>
+        </Link>
       ))}
     </View>
   )

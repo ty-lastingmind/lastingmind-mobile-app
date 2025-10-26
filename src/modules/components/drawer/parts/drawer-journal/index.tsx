@@ -20,9 +20,9 @@ import {
 import { ConversationSession, HighLevelPastEntry, UserTypeResponseUserType } from '~/services/api/model'
 import { CanChatWithList } from '../can-chat-with-list'
 import { DrawerJournalItem } from '../drawer-journal-item'
+import { PastEntriesList } from '../past-entries-list'
 import { TrophyModal } from '../trophy-modal'
 import { ChatUserJournal } from './parts/chat-user-journal'
-import { PastEntriesList } from '../past-entries-list'
 
 const items: DrawerJournalItemType[] = [
   { title: 'Home', icon: 'home', href: '/(protected)/(tabs)/home' },

@@ -6,7 +6,7 @@ import { Text, TextProps } from 'react-native'
 import { font } from '~/constants/fonts'
 import { cn } from '~/utils/cn'
 
-const variants = cva(undefined, {
+export const variants = cva(undefined, {
   variants: {
     level: {
       h1: 'text-h1',

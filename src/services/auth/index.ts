@@ -51,3 +51,27 @@ export async function signOut() {
 export async function getIdToken(user: FirebaseAuthTypes.User) {
   return Auth.getIdToken(user)
 }
+
+export function getUserDisplayName(): string | null {
+  return auth.currentUser?.displayName || null
+}
+
+export async function changeDisplayName(displayName: string) {
+  if (!auth.currentUser) throw new Error('No authenticated user')
+  await Auth.updateProfile(auth.currentUser, { displayName })
+}
+
+export async function sendPasswordResetEmail(email: string) {
+  await Auth.sendPasswordResetEmail(auth, email)
+}
+
+export async function changePassword(currentPassword: string, newPassword: string) {
+  if (!auth.currentUser) throw new Error('No authenticated user')
+
+  // Re-authenticate user with current password
+  const credential = Auth.EmailAuthProvider.credential(auth.currentUser.email!, currentPassword)
+  await Auth.reauthenticateWithCredential(auth.currentUser, credential)
+
+  // Now update password
+  await Auth.updatePassword(auth.currentUser, newPassword)
+}

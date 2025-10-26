@@ -1,13 +1,14 @@
-import '~/global.css'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
+import '~/global.css'
 import { useInitServices } from '~/hooks/use-init-services'
 
-import { queryClient } from '~/libs/query-client'
 import { useResolveClassNames } from 'uniwind'
+import { queryClient } from '~/libs/query-client'
+import { SettingsProvider } from '~/modules/settings/contexts/settings-context'
 
 if (__DEV__) {
   import('../../ReactotronConfig')
@@ -23,7 +24,9 @@ export default function Layout() {
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardProvider>
-          <App />
+          <SettingsProvider>
+            <App />
+          </SettingsProvider>
         </KeyboardProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>
