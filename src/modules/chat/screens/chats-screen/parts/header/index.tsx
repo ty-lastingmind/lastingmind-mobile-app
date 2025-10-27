@@ -52,9 +52,9 @@ export function Header({ navigation, userType }: HeaderProps) {
   }, [hasNoChats, navigation])
 
   return (
-    <SafeAreaView>
+    <SafeAreaView edges={['top']}>
       <View className="px-8">
-        <View className="h-[72px] relative flex flex-row items-center justify-between">
+        <View className="h-[56px] relative flex flex-row items-center justify-between">
           <TouchableOpacity onPress={navigation.openDrawer}>
             <Avatar source={userAvatar} />
           </TouchableOpacity>

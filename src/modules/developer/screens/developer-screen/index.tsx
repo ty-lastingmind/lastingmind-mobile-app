@@ -42,7 +42,7 @@ export function DeveloperScreen() {
   const Component = showCaseComponents[currentTab]
 
   return (
-    <SafeAreaView>
+    <SafeAreaView edges={['top']}>
       <View className="gap-8">
         <ScrollView horizontal contentContainerClassName="gap-2 px-4" showsHorizontalScrollIndicator={false}>
           {Object.keys(showCaseComponents).map((label) => (

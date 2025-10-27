@@ -13,7 +13,7 @@ interface BackHeaderProps {
 export default function BackHeader({ title }: BackHeaderProps) {
   const router = useRouter()
   return (
-    <SafeAreaView>
+    <SafeAreaView edges={['top']}>
       <View className="pb-4 px-8 flex-row items-center justify-between">
         <TouchableOpacity className="w-[38px]" onPress={router.back}>
           <Icon name="chevron-back" size="xl" color="accent" />
