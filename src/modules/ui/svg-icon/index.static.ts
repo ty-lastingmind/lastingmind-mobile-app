@@ -40,6 +40,15 @@ import { Question } from './svg/question'
 import { Refresh } from './svg/refresh'
 import { Send } from './svg/send'
 import { Settings } from './svg/settings'
+import { MicTest } from './svg/mic-test'
+import { Headphones } from './svg/headphones'
+import { Playback } from './svg/playback'
+import { PersonSpeaking } from './svg/person-speaking'
+import { MicSpeaking } from './svg/mic-speaking'
+import { Listening } from './svg/listening'
+import { Speaking } from './svg/speaking'
+import { Relax } from './svg/relax'
+import { Rewind } from './svg/rewind'
 import { Shield } from './svg/shield'
 import { Sparks } from './svg/sparks'
 import { Stop } from './svg/stop'
@@ -109,6 +118,15 @@ export const iconNameToSvg = {
   people: People,
   add_people: AddPeople,
   settings: Settings,
+  mic_test: MicTest,
+  headphones: Headphones,
+  person_speaking: PersonSpeaking,
+  playback: Playback,
+  mic_speaking: MicSpeaking,
+  listening: Listening,
+  speaking: Speaking,
+  relax: Relax,
+  rewind: Rewind,
   send: Send,
   envelope: Envelope,
 } as const

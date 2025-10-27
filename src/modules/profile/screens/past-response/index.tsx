@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import React, { useEffect, useMemo, useState } from 'react'
+import BackHeader from '../../../ui/back-header'
 import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { useBoolean, useDebounceCallback } from 'usehooks-ts'
 import Dropdown from '~/modules/ui/dropdown'
 import { Icon } from '~/modules/ui/icon'
@@ -13,7 +13,6 @@ import {
   usePullFilteredResponsesViewAnswerPullFilteredAnswersPost,
 } from '~/services/api/generated'
 import { FilterBadge } from '../../parts/past-responses/filter-badge'
-import Header from '../../parts/past-responses/header'
 import { ResponseDialog } from '../../parts/past-responses/response-dialog'
 
 // TODO: Re-enable date picker filter once backend is fixed
@@ -96,9 +95,7 @@ export function PastResponsesPage() {
 
   return (
     <>
-      <SafeAreaView>
-        <Header />
-      </SafeAreaView>
+      <BackHeader title="View Past Responses" />
       <ScrollView className="px-8">
         <View className="gap-4 bg-icon-white pb-4">
           <Dropdown title="Filters" titleWeight="normal" className="bg-button-white-bg pt-0 pb-0 px-2">
