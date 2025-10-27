@@ -26,7 +26,7 @@ const inputList = [
   {
     name: 'endAge',
     label: 'End Age',
-    placeholder: '18',
+    placeholder: 'Now',
   },
 ]
 
@@ -79,8 +79,8 @@ export function HomeSurveyScreen() {
             topic: 'cities_lived',
             answers: locations.map((location) => ({
               location: location.location,
-              start_age: Number(location.startAge),
-              end_age: Number(location.endAge),
+              start_age: location.startAge,
+              end_age: location.endAge,
             })),
           },
         },
@@ -98,6 +98,25 @@ export function HomeSurveyScreen() {
     }
   }
 
+  const handleSkip = async () => {
+    await mutateAsync(
+      {
+        data: {
+          topic: 'cities_lived',
+          answers: [],
+        },
+      },
+      {
+        onSuccess() {
+          router.navigate('/(protected)/basic-info/02-education')
+        },
+        onError() {
+          Alert.alert('An error has ocurred')
+        },
+      }
+    )
+  }
+
   return (
     <View className="flex-1 px-8" style={safeStyles}>
       <KeyboardAvoidingView behavior="padding" className="flex-1">
@@ -113,7 +132,7 @@ export function HomeSurveyScreen() {
             {locations.map((location, index) => (
               <InputResult
                 key={index}
-                label={location.location}
+                label={`${location.location}, age ${location.startAge} to ${location.endAge}`}
                 icon="home"
                 onPress={() => handleEdit(index)}
                 isExpanded={editingIndex === index}
@@ -143,9 +162,14 @@ export function HomeSurveyScreen() {
             </View>
           </Form>
         </ScrollView>
-        <Button onPress={handleSave} loading={isPending}>
-          Save
-        </Button>
+        <View className="gap-4">
+          <Button variant="white" onPress={handleSkip} loading={isPending}>
+            Skip
+          </Button>
+          <Button onPress={handleSave} loading={isPending}>
+            Save
+          </Button>
+        </View>
       </KeyboardAvoidingView>
     </View>
   )

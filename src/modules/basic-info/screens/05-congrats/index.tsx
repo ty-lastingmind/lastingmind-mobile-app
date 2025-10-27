@@ -15,8 +15,8 @@ export function BasicInfoCongratsPage() {
       <View className="flex-1 justify-center">
         <LottieView
           style={{
-            height: 150,
-            width: 150,
+            height: 300,
+            width: 300,
             alignSelf: 'center',
           }}
           source={CheckSpecial}

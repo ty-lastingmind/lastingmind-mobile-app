@@ -25,8 +25,8 @@ function SecondView() {
       <View className="flex-1 justify-center">
         <LottieView
           style={{
-            height: 150,
-            width: 150,
+            height: 250,
+            width: 250,
             alignSelf: 'center',
           }}
           source={Congrats}

@@ -23,7 +23,7 @@ const inputList = [
   {
     name: 'school',
     label: 'School',
-    placeholder: 'University of Alabama',
+    placeholder: 'MIT',
   },
 ]
 
@@ -94,6 +94,25 @@ export function EducationSurveyScreen() {
     }
   }
 
+  const handleSkip = async () => {
+    await mutateAsync(
+      {
+        data: {
+          topic: 'education',
+          answers: [],
+        },
+      },
+      {
+        onSuccess() {
+          router.navigate('/(protected)/basic-info/03-work')
+        },
+        onError() {
+          Alert.alert('An error has ocurred')
+        },
+      }
+    )
+  }
+
   return (
     <Transition title="Response Saved!" subtitle="Only 3 Questions Left!">
       <View className="flex-1 px-8" style={safeStyles}>
@@ -110,7 +129,7 @@ export function EducationSurveyScreen() {
               {educations.map((education, index) => (
                 <InputResult
                   key={index}
-                  label={education.school}
+                  label={`${education.school}, ${education.level}`}
                   icon="education"
                   onPress={() => handleEdit(index)}
                   isExpanded={editingIndex === index}
@@ -140,9 +159,14 @@ export function EducationSurveyScreen() {
               </View>
             </Form>
           </ScrollView>
-          <Button onPress={handleSave} loading={isPending}>
-            Save
-          </Button>
+          <View className="gap-4">
+            <Button variant="white" onPress={handleSkip} loading={isPending}>
+              Skp
+            </Button>
+            <Button onPress={handleSave} loading={isPending}>
+              Save
+            </Button>
+          </View>
         </KeyboardAvoidingView>
       </View>
     </Transition>

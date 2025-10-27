@@ -95,6 +95,25 @@ export function FamilySurveyPage() {
     }
   }
 
+  const handleSkip = async () => {
+    await mutateAsync(
+      {
+        data: {
+          topic: 'family',
+          answers: [],
+        },
+      },
+      {
+        onSuccess() {
+          router.navigate('/(protected)/basic-info/05-congrats')
+        },
+        onError() {
+          Alert.alert('An error has ocurred')
+        },
+      }
+    )
+  }
+
   return (
     <Transition title="Response Saved!" subtitle="Last Question!">
       <View className="flex-1 px-8" style={safeStyles}>
@@ -111,7 +130,7 @@ export function FamilySurveyPage() {
               {familyMembers.map((member, index) => (
                 <InputResult
                   key={index}
-                  label={member.name}
+                  label={`${member.name}, ${member.relationship}`}
                   icon="family"
                   onPress={() => handleEdit(index)}
                   isExpanded={editingIndex === index}
@@ -141,9 +160,14 @@ export function FamilySurveyPage() {
               </View>
             </Form>
           </ScrollView>
-          <Button onPress={handleSave} loading={isPending}>
-            Save
-          </Button>
+          <View className="gap-4">
+            <Button variant="white" onPress={handleSkip} loading={isPending}>
+              Skp
+            </Button>
+            <Button onPress={handleSave} loading={isPending}>
+              Save
+            </Button>
+          </View>
         </KeyboardAvoidingView>
       </View>
     </Transition>

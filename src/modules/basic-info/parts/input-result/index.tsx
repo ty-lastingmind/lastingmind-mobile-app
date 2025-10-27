@@ -19,7 +19,7 @@ export default function InputResult({ label, icon, onPress, renderExpandedCompon
       {!isExpanded ? (
         <TouchableOpacity className="flex-row bg-bg-secondary py-6 rounded-md items-center" onPress={onPress}>
           <View className="px-6">{icon && <SvgIcon name={icon} size="lg" color="accent" />}</View>
-          <Typography className="flex-1">{label}</Typography>
+          <Typography className="flex-1 line-clamp-1 pr-4">{label}</Typography>
           <View className="pr-6">
             <Icon name="pencil" />
           </View>

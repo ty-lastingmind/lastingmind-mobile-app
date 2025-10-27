@@ -102,7 +102,7 @@ export function TopicsPage() {
 
   return (
     <View className="gap-4 px-8 flex flex-1" style={safeStyles}>
-      <View className="pt-28 gap-2">
+      <View className="pt-18 gap-2">
         <Typography brand level="h3" color="accent">
           What topics matter most to you.
         </Typography>

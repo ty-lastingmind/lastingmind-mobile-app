@@ -146,7 +146,7 @@ export function PastResponsesPage() {
             )} */}
           </ScrollView>
           <Input
-            placeholder="Type Your Own..."
+            placeholder="Search..."
             leftAdornment={<Icon name="search" color="secondary" />}
             onChange={(e) => debouncedSetSearchText(e.nativeEvent.text)}
           />

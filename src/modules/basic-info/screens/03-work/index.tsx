@@ -31,12 +31,7 @@ const inputList = [
   {
     name: 'endAge',
     label: 'End Age',
-    placeholder: '22',
-  },
-  {
-    name: 'description',
-    label: 'Description',
-    placeholder: 'Describe your roles and responsibilities',
+    placeholder: 'Now',
   },
 ]
 
@@ -75,7 +70,7 @@ export function WorkSurveyPage() {
   }
 
   const handleAddAnother = () => {
-    form.reset({ company: '', position: '', startAge: '', endAge: '', description: '' })
+    form.reset({ company: '', position: '', startAge: '', endAge: '' })
     setEditingIndex(null)
     openForm()
   }
@@ -89,9 +84,8 @@ export function WorkSurveyPage() {
             answers: works.map((work) => ({
               company: work.company,
               position: work.position,
-              start_age: Number(work.startAge),
-              end_age: Number(work.endAge),
-              description: work.description,
+              start_age: work.startAge,
+              end_age: work.endAge,
             })),
           },
         },
@@ -107,6 +101,25 @@ export function WorkSurveyPage() {
     } else {
       router.navigate('/(protected)/basic-info/04-family')
     }
+  }
+
+  const handleSkip = async () => {
+    await mutateAsync(
+      {
+        data: {
+          topic: 'career',
+          answers: [],
+        },
+      },
+      {
+        onSuccess() {
+          router.navigate('/(protected)/basic-info/04-family')
+        },
+        onError() {
+          Alert.alert('An error has ocurred')
+        },
+      }
+    )
   }
 
   return (
@@ -125,7 +138,7 @@ export function WorkSurveyPage() {
               {works.map((work, index) => (
                 <InputResult
                   key={index}
-                  label={work.company}
+                  label={`${work.company}, age ${work.startAge} to ${work.endAge}`}
                   icon="work"
                   onPress={() => handleEdit(index)}
                   isExpanded={editingIndex === index}
@@ -155,9 +168,14 @@ export function WorkSurveyPage() {
               </View>
             </Form>
           </ScrollView>
-          <Button onPress={handleSave} loading={isPending}>
-            Save
-          </Button>
+          <View className="gap-4">
+            <Button variant="white" onPress={handleSkip} loading={isPending}>
+              Skp
+            </Button>
+            <Button onPress={handleSave} loading={isPending}>
+              Save
+            </Button>
+          </View>
         </KeyboardAvoidingView>
       </View>
     </Transition>

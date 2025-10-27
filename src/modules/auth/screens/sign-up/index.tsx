@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { View } from 'react-native'
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 
 import { useSignUpWithEmailAndPassword } from '~/hooks/auth/use-sign-up-with-email-and-password'
 import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
@@ -27,9 +27,12 @@ export function SignUpScreen() {
   }
 
   return (
-    <View className="gap-4 px-10 flex flex-1 justify-between" style={safeStyles}>
-      <View className="flex-1">
-        <View className="py-24 gap-4">
+    <KeyboardAwareScrollView
+      contentContainerClassName="px-10 flex-1 justify-between"
+      contentContainerStyle={safeStyles}
+    >
+      <View className="flex-1/2 justify-evenly">
+        <View className="gap-4">
           <Title>LastingMind</Title>
           <Typography brand className="text-center" level="body-lg" color="accent">
             Sign Up
@@ -38,8 +41,8 @@ export function SignUpScreen() {
         <SignUpForm form={form} />
       </View>
       {/* todo: add chat user check when link is added */}
-      <TermsOfService isChatUser={false} />
-      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={20}>
+      <View>
+        <TermsOfService isChatUser={false} />
         <Button
           onPress={form.handleSubmit(handleSignUpWithEmailAndPassword)}
           loading={signUpWithEmailAndPasswordMutation.isPending}
@@ -47,7 +50,7 @@ export function SignUpScreen() {
         >
           Continue
         </Button>
-      </KeyboardAvoidingView>
-    </View>
+      </View>
+    </KeyboardAwareScrollView>
   )
 }
