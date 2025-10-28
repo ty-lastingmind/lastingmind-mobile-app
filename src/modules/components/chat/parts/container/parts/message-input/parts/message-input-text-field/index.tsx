@@ -37,9 +37,10 @@ export function MessageInputTextField({
         {...props}
         value={value}
         placeholder={!isRecording ? placeholder : ''}
+        editable={!disabled}
         leftAdornment={
           isRecording ? (
-            <TouchableOpacity onPress={onCancelRecording}>
+            <TouchableOpacity onPress={onCancelRecording} disabled={disabled}>
               <Icon size="lg" name="close-circle" />
             </TouchableOpacity>
           ) : null

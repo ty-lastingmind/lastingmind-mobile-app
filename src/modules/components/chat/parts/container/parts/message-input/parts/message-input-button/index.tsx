@@ -36,7 +36,7 @@ export function MessageInputButton({
   }
 
   return (
-    <TouchableOpacity onPress={onStartRecording}>
+    <TouchableOpacity onPress={onStartRecording} disabled={disabled}>
       <Icon size="lg" name="mic-outline" color="secondary" />
     </TouchableOpacity>
   )

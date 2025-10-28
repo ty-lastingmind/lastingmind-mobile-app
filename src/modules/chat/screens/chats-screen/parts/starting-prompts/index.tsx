@@ -7,9 +7,10 @@ interface StartingPromptsProps {
   prompts: string[]
   onPromptPress: (prompt: string) => void
   form: UseFormReturn<{ question: string }>
+  disabled?: boolean
 }
 
-export function StartingPrompts({ prompts, onPromptPress, form }: StartingPromptsProps) {
+export function StartingPrompts({ prompts, onPromptPress, form, disabled = false }: StartingPromptsProps) {
   const question = form.watch('question')
 
   if (question) return null
@@ -18,7 +19,7 @@ export function StartingPrompts({ prompts, onPromptPress, form }: StartingPrompt
     <View className="flex gap-4 px-10">
       {prompts.map((prompt, index) => (
         <Animated.View key={`${prompt}-${index}`} exiting={FadeOut} entering={FadeInDown.delay(index * 100)}>
-          <StartingPrompt onPress={() => onPromptPress(prompt)} prompt={prompt} />
+          <StartingPrompt onPress={() => onPromptPress(prompt)} prompt={prompt} disabled={disabled} />
         </Animated.View>
       ))}
     </View>
