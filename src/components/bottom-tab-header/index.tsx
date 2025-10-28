@@ -25,8 +25,8 @@ export function BottomTabHeader({ navigation, userAvatar, options }: Props) {
   }, [navigation])
 
   return (
-    <SafeAreaView>
-      <View className="h-[72px] relative flex-row items-center justify-between px-8">
+    <SafeAreaView edges={['top']}>
+      <View className="h-[56px] relative flex-row items-center justify-between px-8">
         <TouchableOpacity onPress={handleOpenDrawer}>
           <Avatar source={userAvatar} />
         </TouchableOpacity>
