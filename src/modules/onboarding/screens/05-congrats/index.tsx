@@ -43,7 +43,7 @@ function SecondView() {
             You can now begin creating your lasting mind.
           </Typography>
         </View>
-        <Link asChild href="/(protected)/(tabs)/home">
+        <Link asChild href={{ pathname: '/(protected)/(tabs)/home', params: { shouldRefetch: 'true' } }}>
           <Button>Continue</Button>
         </Link>
       </View>

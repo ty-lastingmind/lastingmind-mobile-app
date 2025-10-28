@@ -1,4 +1,4 @@
-import { Redirect } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Alert, FlatList, View } from 'react-native'
 import { RefreshControl } from 'react-native-gesture-handler'
@@ -34,6 +34,8 @@ export function Home() {
     useDeclineInvitationInvitationsDeclineInvitationPost()
   const { value: hasTimedOut, setTrue: setHasTimedOut, setFalse: setHasTimedOutFalse } = useBoolean(false)
   const shouldShowFallback = hasTimedOut || isError
+
+  const { shouldRefetch } = useLocalSearchParams()
 
   // Timeout mechanism: use fallback data if API takes longer than 30 seconds
   useEffect(() => {
@@ -117,8 +119,20 @@ export function Home() {
     return null
   }
 
+  const validateOnboarding = async () => {
+    if (shouldRefetch) {
+      await onboarding.refetch().then((res) => {
+        if (!res.data?.response) {
+          router.navigate('/(protected)/onboarding/01-name')
+        }
+      })
+    } else {
+      router.navigate('/(protected)/onboarding/01-name')
+    }
+  }
+
   if (onboarding.data?.response === false) {
-    return <Redirect href="/(protected)/onboarding/01-name" />
+    validateOnboarding()
   }
 
   return (
