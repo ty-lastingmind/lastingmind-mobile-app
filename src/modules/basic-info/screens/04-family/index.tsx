@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
-import { Alert, KeyboardAvoidingView, ScrollView, View } from 'react-native'
+import { Alert, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import { Button } from '~/modules/ui/button'
@@ -12,6 +12,8 @@ import { useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost } from '~/ser
 import { FamilyInfoData, familyOptions, useFamilyInfoForm } from '../../hooks/use-family-info-form'
 import InputResult from '../../parts/input-result'
 import Transition from '../../parts/transition'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
+import Toast from 'react-native-toast-message'
 
 const inputList = [
   {
@@ -38,6 +40,7 @@ export function FamilySurveyPage() {
   const { mutateAsync, isPending } = useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost()
 
   const form = useFamilyInfoForm()
+  const { isDirty } = form.formState
 
   const handleFormSave = (data: FamilyInfoData) => {
     if (editingIndex !== null) {
@@ -47,7 +50,7 @@ export function FamilySurveyPage() {
     }
     closeForm()
     setEditingIndex(null)
-    form.reset()
+    handleAddAnother()
   }
 
   const handleFormCancel = () => {
@@ -70,12 +73,28 @@ export function FamilySurveyPage() {
   }
 
   const handleSave = async () => {
-    if (familyMembers.length) {
+    const finalFamilyMembers = [...familyMembers]
+
+    const isValid = await form.trigger()
+    if (isDirty) {
+      if (!isValid) {
+        Toast.show({
+          type: 'error',
+          text1: 'All Fields are Required',
+        })
+        return
+      }
+      const values = form.getValues()
+
+      finalFamilyMembers.push(values)
+    }
+
+    if (finalFamilyMembers.length) {
       await mutateAsync(
         {
           data: {
             topic: 'family',
-            answers: familyMembers.map((member) => ({
+            answers: finalFamilyMembers.map((member) => ({
               relationship: member.relationship,
               name: member.name,
             })),
@@ -91,7 +110,7 @@ export function FamilySurveyPage() {
         }
       )
     } else {
-      router.navigate('/(protected)/basic-info/05-congrats')
+      handleSkip()
     }
   }
 
@@ -117,58 +136,66 @@ export function FamilySurveyPage() {
   return (
     <Transition title="Response Saved!" subtitle="Last Question!">
       <View className="flex-1 px-8" style={safeStyles}>
-        <KeyboardAvoidingView behavior="padding" className="flex-1">
-          <ScrollView contentContainerClassName="gap-4 pb-8" bounces={false} showsVerticalScrollIndicator={false}>
-            <View className="pt-28 gap-2">
-              <SvgIcon name="family" size="3xl" color="accent" />
-              <Typography brand level="h3">
-                Tell us about your family
-              </Typography>
-              <Typography>Add as many family members as you like.</Typography>
-            </View>
-            <Form {...form}>
-              {familyMembers.map((member, index) => (
-                <InputResult
-                  key={index}
-                  label={`${member.name}, ${member.relationship}`}
-                  icon="family"
-                  onPress={() => handleEdit(index)}
-                  isExpanded={editingIndex === index}
-                  renderExpandedComponent={
-                    <FormControls
-                      form={form}
-                      familyMembers={familyMembers}
-                      handleFormCancel={handleFormCancel}
-                      handleFormSave={handleFormSave}
-                    />
-                  }
-                />
-              ))}
-              <View className="flex-1 gap-4">
-                {showForm ? (
+        <KeyboardAwareScrollView
+          contentContainerClassName="gap-4 pb-8"
+          showsHorizontalScrollIndicator={false}
+          bottomOffset={100}
+        >
+          <View className="pt-28 gap-2">
+            <SvgIcon name="family" size="3xl" color="accent" />
+            <Typography brand level="h3">
+              Tell us about your family
+            </Typography>
+            <Typography>Add as many family members as you like.</Typography>
+          </View>
+          <Form {...form}>
+            {familyMembers.map((member, index) => (
+              <InputResult
+                key={index}
+                label={`${member.name}, ${member.relationship}`}
+                icon="family"
+                onPress={() => handleEdit(index)}
+                isExpanded={editingIndex === index}
+                renderExpandedComponent={
                   <FormControls
                     form={form}
                     familyMembers={familyMembers}
                     handleFormCancel={handleFormCancel}
                     handleFormSave={handleFormSave}
                   />
-                ) : (
-                  <Button variant="white" size="sm" onPress={handleAddAnother}>
-                    Add another
-                  </Button>
-                )}
-              </View>
-            </Form>
-          </ScrollView>
-          <View className="gap-4">
-            <Button variant="white" onPress={handleSkip} loading={isPending}>
-              Skp
-            </Button>
-            <Button onPress={handleSave} loading={isPending}>
-              Save
-            </Button>
-          </View>
-        </KeyboardAvoidingView>
+                }
+              />
+            ))}
+            <View className="flex-1 gap-4">
+              {showForm ? (
+                <FormControls
+                  form={form}
+                  familyMembers={familyMembers}
+                  handleFormCancel={handleFormCancel}
+                  handleFormSave={handleFormSave}
+                  saveLabel="Add another"
+                />
+              ) : (
+                <Button
+                  variant="white"
+                  size="sm"
+                  onPress={handleAddAnother}
+                  className={editingIndex !== null ? 'hidden' : ''}
+                >
+                  Add another
+                </Button>
+              )}
+            </View>
+          </Form>
+        </KeyboardAwareScrollView>
+        <View className="gap-4">
+          <Button variant="white" onPress={handleSkip} loading={isPending}>
+            Skp
+          </Button>
+          <Button onPress={handleSave} loading={isPending}>
+            Save
+          </Button>
+        </View>
       </View>
     </Transition>
   )
@@ -179,9 +206,16 @@ interface FormControlsProps {
   familyMembers: FamilyInfoData[]
   handleFormCancel: () => void
   handleFormSave: (data: FamilyInfoData) => void
+  saveLabel?: string
 }
 
-function FormControls({ form, familyMembers, handleFormCancel, handleFormSave }: FormControlsProps): React.ReactNode {
+function FormControls({
+  form,
+  familyMembers,
+  handleFormCancel,
+  handleFormSave,
+  saveLabel = 'Save',
+}: FormControlsProps): React.ReactNode {
   return (
     <>
       <InputGroup<FamilyInfoData> inputList={inputList} form={form} />
@@ -197,7 +231,7 @@ function FormControls({ form, familyMembers, handleFormCancel, handleFormSave }:
           disabled={!form.formState.isValid || !form.formState.isDirty}
           onPress={form.handleSubmit(handleFormSave)}
         >
-          Save
+          {saveLabel}
         </Button>
       </View>
     </>

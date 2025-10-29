@@ -3,7 +3,7 @@ import { useForm, useFormContext } from 'react-hook-form'
 import z from 'zod'
 
 const homeInfoSchema = z.object({
-  location: z.string().min(2),
+  location: z.string().min(1),
   startAge: z.string().min(1),
   endAge: z.string().min(1),
 })

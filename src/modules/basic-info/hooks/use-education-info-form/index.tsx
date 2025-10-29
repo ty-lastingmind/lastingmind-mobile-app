@@ -16,7 +16,7 @@ export const levelOptions = [
 
 const educationInfoSchema = z.object({
   level: z.enum(levelOptions),
-  school: z.string().min(2),
+  school: z.string().min(1),
 })
 
 export type EducationInfoData = z.infer<typeof educationInfoSchema>

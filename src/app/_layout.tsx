@@ -8,6 +8,7 @@ import { useInitServices } from '~/hooks/use-init-services'
 
 import { queryClient } from '~/libs/query-client'
 import { useResolveClassNames } from 'uniwind'
+import Toast from 'react-native-toast-message'
 
 if (__DEV__) {
   import('../../ReactotronConfig')
@@ -20,13 +21,16 @@ SplashScreen.setOptions({
 
 export default function Layout() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <KeyboardProvider>
-          <App />
-        </KeyboardProvider>
-      </GestureHandlerRootView>
-    </QueryClientProvider>
+    <>
+      <QueryClientProvider client={queryClient}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <KeyboardProvider>
+            <App />
+          </KeyboardProvider>
+        </GestureHandlerRootView>
+      </QueryClientProvider>
+      <Toast position="bottom" />
+    </>
   )
 }
 
