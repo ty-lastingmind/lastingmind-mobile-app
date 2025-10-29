@@ -41,6 +41,7 @@ const CuratedQuestionsContent = () => {
     handleCloseSkippedAllQuestionsOverlay,
     isTopicPickerOpen,
     flatListRef,
+    handleCloseSuccessScreen,
   } = useQuestionContext()
 
   useEffect(() => {
@@ -100,7 +101,8 @@ const CuratedQuestionsContent = () => {
       <SavedAnswer
         title="Entry Saved!"
         caption="Keep adding more responses to improve your LastingMind!"
-        shouldRedirect={false}
+        shouldRedirect
+        onRedirect={handleCloseSuccessScreen}
       />
     )
   }
