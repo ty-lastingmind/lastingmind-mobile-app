@@ -1,13 +1,13 @@
 import { View } from 'react-native'
 import { Progress } from '~/modules/ui/progress'
 import { Typography } from '~/modules/ui/typography'
-import { Stats } from '~/services/api/model'
+import { PydanticModelsHomeStats } from '~/services/api/model'
 
 interface TrophyModalProps {
-  stats?: Stats
+  stats?: PydanticModelsHomeStats
 }
 
-export function TrophyModal({ stats = {} as Stats }: TrophyModalProps) {
+export function TrophyModal({ stats = {} as PydanticModelsHomeStats }: TrophyModalProps) {
   const { progress_percent = 0, num_questions_answered = 0, mins_of_interview = 0, num_journals = 0 } = stats
 
   return (
