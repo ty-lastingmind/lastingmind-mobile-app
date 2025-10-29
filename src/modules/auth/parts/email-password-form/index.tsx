@@ -1,8 +1,10 @@
 import { UseFormReturn } from 'react-hook-form'
-import { View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
+import { useBoolean } from 'usehooks-ts'
 import { z } from 'zod'
 
 import { Form, FormControl, FormField, FormItem } from '~/modules/ui/form'
+import { Icon } from '~/modules/ui/icon'
 import { Input } from '~/modules/ui/input'
 
 export const emailPasswordSchema = z.object({
@@ -17,6 +19,7 @@ interface EmailPasswordFormProps {
 }
 
 export function EmailPasswordForm({ form }: EmailPasswordFormProps) {
+  const { value: passwordVisible, toggle: togglePasswordVisible } = useBoolean(true)
   return (
     <Form {...form}>
       <View>
@@ -45,13 +48,18 @@ export function EmailPasswordForm({ form }: EmailPasswordFormProps) {
             <FormItem>
               <FormControl>
                 <Input
-                  secureTextEntry
+                  secureTextEntry={passwordVisible}
                   isError={Boolean(fieldState.error?.message)}
                   placeholder="Enter password"
                   className="rounded-t-none"
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
                   value={field.value}
+                  rightAdornment={
+                    <TouchableOpacity onPress={togglePasswordVisible}>
+                      <Icon name={passwordVisible ? 'eye-outline' : 'eye-off-outline'} />
+                    </TouchableOpacity>
+                  }
                 />
               </FormControl>
             </FormItem>
