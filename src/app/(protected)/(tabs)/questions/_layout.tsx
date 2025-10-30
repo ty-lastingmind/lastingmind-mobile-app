@@ -36,7 +36,7 @@ export default function Layout() {
       screenOptions={{
         title: 'Questions',
         headerTitle: headerTitle,
-        header: (props) => <BottomTabHeader {...props} userAvatar={userAvatar} />,
+        header: (props) => <BottomTabHeader {...props} userAvatar={userAvatar} warningOnLeave />,
         contentStyle: styles,
       }}
     />
