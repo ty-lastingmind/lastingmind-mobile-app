@@ -39,6 +39,13 @@ export default function Layout() {
         header: (props) => <BottomTabHeader {...props} userAvatar={userAvatar} warningOnLeave />,
         contentStyle: styles,
       }}
-    />
+    >
+      <Stack.Screen
+        name="index"
+        options={{
+          animation: 'none',
+        }}
+      />
+    </Stack>
   )
 }

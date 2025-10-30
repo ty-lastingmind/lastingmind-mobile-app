@@ -8,7 +8,13 @@ interface TrophyModalProps {
 }
 
 export function TrophyModal({ stats = {} as Stats }: TrophyModalProps) {
-  const { progress_percent = 0, num_questions_answered = 0, mins_of_interview = 0, num_journals = 0 } = stats
+  const {
+    progress_percent = 0,
+    num_questions_answered = 0,
+    mins_of_interview = 0,
+    num_journals = 0,
+    next_level = 'Basic',
+  } = stats
 
   return (
     <View className="shadow-md">
@@ -27,7 +33,7 @@ export function TrophyModal({ stats = {} as Stats }: TrophyModalProps) {
                 You are {progress_percent}% of the way to
               </Typography>
               <Typography level="body-lg" color="secondary">
-                Intermediate
+                {next_level}
               </Typography>
             </View>
           </View>

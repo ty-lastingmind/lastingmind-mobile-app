@@ -6,6 +6,7 @@ import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
 import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
+import { InactiveChatDialog } from '~/modules/chat/screens/chats-screen/parts/inactive-chat-dialog'
 import { Chat } from '~/modules/components/chat'
 import { ChatWithUserIncomingMessage } from '~/modules/components/chat/composers/chat-with-user-incoming-message'
 import { IncomingMessageLoading } from '~/modules/components/chat/composers/incoming-message-loading'
@@ -25,6 +26,7 @@ import {
 import { CanChatWithItem } from '~/services/api/model'
 import { isIncomingMessage, isOutgoingMessage } from '~/utils/chat'
 import { deleteAllAudioFiles, saveBase64ToFile } from '~/utils/files'
+import { useBoolean } from 'usehooks-ts'
 
 interface ChatScreenProps {
   chattingWithViewId: string
@@ -48,14 +50,13 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
   const isFirstMessageSendRef = useRef(false)
   const pbStyles = usePbSafeStyles()
   const lastQuestion = state.messages.at(-2)
+  const { value: showInactiveDialog, setFalse: setShowInactiveDialogFalse } = useBoolean(
+    chatWithUser.status === 'inactive'
+  )
+  const isChatInactive = chatWithUser.status === 'inactive'
 
   const handleWsMessage = async (message: WsMessage) => {
     const audio = await saveBase64ToFile(message.audio)
-    console.log('[debug]', {
-      audioSrc: audio,
-      text: message.text,
-      alignment: message.alignment,
-    })
     actions.appendDataToLastMessageIncomingMessage({
       audioSrc: audio,
       text: message.text,
@@ -127,6 +128,10 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
   })
 
   const handleSendTextMessage = useCallback(() => {
+    if (isChatInactive) {
+      return
+    }
+
     const question = form.getValues('question')
     form.reset()
 
@@ -137,9 +142,13 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
         convoId: conversationId,
       },
     })
-  }, [form, sendMessage, chattingWithViewId, conversationId])
+  }, [form, sendMessage, chattingWithViewId, conversationId, isChatInactive])
 
   const handleSendAudioMessage = useCallback(async () => {
+    if (isChatInactive) {
+      return
+    }
+
     await recordingControls.stopRecording()
 
     if (!userQuery.data) return
@@ -166,7 +175,7 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
         },
       }
     )
-  }, [recordingControls, userQuery.data, refineText, sendMessage, chattingWithViewId, conversationId])
+  }, [recordingControls, userQuery.data, refineText, sendMessage, chattingWithViewId, conversationId, isChatInactive])
 
   return (
     <View className="flex-1" style={pbStyles}>
@@ -213,7 +222,7 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
             render={({ field }) => (
               <MessageInput
                 audioRecorder={audioRecorder}
-                disabled={sendMessage.isPending || uploader.uploadAndTranscribeAudioMessage.isPending}
+                disabled={isChatInactive || sendMessage.isPending || uploader.uploadAndTranscribeAudioMessage.isPending}
                 onSendTextMessage={handleSendTextMessage}
                 onSendAudioMessage={handleSendAudioMessage}
                 onChangeText={field.onChange}
@@ -225,6 +234,7 @@ export function ChatScreen({ chattingWithViewId, conversationId, chatWithUser, f
           />
         </View>
       </KeyboardAvoidingView>
+      <InactiveChatDialog isOpen={showInactiveDialog} onClose={() => setShowInactiveDialogFalse()} />
     </View>
   )
 }

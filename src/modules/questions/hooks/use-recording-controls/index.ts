@@ -1,5 +1,5 @@
 import { AudioModule, AudioRecorder, setAudioModeAsync } from 'expo-audio'
-import * as FileSystem from 'expo-file-system'
+import { File } from 'expo-file-system'
 import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition'
 import { useCallback, useRef } from 'react'
 import { Alert } from 'react-native'
@@ -44,7 +44,8 @@ export function useRecordingControls(audioRecorder: AudioRecorder) {
       return
     }
 
-    await FileSystem.deleteAsync(fileUri, { idempotent: true })
+    const file = new File(fileUri)
+    await file.delete()
   }, [audioRecorder.uri])
 
   const cancelRecording = useCallback(async () => {

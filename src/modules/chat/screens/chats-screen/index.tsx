@@ -4,11 +4,12 @@ import { Controller, useForm } from 'react-hook-form'
 import { Alert, ScrollView, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
-import Animated, { FadeInDown, runOnJS } from 'react-native-reanimated'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useBoolean } from 'usehooks-ts'
 import { CHAT_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
+import { InactiveChatDialog } from '~/modules/chat/screens/chats-screen/parts/inactive-chat-dialog'
 import { Avatar } from '~/modules/chat/screens/chats-screen/parts/avatar'
 import { StartingPrompts } from '~/modules/chat/screens/chats-screen/parts/starting-prompts'
 import { MessageInput } from '~/modules/components/chat/parts/container/parts/message-input'
@@ -23,6 +24,13 @@ import {
 } from '~/services/api/generated'
 import { useChatContext } from '../../hooks/use-chat-context'
 import { SearchParams } from '../../index.types'
+import { scheduleOnRN } from 'react-native-worklets'
+
+const INACTIVE_PROMPTS = [
+  'Where did you grow up?',
+  'What do you think is most important in life?',
+  'Where have you worked?',
+]
 
 export function ChatsScreen() {
   const router = useRouter()
@@ -38,13 +46,19 @@ export function ChatsScreen() {
   const insets = useSafeAreaInsets()
   const { chattingWithUser, chattingWithViewId } = useChatContext()
   const showPrompts = useBoolean(true)
+  const { value: showInactiveDialog, setFalse: setShowInactiveDialogFalse } = useBoolean(
+    chattingWithUser?.status === 'inactive'
+  )
+
+  const isChatInactive = chattingWithUser?.status === 'inactive'
+
   const startingPrompts = usePullStartingPromptsChatPullStartingPromptsGet(
     {
       chattingWithViewId: chattingWithViewId ?? '',
     },
     {
       query: {
-        enabled: Boolean(chattingWithViewId),
+        enabled: Boolean(chattingWithViewId) && !isChatInactive,
         placeholderData: {
           starting_prompts: [],
         },
@@ -69,7 +83,7 @@ export function ChatsScreen() {
     .activeOffsetX(50)
     .onEnd((event) => {
       if (event.translationX > 80) {
-        runOnJS(handleGoBack)()
+        scheduleOnRN(handleGoBack)
       }
     })
 
@@ -78,10 +92,14 @@ export function ChatsScreen() {
       return () => {
         form.reset()
       }
-    }, [])
+    }, [form])
   )
 
   async function handleSendAudioMessage() {
+    if (isChatInactive) {
+      return
+    }
+
     await recordingControls.stopRecording()
 
     if (!userQuery.data) return
@@ -106,6 +124,11 @@ export function ChatsScreen() {
 
   function handleSendTextMessage() {
     if (!chattingWithUser) return
+
+    if (isChatInactive) {
+      return
+    }
+
     const question = form.getValues('question')
 
     const searchParams: SearchParams = {
@@ -148,7 +171,7 @@ export function ChatsScreen() {
     )
   }
 
-  const prompts = startingPrompts.data?.starting_prompts ?? []
+  const prompts = isChatInactive ? INACTIVE_PROMPTS : (startingPrompts.data?.starting_prompts ?? [])
 
   return (
     <ScrollView
@@ -163,7 +186,12 @@ export function ChatsScreen() {
         <Avatar isLoading={!chattingWithUser} src={chattingWithUser?.chattingWithImage} />
       </View>
       {showPrompts.value && (
-        <StartingPrompts form={form} prompts={prompts} onPromptPress={(prompt) => form.setValue('question', prompt)} />
+        <StartingPrompts
+          form={form}
+          prompts={prompts}
+          onPromptPress={(prompt) => !isChatInactive && form.setValue('question', prompt)}
+          disabled={isChatInactive}
+        />
       )}
       {chattingWithUser && Boolean(prompts.length) && (
         <KeyboardAvoidingView behavior="padding" className="px-8 pt-4" keyboardVerticalOffset={150}>
@@ -174,7 +202,7 @@ export function ChatsScreen() {
               render={({ field }) => (
                 <MessageInput
                   audioRecorder={audioRecorder}
-                  disabled={false}
+                  disabled={isChatInactive}
                   value={field.value}
                   onChangeText={field.onChange}
                   onFocus={showPrompts.setFalse}
@@ -190,6 +218,7 @@ export function ChatsScreen() {
           </Animated.View>
         </KeyboardAvoidingView>
       )}
+      <InactiveChatDialog isOpen={showInactiveDialog} onClose={() => setShowInactiveDialogFalse()} />
     </ScrollView>
   )
 }

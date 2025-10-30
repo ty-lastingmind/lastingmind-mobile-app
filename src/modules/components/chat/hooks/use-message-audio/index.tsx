@@ -19,6 +19,8 @@ interface MessageAudioProviderProps extends PropsWithChildren {
 
 export function MessageAudioProvider({ message, children }: MessageAudioProviderProps) {
   const [currentIndex, setCurrentIndex] = useState<number | null>(null)
+  const [shouldAutoAdvance, setShouldAutoAdvance] = useState(true)
+  const shouldAutoAdvanceRef = useRef(true)
   const player = useAudioPlayer()
   const status = useAudioPlayerStatus(player)
   const previousPlayingRef = useRef<boolean>(false)
@@ -32,6 +34,12 @@ export function MessageAudioProvider({ message, children }: MessageAudioProvider
   // Auto-play audio when new parts with audio arrive
   useEffect(() => {
     if (!audioSources || audioSources.length === 0) return
+
+    // Don't auto-play if user has stopped playback
+    if (!shouldAutoAdvanceRef.current) {
+      logInfo('Auto-play skipped - user stopped playback')
+      return
+    }
 
     // Find the first unprocessed audio source
     const nextAudioIndex = audioSources.findIndex((src, idx) => src && idx > lastProcessedIndexRef.current)
@@ -58,7 +66,14 @@ export function MessageAudioProvider({ message, children }: MessageAudioProvider
 
     // Check if current audio has finished playing (and it actually finished, not paused at start)
     if (justFinished && status.currentTime > 0 && status.currentTime >= status.duration) {
-      logInfo('Audio finished at index:', currentIndex)
+      logInfo('Audio finished at index:', currentIndex, 'shouldAutoAdvanceRef:', shouldAutoAdvanceRef.current)
+
+      // If auto-advance is disabled, stop here (check ref for immediate value)
+      if (!shouldAutoAdvanceRef.current) {
+        logInfo('Auto-advance disabled - stopping playback')
+        setCurrentIndex(null)
+        return
+      }
 
       // Update last processed index
       lastProcessedIndexRef.current = currentIndex
@@ -67,24 +82,42 @@ export function MessageAudioProvider({ message, children }: MessageAudioProvider
       const nextIndex = audioSources.findIndex((src, idx) => src && idx > currentIndex)
 
       if (nextIndex !== -1) {
-        // Play next audio
-        logInfo('Playing next audio at index:', nextIndex)
-        setCurrentIndex(nextIndex)
-        player.replace({ uri: audioSources[nextIndex] })
-        player.play()
+        // Play next audio only if auto-advance is still enabled
+        logInfo('Scheduling next audio at index:', nextIndex)
+
+        // Add small delay to allow any pending state changes (like user pressing pause)
+        const timeoutId = setTimeout(() => {
+          // Double-check shouldAutoAdvance before actually playing
+          if (!shouldAutoAdvanceRef.current) {
+            logInfo('Auto-advance was disabled during timeout - cancelling')
+            setCurrentIndex(null)
+            return
+          }
+
+          logInfo('Actually playing next audio at index:', nextIndex)
+          setCurrentIndex(nextIndex)
+          player.replace({ uri: audioSources[nextIndex] })
+          player.play()
+        }, 100) // Increased delay to 100ms to give user time to press pause
+
+        // Store timeout so we can cancel it if needed
+        return () => clearTimeout(timeoutId)
       } else {
         // No more audio in queue (for now)
         logInfo('Queue finished (waiting for more parts)')
         setCurrentIndex(null)
       }
     }
-  }, [status.playing, status.currentTime, status.duration, currentIndex, audioSources, player])
+  }, [status.playing, status.currentTime, status.duration, currentIndex, audioSources, player, shouldAutoAdvance])
 
   function handlePlayAudio() {
     if (!audioSources || audioSources.length === 0) return
 
     // If already playing, stop
-    if (status.playing) {
+    if (status.playing || currentIndex !== null) {
+      logInfo('User stopped audio manually')
+      setShouldAutoAdvance(false)
+      shouldAutoAdvanceRef.current = false
       player.pause()
       setCurrentIndex(null)
       previousPlayingRef.current = false
@@ -93,6 +126,8 @@ export function MessageAudioProvider({ message, children }: MessageAudioProvider
 
     // Start playing from first audio
     logInfo('Starting playback from index 0')
+    setShouldAutoAdvance(true)
+    shouldAutoAdvanceRef.current = true
     setCurrentIndex(0)
     previousPlayingRef.current = false
     player.replace({ uri: audioSources[0] })

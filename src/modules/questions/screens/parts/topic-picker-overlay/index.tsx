@@ -151,7 +151,7 @@ const PickerContent = ({
         <Input placeholder="Type Your Own Topic" value={topic} onChangeText={(text) => onTopicChange(text)} />
 
         <Button disabled={!selectedTopic && !topic} onPress={onSubmit}>
-          <Typography className="text-purple-800">Submit</Typography>
+          Submit
         </Button>
       </View>
     </>

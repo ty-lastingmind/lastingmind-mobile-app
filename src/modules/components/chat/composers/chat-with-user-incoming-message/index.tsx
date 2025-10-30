@@ -12,8 +12,6 @@ interface ChatWithUserIncomingMessageProps {
 export function ChatWithUserIncomingMessage({ message }: ChatWithUserIncomingMessageProps) {
   const { meta } = useChatContext()
 
-  console.log('[debug]', JSON.stringify(message, null, 2))
-
   return (
     <MessageAudioProvider message={message}>
       <C.Container>
