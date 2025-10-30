@@ -1,266 +1,306 @@
 import { View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { ChatWithUserIncomingMessage } from '~/modules/components/chat/composers/chat-with-user-incoming-message'
-import { IncomingChatMessage } from '~/modules/components/chat/index.types'
+import { IncomingChatMessage, IncomingMessageDataItem } from '~/modules/components/chat/index.types'
 import { Button } from '~/modules/ui/button'
 import { Typography } from '~/modules/ui/typography'
 import { Chat } from '~/modules/components/chat'
+import { useState, useCallback } from 'react'
 
-const message: IncomingChatMessage = {
-  type: 'incoming',
-  index: 1,
-  data: [
-    {
-      audioSrc:
-        'file:///Users/z./Library/Developer/CoreSimulator/Devices/F1C5D9CD-A7AE-4B52-A57C-6F58EA939ECD/data/Containers/Data/Application/ECAC310C-357A-44FE-A7B4-0B9DAD91AA6F/Library/Caches/test_1761235055278.mp3',
-      text: "I grew up in a few places. From ages 1 to 11, I was in Costa Rica. I'",
-      alignment: {
-        characters: [
-          'I',
-          ' ',
-          'g',
-          'r',
-          'e',
-          'w',
-          ' ',
-          'u',
-          'p',
-          ' ',
-          'i',
-          'n',
-          ' ',
-          'a',
-          ' ',
-          'f',
-          'e',
-          'w',
-          ' ',
-          'p',
-          'l',
-          'a',
-          'c',
-          'e',
-          's',
-          '.',
-          ' ',
-          'F',
-          'r',
-          'o',
-          'm',
-          ' ',
-          'a',
-          'g',
-          'e',
-          's',
-          ' ',
-          '1',
-          ' ',
-          't',
-          'o',
-          ' ',
-          '1',
-          '1',
-          ',',
-          ' ',
-          'I',
-          ' ',
-          'w',
-          'a',
-          's',
-          ' ',
-          'i',
-          'n',
-          ' ',
-          'C',
-          'o',
-          's',
-          't',
-          'a',
-          ' ',
-          'R',
-          'i',
-          'c',
-          'a',
-          '.',
-          ' ',
-          'I',
-          "'",
-        ],
-        character_start_times_seconds: [
-          0, 0.163, 0.244, 0.279, 0.325, 0.348, 0.383, 0.418, 0.464, 0.499, 0.546, 0.569, 0.604, 0.639, 0.662, 0.708,
-          0.755, 0.813, 0.848, 0.894, 0.94, 0.998, 1.068, 1.138, 1.254, 1.289, 1.312, 1.335, 1.37, 1.405, 1.44, 1.474,
-          1.533, 1.591, 1.66, 1.753, 1.788, 1.858, 2.009, 2.078, 2.101, 2.136, 2.194, 2.31, 2.554, 2.589, 2.635, 2.659,
-          2.728, 2.752, 2.798, 2.821, 2.879, 2.902, 2.926, 2.972, 3.019, 3.135, 3.193, 3.251, 3.274, 3.32, 3.367, 3.448,
-          3.518, 3.646, 3.692, 3.762, 3.796,
-        ],
-        character_end_times_seconds: [
-          0.163, 0.244, 0.279, 0.325, 0.348, 0.383, 0.418, 0.464, 0.499, 0.546, 0.569, 0.604, 0.639, 0.662, 0.708,
-          0.755, 0.813, 0.848, 0.894, 0.94, 0.998, 1.068, 1.138, 1.254, 1.289, 1.312, 1.335, 1.37, 1.405, 1.44, 1.474,
-          1.533, 1.591, 1.66, 1.753, 1.788, 1.858, 2.009, 2.078, 2.101, 2.136, 2.194, 2.31, 2.554, 2.589, 2.635, 2.659,
-          2.728, 2.752, 2.798, 2.821, 2.879, 2.902, 2.926, 2.972, 3.019, 3.135, 3.193, 3.251, 3.274, 3.32, 3.367, 3.448,
-          3.518, 3.646, 3.692, 3.762, 3.796, 3.947,
-        ],
-      },
+// Store the full message data parts
+const messageParts: IncomingMessageDataItem[] = [
+  {
+    audioSrc:
+      'file:///Users/z./Library/Developer/CoreSimulator/Devices/F1C5D9CD-A7AE-4B52-A57C-6F58EA939ECD/data/Containers/Data/Application/ECAC310C-357A-44FE-A7B4-0B9DAD91AA6F/Library/Caches/test_1761235055278.mp3',
+    text: "I grew up in a few places. From ages 1 to 11, I was in Costa Rica. I'",
+    alignment: {
+      characters: [
+        'I',
+        ' ',
+        'g',
+        'r',
+        'e',
+        'w',
+        ' ',
+        'u',
+        'p',
+        ' ',
+        'i',
+        'n',
+        ' ',
+        'a',
+        ' ',
+        'f',
+        'e',
+        'w',
+        ' ',
+        'p',
+        'l',
+        'a',
+        'c',
+        'e',
+        's',
+        '.',
+        ' ',
+        'F',
+        'r',
+        'o',
+        'm',
+        ' ',
+        'a',
+        'g',
+        'e',
+        's',
+        ' ',
+        '1',
+        ' ',
+        't',
+        'o',
+        ' ',
+        '1',
+        '1',
+        ',',
+        ' ',
+        'I',
+        ' ',
+        'w',
+        'a',
+        's',
+        ' ',
+        'i',
+        'n',
+        ' ',
+        'C',
+        'o',
+        's',
+        't',
+        'a',
+        ' ',
+        'R',
+        'i',
+        'c',
+        'a',
+        '.',
+        ' ',
+        'I',
+        "'",
+      ],
+      character_start_times_seconds: [
+        0, 0.163, 0.244, 0.279, 0.325, 0.348, 0.383, 0.418, 0.464, 0.499, 0.546, 0.569, 0.604, 0.639, 0.662, 0.708,
+        0.755, 0.813, 0.848, 0.894, 0.94, 0.998, 1.068, 1.138, 1.254, 1.289, 1.312, 1.335, 1.37, 1.405, 1.44, 1.474,
+        1.533, 1.591, 1.66, 1.753, 1.788, 1.858, 2.009, 2.078, 2.101, 2.136, 2.194, 2.31, 2.554, 2.589, 2.635, 2.659,
+        2.728, 2.752, 2.798, 2.821, 2.879, 2.902, 2.926, 2.972, 3.019, 3.135, 3.193, 3.251, 3.274, 3.32, 3.367, 3.448,
+        3.518, 3.646, 3.692, 3.762, 3.796,
+      ],
+      character_end_times_seconds: [
+        0.163, 0.244, 0.279, 0.325, 0.348, 0.383, 0.418, 0.464, 0.499, 0.546, 0.569, 0.604, 0.639, 0.662, 0.708, 0.755,
+        0.813, 0.848, 0.894, 0.94, 0.998, 1.068, 1.138, 1.254, 1.289, 1.312, 1.335, 1.37, 1.405, 1.44, 1.474, 1.533,
+        1.591, 1.66, 1.753, 1.788, 1.858, 2.009, 2.078, 2.101, 2.136, 2.194, 2.31, 2.554, 2.589, 2.635, 2.659, 2.728,
+        2.752, 2.798, 2.821, 2.879, 2.902, 2.926, 2.972, 3.019, 3.135, 3.193, 3.251, 3.274, 3.32, 3.367, 3.448, 3.518,
+        3.646, 3.692, 3.762, 3.796, 3.947,
+      ],
     },
-    {
-      audioSrc:
-        'file:///Users/z./Library/Developer/CoreSimulator/Devices/F1C5D9CD-A7AE-4B52-A57C-6F58EA939ECD/data/Containers/Data/Application/ECAC310C-357A-44FE-A7B4-0B9DAD91AA6F/Library/Caches/test_1761235062129.mp3',
-      text: 've also mentioned growing up in a small town and in Astana. And I grew up in the',
-      alignment: {
-        characters: [
-          'v',
-          'e',
-          ' ',
-          'a',
-          'l',
-          's',
-          'o',
-          ' ',
-          'm',
-          'e',
-          'n',
-          't',
-          'i',
-          'o',
-          'n',
-          'e',
-          'd',
-          ' ',
-          'g',
-          'r',
-          'o',
-          'w',
-          'i',
-          'n',
-          'g',
-          ' ',
-          'u',
-          'p',
-          ' ',
-          'i',
-          'n',
-          ' ',
-          'a',
-          ' ',
-          's',
-          'm',
-          'a',
-          'l',
-          'l',
-          ' ',
-          't',
-          'o',
-          'w',
-          'n',
-          ' ',
-          'a',
-          'n',
-          'd',
-          ' ',
-          'i',
-          'n',
-          ' ',
-          'A',
-          's',
-          't',
-          'a',
-          'n',
-          'a',
-          '.',
-          ' ',
-          'A',
-          'n',
-          'd',
-          ' ',
-          'I',
-          ' ',
-          'g',
-          'r',
-          'e',
-          'w',
-          ' ',
-          'u',
-          'p',
-          ' ',
-          'i',
-          'n',
-          ' ',
-          't',
-          'h',
-          'e',
-        ],
-        character_start_times_seconds: [
-          0, 0.186, 0.279, 0.337, 0.395, 0.464, 0.546, 0.615, 0.685, 0.72, 0.778, 0.813, 0.848, 0.882, 0.929, 0.952,
-          0.975, 0.998, 1.022, 1.057, 1.103, 1.138, 1.173, 1.219, 1.242, 1.265, 1.312, 1.358, 1.405, 1.451, 1.474,
-          1.509, 1.544, 1.567, 1.614, 1.66, 1.718, 1.765, 1.811, 1.858, 1.904, 1.939, 2.032, 2.09, 2.159, 2.194, 2.218,
-          2.241, 2.264, 2.31, 2.345, 2.38, 2.45, 2.496, 2.577, 2.659, 2.775, 2.868, 2.984, 3.019, 3.053, 3.1, 3.146,
-          3.17, 3.239, 3.262, 3.355, 3.402, 3.46, 3.506, 3.541, 3.599, 3.669, 3.727, 3.796, 3.831, 3.878, 3.924, 3.947,
-          3.982,
-        ],
-        character_end_times_seconds: [
-          0.186, 0.279, 0.337, 0.395, 0.464, 0.546, 0.615, 0.685, 0.72, 0.778, 0.813, 0.848, 0.882, 0.929, 0.952, 0.975,
-          0.998, 1.022, 1.057, 1.103, 1.138, 1.173, 1.219, 1.242, 1.265, 1.312, 1.358, 1.405, 1.451, 1.474, 1.509,
-          1.544, 1.567, 1.614, 1.66, 1.718, 1.765, 1.811, 1.858, 1.904, 1.939, 2.032, 2.09, 2.159, 2.194, 2.218, 2.241,
-          2.264, 2.31, 2.345, 2.38, 2.45, 2.496, 2.577, 2.659, 2.775, 2.868, 2.984, 3.019, 3.053, 3.1, 3.146, 3.17,
-          3.239, 3.262, 3.355, 3.402, 3.46, 3.506, 3.541, 3.599, 3.669, 3.727, 3.796, 3.831, 3.878, 3.924, 3.947, 3.982,
-          4.412,
-        ],
-      },
+  },
+  {
+    audioSrc:
+      'file:///Users/z./Library/Developer/CoreSimulator/Devices/F1C5D9CD-A7AE-4B52-A57C-6F58EA939ECD/data/Containers/Data/Application/ECAC310C-357A-44FE-A7B4-0B9DAD91AA6F/Library/Caches/test_1761235062129.mp3',
+    text: 've also mentioned growing up in a small town and in Astana. And I grew up in the',
+    alignment: {
+      characters: [
+        'v',
+        'e',
+        ' ',
+        'a',
+        'l',
+        's',
+        'o',
+        ' ',
+        'm',
+        'e',
+        'n',
+        't',
+        'i',
+        'o',
+        'n',
+        'e',
+        'd',
+        ' ',
+        'g',
+        'r',
+        'o',
+        'w',
+        'i',
+        'n',
+        'g',
+        ' ',
+        'u',
+        'p',
+        ' ',
+        'i',
+        'n',
+        ' ',
+        'a',
+        ' ',
+        's',
+        'm',
+        'a',
+        'l',
+        'l',
+        ' ',
+        't',
+        'o',
+        'w',
+        'n',
+        ' ',
+        'a',
+        'n',
+        'd',
+        ' ',
+        'i',
+        'n',
+        ' ',
+        'A',
+        's',
+        't',
+        'a',
+        'n',
+        'a',
+        '.',
+        ' ',
+        'A',
+        'n',
+        'd',
+        ' ',
+        'I',
+        ' ',
+        'g',
+        'r',
+        'e',
+        'w',
+        ' ',
+        'u',
+        'p',
+        ' ',
+        'i',
+        'n',
+        ' ',
+        't',
+        'h',
+        'e',
+      ],
+      character_start_times_seconds: [
+        0, 0.186, 0.279, 0.337, 0.395, 0.464, 0.546, 0.615, 0.685, 0.72, 0.778, 0.813, 0.848, 0.882, 0.929, 0.952,
+        0.975, 0.998, 1.022, 1.057, 1.103, 1.138, 1.173, 1.219, 1.242, 1.265, 1.312, 1.358, 1.405, 1.451, 1.474, 1.509,
+        1.544, 1.567, 1.614, 1.66, 1.718, 1.765, 1.811, 1.858, 1.904, 1.939, 2.032, 2.09, 2.159, 2.194, 2.218, 2.241,
+        2.264, 2.31, 2.345, 2.38, 2.45, 2.496, 2.577, 2.659, 2.775, 2.868, 2.984, 3.019, 3.053, 3.1, 3.146, 3.17, 3.239,
+        3.262, 3.355, 3.402, 3.46, 3.506, 3.541, 3.599, 3.669, 3.727, 3.796, 3.831, 3.878, 3.924, 3.947, 3.982,
+      ],
+      character_end_times_seconds: [
+        0.186, 0.279, 0.337, 0.395, 0.464, 0.546, 0.615, 0.685, 0.72, 0.778, 0.813, 0.848, 0.882, 0.929, 0.952, 0.975,
+        0.998, 1.022, 1.057, 1.103, 1.138, 1.173, 1.219, 1.242, 1.265, 1.312, 1.358, 1.405, 1.451, 1.474, 1.509, 1.544,
+        1.567, 1.614, 1.66, 1.718, 1.765, 1.811, 1.858, 1.904, 1.939, 2.032, 2.09, 2.159, 2.194, 2.218, 2.241, 2.264,
+        2.31, 2.345, 2.38, 2.45, 2.496, 2.577, 2.659, 2.775, 2.868, 2.984, 3.019, 3.053, 3.1, 3.146, 3.17, 3.239, 3.262,
+        3.355, 3.402, 3.46, 3.506, 3.541, 3.599, 3.669, 3.727, 3.796, 3.831, 3.878, 3.924, 3.947, 3.982, 4.412,
+      ],
     },
-    {
-      audioSrc:
-        'file:///Users/z./Library/Developer/CoreSimulator/Devices/F1C5D9CD-A7AE-4B52-A57C-6F58EA939ECD/data/Containers/Data/Application/ECAC310C-357A-44FE-A7B4-0B9DAD91AA6F/Library/Caches/test_1761235062198.mp3',
-      text: 'United States of America.',
-      alignment: {
-        characters: [
-          'U',
-          'n',
-          'i',
-          't',
-          'e',
-          'd',
-          ' ',
-          'S',
-          't',
-          'a',
-          't',
-          'e',
-          's',
-          ' ',
-          'o',
-          'f',
-          ' ',
-          'A',
-          'm',
-          'e',
-          'r',
-          'i',
-          'c',
-          'a',
-          '.',
-        ],
-        character_start_times_seconds: [
-          0, 0.104, 0.174, 0.232, 0.29, 0.337, 0.36, 0.395, 0.43, 0.476, 0.522, 0.569, 0.604, 0.639, 0.673, 0.708,
-          0.731, 0.789, 0.836, 0.882, 0.94, 0.998, 1.057, 1.115, 1.231,
-        ],
-        character_end_times_seconds: [
-          0.104, 0.174, 0.232, 0.29, 0.337, 0.36, 0.395, 0.43, 0.476, 0.522, 0.569, 0.604, 0.639, 0.673, 0.708, 0.731,
-          0.789, 0.836, 0.882, 0.94, 0.998, 1.057, 1.115, 1.231, 1.393,
-        ],
-      },
+  },
+  {
+    audioSrc:
+      'file:///Users/z./Library/Developer/CoreSimulator/Devices/F1C5D9CD-A7AE-4B52-A57C-6F58EA939ECD/data/Containers/Data/Application/ECAC310C-357A-44FE-A7B4-0B9DAD91AA6F/Library/Caches/test_1761235062198.mp3',
+    text: 'United States of America.',
+    alignment: {
+      characters: [
+        'U',
+        'n',
+        'i',
+        't',
+        'e',
+        'd',
+        ' ',
+        'S',
+        't',
+        'a',
+        't',
+        'e',
+        's',
+        ' ',
+        'o',
+        'f',
+        ' ',
+        'A',
+        'm',
+        'e',
+        'r',
+        'i',
+        'c',
+        'a',
+        '.',
+      ],
+      character_start_times_seconds: [
+        0, 0.104, 0.174, 0.232, 0.29, 0.337, 0.36, 0.395, 0.43, 0.476, 0.522, 0.569, 0.604, 0.639, 0.673, 0.708, 0.731,
+        0.789, 0.836, 0.882, 0.94, 0.998, 1.057, 1.115, 1.231,
+      ],
+      character_end_times_seconds: [
+        0.104, 0.174, 0.232, 0.29, 0.337, 0.36, 0.395, 0.43, 0.476, 0.522, 0.569, 0.604, 0.639, 0.673, 0.708, 0.731,
+        0.789, 0.836, 0.882, 0.94, 0.998, 1.057, 1.115, 1.231, 1.393,
+      ],
     },
-  ],
-}
+  },
+]
 
 export function OutgoingMessageShowcase() {
   const renderComponent = useBoolean(false)
+  const [currentPartCount, setCurrentPartCount] = useState(0)
+
+  // Create message with only the current parts
+  const message: IncomingChatMessage = {
+    type: 'incoming',
+    index: 1,
+    data: messageParts.slice(0, currentPartCount),
+  }
+
+  const addNextPart = useCallback(() => {
+    if (currentPartCount < messageParts.length) {
+      console.log(`[OutgoingMessageShowcase] Adding part ${currentPartCount}`)
+      setCurrentPartCount((prev) => prev + 1)
+    }
+  }, [currentPartCount])
+
+  const reset = useCallback(() => {
+    console.log('[OutgoingMessageShowcase] Resetting to 0 parts')
+    setCurrentPartCount(0)
+    renderComponent.setFalse()
+  }, [renderComponent])
+
+  const startSimulation = useCallback(() => {
+    console.log('[OutgoingMessageShowcase] Starting simulation')
+    renderComponent.setTrue()
+    setCurrentPartCount(1)
+
+    // Add part 2 after 2 seconds
+    setTimeout(() => {
+      console.log('[OutgoingMessageShowcase] Auto-adding part 2')
+      setCurrentPartCount(2)
+    }, 2000)
+
+    // Add part 3 after 4 seconds
+    setTimeout(() => {
+      console.log('[OutgoingMessageShowcase] Auto-adding part 3')
+      setCurrentPartCount(3)
+    }, 4000)
+  }, [renderComponent])
 
   return (
     <View className="flex gap-4">
-      <Typography level="h2">Outgoing message</Typography>
+      <Typography level="h2">
+        Outgoing message (Dynamic Parts: {currentPartCount}/{messageParts.length})
+      </Typography>
       <View className="flex gap-2">
-        <Button onPress={renderComponent.setTrue}>Mount component</Button>
-        <Button onPress={renderComponent.setFalse}>Unmount component</Button>
+        <Button onPress={startSimulation}>Start Simulation (auto-add parts)</Button>
+        <Button onPress={addNextPart} disabled={currentPartCount >= messageParts.length}>
+          Add Part Manually ({currentPartCount}/{messageParts.length})
+        </Button>
+        <Button onPress={reset}>Reset</Button>
         <Chat.Provider
           state={{
             messages: [
@@ -287,7 +327,7 @@ export function OutgoingMessageShowcase() {
             uid: '1',
           }}
         >
-          {renderComponent.value && <ChatWithUserIncomingMessage message={message} />}
+          {renderComponent.value && currentPartCount > 0 && <ChatWithUserIncomingMessage message={message} />}
         </Chat.Provider>
       </View>
     </View>
