@@ -45,6 +45,10 @@ export default function TabLayout() {
         options={{
           title: 'Questions',
           tabBarIcon: ({ focused }) => <TabBarIcon name="chatbubbles" focused={focused} />,
+          href: '/(protected)/(tabs)/questions',
+          tabBarItemStyle: {
+            paddingTop: 8,
+          },
         }}
       />
       <Tabs.Screen
