@@ -52,7 +52,7 @@ export function BottomTabHeader({ navigation, userAvatar, options, warningOnLeav
           </TouchableOpacity>
           <View className="absolute left-0 top-0 items-center justify-center right-0 bottom-0">
             <Typography level="h5" brand color="accent">
-              {String(options.title)}
+              {String(options.headerTitle || options.title)}
             </Typography>
           </View>
           <TouchableOpacity onPress={handleLogo}>

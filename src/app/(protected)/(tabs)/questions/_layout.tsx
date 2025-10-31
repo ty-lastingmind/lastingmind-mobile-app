@@ -36,7 +36,13 @@ export default function Layout() {
       screenOptions={{
         title: 'Questions',
         headerTitle: headerTitle,
-        header: (props) => <BottomTabHeader {...props} userAvatar={userAvatar} warningOnLeave />,
+        header: (props) => (
+          <BottomTabHeader
+            {...props}
+            userAvatar={userAvatar}
+            warningOnLeave={isInterview || isJournal || isCuratedQuestions}
+          />
+        ),
         contentStyle: styles,
       }}
     >
