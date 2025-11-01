@@ -3,6 +3,8 @@ import React, { useCallback, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, TouchableOpacity, View } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
+import { useBoolean } from 'usehooks-ts'
+import { ConfirmDialog } from '~/components/confirm-dialog'
 import { INTERVIEW_AUDIO_FOLDER_NAME } from '~/constants/storage'
 import { useChatWsConnection } from '~/hooks/use-chat-ws-connection'
 import { usePbSafeStyles } from '~/hooks/use-pb-safe-styles'
@@ -56,6 +58,7 @@ export function ChatScreen() {
   const { recordingControls, audioRecorder } = useAudioMessage(INTERVIEW_AUDIO_FOLDER_NAME)
   const duration = form.getValues('interviewDurationInMinutes') ?? 30 // Default to 30 minutes if not set
   const { extendTime, isOutOfTime } = useInterviewTimer(duration)
+  const confirmDialog = useBoolean(false)
 
   const handleWsMessage = async (message: WsMessage) => {
     const audio = await saveBase64ToFile(message.audio)
@@ -154,7 +157,17 @@ export function ChatScreen() {
   }
 
   function handleStopInterview() {
+    confirmDialog.setTrue()
+  }
+
+  function handleDiscard() {
+    router.replace('/(protected)/(tabs)/home')
+    confirmDialog.setFalse()
+  }
+
+  function handleSave() {
     router.replace('/questions/interview/add/05-saving')
+    confirmDialog.setFalse()
   }
 
   function handleConfirmStopInterview() {
@@ -231,7 +244,20 @@ export function ChatScreen() {
           }}
         />
       )}
-      {isOutOfTime && <OutOfTimeDialog onStopInterview={handleStopInterview} onExtendTime={extendTime} />}
+      {isOutOfTime && !confirmDialog.value && (
+        <OutOfTimeDialog onStopInterview={handleStopInterview} onExtendTime={extendTime} />
+      )}
+      {confirmDialog.value && (
+        <ConfirmDialog
+          title={
+            'Would you like to save this Interview?\n\nSelecting "Save" allows it to be used by your LastingMind chat.'
+          }
+          onCancel={handleDiscard}
+          onConfirm={handleSave}
+          noLabel="Discard"
+          yesLabel="Save"
+        />
+      )}
     </>
   )
 }

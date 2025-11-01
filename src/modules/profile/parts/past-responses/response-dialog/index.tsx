@@ -37,7 +37,7 @@ export function ResponseDialog({ isOpen, onClose, responseId, chattingWithViewId
         </View>
         <ScrollView className="max-h-[500px] " contentContainerClassName="gap-2">
           <Typography color="secondary">
-            {data?.question_details && format(`${data.question_details.submitted_at}`, 'mm/dd/yyyy')}
+            {data?.question_details && format(`${data.question_details.submitted_at}`, 'yyyy-MM-dd')}
           </Typography>
           <View>
             <Typography color="secondary">Answer</Typography>

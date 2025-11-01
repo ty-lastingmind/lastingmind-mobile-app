@@ -16,8 +16,6 @@ import {
   SubmitQuestionInput,
 } from '~/services/api/model'
 
-const SUCCESS_SCREEN_DURATION = 3000
-
 interface CurrentQuestion {
   question: {
     question_text: string
@@ -67,6 +65,7 @@ interface QuestionActions {
   handleCloseTopicPicker: () => void
   handleSaveNewTopic: (topic: string) => void
   handleCloseSkippedAllQuestionsOverlay: () => void
+  handleCloseSuccessScreen: () => void
 }
 
 interface QuestionContextValue extends QuestionState, QuestionData, QuestionActions {}
@@ -106,6 +105,7 @@ const QuestionContext = createContext<QuestionContextValue>({
   handleSaveNewTopic: () => {},
   handleCloseTopicPicker: () => {},
   handleCloseSkippedAllQuestionsOverlay: () => {},
+  handleCloseSuccessScreen: () => {},
 })
 
 export const QuestionProvider = ({ children }: { children: React.ReactNode }) => {
@@ -304,9 +304,10 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
     setNextQuestions(data.next_questions)
     setCurrentQuestionIndex(0)
     setTopicProgress(data.progress_percent)
-    setTimeout(() => {
-      setState((prev) => ({ ...prev, showSuccessScreen: false }))
-    }, SUCCESS_SCREEN_DURATION)
+  }, [])
+
+  const handleCloseSuccessScreen = useCallback(() => {
+    setState((prev) => ({ ...prev, showSuccessScreen: false }))
   }, [])
 
   const handleSubmitAnswer = useCallback(
@@ -441,6 +442,7 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
       handleCloseTopicPicker: () => setState((prev) => ({ ...prev, isTopicPickerOpen: false })),
       handleSaveNewTopic,
       handleCloseSkippedAllQuestionsOverlay,
+      handleCloseSuccessScreen,
     }),
     [
       handleSkippedAllQuestions,
@@ -456,6 +458,7 @@ export const QuestionProvider = ({ children }: { children: React.ReactNode }) =>
       handleCloseWriteAnswerOverlay,
       handleSaveNewTopic,
       handleCloseSkippedAllQuestionsOverlay,
+      handleCloseSuccessScreen,
     ]
   )
 

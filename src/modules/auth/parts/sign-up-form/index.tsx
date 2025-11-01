@@ -1,10 +1,12 @@
 import { UseFormReturn } from 'react-hook-form'
-import { View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { z } from 'zod'
 
 import { Form, FormControl, FormField, FormItem } from '~/modules/ui/form'
 import { Input } from '~/modules/ui/input'
 import WarningLabel from '../warning-label'
+import { useBoolean } from 'usehooks-ts'
+import { Icon } from '~/modules/ui/icon'
 
 export const signUpFormSchema = z
   .object({
@@ -24,6 +26,9 @@ interface SignUpFormProps {
 }
 
 export function SignUpForm({ form }: SignUpFormProps) {
+  const { value: passwordVisible, toggle: togglePasswordVisible } = useBoolean(true)
+  const { value: confirmPasswordVisible, toggle: toggleConfirmPasswordVisible } = useBoolean(true)
+
   const values = form.watch()
   const showWarningLabel = values.password !== values.confirmPassword && values.confirmPassword !== ''
 
@@ -54,13 +59,18 @@ export function SignUpForm({ form }: SignUpFormProps) {
             <FormItem>
               <FormControl>
                 <Input
-                  secureTextEntry
+                  secureTextEntry={passwordVisible}
                   isError={Boolean(fieldState.error?.message)}
                   onBlur={field.onBlur}
                   placeholder="Password"
                   className="rounded-b-none border-b border-miscellaneous-topic-stroke"
                   onChangeText={field.onChange}
                   value={field.value}
+                  rightAdornment={
+                    <TouchableOpacity onPress={togglePasswordVisible}>
+                      <Icon name={passwordVisible ? 'eye-outline' : 'eye-off-outline'} />
+                    </TouchableOpacity>
+                  }
                 />
               </FormControl>
             </FormItem>
@@ -73,13 +83,18 @@ export function SignUpForm({ form }: SignUpFormProps) {
             <FormItem>
               <FormControl>
                 <Input
-                  secureTextEntry
+                  secureTextEntry={confirmPasswordVisible}
                   isError={Boolean(fieldState.error?.message)}
                   placeholder="Confirm Password"
                   className="rounded-t-none"
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
                   value={field.value}
+                  rightAdornment={
+                    <TouchableOpacity onPress={toggleConfirmPasswordVisible}>
+                      <Icon name={confirmPasswordVisible ? 'eye-outline' : 'eye-off-outline'} />
+                    </TouchableOpacity>
+                  }
                 />
               </FormControl>
             </FormItem>

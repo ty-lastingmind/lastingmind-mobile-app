@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import BadgeList from '~/modules/ui/badge-list'
 import { SvgIcon } from '~/modules/ui/svg-icon'
 import { Typography } from '~/modules/ui/typography'
+import { TypographyTyping } from '~/modules/ui/typography-typing'
 import {
   useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost,
   useEditPersonalInfoProfilePageEditPersonalInfoPost,
+  usePullAiAboutProfilePagePullAiAboutPost,
 } from '~/services/api/generated'
 import { EducationItem } from '~/services/api/model'
 import { EducationFormData, useEducationForm } from '../../hooks/use-education-form'
@@ -32,6 +34,9 @@ export function EducationInfo() {
   const submitNew = useAddNewPersonalInfoProfilePageAddNewPersonalInfoPost()
   const submitEdit = useEditPersonalInfoProfilePageEditPersonalInfoPost()
 
+  const [aiAbout, setAiAbout] = useState('')
+  const aiSummary = usePullAiAboutProfilePagePullAiAboutPost()
+
   const handleSelectBadge = (index: number) => {
     if (index === 0) {
       setTrueIsNewEntry()
@@ -39,7 +44,25 @@ export function EducationInfo() {
       setTrue()
     } else {
       setSelectedBadge(index)
+      setAiAbout('')
     }
+  }
+
+  const handleAiAbout = () => {
+    aiSummary.mutate(
+      {
+        data: {
+          topic: 'education',
+          name: list[selectedBadge],
+          index_of_entry: selectedBadge,
+        },
+      },
+      {
+        onSuccess: (res) => {
+          setAiAbout(res.about)
+        },
+      }
+    )
   }
 
   const handleEdit = () => {
@@ -122,12 +145,21 @@ export function EducationInfo() {
               Level: <Typography>{selectedEducation.level}</Typography>
             </Typography>
           )}
-          {selectedEducation.about && (
+          <View className="flex-row flex-wrap gap-2">
             <Typography color="accent" weight="bold">
-              About: <Typography>{selectedEducation.about}</Typography>
+              About:{' '}
+              {aiAbout ? (
+                <TypographyTyping>{aiAbout}</TypographyTyping>
+              ) : (
+                <Typography>{selectedEducation.about}</Typography>
+              )}
             </Typography>
-          )}
-          <TouchableOpacity className="absolute right-0 top-0" onPress={handleEdit}>
+            <TouchableOpacity onPress={handleAiAbout} className="flex-row items-center gap-2">
+              <SvgIcon name="sparks" size="md" color="accent" />
+              <Typography color="accent">Use AI to Create About</Typography>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity className="absolute right-0 top-0" disabled={aiSummary.isPending} onPress={handleEdit}>
             <SvgIcon name="editbox" size="lg" color="accent" />
           </TouchableOpacity>
         </View>

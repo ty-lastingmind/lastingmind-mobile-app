@@ -169,7 +169,7 @@ export function PastResponsesPage() {
                 onPress={() => handleResponse(item.responseId)}
               >
                 <Typography>{item.question_title}</Typography>
-                <Typography color="secondary">{format(item.submitted_at, 'mm/dd/yyyy')}</Typography>
+                <Typography color="secondary">{format(item.submitted_at, 'yyyy-MM-dd')}</Typography>
               </TouchableOpacity>
             )}
           />

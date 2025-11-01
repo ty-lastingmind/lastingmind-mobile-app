@@ -6,9 +6,10 @@ interface SavedAnswerProps {
   title: string
   caption: string
   shouldRedirect?: boolean
+  onRedirect?: () => void
 }
 
-export function SavedAnswer({ title, caption, shouldRedirect }: SavedAnswerProps) {
+export function SavedAnswer({ title, caption, shouldRedirect, onRedirect }: SavedAnswerProps) {
   const router = useRouter()
 
   useFocusEffect(
@@ -18,6 +19,7 @@ export function SavedAnswer({ title, caption, shouldRedirect }: SavedAnswerProps
       }
 
       const timeout = setTimeout(() => {
+        if (onRedirect) onRedirect()
         router.replace('/(protected)/(tabs)/home')
       }, 3000)
 

@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
-import { Alert, KeyboardAvoidingView, ScrollView, View } from 'react-native'
+import { Alert, View } from 'react-native'
 import { useBoolean } from 'usehooks-ts'
 import { useSafeAreaStyles } from '~/hooks/use-safe-area-styles'
 import { Button } from '~/modules/ui/button'
@@ -11,6 +11,8 @@ import { Typography } from '~/modules/ui/typography'
 import { useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost } from '~/services/api/generated'
 import { HomeInfoData, useHomeInfoForm } from '../../hooks/use-home-info-form'
 import InputResult from '../../parts/input-result'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
+import Toast from 'react-native-toast-message'
 
 const inputList = [
   {
@@ -40,6 +42,7 @@ export function HomeSurveyScreen() {
   const { mutateAsync, isPending } = useSubmitSurveyAnswerPersonalSurveySubmitSurveyAnswerPost()
 
   const form = useHomeInfoForm()
+  const { isDirty } = form.formState
 
   const handleFormSave = (data: HomeInfoData) => {
     if (editingIndex !== null) {
@@ -49,7 +52,7 @@ export function HomeSurveyScreen() {
     }
     closeForm()
     setEditingIndex(null)
-    form.reset()
+    handleAddAnother()
   }
 
   const handleFormCancel = () => {
@@ -72,12 +75,28 @@ export function HomeSurveyScreen() {
   }
 
   const handleSave = async () => {
-    if (locations.length) {
+    const finalLocations = [...locations]
+
+    const isValid = await form.trigger()
+    if (isDirty) {
+      if (!isValid) {
+        Toast.show({
+          type: 'error',
+          text1: 'All Fields are Required',
+        })
+        return
+      }
+      const values = form.getValues()
+
+      finalLocations.push(values)
+    }
+
+    if (finalLocations.length) {
       await mutateAsync(
         {
           data: {
             topic: 'cities_lived',
-            answers: locations.map((location) => ({
+            answers: finalLocations.map((location) => ({
               location: location.location,
               start_age: location.startAge,
               end_age: location.endAge,
@@ -94,7 +113,7 @@ export function HomeSurveyScreen() {
         }
       )
     } else {
-      router.navigate('/(protected)/basic-info/02-education')
+      handleSkip()
     }
   }
 
@@ -119,58 +138,66 @@ export function HomeSurveyScreen() {
 
   return (
     <View className="flex-1 px-8" style={safeStyles}>
-      <KeyboardAvoidingView behavior="padding" className="flex-1">
-        <ScrollView contentContainerClassName="gap-4 pb-8" bounces={false} showsVerticalScrollIndicator={false}>
-          <View className="pt-28 gap-2">
-            <SvgIcon name="home" size="3xl" color="accent" />
-            <Typography brand level="h3">
-              Where have you lived throughout your life?
-            </Typography>
-            <Typography>Add as many as necessary.</Typography>
-          </View>
-          <Form {...form}>
-            {locations.map((location, index) => (
-              <InputResult
-                key={index}
-                label={`${location.location}, age ${location.startAge} to ${location.endAge}`}
-                icon="home"
-                onPress={() => handleEdit(index)}
-                isExpanded={editingIndex === index}
-                renderExpandedComponent={
-                  <FormControls
-                    form={form}
-                    locations={locations}
-                    handleFormCancel={handleFormCancel}
-                    handleFormSave={handleFormSave}
-                  />
-                }
-              />
-            ))}
-            <View className="flex-1 gap-4">
-              {showForm ? (
+      <KeyboardAwareScrollView
+        contentContainerClassName="gap-4 pb-8"
+        showsHorizontalScrollIndicator={false}
+        bottomOffset={100}
+      >
+        <View className="pt-28 gap-2">
+          <SvgIcon name="home" size="3xl" color="accent" />
+          <Typography brand level="h3">
+            Where have you lived throughout your life?
+          </Typography>
+          <Typography>Add as many as necessary.</Typography>
+        </View>
+        <Form {...form}>
+          {locations.map((location, index) => (
+            <InputResult
+              key={index}
+              label={`${location.location}, age ${location.startAge} to ${location.endAge}`}
+              icon="home"
+              onPress={() => handleEdit(index)}
+              isExpanded={editingIndex === index}
+              renderExpandedComponent={
                 <FormControls
                   form={form}
                   locations={locations}
                   handleFormCancel={handleFormCancel}
                   handleFormSave={handleFormSave}
                 />
-              ) : (
-                <Button variant="white" size="sm" onPress={handleAddAnother}>
-                  Add another
-                </Button>
-              )}
-            </View>
-          </Form>
-        </ScrollView>
-        <View className="gap-4">
-          <Button variant="white" onPress={handleSkip} loading={isPending}>
-            Skip
-          </Button>
-          <Button onPress={handleSave} loading={isPending}>
-            Save
-          </Button>
-        </View>
-      </KeyboardAvoidingView>
+              }
+            />
+          ))}
+          <View className="flex-1 gap-4">
+            {showForm ? (
+              <FormControls
+                form={form}
+                locations={locations}
+                handleFormCancel={handleFormCancel}
+                handleFormSave={handleFormSave}
+                saveLabel="Add another"
+              />
+            ) : (
+              <Button
+                variant="white"
+                size="sm"
+                onPress={handleAddAnother}
+                className={editingIndex !== null ? 'hidden' : ''}
+              >
+                Add another
+              </Button>
+            )}
+          </View>
+        </Form>
+      </KeyboardAwareScrollView>
+      <View className="gap-4">
+        <Button variant="white" onPress={handleSkip} loading={isPending}>
+          Skip
+        </Button>
+        <Button onPress={handleSave} loading={isPending}>
+          Save
+        </Button>
+      </View>
     </View>
   )
 }
@@ -180,9 +207,16 @@ interface FormControlsProps {
   locations: HomeInfoData[]
   handleFormCancel: () => void
   handleFormSave: (data: HomeInfoData) => void
+  saveLabel?: string
 }
 
-function FormControls({ form, locations, handleFormCancel, handleFormSave }: FormControlsProps): React.ReactNode {
+function FormControls({
+  form,
+  locations,
+  handleFormCancel,
+  handleFormSave,
+  saveLabel = 'Save',
+}: FormControlsProps): React.ReactNode {
   return (
     <>
       <InputGroup<HomeInfoData> inputList={inputList} form={form} />
@@ -198,7 +232,7 @@ function FormControls({ form, locations, handleFormCancel, handleFormSave }: For
           disabled={!form.formState.isValid || !form.formState.isDirty}
           onPress={form.handleSubmit(handleFormSave)}
         >
-          Save
+          {saveLabel}
         </Button>
       </View>
     </>

@@ -155,12 +155,20 @@ export function FamilyInfo() {
               {selectedFamilyMember.name} calls you: <Typography>{selectedFamilyMember.they_call_you}</Typography>
             </Typography>
           )}
-          <TouchableOpacity onPress={handleAiAbout}>
+          <View className="flex-row flex-wrap gap-2">
             <Typography color="accent" weight="bold">
-              About: <SvgIcon name="sparks" size="md" color="accent" />
+              About:{' '}
+              {aiAbout ? (
+                <TypographyTyping>{aiAbout}</TypographyTyping>
+              ) : (
+                <Typography>{selectedFamilyMember.about}</Typography>
+              )}
             </Typography>
-          </TouchableOpacity>
-          {aiAbout && <TypographyTyping>{aiAbout}</TypographyTyping>}
+            <TouchableOpacity onPress={handleAiAbout} className="flex-row items-center gap-2">
+              <SvgIcon name="sparks" size="md" color="accent" />
+              <Typography color="accent">Use AI to Create About</Typography>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity className="absolute right-0 top-0" disabled={aiSummary.isPending} onPress={handleEdit}>
             <SvgIcon name="editbox" size="lg" color="accent" />
           </TouchableOpacity>

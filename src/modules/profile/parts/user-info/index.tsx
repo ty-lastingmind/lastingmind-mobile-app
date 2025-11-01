@@ -33,7 +33,11 @@ export default function UserInfo() {
       <Typography brand level="h3" className="text-center">
         {userInfo?.full_user_name}
       </Typography>
-      <Avatar source={userInfo?.profile_image} size="lg" />
+      <Link asChild href="/(protected)/(tabs)/profile/change-profile-picture">
+        <TouchableOpacity>
+          <Avatar source={userInfo?.profile_image} size="lg" />
+        </TouchableOpacity>
+      </Link>
       {userStats && (
         <QuestionsProgress
           progress={userStats.progress_percent}
